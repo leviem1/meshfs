@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import bz2
 
 class mfsCompress(object):
@@ -10,4 +8,3 @@ class mfsCompress(object):
 				
 	def decompress(self, data):
 		return bz2.decompress(data)
-
