@@ -1,3 +1,4 @@
+#Created by Aaron Duran, Mark Hedrick, and Levi Muniz
 import bz2
 
 class mfsCompress(object):
