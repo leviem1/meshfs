@@ -1,12 +1,13 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
-public class Greeting extends JDialog {
+public class Welcome extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
 
-    public Greeting() {
+    public Welcome() {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -50,8 +51,9 @@ public class Greeting extends JDialog {
     }
 
     public static void run() {
-        Greeting dialog = new Greeting();
+        Welcome dialog = new Welcome();
         dialog.pack();
+        CenterWindow.centerOnScreen(dialog);
         dialog.setVisible(true);
         System.exit(0);
     }
