@@ -3,6 +3,9 @@
  */
 public class MeshFS {
     public static void main(String[] args) {
-        Welcome.run();
+        //Welcome.run();
+        System.setProperty("apple.laf.useScreenMenuBar", "true");
+        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
+        WelcomeWindow.run();
     }
 }
