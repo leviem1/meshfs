@@ -13,6 +13,7 @@ public class WelcomeWindow extends JFrame {
         setContentPane(contentPane);
         setTitle("This is a test title");
         setSize(300,200);
+        setResizable(false);
     }
 
     public static void run() {
