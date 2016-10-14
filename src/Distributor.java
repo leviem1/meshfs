@@ -1,5 +1,5 @@
 import java.io.File;
-import java.lang.reflect.Array;
+//import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -48,6 +48,7 @@ class ValueComparator implements Comparator {
     public ValueComparator(Map map) {
         this.map = map;
     }
+
     public int compare(Object keyA, Object keyB) {
         Comparable valueA = (Comparable) map.get(keyA);
         Comparable valueB = (Comparable) map.get(keyB);

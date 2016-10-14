@@ -16,5 +16,10 @@ public class MeshFS {
 
         hostStorage.put(reporter.getIpAddress(),reporter.getSystemStorage());
         WelcomeWindow.run();
+
+        System.out.println(reporter.getUptime());
+        System.out.println(reporter.getSystemOS());
+
+        
     }
 }

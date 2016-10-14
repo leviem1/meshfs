@@ -3,12 +3,17 @@
  */
 
 import java.io.*;
+import java.lang.management.ManagementFactory;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 
 public class Reporting {
 
     private final String os = System.getProperty("os.name");
+
+    public String getSystemOS() {
+        return os;
+    }
 
     public long getSystemStorage() {
 
@@ -30,4 +35,13 @@ public class Reporting {
         }
         return "127.0.0.1";
     }
+
+    public long getUptime() {
+        return ManagementFactory.getRuntimeMXBean().getUptime();
+    }
+
+    public String getJavaVersion(){
+        return System.getProperty("java.version");
+    }
+
 }
