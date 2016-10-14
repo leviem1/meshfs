@@ -3,24 +3,31 @@
  */
 
 import java.io.*;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 
 public class Reporting {
 
-    private String os;
-
-    private void Reporting() {
-        os = System.getProperty("os.name");
-    }
+    private final String os = System.getProperty("os.name");
 
     public long getSystemStorage() {
 
-        File file = null;
+        File file;
 
         if (os.startsWith("Windows")) {
             file = new File("c:");
         } else {
-            file = new File("\\");
+            file = new File("/");
         }
         return file.getUsableSpace();
+    }
+
+    public String getIpAddress() {
+        try {
+            return Inet4Address.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return "127.0.0.1";
     }
 }
