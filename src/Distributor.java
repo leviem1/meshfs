@@ -1,4 +1,5 @@
-import java.io.FileInputStream;
+import java.io.File;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -6,9 +7,9 @@ import java.util.*;
  */
 public class Distributor {
 
-    int numOfComputers;
     int numOfStripes;
-
+    int numOfWholeCopies = 2;
+    int numOfStripedCopies = 2;
 
     public static Map sortMapByValues(Map unsortedMap){
         Map sortedMap = new TreeMap(new ValueComparator(unsortedMap));
@@ -16,20 +17,28 @@ public class Distributor {
         return sortedMap;
     }
 
-    public void distributor(Map compStorageMap, FileInputStream file){
+    public void distributor(Map compStorageMap, File file){
 
-        numOfComputers = compStorageMap.size();
+        int numOfComputersUsed = compStorageMap.size();
 
-        if (numOfComputers <= 13){
-            numOfStripes = ((numOfComputers - 1) / 2 );
+        if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * 6))){
+            numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
         }
         else {
             numOfStripes = 6;
         }
 
-        Map<String, Integer> sortedCompStorageMap = sortMapByValues(compStorageMap);
-        String whole = String.valueOf(sortedCompStorageMap.keySet().toArray()[0]);
-        System.out.println(whole);
+        Map<String, Long> sortedCompStorageMap = sortMapByValues(compStorageMap);
+
+        String[] computersForWholes = new String[numOfWholeCopies];
+        for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
+            computersForWholes[computerNumW] = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
+        }
+
+        String[] computersForStripes = new String[(numOfStripes*numOfStripedCopies)];
+        for (int computerNumS = numOfWholeCopies; computerNumS < ((numOfStripes*numOfStripedCopies)+numOfWholeCopies); computerNumS++) {
+            computersForStripes[computerNumS] = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
+        }
     }
 }
 
