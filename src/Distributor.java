@@ -7,7 +7,7 @@ import java.util.*;
  */
 public class Distributor {
 
-    int numOfStripes;
+    int numOfStripes = 6;
     int numOfWholeCopies = 2;
     int numOfStripedCopies = 2;
 
@@ -21,23 +21,39 @@ public class Distributor {
 
         int numOfComputersUsed = compStorageMap.size();
 
-        if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * 6))){
+        if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))){
             numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
         }
-        else {
-            numOfStripes = 6;
-        }
 
-        Map<String, Long> sortedCompStorageMap = sortMapByValues(compStorageMap);
+        Map<String, long> sortedCompStorageMap = sortMapByValues(compStorageMap);
 
-        String[] computersForWholes = new String[numOfWholeCopies];
+        List<String> computersForWholes = new ArrayList<>();
         for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
-            computersForWholes[computerNumW] = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
+            computersForWholes.add(String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]));
         }
 
-        String[] computersForStripes = new String[(numOfStripes*numOfStripedCopies)];
+        List<String> computersForStripes = new ArrayList<>();
         for (int computerNumS = numOfWholeCopies; computerNumS < ((numOfStripes*numOfStripedCopies)+numOfWholeCopies); computerNumS++) {
-            computersForStripes[computerNumS] = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
+            computersForStripes.add(String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]));
+        }
+
+
+
+        long sizeOfFile = fileReader.getSize(file);
+        long sizeOfStripe = ((int) (sizeOfFile / numOfStripes) + 1); // is the int big enough to handle this or does it only perform the operation as int
+
+        for (int item = 0; item < computersForWholes.size(); item++){
+            String computerToReceive = computersForWholes.get(item);
+            fileReader.writeStripe(computerToReceive, file, 0, sizeOfFile - 1);
+        }
+        for (int currentStipe = 0; currentStipe < numOfStripes; currentStipe++){
+            long startByte = (sizeOfStripe * currentStipe);
+            long stopByte = (startByte + (sizeOfStripe - 1));
+            for (int item = 0; item < numOfStripedCopies; item++){
+                String computerToReceive = computersForStripes.get((currentStipe * numOfStripedCopies) + item);
+                fileReader.writeStripe(computerToReceive, file, startByte, stopByte);
+            }
+
         }
     }
 }
