@@ -3,10 +3,10 @@
  */
 import java.io.*;
 import java.lang.management.ManagementFactory;
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Enumeration;
 
 public class Reporting {
 
@@ -48,5 +48,24 @@ public class Reporting {
     public String getSystemTime(){
         return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
-
+    public String getMacAddress(){
+        String macAddress = "FF-FF-FF-FF-FF-FF-FF-FF";
+        try {
+            Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
+            while(networks.hasMoreElements()) {
+                NetworkInterface network = networks.nextElement();
+                byte[] mac = network.getHardwareAddress();
+                if(mac != null) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < mac.length; i++) {
+                        sb.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+                    }
+                    macAddress = sb.toString();
+                }
+            }
+        } catch (SocketException e){
+            e.printStackTrace();
+        }
+        return macAddress;
+    }
 }

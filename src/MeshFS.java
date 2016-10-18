@@ -23,6 +23,6 @@ public class MeshFS {
 
         //ClientDownloader demo = new ClientDownloader();
         //demo.downloadData("Marks-Mac-mini.local", 13267, "/Users/markhedrick/Desktop/test.rdp");
-        
+        System.out.println(reporter.getMacAddress());
     }
 }
