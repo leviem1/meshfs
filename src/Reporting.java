@@ -28,12 +28,13 @@ public class Reporting {
     }
 
     public String getIpAddress() {
+        String ip = null;
         try {
-            return Inet4Address.getLocalHost().getHostAddress();
+             ip = Inet4Address.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        return "127.0.0.1";
+        return ip;
     }
 
     public long getUptime() {
