@@ -6,16 +6,7 @@ import java.net.Socket;
 
 public class ClientDownloader {
 
-    private String hostName;
-    private int portNumber;
-    private int fileSize;
-    private String outputPath;
-
     public void downloadData(String hostName, int portNumber, String outputPath, int fileSize) throws IOException {
-        this.hostName = hostName;
-        this.portNumber = portNumber;
-        this.outputPath = outputPath;
-        this.fileSize = fileSize;
         int bytesRead;
         int current;
         FileOutputStream fos = null;

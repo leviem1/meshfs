@@ -24,7 +24,7 @@ public class Distributor {
             numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
         }
 
-        Map<String, long> sortedCompStorageMap = sortMapByValues(compStorageMap);
+        Map<String, Long> sortedCompStorageMap = sortMapByValues(compStorageMap);
 
         List<String> computersForWholes = new ArrayList<>();
         for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
@@ -38,7 +38,7 @@ public class Distributor {
 
 
 
-        long sizeOfFile = fileReader.getSize(file);
+        long sizeOfFile = fileReader.getSize();
         long sizeOfStripe = ((int) (sizeOfFile / numOfStripes) + 1); // is the int big enough to handle this or does it only perform the operation as int
 
         for (int item = 0; item < computersForWholes.size(); item++){
