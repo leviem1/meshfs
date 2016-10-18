@@ -7,12 +7,12 @@ import java.io.InputStream;
  * Created by Levi Muniz on 10/17/16.
  */
 
-public class fileReader {
+public class FileReader {
     private BufferedInputStream bis;
     private InputStream inStream;
     private long lengthAvailable;
 
-   public fileReader (String filePath) throws Exception {
+   public FileReader(String filePath) throws Exception {
        try {
            inStream = new FileInputStream(filePath);
            bis = new BufferedInputStream(inStream);

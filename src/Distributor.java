@@ -38,19 +38,19 @@ public class Distributor {
 
 
 
-        long sizeOfFile = fileReader.getSize();
+        long sizeOfFile = FileReader.getSize();
         long sizeOfStripe = ((int) (sizeOfFile / numOfStripes) + 1); // is the int big enough to handle this or does it only perform the operation as int
 
         for (int item = 0; item < computersForWholes.size(); item++){
             String computerToReceive = computersForWholes.get(item);
-            fileReader.writeStripe(computerToReceive, file, 0, sizeOfFile - 1);
+            FileReader.writeStripe(computerToReceive, file, 0, sizeOfFile - 1);
         }
         for (int currentStipe = 0; currentStipe < numOfStripes; currentStipe++){
             long startByte = (sizeOfStripe * currentStipe);
             long stopByte = (startByte + (sizeOfStripe - 1));
             for (int item = 0; item < numOfStripedCopies; item++){
                 String computerToReceive = computersForStripes.get((currentStipe * numOfStripedCopies) + item);
-                fileReader.writeStripe(computerToReceive, file, startByte, stopByte);
+                FileReader.writeStripe(computerToReceive, file, startByte, stopByte);
             }
 
         }
