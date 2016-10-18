@@ -1,7 +1,6 @@
 /**
  * Created by muniz on 10/10/16.
  */
-
 import java.awt.*;
 
 public class CenterWindow {

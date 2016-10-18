@@ -1,9 +1,10 @@
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by Levi Muniz on 10/3/16.
  */
+import java.util.HashMap;
+import java.util.Map;
+
+
 public class MeshFS {
 
     public static void main(String[] args) {
@@ -20,6 +21,8 @@ public class MeshFS {
         System.out.println(reporter.getUptime());
         System.out.println(reporter.getSystemOS());
 
+        //ClientDownloader demo = new ClientDownloader();
+        //demo.downloadData("Marks-Mac-mini.local", 13267, "/Users/markhedrick/Desktop/test.rdp");
         
     }
 }

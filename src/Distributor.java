@@ -1,10 +1,9 @@
-import java.io.File;
-//import java.lang.reflect.Array;
-import java.util.*;
-
 /**
  * Created by Aaron Duran on 10/13/16.
  */
+import java.io.File;
+import java.util.*;
+
 public class Distributor {
 
     int numOfStripes = 6;

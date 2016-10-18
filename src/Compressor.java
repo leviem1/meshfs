@@ -1,7 +1,6 @@
 /**
  * Created by Aaron Duran on 10/13/16.
  */
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
