@@ -6,9 +6,16 @@ import java.util.*;
 
 public class Distributor {
 
-    int numOfStripes = 6;
-    int numOfWholeCopies = 2;
-    int numOfStripedCopies = 2;
+    private int numOfStripes;
+    private int numOfWholeCopies;
+    private int numOfStripedCopies;
+
+    public Distributor(int numOfStripes, int numOfWholeCopies, int numOfStripedCopies){
+        this.numOfStripes = numOfStripes;
+        this.numOfWholeCopies = numOfWholeCopies;
+        this.numOfStripedCopies = numOfStripedCopies;
+
+    }
 
     public static Map sortMapByValues(Map unsortedMap){
         Map sortedMap = new TreeMap(new ValueComparator(unsortedMap));
@@ -36,7 +43,7 @@ public class Distributor {
             computersForStripes.add(String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]));
         }
 
-
+        FileReader reader = new FileReader();
 
         long sizeOfFile = FileReader.getSize();
         long sizeOfStripe = ((int) (sizeOfFile / numOfStripes) + 1); // is the int big enough to handle this or does it only perform the operation as int
@@ -45,15 +52,16 @@ public class Distributor {
             String computerToReceive = computersForWholes.get(item);
             FileReader.writeStripe(computerToReceive, file, 0, sizeOfFile - 1);
         }
-        for (int currentStipe = 0; currentStipe < numOfStripes; currentStipe++){
-            long startByte = (sizeOfStripe * currentStipe);
+        for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
+            long startByte = (sizeOfStripe * currentStripe);
             long stopByte = (startByte + (sizeOfStripe - 1));
             for (int item = 0; item < numOfStripedCopies; item++){
-                String computerToReceive = computersForStripes.get((currentStipe * numOfStripedCopies) + item);
+                String computerToReceive = computersForStripes.get((currentStripe * numOfStripedCopies) + item);
                 FileReader.writeStripe(computerToReceive, file, startByte, stopByte);
             }
-
         }
+
+        Map<String, String> usedComputers = new HashMap<>();
     }
 }
 
