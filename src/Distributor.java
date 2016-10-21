@@ -23,7 +23,7 @@ public class Distributor {
         return sortedMap;
     }
 
-    public void distributor(Map compStorageMap, File file){
+    public void distributor(Map compStorageMap, String filePath){
 
         int numOfComputersUsed = compStorageMap.size();
 
@@ -43,25 +43,28 @@ public class Distributor {
             computersForStripes.add(String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]));
         }
 
-        FileReader reader = new FileReader();
+        try {
+            FileReader reader = new FileReader(filePath);
+            long sizeOfFile = reader.getSize();
+            long sizeOfStripe = ((int) (sizeOfFile / numOfStripes) + 1); // is the int big enough to handle this or does it only perform the operation as int
 
-        long sizeOfFile = FileReader.getSize();
-        long sizeOfStripe = ((int) (sizeOfFile / numOfStripes) + 1); // is the int big enough to handle this or does it only perform the operation as int
-
-        for (int item = 0; item < computersForWholes.size(); item++){
-            String computerToReceive = computersForWholes.get(item);
-            FileReader.writeStripe(computerToReceive, file, 0, sizeOfFile - 1);
-        }
-        for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
-            long startByte = (sizeOfStripe * currentStripe);
-            long stopByte = (startByte + (sizeOfStripe - 1));
-            for (int item = 0; item < numOfStripedCopies; item++){
-                String computerToReceive = computersForStripes.get((currentStripe * numOfStripedCopies) + item);
-                FileReader.writeStripe(computerToReceive, file, startByte, stopByte);
+            for (int item = 0; item < computersForWholes.size(); item++){
+                String computerToReceive = computersForWholes.get(item);
+                FileReader.writeStripe(computerToReceive, filePath, 0, sizeOfFile - 1);
+            }
+            for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
+                long startByte = (sizeOfStripe * currentStripe);
+                long stopByte = (startByte + (sizeOfStripe - 1));
+                for (int item = 0; item < numOfStripedCopies; item++){
+                    String computerToReceive = computersForStripes.get((currentStripe * numOfStripedCopies) + item);
+                    FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);
+                }
             }
         }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
-        Map<String, String> usedComputers = new HashMap<>();
     }
 }
 
