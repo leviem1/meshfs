@@ -7,7 +7,7 @@ import java.io.FileReader;
  */
 public class JSONReader {
 
-    public static JSONObject getJSONArray(String filePath) {
+    public static JSONObject getJSONObject(String filePath) {
         JSONParser reader = new JSONParser();
         JSONObject jsonObject = null;
         try {

@@ -1,8 +1,8 @@
 /**
  * Created by Levi Muniz on 10/3/16.
  */
-import java.util.HashMap;
-import java.util.Map;
+import org.json.simple.*;
+import java.util.*;
 
 
 public class MeshFS {
@@ -13,16 +13,14 @@ public class MeshFS {
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
 
         Reporting reporter = new Reporting();
-        Map<String,Long> hostStorage = new HashMap<>();
+        Map<String, Long> hostStorage = new HashMap<>();
 
-        hostStorage.put(reporter.getIpAddress(),reporter.getSystemStorage());
+        hostStorage.put(reporter.getIpAddress(), reporter.getSystemStorage());
         WelcomeWindow.run();
 
-        System.out.println(reporter.getUptime());
-        System.out.println(reporter.getSystemOS());
+        JSONObject obj = JSONReader.getJSONObject("/Users/muniz/Desktop/test.json");
 
-        //ClientDownloader demo = new ClientDownloader();
-        //demo.downloadData("Marks-Mac-mini.local", 13267, "/Users/markhedrick/Desktop/test.rdp");
-        System.out.println(reporter.getMacAddress());
+        System.out.println(obj.get("root"));
+        //System.out.println(array.size());
     }
 }

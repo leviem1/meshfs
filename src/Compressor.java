@@ -8,14 +8,14 @@ import java.util.zip.GZIPOutputStream;
 
 public class Compressor {
 
-    public static byte[] zip(final String str) {
-        if ((str == null) || (str.length() == 0)) {
-            throw new IllegalArgumentException("Cannot zip null or empty string");
+    public static byte[] zip(final byte[] data) {
+        if ((data == null) || (data.length == 0)) {
+            throw new IllegalArgumentException("Cannot zip null or empty byte array");
         }
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream)) {
-                gzipOutputStream.write(str.getBytes(StandardCharsets.UTF_8));
+                gzipOutputStream.write(data);
             }
             return byteArrayOutputStream.toByteArray();
         } catch(IOException e) {
