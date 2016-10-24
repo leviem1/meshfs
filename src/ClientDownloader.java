@@ -1,9 +1,8 @@
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.Socket;
-
+/**
+ * Created by Mark Hedrick on 10/19/16.
+ */
 public class ClientDownloader {
 
     public void downloadData(String hostName, int portNumber, String outputPath, int fileSize) throws IOException {
