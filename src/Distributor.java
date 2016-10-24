@@ -43,23 +43,31 @@ public class Distributor {
             computersForStripes.add(String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]));
         }
 
+        List<List> stripes = new ArrayList<>();
+
         try {
             FileReader reader = new FileReader(filePath);
+            MeshFS write = new MeshFS();
             long sizeOfFile = reader.getSize();
             long sizeOfStripe = ((int) (sizeOfFile / numOfStripes) + 1); // is the int big enough to handle this or does it only perform the operation as int
 
             for (int item = 0; item < computersForWholes.size(); item++){
                 String computerToReceive = computersForWholes.get(item);
-                FileReader.writeStripe(computerToReceive, filePath, 0, sizeOfFile - 1);
+                //FileReader.writeStripe(computerToReceive, filePath, 0, sizeOfFile - 1);
             }
             for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
                 long startByte = (sizeOfStripe * currentStripe);
                 long stopByte = (startByte + (sizeOfStripe - 1));
+                List<String> nextStripe = new ArrayList<>();
                 for (int item = 0; item < numOfStripedCopies; item++){
                     String computerToReceive = computersForStripes.get((currentStripe * numOfStripedCopies) + item);
-                    FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);
+                    //FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);e
+                    nextStripe.add(computerToReceive);
                 }
+                stripes.add(nextStripe);
             }
+            //write.addFile(computersForWholes,stripes);
+
         }
         catch (Exception e){
             e.printStackTrace();
