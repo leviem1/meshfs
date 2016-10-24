@@ -47,7 +47,7 @@ public class Distributor {
 
         try {
             FileReader reader = new FileReader(filePath);
-            MeshFS write = new MeshFS();
+            //JSONPreWriter write = new JSONPreWriter();
             long sizeOfFile = reader.getSize();
             long sizeOfStripe = ((int) (sizeOfFile / numOfStripes) + 1); // is the int big enough to handle this or does it only perform the operation as int
 
