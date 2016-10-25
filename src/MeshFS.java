@@ -19,7 +19,7 @@ public class MeshFS {
 
         hostStorage.put(reporter.getIpAddress(), reporter.getSystemStorage());
         WelcomeWindow.run();
-
+        /*
         //JSONObject obj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");
         JSONObject objParent = new JSONObject();
         JSONObject objChild1 = new JSONObject();
@@ -56,6 +56,7 @@ public class MeshFS {
         }catch(IOException e){
             e.printStackTrace();
         }
+        */
 
         //System.out.println(obj.get("root"));
         //System.out.println(array.size());

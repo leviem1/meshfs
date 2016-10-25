@@ -44,7 +44,7 @@ public class Distributor {
         }
 
         List<List> stripes = new ArrayList<>();
-
+        stripes.add(computersForWholes);
         try {
             FileReader reader = new FileReader(filePath);
             //JSONPreWriter write = new JSONPreWriter();
@@ -66,7 +66,8 @@ public class Distributor {
                 }
                 stripes.add(nextStripe);
             }
-            //write.addFile(computersForWholes,stripes);
+            String fileName = filePath.substring(filePath.lastIndexOf("/")+1);
+            JSONPreWriter.addToIndex(fileName, stripes);
 
         }
         catch (Exception e){
