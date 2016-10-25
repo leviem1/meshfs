@@ -47,8 +47,8 @@ public class Distributor {
         stripes.add(computersForWholes);
         try {
             FileReader reader = new FileReader(filePath);
-            //JSONPreWriter write = new JSONPreWriter();
             long sizeOfFile = reader.getSize();
+            //long sizeOfFile = 50000000L;
             long sizeOfStripe = ((int) (sizeOfFile / numOfStripes) + 1); // is the int big enough to handle this or does it only perform the operation as int
 
             for (int item = 0; item < computersForWholes.size(); item++){
@@ -61,7 +61,7 @@ public class Distributor {
                 List<String> nextStripe = new ArrayList<>();
                 for (int item = 0; item < numOfStripedCopies; item++){
                     String computerToReceive = computersForStripes.get((currentStripe * numOfStripedCopies) + item);
-                    //FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);e
+                    //FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);
                     nextStripe.add(computerToReceive);
                 }
                 stripes.add(nextStripe);

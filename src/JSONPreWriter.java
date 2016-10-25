@@ -9,17 +9,11 @@ import java.util.List;
  */
 public class JSONPreWriter {
     public static void addToIndex(String fileName, List<List> stripes) {
-        //JSONObject obj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");
+        System.out.println(stripes)
         JSONObject objParent = new JSONObject();
         JSONObject objChild1 = new JSONObject();
         JSONObject objChild2 = new JSONObject();
         JSONObject objChild3 = new JSONObject();
-        JSONArray array1Child3 = new JSONArray();
-        JSONArray array2Child3 = new JSONArray();
-        JSONArray array3Child3 = new JSONArray();
-        JSONArray array4Child3 = new JSONArray();
-
-
         JSONArray ipArray = new JSONArray();
 
         for (int stripe = 0; stripe < stripes.size(); stripe++){
@@ -27,12 +21,13 @@ public class JSONPreWriter {
                 ipArray.add(stripes.get(stripe).get(copy));
             }
             if (stripe == 0){
-                objChild3.put("whole", ipArray);
+                objChild3.put("whole", ipArray.clone());
             }
             else{
-                objChild3.put("stripe" + String.valueOf(stripe), ipArray);
+                objChild3.put("stripe" + String.valueOf(stripe), ipArray.clone());
             }
             ipArray.clear();
+
         }
 
         objChild3.put("group", "all");
@@ -41,9 +36,10 @@ public class JSONPreWriter {
         objChild2.put("type", "directory");
         objChild1.put("videos", objChild2);
         objParent.put("root", objChild1);
-
+        System.out.println(objChild3);
+        String shortName = fileName.substring(0, fileName.lastIndexOf("."));
         try{
-            JSONWriter.writeJSONObject("/Users/aronduran/Desktop/" + fileName, objParent);
+            JSONWriter.writeJSONObject("/Users/aronduran/Desktop/" + shortName + ".json", objParent);
         }catch(IOException e){
             e.printStackTrace();
         }
