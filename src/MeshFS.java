@@ -19,8 +19,6 @@ public class MeshFS {
             }
         }
 
-        
-
         System.out.println(isMaster);
 
         //Welcome.run();
@@ -30,9 +28,32 @@ public class MeshFS {
         Reporting reporter = new Reporting();
         Map<String, Long> hostStorage = new HashMap<>();
 
+        /*
+        hostStorage.put("10.15.20.1", 800000000000L);
+        hostStorage.put("10.15.20.2", 700000000000L);
+        hostStorage.put("10.15.20.3", 600000000000L);
+        hostStorage.put("10.15.20.4", 900000000000L);
+        hostStorage.put("10.15.20.5", 500000000000L);
+        hostStorage.put("10.15.20.6", 10000000000L);
+        hostStorage.put("10.15.20.7", 100000000000L);
+        hostStorage.put("10.15.20.8", 1000000000000L);
+        hostStorage.put("10.15.20.9", 750000000000L);
+        hostStorage.put("10.15.20.10", 650000000000L);
+        hostStorage.put("10.15.20.11", 980000000000L);
+        hostStorage.put("10.15.20.12", 540000000000L);
+        hostStorage.put("10.15.20.13", 430000000000L);
+        hostStorage.put("10.15.20.14", 880000000000L);
+        hostStorage.put("10.15.20.15", 110000000000L);
+        hostStorage.put("10.15.20.16", 120000000000L);
+        */
+
+
         hostStorage.put(reporter.getIpAddress(), reporter.getSystemStorage());
+        Distributor test = new Distributor(6,2,2);
+        test.distributor(hostStorage, "/Users/aronduran/Desktop/pigskin.mp4");
         WelcomeWindow.run();
 
+        /*
         //JSONObject obj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");
         JSONObject objParent = new JSONObject();
         JSONObject objChild1 = new JSONObject();
@@ -70,6 +91,8 @@ public class MeshFS {
             e.printStackTrace();
         }
         */
+
+
         //System.out.println(obj.get("root"));
         //System.out.println(array.size());
     }
