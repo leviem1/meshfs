@@ -10,6 +10,19 @@ import java.util.*;
 public class MeshFS {
 
     public static void main(String[] args) {
+
+        boolean isMaster = false;
+
+        if (args.length > 0) {
+            if (args[0].equals("--master")) {
+                isMaster = true;
+            }
+        }
+
+        
+
+        System.out.println(isMaster);
+
         //Welcome.run();
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
@@ -50,13 +63,13 @@ public class MeshFS {
         objChild2.put("type", "directory");
         objChild1.put("videos", objChild2);
         objParent.put("root", objChild1);
-
+        /*
         try{
             JSONWriter.writeJSONObject("/Users/markhedrick/Desktop/test12345.json", objParent);
         }catch(IOException e){
             e.printStackTrace();
         }
-
+        */
         //System.out.println(obj.get("root"));
         //System.out.println(array.size());
     }
