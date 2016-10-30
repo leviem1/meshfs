@@ -7,14 +7,15 @@ import java.net.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 public class Reporting {
 
-    public String getSystemOS() {
+    private static String getSystemOS() {
         return System.getProperty("os.name");
     }
 
-    public long getSystemStorage() {
+    private static long getSystemStorage() {
         String os = System.getProperty("os.name");
         File file;
         if (os.startsWith("Windows")) {
@@ -24,7 +25,8 @@ public class Reporting {
         }
         return file.getUsableSpace();
     }
-    public String getIpAddress() {
+
+    private static String getIpAddress() {
         String ip = null;
         try {
             ip = Inet4Address.getLocalHost().getHostAddress();
@@ -33,22 +35,28 @@ public class Reporting {
         }
         return ip;
     }
-    public long getUptime() {
+
+    private static long getUptime() {
         return ManagementFactory.getRuntimeMXBean().getUptime();
     }
-    public String getJavaVersion(){
+
+    private static String getJavaVersion(){
         return System.getProperty("java.version");
     }
-    public String getUserName(){
+
+    private static String getUserName(){
         return System.getProperty("user.name");
     }
-    public String getSystemDate(){
+
+    private static String getSystemDate(){
         return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
-    public String getSystemTime(){
+
+    private static String getSystemTime(){
         return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
-    public String getMacAddress(){
+
+    private static String getMacAddress(){
         String macAddress = "FF-FF-FF-FF-FF-FF-FF-FF";
         try {
             Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
@@ -67,5 +75,22 @@ public class Reporting {
             e.printStackTrace();
         }
         return macAddress;
+    }
+
+    public static String generate() {
+        String report = "MAC:" + getMacAddress() + "\nIP:" + getIpAddress() + "\nOS:" + getSystemOS() + "\nJavaVersion:" + getJavaVersion() + "\nFreeSpace:" + getSystemStorage() + "\nUptime:" + getUptime() + "\nUsername:" + getUserName();
+        return report;
+    }
+
+    public static HashMap<String, String> splitter(String report) {
+        HashMap<String, String> map = new HashMap<>();
+        String[] reportLines = report.split("\n");
+
+        for (String line : reportLines){
+            String[] lineSplit = line.split(":");
+            map.put(lineSplit[0], lineSplit[1]);
+        }
+
+        return map;
     }
 }

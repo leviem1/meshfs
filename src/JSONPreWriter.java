@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by aronduran on 10/25/16.
+ * Created by Aaron Duran on 10/25/16.
  */
 public class JSONPreWriter {
     public static void addToIndex(String fileName, List<List> stripes) {
-        System.out.println(stripes)
+        System.out.println(stripes);
         JSONObject objParent = new JSONObject();
         JSONObject objChild1 = new JSONObject();
         JSONObject objChild2 = new JSONObject();
