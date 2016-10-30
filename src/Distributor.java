@@ -25,28 +25,21 @@ public class Distributor {
         return sortedMap;
     }
 
-    public static int isThereStorage(Map<String, Long> allCompStorage, long neededSize, long usedStorage){
-        int compNum = (0-1);
-        for (int comp = 0; ((comp < allCompStorage.size()) || (compNum != (0-1))); comp++){
-            if (allCompStorage.get(String.valueOf(allCompStorage.keySet().toArray()[comp])) >= (neededSize + usedStorage)){
-                compNum = comp;
-                break;
-
-            }
-        }
-        return (compNum);
-    }
-
     public void distributor(Map compStorageMap, String filePath){
 
          try {
-             FileReader reader = new FileReader(filePath);
-             long sizeOfFile = reader.getSize();
-             //long sizeOfFile = 1000000000L;
-             reader.closeFile();
+             //FileReader reader = new FileReader(filePath);
+             //long sizeOfFile = reader.getSize();
+             long sizeOfFile = 5000000000L;
+             //reader.closeFile();
              long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
 
              Map<String, Long> sortedCompStorageMap = sortMapByValues(compStorageMap);
+             for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){
+                 String ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
+                 sortedCompStorageMap.replace(ipAddress, sortedCompStorageMap.get(String.valueOf(ipAddress)) - minFreeSpace);
+             }
+
              int numOfComputersUsed = sortedCompStorageMap.size();
 
              if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
@@ -59,7 +52,7 @@ public class Distributor {
              List<String> computersForWholes = new ArrayList<>();
              for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
                  String ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
-                 if ((sortedCompStorageMap.get(ipAddress) - minFreeSpace) >= sizeOfFile) {
+                 if (sortedCompStorageMap.get(ipAddress) >= sizeOfFile) {
                      computersForWholes.add(ipAddress);
                  }
                  else {
@@ -70,16 +63,16 @@ public class Distributor {
 
              int lastResortComp = 0;
              int lapNum = 0;
-
+             boolean noStorage = false;
              List<String> computersForStripes = new ArrayList<>();
              for (int computerNumS = stopOfWholes+1; computerNumS < ((numOfStripes * numOfStripedCopies) + stopOfWholes+1); computerNumS++) {
                  String ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
-                 if (((sortedCompStorageMap.get(ipAddress) - minFreeSpace) - (sizeOfStripe * lapNum)) >= sizeOfStripe) {
+                 if ((sortedCompStorageMap.get(ipAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe) {
                      computersForStripes.add(ipAddress);
                  }
                  else if (computerNumS != 0){
                      ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                     long availableStorage = ((sortedCompStorageMap.get(ipAddress) - minFreeSpace) - (sizeOfStripe * lapNum));
+                     long availableStorage = (sortedCompStorageMap.get(ipAddress) - (sizeOfStripe * lapNum));
                      if (lastResortComp <= stopOfWholes){
                          availableStorage -= sizeOfFile;
                      }
@@ -90,26 +83,28 @@ public class Distributor {
                          computersForStripes.add(ipAddress);
                      }
                      else {
-
                          lapNum++;
                          lastResortComp = 0;
 
                          while (lastResortComp < sortedCompStorageMap.size()){
                              ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                             availableStorage = ((sortedCompStorageMap.get(ipAddress) - minFreeSpace) - (sizeOfStripe * lapNum));
+                             availableStorage = (sortedCompStorageMap.get(ipAddress) - (sizeOfStripe * lapNum));
                              if (lastResortComp <= stopOfWholes){
                                  availableStorage -= sizeOfFile;
                              }
 
-                             lastResortComp++;
-                             System.out.println(lastResortComp);
+
 
                              if (availableStorage >= sizeOfStripe) {
                                  computersForStripes.add(ipAddress);
-                                 System.out.println(computersForStripes);
                                  break;
                              }
 
+                             lastResortComp++;
+
+                         }
+                         if (lastResortComp >= sortedCompStorageMap.size()){
+                             break;
                          }
                      }
                  }
@@ -119,40 +114,84 @@ public class Distributor {
                  }
              }
 
-
-             List<List> stripes = new ArrayList<>();
-             stripes.add(computersForWholes);
-
-             for (int copy = 0; copy < numOfStripes; copy++) {
-                 stripes.add(new ArrayList<String>());
+             List<List<String>> stripes = new ArrayList<>();
+             if (!noStorage){
+                 stripes.add(computersForWholes);
              }
 
-             for (int item = 0; item < computersForWholes.size(); item++) {
+             boolean allowStripes = false;
+             for (String computer : computersForStripes){
+                if (computer !=  computersForStripes.get(0)){
+                    allowStripes = true;
+                    break;
+                }
+             }
 
-                 String computerToReceive = computersForWholes.get(item);
+             for (String item : computersForWholes) {
+
+                 String computerToReceive = item;
                  //FileReader.writeStripe(computerToReceive, filePath, 0, sizeOfFile - 1);
              }
 
-             for (int copy = 0; copy < numOfStripedCopies; copy++) {
-                 for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
-                     long startByte = (sizeOfStripe * currentStripe);
-                     long stopByte = (startByte + (sizeOfStripe - 1));
-                     try{
-                         String computerToReceive = computersForStripes.get((copy * numOfStripes) + currentStripe);
-                         //FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);
-                         stripes.get(currentStripe + 1).add(computerToReceive);
-                     }
-                     catch (Exception e) {
-                         e.printStackTrace();
-                     }
+             if (allowStripes){
+                 for (int copy = 0; copy < numOfStripes; copy++) {
+                     stripes.add(new ArrayList<>());
                  }
+                 for (int copy = 0; copy < numOfStripedCopies; copy++) {
+                     for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
+                         try{
+                             int test = 0;
 
+                             while (true) {
+                                 test++;
+                                 if (test >= (computersForStripes.size() - (copy * numOfStripes) + currentStripe)){
+                                     break;
+                                 }
+
+
+                                 String computerToReceive = computersForStripes.get((copy * numOfStripes) + currentStripe);
+
+                                 if (stripes.get(currentStripe + 1).size() > 0){
+                                     boolean isNotBroken = true;
+                                     for (String tempIp : stripes.get(currentStripe + 1)) {
+                                         if (tempIp.equals(computerToReceive)) {
+                                             computersForStripes.add(tempIp);
+                                             computersForStripes.remove((copy * numOfStripes) + currentStripe);
+                                             isNotBroken = false;
+                                             break;
+                                         }
+                                     }
+                                     if (isNotBroken){
+                                         stripes.get(currentStripe + 1).add(computerToReceive);
+                                         //long startByte = (sizeOfStripe * currentStripe);
+                                         //long stopByte = (startByte + (sizeOfStripe - 1));
+                                         //FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);
+                                         break;
+                                     }
+                                 }
+                                 else {
+                                     stripes.get(currentStripe + 1).add(computerToReceive);
+                                     //long startByte = (sizeOfStripe * currentStripe);
+                                     //long stopByte = (startByte + (sizeOfStripe - 1));
+                                     //FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);
+                                     break;
+                                 }
+                             }
+                         }
+                         catch (Exception e) {
+                             System.out.println("You are out of Storage!");
+                         }
+                     }
+
+                 }
              }
+
+
              String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
              JSONPreWriter.addToIndex(fileName, stripes);
          }
          catch (Exception e) {
-                 e.printStackTrace();
+             e.printStackTrace();
          }
 
     }
