@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -45,7 +46,7 @@ public class ClientModeConfiguration extends JFrame {
         label8 = new JLabel();
         bindAnonymouslyCheckBox = new JCheckBox();
         serverAddress = new JTextField();
-        serverPort = new JTextField();
+        serverPort = new JFormattedTextField();
         username = new JTextField();
         password = new JPasswordField();
         buttonBar = new JPanel();
@@ -182,7 +183,7 @@ public class ClientModeConfiguration extends JFrame {
     private JLabel label8;
     private JCheckBox bindAnonymouslyCheckBox;
     private JTextField serverAddress;
-    private JTextField serverPort;
+    private JFormattedTextField serverPort;
     private JTextField username;
     private JPasswordField password;
     private JPanel buttonBar;

@@ -40,7 +40,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "serverAddress"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 						name: "serverPort"
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {

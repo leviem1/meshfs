@@ -25,7 +25,7 @@ new FormModel {
 						name: "label2"
 						"text": "Server Port:"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 						name: "serverPort"
 						"text": "5704"
 					} )
@@ -37,7 +37,7 @@ new FormModel {
 						name: "label4"
 						"text": "Stripes:"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 						name: "numStripes"
 						"text": "3"
 					} )
@@ -45,7 +45,7 @@ new FormModel {
 						name: "label5"
 						"text": "Striped Copies:"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 						name: "numStripeCopies"
 						"text": "2"
 					} )
@@ -53,7 +53,7 @@ new FormModel {
 						name: "label6"
 						"text": "Whole Copies:"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 						name: "numWhole"
 						"text": "2"
 					} )
@@ -61,7 +61,7 @@ new FormModel {
 						name: "label7"
 						"text": "Minimum Free Space:"
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 						name: "minSpace"
 						"text": "0"
 					} )
