@@ -35,8 +35,8 @@ public class CliParser {
     }
 
     private void help() {
-        HelpFormatter formater = new HelpFormatter();
-        formater.printHelp("MeshFS [options]", opt);
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("MeshFS [options]", opt);
         System.exit(0);
     }
 }
