@@ -6,6 +6,7 @@ import java.lang.management.ManagementFactory;
 import java.net.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 
@@ -77,8 +78,12 @@ public class Reporting {
         return macAddress;
     }
 
-    public static String generate() {
-        String report = "MAC:" + getMacAddress() + "\nIP:" + getIpAddress() + "\nOS:" + getSystemOS() + "\nJavaVersion:" + getJavaVersion() + "\nFreeSpace:" + getSystemStorage() + "\nUptime:" + getUptime() + "\nUsername:" + getUserName();
+    private static String getRepositoryContents(File repository) {
+        return Arrays.toString(repository.listFiles());
+    }
+
+    public static String generate(File repository) {
+        String report = "MAC:" + getMacAddress() + "\nIP:" + getIpAddress() + "\nOS:" + getSystemOS() + "\nJavaVersion:" + getJavaVersion() + "\nFreeSpace:" + getSystemStorage() + "\nUptime:" + getUptime() + "\nUsername:" + getUserName() + "\nRepoContents:" + getRepositoryContents(repository);
         return report;
     }
 
