@@ -1,0 +1,81 @@
+JFDML JFormDesigner: "5.2.4.1.329" Java: "1.8.0_112-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"title": "MeshFS - Client Configuration"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l {seq l {comp label4:::p::p, space u:::p, comp serverAddress::::247:x}, seq l {comp label5:::p::p, space u:::p, comp serverPort:::p:50:p}}, space :p:12:p}, seq {comp label8:::p::p, space :::p, comp bindAnonymouslyCheckBox:::p::p, space :0:221:x}, seq l {par t:::p {seq {comp label7:::p::p, space u:::p, comp password:::::x}, seq t {comp label6:::p::p, space u:::p, comp username:::p:135:p}}, space ::155:x}}}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp label4::b:p::p, comp serverAddress::b:p::p}, space :p:14:p, par b {comp label5::b:p::p, comp serverPort::b:p::p}, space s:::p, par l {comp label8:::p::p, comp bindAnonymouslyCheckBox:::p::p}, space s:::p, par b {comp label6::b:p::p, comp username::b:p::p}, space s:::p, par b {comp label7::b:p::p, comp password::b:p::p}, space ::18:x}}"
+				} ) {
+					name: "contentPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label4"
+						"text": "Server Address:"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label5"
+						"text": "Server Port:"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label6"
+						"text": "Username:"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label7"
+						"text": "Password:"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label8"
+						"text": "Bind Anonymously:"
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "bindAnonymouslyCheckBox"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "serverAddress"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "serverPort"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "username"
+					} )
+					add( new FormComponent( "javax.swing.JPasswordField" ) {
+						name: "password"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0:1.0, 80"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+				} ) {
+					name: "buttonBar"
+					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "okButton"
+						"text": "OK"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 0
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

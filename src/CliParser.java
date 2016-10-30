@@ -1,5 +1,4 @@
 import org.apache.commons.cli.*;
-
 import java.util.Properties;
 
 /**

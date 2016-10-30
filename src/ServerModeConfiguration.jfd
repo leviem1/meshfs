@@ -1,0 +1,112 @@
+JFDML JFormDesigner: "5.2.4.1.329" Java: "1.8.0_112-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"title": "MeshFS - Server Configuration"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp label8:::p::p, space :::x, comp repoPathTextField:::p:329:p, space :p:12:p, comp browseBtn:::p::p}, seq {par l:::p {seq l {comp label1:::p::p, space u:::p, comp serverAddress:::p:155:p}, comp label3::l:p::p, seq l {comp label2:::p::p, space :p:12:p, par l {seq {comp label4:::p::p, space u:::p, comp numStripes:::::x}, seq {comp label5:::p::p, space u:::p, comp numStripeCopies:::::x}, seq {comp serverPort:::p:100:p, space :0:0:x}, seq {comp label6:::p::p, space u:::p, comp numWhole:::::x}}}, seq l {comp label7:::p::p, space u:::p, comp minSpace:::::x}}, space s:::p, comp freeSpace:::::x}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp label1::b:p::p, comp serverAddress::b:p::p}, space s:::p, par b {comp serverPort::b:p::p, comp label2::b:p::p}, space s:::p, comp label3:::p::p, space s:::p, par b {comp label4::b:p::p, comp numStripes::b:p::p}, space u:::p, par b {comp numStripeCopies::b:p::p, comp label5::b:p::p}, space u:::p, par b {comp numWhole::b:p::p, comp label6::b:p::p}, space s:::p, par b {comp minSpace::b:p::p, comp label7::b:p::p, comp freeSpace::b:p::p}, space s:::p, par b {comp label8::b:p::p, comp browseBtn::b:p::p, comp repoPathTextField::b:p::p}, space ::26:x}}"
+				} ) {
+					name: "contentPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "Server IP Address:"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "serverAddress"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "Server Port:"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "serverPort"
+						"text": "5704"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label3"
+						"text": "Number of:"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label4"
+						"text": "Stripes:"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "numStripes"
+						"text": "3"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label5"
+						"text": "Striped Copies:"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "numStripeCopies"
+						"text": "2"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label6"
+						"text": "Whole Copies:"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "numWhole"
+						"text": "2"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label7"
+						"text": "Minimum Free Space:"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "minSpace"
+						"text": "0"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label8"
+						"text": "Repository:"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "repoPathTextField"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "browseBtn"
+						"text": "Browse"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "freeSpace"
+						"text": "(free space)"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0:1.0, 80"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+				} ) {
+					name: "buttonBar"
+					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "okButton"
+						"text": "OK"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 0
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 530, 430 )
+		} )
+	}
+}

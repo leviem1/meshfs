@@ -41,7 +41,6 @@ public class MeshFS {
             repo.mkdirs();
         }
 
-        //Welcome.run();
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
 
@@ -69,7 +68,7 @@ public class MeshFS {
 
         //Distributor test = new Distributor(6,2,2);
         //test.distributor(hostStorage, "/Users/aronduran/Desktop/pigskin.mp4");
-        //WelcomeWindow.run();
+        GreetingsWindow.run();
 
         /*
         //JSONObject obj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");

@@ -12,11 +12,11 @@ import java.util.HashMap;
 
 public class Reporting {
 
-    private static String getSystemOS() {
+    public static String getSystemOS() {
         return System.getProperty("os.name");
     }
 
-    private static long getSystemStorage() {
+    public static long getSystemStorage() {
         String os = System.getProperty("os.name");
         File file;
         if (os.startsWith("Windows")) {
@@ -27,7 +27,7 @@ public class Reporting {
         return file.getUsableSpace();
     }
 
-    private static String getIpAddress() {
+    public static String getIpAddress() {
         String ip = null;
         try {
             ip = Inet4Address.getLocalHost().getHostAddress();
@@ -37,27 +37,27 @@ public class Reporting {
         return ip;
     }
 
-    private static long getUptime() {
+    public static long getUptime() {
         return ManagementFactory.getRuntimeMXBean().getUptime();
     }
 
-    private static String getJavaVersion(){
+    public static String getJavaVersion(){
         return System.getProperty("java.version");
     }
 
-    private static String getUserName(){
+    public static String getUserName(){
         return System.getProperty("user.name");
     }
 
-    private static String getSystemDate(){
+    public static String getSystemDate(){
         return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
-    private static String getSystemTime(){
+    public static String getSystemTime(){
         return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
     }
 
-    private static String getMacAddress(){
+    public static String getMacAddress(){
         String macAddress = "FF-FF-FF-FF-FF-FF-FF-FF";
         try {
             Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
@@ -78,7 +78,7 @@ public class Reporting {
         return macAddress;
     }
 
-    private static String getRepositoryContents(File repository) {
+    public static String getRepositoryContents(File repository) {
         return Arrays.toString(repository.listFiles());
     }
 
