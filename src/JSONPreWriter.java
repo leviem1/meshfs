@@ -8,8 +8,7 @@ import java.util.List;
  * Created by Aaron Duran on 10/25/16.
  */
 public class JSONPreWriter {
-    public static void addToIndex(String fileName, List<List> stripes) {
-        System.out.println(stripes);
+    public static void addToIndex(String fileName, List<List<String>> stripes) {
         JSONObject objParent = new JSONObject();
         JSONObject objChild1 = new JSONObject();
         JSONObject objChild2 = new JSONObject();

@@ -3,6 +3,7 @@
  */
 import org.json.simple.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -11,21 +12,42 @@ public class MeshFS {
 
     public static void main(String[] args) {
 
-        boolean isMaster = false;
+        Properties properties;
+        Properties defaultProperties = new Properties();
+        defaultProperties.setProperty("numStripes","3");
+        defaultProperties.setProperty("numStripeCopy", "2");
+        defaultProperties.setProperty("numWholeCopy", "2");
+        defaultProperties.setProperty("minSpace", "0");
+        defaultProperties.setProperty("masterIP","127.0.0.1");
+        defaultProperties.setProperty("repository", ("repo" + File.separator));
 
-        if (args.length > 0) {
-            if (args[0].equals("--master")) {
-                isMaster = true;
-            }
+        try {
+            properties = ConfigParser.reader();
+        } catch (IOException io) {
+            properties = defaultProperties;
+            ConfigParser.write(properties);
         }
 
-        System.out.println(isMaster);
+        File repo = new File(properties.getProperty("repository"));
+
+        if (!repo.exists()) {
+            repo.mkdirs();
+        }
+
+        if (args.length > 0) {
+            for (int i = 0; i <= args.length; i++) {
+                if (args[i].equals("--master") || args[i].equals("-m")) {
+                    properties.setProperty("masterIP", args[i+1]);
+                } else if (args[i].equals("--regenConfig") || args[i].equals("-r")){
+                    ConfigParser.write(defaultProperties);
+                }
+            }
+        }
 
         //Welcome.run();
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
 
-        Reporting reporter = new Reporting();
         Map<String, Long> hostStorage = new HashMap<>();
 
         /*
@@ -48,10 +70,9 @@ public class MeshFS {
         */
 
 
-        hostStorage.put(reporter.getIpAddress(), reporter.getSystemStorage());
-        Distributor test = new Distributor(6,2,2);
-        test.distributor(hostStorage, "/Users/aronduran/Desktop/pigskin.mp4");
-        WelcomeWindow.run();
+        //Distributor test = new Distributor(6,2,2);
+        //test.distributor(hostStorage, "/Users/aronduran/Desktop/pigskin.mp4");
+        //WelcomeWindow.run();
 
         /*
         //JSONObject obj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");
