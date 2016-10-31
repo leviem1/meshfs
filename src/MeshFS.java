@@ -18,33 +18,24 @@ public class MeshFS {
         defaultProperties.setProperty("port","5704");
         defaultProperties.setProperty("repository", ("repo" + File.separator));
         ConfigParser.write(defaultProperties);
-
         return defaultProperties;
     }
 
     public static void main(String[] args) {
-
         Properties properties;
-
         try {
             properties = ConfigParser.reader("config.properties");
         } catch (IOException io) {
             properties = writeDefaultProperties();
         }
-
         new CliParser(args, properties);
-
         File repo = new File(properties.getProperty("repository"));
-
         if (!repo.exists()) {
             repo.mkdirs();
         }
-
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
-
         Map<String, Long> hostStorage = new HashMap<>();
-
         /*
         hostStorage.put("10.15.20.1", 800000000000L);
         hostStorage.put("10.15.20.2", 700000000000L);

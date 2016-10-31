@@ -10,8 +10,8 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp label8:::p::p, space :::x, comp repoPathTextField:::p:329:p, space :p:12:p, comp browseBtn:::p::p}, seq {par l:::p {seq l {comp label1:::p::p, space u:::p, comp serverAddress:::p:155:p}, comp label3::l:p::p, seq l {comp label2:::p::p, space :p:12:p, par l {seq {comp label4:::p::p, space u:::p, comp numStripes:::::x}, seq {comp label5:::p::p, space u:::p, comp numStripeCopies:::::x}, seq {comp serverPort:::p:100:p, space :0:0:x}, seq {comp label6:::p::p, space u:::p, comp numWhole:::::x}}}, seq l {comp label7:::p::p, space u:::p, comp minSpace:::::x}}, space s:::p, comp freeSpace:::::x}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp label1::b:p::p, comp serverAddress::b:p::p}, space s:::p, par b {comp serverPort::b:p::p, comp label2::b:p::p}, space s:::p, comp label3:::p::p, space s:::p, par b {comp label4::b:p::p, comp numStripes::b:p::p}, space u:::p, par b {comp numStripeCopies::b:p::p, comp label5::b:p::p}, space u:::p, par b {comp numWhole::b:p::p, comp label6::b:p::p}, space s:::p, par b {comp minSpace::b:p::p, comp label7::b:p::p, comp freeSpace::b:p::p}, space s:::p, par b {comp label8::b:p::p, comp browseBtn::b:p::p, comp repoPathTextField::b:p::p}, space ::7:x}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp label8:::p::p, space :::x, comp repoPathTextField:::p:329:p, space :p:12:p, comp browseBtn:::p::p}, seq {par l:::p {seq l {comp label1:::p::p, space u:::p, comp serverAddress:::p:155:p}, comp label3::l:p::p, seq l {comp label2:::p::p, space :p:12:p, par l {seq {comp label4:::p::p, space u:::p, comp numStripes:::::x}, seq {comp label5:::p::p, space u:::p, comp numStripeCopies:::::x}, seq {comp serverPort:::p:100:p, space :0:0:x}, seq {comp label6:::p::p, space u:::p, comp numWhole:::::x}}}, seq l {comp label7:::p::p, space u:::p, comp minSpace:::::x}}, space s:::p, par l {comp freeSpace:::::x, seq {comp slider1:::p::p, space :0:0:x}}}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp label1::b:p::p, comp serverAddress::b:p::p}, space s:::p, par b {comp serverPort::b:p::p, comp label2::b:p::p}, space s:::p, comp label3:::p::p, space s:::p, par b {comp label4::b:p::p, comp numStripes::b:p::p}, space u:::p, par b {comp numStripeCopies::b:p::p, comp label5::b:p::p}, space :p:12:p, par t {par b {comp numWhole::b:p::p, comp label6::b:p::p}, comp slider1:::p::p}, space s:::p, par b {comp minSpace::b:p::p, comp label7::b:p::p, comp freeSpace::b:p::p}, space s:::p, par b {comp label8::b:p::p, comp browseBtn::b:p::p, comp repoPathTextField::b:p::p}, space ::5:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -111,6 +111,9 @@ new FormModel {
 						name: "freeSpace"
 						"text": "(free space)"
 						"font": #Font0
+					} )
+					add( new FormComponent( "javax.swing.JSlider" ) {
+						name: "slider1"
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"

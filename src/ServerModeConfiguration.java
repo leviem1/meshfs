@@ -23,6 +23,7 @@ import static java.lang.String.valueOf;
 public class ServerModeConfiguration extends JFrame {
     public ServerModeConfiguration() {
         initComponents();
+        repoPathTextField.setEditable(false);
         serverAddress.setText(Reporting.getIpAddress());
         freeSpace.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
         browseBtn.addActionListener(new ActionListener() {
@@ -76,6 +77,7 @@ public class ServerModeConfiguration extends JFrame {
         repoPathTextField = new JTextField();
         browseBtn = new JButton();
         freeSpace = new JLabel();
+        slider1 = new JSlider();
         buttonBar = new JPanel();
         importConfigBtn = new JButton();
         hSpacer1 = new JPanel(null);
@@ -212,7 +214,11 @@ public class ServerModeConfiguration extends JFrame {
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                             .addComponent(minSpace)))
                                     .addGap(18, 18, 18)
-                                    .addComponent(freeSpace, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addGroup(contentPanelLayout.createParallelGroup()
+                                        .addComponent(freeSpace, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                            .addGap(0, 0, Short.MAX_VALUE)))))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
@@ -236,10 +242,12 @@ public class ServerModeConfiguration extends JFrame {
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(numStripeCopies, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(label5))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(numWhole, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(label6))
+                            .addGap(12, 12, 12)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(numWhole, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label6))
+                                .addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                             .addGap(18, 18, 18)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(minSpace, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -250,7 +258,7 @@ public class ServerModeConfiguration extends JFrame {
                                 .addComponent(label8)
                                 .addComponent(browseBtn)
                                 .addComponent(repoPathTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(7, Short.MAX_VALUE))
+                            .addContainerGap(5, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -308,6 +316,7 @@ public class ServerModeConfiguration extends JFrame {
     private JTextField repoPathTextField;
     private JButton browseBtn;
     private JLabel freeSpace;
+    private JSlider slider1;
     private JPanel buttonBar;
     private JButton importConfigBtn;
     private JPanel hSpacer1;
@@ -338,13 +347,13 @@ public class ServerModeConfiguration extends JFrame {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            serverAddress.setText(properties.getProperty("masterIP"));
+            serverPort.setText(properties.getProperty("port"));
+            numStripes.setText(properties.getProperty("numStripes"));
+            numStripeCopies.setText(properties.getProperty("numStripeCopy"));
+            numWhole.setText(properties.getProperty("numWholeCopy"));
+            minSpace.setText(properties.getProperty("minSpace"));
+            repoPathTextField.setText(properties.getProperty("repository"));
         }
-        serverAddress.setText(properties.getProperty("masterIP"));
-        serverPort.setText(properties.getProperty("port"));
-        numStripes.setText(properties.getProperty("numStripes"));
-        numStripeCopies.setText(properties.getProperty("numStripeCopy"));
-        numWhole.setText(properties.getProperty("numWholeCopy"));
-        minSpace.setText(properties.getProperty("minSpace"));
-        repoPathTextField.setText(properties.getProperty("repository"));
     }
 }
