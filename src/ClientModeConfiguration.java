@@ -17,6 +17,8 @@ import javax.swing.border.*;
 public class ClientModeConfiguration extends JFrame {
     public ClientModeConfiguration() {
         initComponents();
+
+
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOk();
@@ -34,7 +36,13 @@ public class ClientModeConfiguration extends JFrame {
         });
     }
 
+    private void createUIComponents() {
+        // TODO: add custom component creation code here
+    }
+
     private void initComponents() {
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setGroupingUsed(false);
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Mark Hedrick
         dialogPane = new JPanel();
@@ -46,7 +54,7 @@ public class ClientModeConfiguration extends JFrame {
         label8 = new JLabel();
         bindAnonymouslyCheckBox = new JCheckBox();
         serverAddress = new JTextField();
-        serverPort = new JFormattedTextField();
+        serverPort = new JFormattedTextField(numberFormat);
         username = new JTextField();
         password = new JPasswordField();
         buttonBar = new JPanel();
@@ -75,18 +83,35 @@ public class ClientModeConfiguration extends JFrame {
 
                 //---- label4 ----
                 label4.setText("Server Address:");
+                label4.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label5 ----
                 label5.setText("Server Port:");
+                label5.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label6 ----
                 label6.setText("Username:");
+                label6.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label7 ----
                 label7.setText("Password:");
+                label7.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label8 ----
                 label8.setText("Bind Anonymously:");
+                label8.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- serverAddress ----
+                serverAddress.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- serverPort ----
+                serverPort.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- username ----
+                username.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- password ----
+                password.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -146,7 +171,7 @@ public class ClientModeConfiguration extends JFrame {
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(label7)
                                 .addComponent(password, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(18, Short.MAX_VALUE))
+                            .addContainerGap(16, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -160,6 +185,7 @@ public class ClientModeConfiguration extends JFrame {
 
                 //---- okButton ----
                 okButton.setText("OK");
+                okButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));

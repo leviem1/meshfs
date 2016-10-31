@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -60,12 +61,15 @@ public class InitialConfiguration extends JFrame {
 
                 //---- label1 ----
                 label1.setText("Please select the correct mode of operation:");
+                label1.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- serverModeBtn ----
                 serverModeBtn.setText("Server");
+                serverModeBtn.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- clientModeBtn ----
                 clientModeBtn.setText("Client");
+                clientModeBtn.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -73,13 +77,16 @@ public class InitialConfiguration extends JFrame {
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                .addComponent(label1)
+                            .addGroup(contentPanelLayout.createParallelGroup()
                                 .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(label1)
+                                    .addContainerGap(27, Short.MAX_VALUE))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addGap(0, 64, Short.MAX_VALUE)
                                     .addComponent(serverModeBtn)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(clientModeBtn)))
-                            .addContainerGap(27, Short.MAX_VALUE))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(clientModeBtn)
+                                    .addGap(90, 90, 90))))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -87,9 +94,9 @@ public class InitialConfiguration extends JFrame {
                             .addContainerGap()
                             .addComponent(label1)
                             .addGap(18, 18, 18)
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(serverModeBtn)
-                                .addComponent(clientModeBtn))
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(clientModeBtn)
+                                .addComponent(serverModeBtn))
                             .addContainerGap(18, Short.MAX_VALUE))
                 );
             }
@@ -104,6 +111,7 @@ public class InitialConfiguration extends JFrame {
 
                 //---- okButton ----
                 okButton.setText("OK");
+                okButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -135,10 +143,15 @@ public class InitialConfiguration extends JFrame {
     public void onOk() {
         if(clientModeBtn.isSelected()){
             ClientModeConfiguration.run();
+            dispose();
         }
         else if(serverModeBtn.isSelected()){
             ServerModeConfiguration.run();
+            dispose();
         }
-        dispose();
+        else{
+            JOptionPane.showMessageDialog(null, "You must select a mode!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
+        }
+
     }
 }

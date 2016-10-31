@@ -10,21 +10,24 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {space :::p, par l:::p {comp label1:::p::p, seq {comp serverModeBtn:::p::p, space :::x, comp clientModeBtn:::p::p}}, space ::27:x}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space s:::p, par l {comp serverModeBtn:::p::p, comp clientModeBtn::l:p::p}, space ::18:x}}"
+					"$horizontalGroup": "par l {seq l {space :::p, par l {seq l {comp label1:::p::p, space ::27:x}, seq l {space :0:64:x, comp serverModeBtn:::p::p, space :::p, comp clientModeBtn:::p::p, space :p:90:p}}}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space s:::p, par b {comp clientModeBtn::b:p::p, comp serverModeBtn::b:p::p}, space ::18:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
 						"text": "Please select the correct mode of operation:"
+						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
 					} )
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "serverModeBtn"
 						"text": "Server"
+						"font": #Font0
 					} )
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "clientModeBtn"
 						"text": "Client"
+						"font": #Font0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -40,6 +43,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
+						"font": #Font0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 					} )

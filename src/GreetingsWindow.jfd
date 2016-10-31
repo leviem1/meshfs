@@ -10,19 +10,29 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :p:120:p, comp label1:::p::p, space ::130:x}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space ::186:x}}"
+					"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane1::::362:x, space :::p}, seq l {space :p:96:p, comp label1:::p::p, space ::105:x}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space u:::p, comp scrollPane1::::162:x, space :::p}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
 						"text": "Welcome to MeshFS"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 0, 5, false )
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						add( new FormComponent( "javax.swing.JTextPane" ) {
+							name: "textPane1"
+							"text": "Before you can begin using MeshFS, you must set it up to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the Server address, and authentication details. If you plan to run MeshFS in Server mode, please refer to our Help guide for more guidance. Thank you for using MeshFS"
+							"editable": false
+							"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 65536, 0, false )
+						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "Center"
+					"value": "North"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "159:1.0, 0, 0, 80"
+					"$columnSpecs": "0, 0"
 					"$rowSpecs": "0"
 					"$hGap": 5
 					"$vGap": 5
@@ -31,16 +41,15 @@ new FormModel {
 					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "configBtn"
-						"text": "Configuration"
+						"text": "Configuration..."
+						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "quitButton"
+						"text": "Quit"
+						"font": #Font0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "okButton"
-						"text": "OK"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 3
-						"gridy": 0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "South"

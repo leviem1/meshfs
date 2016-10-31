@@ -24,9 +24,9 @@ public class ConfigParser {
         }
     }
 
-    public static Properties reader() throws IOException {
+    public static Properties reader(String path) throws IOException {
         Properties prop = new Properties();
-        InputStream input = new FileInputStream("config.properties");
+        InputStream input = new FileInputStream(path);
         prop.load(input);
         return prop;
     }

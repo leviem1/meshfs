@@ -1,7 +1,11 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.Properties;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -25,6 +29,9 @@ public class ServerModeConfiguration extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+
+                fileChooser.setDialogTitle("Choose Respository");
                 fileChooser.setAcceptAllFileFilterUsed(false);
                 int rVal = fileChooser.showOpenDialog(null);
                 if (rVal == JFileChooser.APPROVE_OPTION) {
@@ -38,9 +45,16 @@ public class ServerModeConfiguration extends JFrame {
                 onOk();
             }
         });
+        importConfigBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                importConfig();
+            }
+        });
     }
 
     private void initComponents() {
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setGroupingUsed(false);
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Mark Hedrick
         dialogPane = new JPanel();
@@ -48,21 +62,23 @@ public class ServerModeConfiguration extends JFrame {
         label1 = new JLabel();
         serverAddress = new JTextField();
         label2 = new JLabel();
-        serverPort = new JFormattedTextField(NumberFormat.getInstance());
+        serverPort = new JFormattedTextField(numberFormat);
         label3 = new JLabel();
         label4 = new JLabel();
-        numStripes = new JFormattedTextField(NumberFormat.getInstance());
+        numStripes = new JFormattedTextField(numberFormat);
         label5 = new JLabel();
-        numStripeCopies = new JFormattedTextField(NumberFormat.getInstance());
+        numStripeCopies = new JFormattedTextField(numberFormat);
         label6 = new JLabel();
-        numWhole = new JFormattedTextField(NumberFormat.getInstance());
+        numWhole = new JFormattedTextField(numberFormat);
         label7 = new JLabel();
-        minSpace = new JFormattedTextField(NumberFormat.getInstance());
+        minSpace = new JFormattedTextField(numberFormat);
         label8 = new JLabel();
         repoPathTextField = new JTextField();
         browseBtn = new JButton();
         freeSpace = new JLabel();
         buttonBar = new JPanel();
+        importConfigBtn = new JButton();
+        hSpacer1 = new JPanel(null);
         okButton = new JButton();
 
         //======== this ========
@@ -88,48 +104,69 @@ public class ServerModeConfiguration extends JFrame {
 
                 //---- label1 ----
                 label1.setText("Server IP Address:");
+                label1.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- serverAddress ----
+                serverAddress.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label2 ----
                 label2.setText("Server Port:");
+                label2.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- serverPort ----
                 serverPort.setText("5704");
+                serverPort.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label3 ----
                 label3.setText("Number of:");
+                label3.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label4 ----
                 label4.setText("Stripes:");
+                label4.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- numStripes ----
                 numStripes.setText("3");
+                numStripes.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label5 ----
                 label5.setText("Striped Copies:");
+                label5.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- numStripeCopies ----
                 numStripeCopies.setText("2");
+                numStripeCopies.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label6 ----
                 label6.setText("Whole Copies:");
+                label6.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- numWhole ----
                 numWhole.setText("2");
+                numWhole.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label7 ----
-                label7.setText("Minimum Free Space:");
+                label7.setText("Minimum Free Space (GB):");
+                label7.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- minSpace ----
                 minSpace.setText("0");
+                minSpace.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- label8 ----
                 label8.setText("Repository:");
+                label8.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- repoPathTextField ----
+                repoPathTextField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- browseBtn ----
-                browseBtn.setText("Browse");
+                browseBtn.setText("Browse...");
+                browseBtn.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- freeSpace ----
                 freeSpace.setText("(free space)");
+                freeSpace.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -213,7 +250,7 @@ public class ServerModeConfiguration extends JFrame {
                                 .addComponent(label8)
                                 .addComponent(browseBtn)
                                 .addComponent(repoPathTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(26, Short.MAX_VALUE))
+                            .addContainerGap(7, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -222,12 +259,23 @@ public class ServerModeConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 309, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
+
+                //---- importConfigBtn ----
+                importConfigBtn.setText("Import...");
+                importConfigBtn.setFont(new Font("Helvetica Neue", importConfigBtn.getFont().getStyle() & ~Font.ITALIC, importConfigBtn.getFont().getSize()));
+                buttonBar.add(importConfigBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+                buttonBar.add(hSpacer1, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                okButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -261,6 +309,8 @@ public class ServerModeConfiguration extends JFrame {
     private JButton browseBtn;
     private JLabel freeSpace;
     private JPanel buttonBar;
+    private JButton importConfigBtn;
+    private JPanel hSpacer1;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
@@ -272,5 +322,29 @@ public class ServerModeConfiguration extends JFrame {
 
     public void onOk(){
         dispose();
+    }
+
+    public void importConfig() {
+        Properties properties = null;
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+
+        fileChooser.setDialogTitle("Choose Existing Configuration");
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        int rVal = fileChooser.showOpenDialog(null);
+        if (rVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                properties = ConfigParser.reader(fileChooser.getSelectedFile().toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        serverAddress.setText(properties.getProperty("masterIP"));
+        serverPort.setText(properties.getProperty("port"));
+        numStripes.setText(properties.getProperty("numStripes"));
+        numStripeCopies.setText(properties.getProperty("numStripeCopy"));
+        numWhole.setText(properties.getProperty("numWholeCopy"));
+        minSpace.setText(properties.getProperty("minSpace"));
+        repoPathTextField.setText(properties.getProperty("repository"));
     }
 }

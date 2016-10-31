@@ -1,8 +1,6 @@
 /**
  * Created by Levi Muniz on 10/3/16.
  */
-import org.json.simple.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -17,6 +15,7 @@ public class MeshFS {
         defaultProperties.setProperty("numWholeCopy", "2");
         defaultProperties.setProperty("minSpace", "0");
         defaultProperties.setProperty("masterIP","127.0.0.1");
+        defaultProperties.setProperty("port","5704");
         defaultProperties.setProperty("repository", ("repo" + File.separator));
         ConfigParser.write(defaultProperties);
 
@@ -28,7 +27,7 @@ public class MeshFS {
         Properties properties;
 
         try {
-            properties = ConfigParser.reader();
+            properties = ConfigParser.reader("config.properties");
         } catch (IOException io) {
             properties = writeDefaultProperties();
         }
