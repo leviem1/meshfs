@@ -24,7 +24,7 @@ public class ServerModeConfiguration extends JFrame {
     public ServerModeConfiguration() {
         initComponents();
         repoPathTextField.setEditable(false);
-        serverAddress.setText(Reporting.getIpAddress());
+        serverAddress.setText(Reporting.getIpAddress().toString());
         freeSpace.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
         browseBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -51,6 +51,7 @@ public class ServerModeConfiguration extends JFrame {
                 importConfig();
             }
         });
+
     }
 
     private void initComponents() {
@@ -78,6 +79,8 @@ public class ServerModeConfiguration extends JFrame {
         browseBtn = new JButton();
         freeSpace = new JLabel();
         slider1 = new JSlider();
+        scrollPane1 = new JScrollPane();
+        ipJList = new JList();
         buttonBar = new JPanel();
         importConfigBtn = new JButton();
         hSpacer1 = new JPanel(null);
@@ -170,6 +173,11 @@ public class ServerModeConfiguration extends JFrame {
                 freeSpace.setText("(free space)");
                 freeSpace.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
+                //======== scrollPane1 ========
+                {
+                    scrollPane1.setViewportView(ipJList);
+                }
+
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
@@ -213,36 +221,45 @@ public class ServerModeConfiguration extends JFrame {
                                             .addComponent(label7)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                             .addComponent(minSpace)))
-                                    .addGap(18, 18, 18)
                                     .addGroup(contentPanelLayout.createParallelGroup()
-                                        .addComponent(freeSpace, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addGap(0, 0, Short.MAX_VALUE)))))
+                                            .addGap(18, 18, 18)
+                                            .addGroup(contentPanelLayout.createParallelGroup()
+                                                .addComponent(freeSpace, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                                    .addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(0, 0, Short.MAX_VALUE))))
+                                        .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                                            .addGap(10, 10, 10)))))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(label1)
-                                .addComponent(serverAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(serverPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(label2))
-                            .addGap(18, 18, 18)
-                            .addComponent(label3)
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(label4)
-                                .addComponent(numStripes, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(numStripeCopies, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(label5))
-                            .addGap(12, 12, 12)
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(label1)
+                                        .addComponent(serverAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addGap(20, 20, 20)
+                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(serverPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(label2))
+                                    .addGap(18, 18, 18)
+                                    .addComponent(label3)
+                                    .addGap(18, 18, 18)
+                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(label4)
+                                        .addComponent(numStripes, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(numStripeCopies, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(label5)))
+                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                 .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(numWhole, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -258,7 +275,7 @@ public class ServerModeConfiguration extends JFrame {
                                 .addComponent(label8)
                                 .addComponent(browseBtn)
                                 .addComponent(repoPathTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(5, Short.MAX_VALUE))
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -317,6 +334,8 @@ public class ServerModeConfiguration extends JFrame {
     private JButton browseBtn;
     private JLabel freeSpace;
     private JSlider slider1;
+    private JScrollPane scrollPane1;
+    private JList ipJList;
     private JPanel buttonBar;
     private JButton importConfigBtn;
     private JPanel hSpacer1;

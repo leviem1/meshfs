@@ -25,9 +25,9 @@ public class Reporting {
         return file.getUsableSpace();
     }
 
-    public static String getIpAddress() {
+    public static List<String> getIpAddress() {
         List<String> ip = new ArrayList<>();
-
+        List<String> ipRefined = new ArrayList<>();
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
@@ -46,8 +46,22 @@ public class Reporting {
             throw new RuntimeException(e);
         }
 
+        for(int x = 0; x < ip.size(); x++){
+            if(ip.get(x).contains("%")){
+                try {
+                    if (ip.get(x + 1).contains(".")) {
+                        List<String> tempList = new ArrayList<>();
+                        tempList.add(ip.get(x).substring(ip.get(x).indexOf("%") + 1));
+                        tempList.add(ip.get(x + 1));
+                        ipRefined.add(tempList.toString());
+                    }
+                } catch (IndexOutOfBoundsException ae) {
+                }
+            }
+        }
 
-        return ip.toString();
+
+        return ipRefined;
     }
 
     public static long getUptime() {
