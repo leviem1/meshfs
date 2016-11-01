@@ -6,9 +6,7 @@ import java.lang.management.ManagementFactory;
 import java.net.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 
 public class Reporting {
 
@@ -28,13 +26,28 @@ public class Reporting {
     }
 
     public static String getIpAddress() {
-        String ip = null;
+        List<String> ip = new ArrayList<>();
+
         try {
-            ip = Inet4Address.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+
+                if (iface.isLoopback() || !iface.isUp())
+                    continue;
+
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                
+                while(addresses.hasMoreElements()) {
+                    ip.add(addresses.nextElement().getHostAddress());
+                }
+            }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
         }
-        return ip;
+
+
+        return ip.toString();
     }
 
     public static long getUptime() {
@@ -58,7 +71,7 @@ public class Reporting {
     }
 
     public static String getMacAddress(){
-        String macAddress = "FF-FF-FF-FF-FF-FF-FF-FF";
+        String macAddress = null;
         try {
             Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
             while(networks.hasMoreElements()) {
