@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.text.NumberFormat;
 import java.util.Properties;
 import javax.swing.*;
@@ -24,7 +25,8 @@ public class ServerModeConfiguration extends JFrame {
     public ServerModeConfiguration() {
         initComponents();
         repoPathTextField.setEditable(false);
-        serverAddress.setText(Reporting.getIpAddress().toString());
+        serverAddress.setEnabled(false);
+        serverAddress.setText(InetAddress.getLoopbackAddress().getHostAddress());
         freeSpace.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
         browseBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
