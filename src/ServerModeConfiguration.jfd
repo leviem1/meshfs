@@ -10,18 +10,14 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp label8:::p::p, space :::x, comp repoPathTextField:::p:329:p, space :p:12:p, comp browseBtn:::p::p}, seq {par l:::p {seq l {comp label1:::p::p, space u:::p, comp serverAddress:::p:155:p}, comp label3::l:p::p, seq l {comp label2:::p::p, space :p:12:p, par l {seq {comp label4:::p::p, space u:::p, comp numStripes:::::x}, seq {comp label5:::p::p, space u:::p, comp numStripeCopies:::::x}, seq {comp serverPort:::p:100:p, space :0:0:x}, seq {comp label6:::p::p, space u:::p, comp numWhole:::::x}}}, seq l {comp label7:::p::p, space u:::p, comp minSpace:::::x}}, par l {seq {space s:::p, par l {comp freeSpace:::::x, seq {comp slider1:::p::p, space :0:0:x}}}, seq t {space ::31:x, comp scrollPane1:::p:200:p, space :p:10:p}}}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par l {seq {par b {comp label1::b:p::p, comp serverAddress::b:p::p}, space :p:20:p, par b {comp serverPort::b:p::p, comp label2::b:p::p}, space s:::p, comp label3:::p::p, space s:::p, par b {comp label4::b:p::p, comp numStripes::b:p::p}, space u:::p, par b {comp numStripeCopies::b:p::p, comp label5::b:p::p}}, comp scrollPane1:::p:200:p}, space :::p, par t {par b {comp numWhole::b:p::p, comp label6::b:p::p}, comp slider1:::p::p}, space s:::p, par b {comp minSpace::b:p::p, comp label7::b:p::p, comp freeSpace::b:p::p}, space s:::p, par b {comp label8::b:p::p, comp browseBtn::b:p::p, comp repoPathTextField::b:p::p}, space :::x}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l:::p {comp label1:::::x, comp serverAddress:::::x}, space :p:14:p, comp scrollPane1:::p:155:p, space s:::p, comp label2:::p::p, space :p:12:p, comp serverPort:::p:100:p, space :0:0:x}, seq l {comp label8:::p::p, space :::x, comp repoPathTextField:::p:329:p, space :p:12:p, comp browseBtn:::p::p}, seq l {par t:::p {comp label3::l:p::p, seq l {space :p:80:p, par l {seq l {comp label4:::p::p, space u:::p, comp numStripes:::::x}, seq l {comp label5:::p::p, space u:::p, comp numStripeCopies:::::x}, seq l {comp label6:::p::p, space u:::p, comp numWhole:::::x}}}, seq l {comp label7:::p::p, space u:::p, comp minSpace:::p:146:p}}, space s:::p, par l {comp freeSpace:::::x, comp slider1::l:p::p}}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par l:::p {seq {par b {comp label1::b:p::p, comp serverPort::b:p::p, comp label2::b:p::p}, space :::x, comp serverAddress:::p::p}, comp scrollPane1:::p:65:p}, space :::x, comp label3:::p::p, space s:::p, par b {comp label4::b:p::p, comp numStripes::b:p::p}, space u:::p, par b {comp numStripeCopies::b:p::p, comp label5::b:p::p}, space :p:15:p, par t {par b:t {comp numWhole::b:p::p, comp label6::b:p::p}, comp slider1:::p::p}, space s:::p, par b {comp minSpace::b:p::p, comp label7::b:p::p, comp freeSpace::b:p::p}, space s:::p, par b {comp label8::b:p::p, comp browseBtn::b:p::p, comp repoPathTextField::b:p::p}, space :p:18:p}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label1"
-						"text": "Server IP Address:"
+						"text": "Server Network Interface:"
 						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
-					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "serverAddress"
-						"font": #Font0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label2"
@@ -119,7 +115,14 @@ new FormModel {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JList" ) {
 							name: "ipJList"
+							auxiliary() {
+								"JavaCodeGenerator.customCreateCode": "new JList(Reporting.getIpAddress().toArray());"
+							}
 						} )
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "serverAddress"
+						"font": #Font0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
