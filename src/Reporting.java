@@ -6,9 +6,7 @@ import java.lang.management.ManagementFactory;
 import java.net.*;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.*;
 
 public class Reporting {
 
@@ -27,14 +25,43 @@ public class Reporting {
         return file.getUsableSpace();
     }
 
-    public static String getIpAddress() {
-        String ip = null;
+    public static List<String> getIpAddress() {
+        List<String> ip = new ArrayList<>();
+        List<String> ipRefined = new ArrayList<>();
         try {
-            ip = Inet4Address.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface iface = interfaces.nextElement();
+
+                if (iface.isLoopback() || !iface.isUp())
+                    continue;
+
+                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                
+                while(addresses.hasMoreElements()) {
+                    ip.add(addresses.nextElement().getHostAddress());
+                }
+            }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
         }
-        return ip;
+
+        for(int x = 0; x < ip.size(); x++){
+            if(ip.get(x).contains("%")){
+                try {
+                    if (ip.get(x + 1).contains(".")) {
+                        List<String> tempList = new ArrayList<>();
+                        tempList.add(ip.get(x).substring(ip.get(x).indexOf("%") + 1));
+                        tempList.add(ip.get(x + 1));
+                        ipRefined.add(tempList.toString());
+                    }
+                } catch (IndexOutOfBoundsException ae) {
+                }
+            }
+        }
+
+
+        return ipRefined;
     }
 
     public static long getUptime() {
@@ -58,7 +85,7 @@ public class Reporting {
     }
 
     public static String getMacAddress(){
-        String macAddress = "FF-FF-FF-FF-FF-FF-FF-FF";
+        String macAddress = null;
         try {
             Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
             while(networks.hasMoreElements()) {

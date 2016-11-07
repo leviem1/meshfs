@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.NumberFormat;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -32,6 +34,11 @@ public class ClientModeConfiguration extends JFrame {
                 else{
                     bindAnonymously("no");
                 }
+            }
+        });
+        serverAddress.addFocusListener(new FocusAdapter() {
+            public void focusLost(FocusEvent e) {
+                checkServerStatus();
             }
         });
     }
@@ -237,6 +244,10 @@ public class ClientModeConfiguration extends JFrame {
             username.setEnabled(true);
             password.setEnabled(true);
         }
+
+    }
+
+    public void checkServerStatus(){
 
     }
 }
