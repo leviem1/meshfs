@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Aaron Duran on 10/25/16.
  */
 public class JSONPreWriter {
-    public static void addToIndex(String fileName, List<List<String>> stripes) {
+    public static void addToIndex(String fileName, List<List<String>> stripes, String destinationFilePath) {
         JSONObject objParent = new JSONObject();
         JSONObject objChild1 = new JSONObject();
         JSONObject objChild2 = new JSONObject();
@@ -32,10 +32,16 @@ public class JSONPreWriter {
         objChild3.put("group", "all");
         objChild3.put("type", "file");
         objChild2.put(fileName, objChild3);
+
+
+
+
         objChild2.put("type", "directory");
         objChild1.put("videos", objChild2);
+
+
         objParent.put("root", objChild1);
-        System.out.println(objChild3);
+        System.out.println(objParent);
         String shortName = fileName.substring(0, fileName.lastIndexOf("."));
         try{
             JSONWriter.writeJSONObject("/Users/aronduran/Desktop/" + shortName + ".json", objParent);

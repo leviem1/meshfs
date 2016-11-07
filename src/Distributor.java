@@ -25,7 +25,7 @@ public class Distributor {
         return sortedMap;
     }
 
-    public void distributor(Map compStorageMap, String filePath){
+    public void distributor(Map compStorageMap, String filePath, String destinationFilePath){
 
          try {
              //FileReader reader = new FileReader(filePath);
@@ -34,17 +34,20 @@ public class Distributor {
              //reader.closeFile();
              long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
 
+             compStorageMap.put("0.0.0.0",0L);
              Map<String, Long> sortedCompStorageMap = sortMapByValues(compStorageMap);
              for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){
                  String ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
                  sortedCompStorageMap.replace(ipAddress, sortedCompStorageMap.get(String.valueOf(ipAddress)) - minFreeSpace);
              }
 
+             /* //uncomment me for dynamic resigning of numStripes by number of computers that are on
              int numOfComputersUsed = sortedCompStorageMap.size();
 
              if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
                  numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
              }
+             */
 
 
              int stopOfWholes = (0-1);
@@ -66,7 +69,13 @@ public class Distributor {
              boolean noStorage = false;
              List<String> computersForStripes = new ArrayList<>();
              for (int computerNumS = stopOfWholes+1; computerNumS < ((numOfStripes * numOfStripedCopies) + stopOfWholes+1); computerNumS++) {
-                 String ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
+                 String ipAddress;
+                 try{
+                     ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
+                 }
+                 catch (Exception e){
+                     ipAddress = "0.0.0.0";
+                 }
                  if ((sortedCompStorageMap.get(ipAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe) {
                      computersForStripes.add(ipAddress);
                  }
@@ -188,7 +197,7 @@ public class Distributor {
 
 
              String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-             JSONPreWriter.addToIndex(fileName, stripes);
+             JSONPreWriter.addToIndex(fileName, stripes, destinationFilePath);
          }
          catch (Exception e) {
              e.printStackTrace();
