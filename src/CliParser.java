@@ -25,7 +25,7 @@ public class CliParser {
             }
 
             if (cmd.hasOption("r")) {
-                MeshFS.writeDefaultProperties();
+                MeshFS.loadDefaultProperties();
             }
 
         } catch (ParseException e) {

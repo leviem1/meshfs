@@ -8,7 +8,7 @@ import java.util.*;
 
 public class MeshFS {
 
-    public static Properties writeDefaultProperties() {
+    public static Properties loadDefaultProperties() {
         Properties defaultProperties = new Properties();
         defaultProperties.setProperty("numStripes","3");
         defaultProperties.setProperty("numStripeCopy", "2");
@@ -18,17 +18,34 @@ public class MeshFS {
         defaultProperties.setProperty("preferredIFace", "m");
         defaultProperties.setProperty("port","5704");
         defaultProperties.setProperty("repository", ("repo" + File.separator));
-        ConfigParser.write(defaultProperties);
+        defaultProperties.setProperty("serverThreads", "16");
+        defaultProperties.setProperty("serverTimeout", "90");
         return defaultProperties;
     }
 
     public static void main(String[] args) {
         Properties properties;
+
         try {
             properties = ConfigParser.reader("config.properties");
+            Properties defaultProperties = loadDefaultProperties();
+
+            if (!properties.stringPropertyNames().equals(defaultProperties.stringPropertyNames())) {
+                for (String key : defaultProperties.stringPropertyNames()) {
+                    if (properties.getProperty(key) == null) {
+                        properties.setProperty(key, defaultProperties.getProperty(key));
+                    }
+                }
+
+                ConfigParser.write(properties);
+            }
+
         } catch (IOException io) {
-            properties = writeDefaultProperties();
+            properties = loadDefaultProperties();
+            ConfigParser.write(properties);
         }
+
+
         new CliParser(args, properties);
         File repo = new File(properties.getProperty("repository"));
         if (!repo.exists()) {
@@ -36,8 +53,14 @@ public class MeshFS {
         }
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
-        Map<String, Long> hostStorage = new HashMap<>();
+
+        FileServer fileServer = new FileServer();
+        fileServer.startServer(Integer.valueOf(properties.getProperty("port")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout"))*100);
+
+        GreetingsWindow.run();
+
         /*
+        Map<String, Long> hostStorage = new HashMap<>();
         hostStorage.put("10.15.20.1", 800000000000L);
         hostStorage.put("10.15.20.2", 700000000000L);
         hostStorage.put("10.15.20.3", 600000000000L);
@@ -54,15 +77,12 @@ public class MeshFS {
         hostStorage.put("10.15.20.14", 880000000000L);
         hostStorage.put("10.15.20.15", 110000000000L);
         hostStorage.put("10.15.20.16", 120000000000L);
-        */
 
 
-        //Distributor test = new Distributor(6,2,2);
-        //test.distributor(hostStorage, "/Users/aronduran/Desktop/pigskin.mp4");
-        GreetingsWindow.run();
+        Distributor test = new Distributor(6,2,2);
+        test.distributor(hostStorage, "/Users/aronduran/Desktop/pigskin.mp4");
 
-        /*
-        //JSONObject obj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");
+        JSONObject obj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");
         JSONObject objParent = new JSONObject();
         JSONObject objChild1 = new JSONObject();
         JSONObject objChild2 = new JSONObject();
@@ -92,16 +112,15 @@ public class MeshFS {
         objChild2.put("type", "directory");
         objChild1.put("videos", objChild2);
         objParent.put("root", objChild1);
-        /*
+
         try{
             JSONWriter.writeJSONObject("/Users/markhedrick/Desktop/test12345.json", objParent);
         }catch(IOException e){
             e.printStackTrace();
         }
+
+        System.out.println(obj.get("root"));
+        System.out.println(array.size());
         */
-
-
-        //System.out.println(obj.get("root"));
-        //System.out.println(array.size());
     }
 }
