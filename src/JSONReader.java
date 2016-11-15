@@ -21,4 +21,13 @@ public class JSONReader {
         return jsonObject;
     }
 
+    public static void getJSONObjectLoop(String filePath){
+        JSONObject jsonObj = new JSONObject();
+        for (Object key : jsonObj.keySet()){
+            String keyStr = (String) key;
+            Object keyValue = jsonObj.get(keyStr);
+
+            System.out.println("Key:" + keyStr + " value: " + keyValue);
+        }
+    }
 }

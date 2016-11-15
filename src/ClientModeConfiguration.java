@@ -230,7 +230,9 @@ public class ClientModeConfiguration extends JFrame {
     }
 
     public void onOk(){
+        ClientBrowser.run();
         dispose();
+
     }
 
     public void bindAnonymously(String mode){

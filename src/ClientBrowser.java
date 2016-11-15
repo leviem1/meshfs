@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 /*
  * Created by JFormDesigner on Sun Nov 06 18:04:04 MST 2016
  */
@@ -17,23 +18,22 @@ import javax.swing.border.*;
 public class ClientBrowser extends JFrame {
     public ClientBrowser() {
         initComponents();
-
-    }
-
-    public ArrayList convertToArray(JSONObject object){
-        JSONArray contents = (JSONArray) object.get("root");
-        ArrayList arrayList = contents;
-        return arrayList;
     }
 
     private void initComponents() {
-        ArrayList meshList = convertToArray(JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json"));
+
+        DefaultMutableTreeNode tree = new DefaultMutableTreeNode("Root");/*
+        DefaultMutableTreeNode vegetableNode = new DefaultMutableTreeNode("Vegetables");
+        DefaultMutableTreeNode fruitNode = new DefaultMutableTreeNode("Fruits");
+        tree.add(vegetableNode);
+        tree.add(fruitNode);
+        */
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Mark Hedrick
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         scrollPane1 = new JScrollPane();
-        tree1 = new JTree();
+        tree1 = new JTree(tree);
         buttonBar = new JPanel();
         okButton = new JButton();
 
@@ -100,6 +100,14 @@ public class ClientBrowser extends JFrame {
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
+
+    public static void run() {
+        JFrame clientBrowser = new ClientBrowser();
+        CenterWindow.centerOnScreen(clientBrowser);
+        clientBrowser.setVisible(true);
+    }
+
+
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner Evaluation license - Mark Hedrick

@@ -18,6 +18,9 @@ new FormModel {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTree" ) {
 							name: "tree1"
+							auxiliary() {
+								"JavaCodeGenerator.customCreateCode": "new JTree(tree);"
+							}
 						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
