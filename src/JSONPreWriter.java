@@ -2,18 +2,54 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Aaron Duran on 10/25/16.
  */
 public class JSONPreWriter {
-    public static void addToIndex(String fileName, List<List<String>> stripes, String destinationFilePath) {
+    public static void addToIndex(String fileName, List<List<String>> stripes, String destinationFilePath, String JSONFilePath) {
+
+        JSONObject jsonFile = JSONReader.getJSONObject(JSONFilePath);
+
+
+
         JSONObject objParent = new JSONObject();
         JSONObject objChild1 = new JSONObject();
         JSONObject objChild2 = new JSONObject();
         JSONObject objChild3 = new JSONObject();
         JSONArray ipArray = new JSONArray();
+
+        List<String> filePath = new ArrayList<>();
+        int startName = 0;
+        int stopName;
+        while (true){
+            try{
+                stopName = destinationFilePath.indexOf("/");
+                filePath.add(destinationFilePath.substring(startName, stopName));
+                startName = stopName+1;
+            }
+            catch(Exception e){
+                filePath.add(destinationFilePath.substring(startName));
+                break;
+            }
+        }
+        int startSearch = 0;
+        int JSONIndex;
+/*
+        for (String part:filePath) {
+            try{
+
+            }
+            catch(Exception e){
+
+            }
+
+
+        }
+*/
+
 
         for (int stripe = 0; stripe < stripes.size(); stripe++){
             for (int copy = 0; copy < (stripes.get(stripe)).size(); copy++){

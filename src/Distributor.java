@@ -25,7 +25,7 @@ public class Distributor {
         return sortedMap;
     }
 
-    public void distributor(Map compStorageMap, String filePath, String destinationFilePath){
+    public void distributor(Map compStorageMap, String filePath, String destinationFilePath, String JSONFilePath){
 
          try {
              //FileReader reader = new FileReader(filePath);
@@ -196,7 +196,7 @@ public class Distributor {
              }
 
              String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-             JSONPreWriter.addToIndex(fileName, stripes, destinationFilePath);
+             JSONPreWriter.addToIndex(fileName, stripes, destinationFilePath, JSONFilePath);
          }
          catch (Exception e) {
              e.printStackTrace();
