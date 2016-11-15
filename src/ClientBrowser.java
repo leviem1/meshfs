@@ -2,6 +2,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -21,13 +22,20 @@ public class ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
+        String folderLocation = "root";
+        JSONObject jsonObj = JSONReader.getJSONObject("/Users/aronduran/Desktop/test.json");
+        DefaultMutableTreeNode tree = new DefaultMutableTreeNode("Root");
+        DefaultMutableTreeNode test = new DefaultMutableTreeNode("hello");
+        Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj,folderLocation);
+        for (String name : folderContents.keySet()) {
+            tree.add(new DefaultMutableTreeNode(name));
+        }
 
-        DefaultMutableTreeNode tree = new DefaultMutableTreeNode("Root");/*
         DefaultMutableTreeNode vegetableNode = new DefaultMutableTreeNode("Vegetables");
         DefaultMutableTreeNode fruitNode = new DefaultMutableTreeNode("Fruits");
         tree.add(vegetableNode);
         tree.add(fruitNode);
-        */
+
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Mark Hedrick
         dialogPane = new JPanel();

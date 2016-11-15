@@ -20,7 +20,7 @@ public class JSONPreWriter {
         JSONObject objChild2 = new JSONObject();
         JSONObject objChild3 = new JSONObject();
         JSONArray ipArray = new JSONArray();
-
+        /*
         List<String> filePath = new ArrayList<>();
         int startName = 0;
         int stopName;
@@ -37,7 +37,8 @@ public class JSONPreWriter {
         }
         int startSearch = 0;
         int JSONIndex;
-/*
+        */
+        /*
         for (String part:filePath) {
             try{
 
@@ -48,7 +49,7 @@ public class JSONPreWriter {
 
 
         }
-*/
+        */
 
 
         for (int stripe = 0; stripe < stripes.size(); stripe++){

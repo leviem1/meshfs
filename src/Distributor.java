@@ -130,7 +130,7 @@ public class Distributor {
 
              boolean allowStripes = false;
              for (String computer : computersForStripes){
-                if (computer !=  computersForStripes.get(0)){
+                if (computer != computersForStripes.get(0)){
                     allowStripes = true;
                     break;
                 }
