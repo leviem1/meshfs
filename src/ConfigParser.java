@@ -16,7 +16,7 @@ public class ConfigParser {
         defaultProperties.setProperty("masterIP","127.0.0.1");
         defaultProperties.setProperty("preferredIFace", "m");
         defaultProperties.setProperty("port","5704");
-        defaultProperties.setProperty("repository", ("repo" + File.separator));
+        defaultProperties.setProperty("repository", ("." + File.separator +"repo" + File.separator));
         defaultProperties.setProperty("serverThreads", "16");
         defaultProperties.setProperty("serverTimeout", "90");
         return defaultProperties;
