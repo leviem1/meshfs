@@ -10,12 +10,12 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane1::::362:x, space :::p}, seq l {space :p:96:p, comp label1:::p::p, space ::105:x}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space u:::p, comp scrollPane1::::162:x, space :::p}}"
+					"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane1::::362:x, space :::p}, seq l {space :p:96:p, comp welcomeLbl:::p::p, space ::109:x}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp welcomeLbl:::p::p, space u:::p, comp scrollPane1::::162:x, space :::p}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label1"
+						name: "welcomeLbl"
 						"text": "Welcome to MeshFS"
 						"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 0, 5, false )
 					} )

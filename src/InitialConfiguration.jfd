@@ -10,12 +10,12 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {space :::p, par l {seq l {comp label1:::p::p, space ::27:x}, seq l {space :0:64:x, comp serverModeBtn:::p::p, space :::p, comp clientModeBtn:::p::p, space :p:90:p}}}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space s:::p, par b {comp clientModeBtn::b:p::p, comp serverModeBtn::b:p::p}, space ::18:x}}"
+					"$horizontalGroup": "par l {seq l {space :::p, par l {seq l {comp modeLbl:::p::p, space ::45:x}, seq l {space :0:69:x, comp serverModeBtn:::p::p, space :::p, comp clientModeBtn:::p::p, space :p:90:p}}}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp modeLbl:::p::p, space s:::p, par b {comp clientModeBtn::b:p::p, comp serverModeBtn::b:p::p}, space ::16:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label1"
+						name: "modeLbl"
 						"text": "Please select the correct mode of operation:"
 						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
 					} )

@@ -2,7 +2,6 @@
  * Created by Levi Muniz on 10/3/16.
  */
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 
@@ -22,7 +21,7 @@ public class MeshFS {
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
 
         FileServer fileServer = new FileServer();
-        fileServer.startServer(Integer.valueOf(properties.getProperty("port")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout"))*100);
+        fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout"))*100);
 
         GreetingsWindow.run();
 

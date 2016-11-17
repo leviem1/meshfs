@@ -10,32 +10,32 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l {seq l {comp label4:::p::p, space u:::p, comp serverAddress::::247:x}, seq l {comp label5:::p::p, space u:::p, comp serverPort:::p:50:p}}, space :p:12:p}, seq {comp label8:::p::p, space :::p, comp bindAnonymouslyCheckBox:::p::p, space :0:221:x}, seq l {par t:::p {seq {comp label7:::p::p, space u:::p, comp password:::::x}, seq t {comp label6:::p::p, space u:::p, comp username:::p:135:p}}, space ::155:x}}}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp label4::b:p::p, comp serverAddress::b:p::p}, space :p:14:p, par b {comp label5::b:p::p, comp serverPort::b:p::p}, space s:::p, par l {comp label8:::p::p, comp bindAnonymouslyCheckBox:::p::p}, space s:::p, par b {comp label6::b:p::p, comp username::b:p::p}, space s:::p, par b {comp label7::b:p::p, comp password::b:p::p}, space ::16:x}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l {seq l {comp serverAddressLbl:::p::p, space u:::p, comp serverAddressField::::250:x}, seq l {comp serverPortLbl:::p::p, space u:::p, comp serverPortField:::p:50:p}}, space :p:12:p}, seq {comp bindAnonLbl:::p::p, space :::p, comp bindAnonymouslyCheckBox:::p::p, space :0:229:x}, seq l {par t:::p {seq {comp passwordLbl:::p::p, space u:::p, comp passwordField:::::x}, seq t {comp usernameLbl:::p::p, space u:::p, comp usernameField:::p:135:p}}, space ::158:x}}}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp serverAddressLbl::b:p::p, comp serverAddressField::b:p::p}, space :p:14:p, par b {comp serverPortLbl::b:p::p, comp serverPortField::b:p::p}, space s:::p, par l {comp bindAnonLbl:::p::p, comp bindAnonymouslyCheckBox:::p::p}, space s:::p, par b {comp usernameLbl::b:p::p, comp usernameField::b:p::p}, space s:::p, par b {comp passwordLbl::b:p::p, comp passwordField::b:p::p}, space ::11:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label4"
+						name: "serverAddressLbl"
 						"text": "Server Address:"
 						"font": new java.awt.Font( "Helvetica Neue", 0, 13 )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label5"
+						name: "serverPortLbl"
 						"text": "Server Port:"
 						"font": new java.awt.Font( "Helvetica Neue", 0, 13 )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label6"
+						name: "usernameLbl"
 						"text": "Username:"
 						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label7"
+						name: "passwordLbl"
 						"text": "Password:"
 						"font": #Font0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label8"
+						name: "bindAnonLbl"
 						"text": "Bind Anonymously:"
 						"font": #Font0
 					} )
@@ -43,22 +43,22 @@ new FormModel {
 						name: "bindAnonymouslyCheckBox"
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "serverAddress"
+						name: "serverAddressField"
 						"font": &Font1 new java.awt.Font( "Helvetica Neue", 0, 13 )
 					} )
 					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "serverPort"
+						name: "serverPortField"
 						"font": #Font1
 						auxiliary() {
 							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
 						}
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "username"
+						name: "usernameField"
 						"font": #Font1
 					} )
 					add( new FormComponent( "javax.swing.JPasswordField" ) {
-						name: "password"
+						name: "passwordField"
 						"font": #Font1
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {

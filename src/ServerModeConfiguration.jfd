@@ -10,22 +10,22 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l:::p {comp label1:::::x, comp serverAddress:::::x}, space :p:14:p, comp scrollPane1:::p:155:p, space s:::p, comp label2:::p::p, space :p:12:p, comp serverPort:::p:100:p, space :0:0:x}, seq l {comp label8:::p::p, space :::x, comp repoPathTextField:::p:329:p, space :p:12:p, comp browseBtn:::p::p}, seq l {par t:::p {comp label3::l:p::p, seq l {space :p:80:p, par l {seq l {comp label4:::p::p, space u:::p, comp numStripes:::::x}, seq l {comp label5:::p::p, space u:::p, comp numStripeCopies:::::x}, seq l {comp label6:::p::p, space u:::p, comp numWhole:::::x}}}, seq l {comp label7:::p::p, space u:::p, comp minSpace:::p:146:p}}, space s:::p, par l {comp freeSpace:::::x, comp slider1::l:p::p}}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par l:::p {seq {par b {comp label1::b:p::p, comp serverPort::b:p::p, comp label2::b:p::p}, space :::x, comp serverAddress:::p::p}, comp scrollPane1:::p:65:p}, space :::x, comp label3:::p::p, space s:::p, par b {comp label4::b:p::p, comp numStripes::b:p::p}, space u:::p, par b {comp numStripeCopies::b:p::p, comp label5::b:p::p}, space :p:15:p, par t {par b:t {comp numWhole::b:p::p, comp label6::b:p::p}, comp slider1:::p::p}, space s:::p, par b {comp minSpace::b:p::p, comp label7::b:p::p, comp freeSpace::b:p::p}, space s:::p, par b {comp label8::b:p::p, comp browseBtn::b:p::p, comp repoPathTextField::b:p::p}, space :p:18:p}}"
+					"$horizontalGroup": "par l {seq {par l {seq {space :::p, par l {seq {comp serverNetworkInterfaceLbl:::p::p, space :p:14:p, comp scrollPane1:::p:155:p}, seq l {comp serverThreadsLbl:::p::p, space :::p, comp serverThreadsField:::p:76:p}, seq l {comp serverTimeoutLbl:::p::p, space :::p, comp serverTimeoutField:::p:77:p}, seq l {comp serverPortLbl:::p::p, space :::p, comp serverPortField:::p:100:p}}, space :::p, comp separator1:::p::p, par l {seq {par l {seq l {space :p:7:p, comp wholeCopiesLbl:::p::p}, seq {space :::x, comp stripedCopiesLbl:::p::p}}, space :::p, par l {seq {space :0:0:x, comp numStripeCopiesField:::p:134:p}, comp numWholeField:::::x}}, seq {space :::p, comp stripesLbl:::p::p, space :::p, comp numStripesField:::::x}}}, seq {par l {seq l {comp repositoryLbl:::p::p, space :::p, comp repoPathField:::p:329:p, space u:::p, comp browseBtn:::p::p}, seq l {comp minFreeSpaceLbl:::p::p, space :::p, comp minSpaceField:::p:121:p, space :::p, comp spaceSldr:::p::p}, comp freeSpaceLbl:::p:351:p}, space :0:0:x}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par l:::p {seq {par l {comp serverNetworkInterfaceLbl:::p::p, comp scrollPane1:::p:65:p, seq {par b {comp stripesLbl::b:p::p, comp numStripesField::b:p::p}, space :p:11:p, par b {comp stripedCopiesLbl::b:p::p, comp numStripeCopiesField::b:p::p}}}, par l {seq {space :p:18:p, par b {comp serverPortLbl::b:p::p, comp serverPortField::b:p::p}, space u:::p, par b {comp serverThreadsLbl::b:p::p, comp serverThreadsField::b:p::p}, space u:::p, par b {comp serverTimeoutLbl::b:p::p, comp serverTimeoutField::b:p::p}}, seq l {space u:::p, par b {comp wholeCopiesLbl::b:p::p, comp numWholeField::b:p::p}}}}, comp separator1:::::x}, space u:::p, par b {comp repoPathField::b:p::p, comp browseBtn::b:p::p, comp repositoryLbl::b:p::p}, space s:::p, par l {par b {comp minFreeSpaceLbl::b:p::p, comp minSpaceField::b:p::p}, comp spaceSldr:::p::p}, space :::p, comp freeSpaceLbl:::p::p, space :::x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label1"
-						"text": "Server Network Interface:"
+						name: "serverNetworkInterfaceLbl"
+						"text": "Server Interface:"
 						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label2"
+						name: "serverPortLbl"
 						"text": "Server Port:"
 						"font": #Font0
 					} )
 					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "serverPort"
+						name: "serverPortField"
 						"text": "5704"
 						"font": #Font0
 						auxiliary() {
@@ -33,69 +33,12 @@ new FormModel {
 						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label3"
-						"text": "Number of:"
-						"font": #Font0
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label4"
-						"text": "Stripes:"
-						"font": #Font0
-					} )
-					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "numStripes"
-						"text": "3"
-						"font": #Font0
-						auxiliary() {
-							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
-						}
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label5"
-						"text": "Striped Copies:"
-						"font": #Font0
-					} )
-					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "numStripeCopies"
-						"text": "2"
-						"font": #Font0
-						auxiliary() {
-							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
-						}
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label6"
-						"text": "Whole Copies:"
-						"font": #Font0
-					} )
-					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "numWhole"
-						"text": "2"
-						"font": #Font0
-						auxiliary() {
-							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
-						}
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label7"
-						"text": "Minimum Free Space (GB):"
-						"font": #Font0
-					} )
-					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "minSpace"
-						"text": "0"
-						"font": #Font0
-						auxiliary() {
-							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
-						}
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label8"
+						name: "repositoryLbl"
 						"text": "Repository:"
 						"font": #Font0
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "repoPathTextField"
+						name: "repoPathField"
 						"font": #Font0
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
@@ -103,32 +46,102 @@ new FormModel {
 						"text": "Browse..."
 						"font": #Font0
 					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "freeSpace"
-						"text": "(free space)"
-						"font": #Font0
-					} )
-					add( new FormComponent( "javax.swing.JSlider" ) {
-						name: "slider1"
-					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JList" ) {
-							name: "ipJList"
+							name: "ipJListField"
 							auxiliary() {
-								"JavaCodeGenerator.customCreateCode": "new JList(Reporting.getIpAddress().toArray());"
+								"JavaCodeGenerator.customCreateCode": "new JList(ipJList().toArray());"
 							}
 						} )
 					} )
-					add( new FormComponent( "javax.swing.JTextField" ) {
-						name: "serverAddress"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "serverTimeoutLbl"
+						"text": "Server Timeout:"
+						"font": new java.awt.Font( "Helvetica Neue", 0, 13 )
+					} )
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "serverTimeoutField"
+						"text": "90"
+					} )
+					add( new FormComponent( "javax.swing.JSeparator" ) {
+						name: "separator1"
+						"orientation": 1
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "serverThreadsLbl"
+						"text": "Server Threads:"
+						"font": new java.awt.Font( "Helvetica Neue", 0, 13 )
+					} )
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "serverThreadsField"
+						"text": "16"
+					} )
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "numStripeCopiesField"
+						"text": "2"
+						"font": #Font0
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
+						}
+					} )
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "numWholeField"
+						"text": "2"
+						"font": #Font0
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "stripedCopiesLbl"
+						"text": "Striped Copies:"
+						"font": #Font0
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "wholeCopiesLbl"
+						"text": "Whole Copies:"
+						"font": #Font0
+					} )
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "numStripesField"
+						"text": "3"
+						"font": #Font0
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "stripesLbl"
+						"text": "Stripes:"
+						"font": #Font0
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "minFreeSpaceLbl"
+						"text": "Reserved Space:"
+						"font": #Font0
+					} )
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "minSpaceField"
+						"text": "0"
+						"font": #Font0
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
+						}
+					} )
+					add( new FormComponent( "javax.swing.JSlider" ) {
+						name: "spaceSldr"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "freeSpaceLbl"
+						"text": "(free space)"
 						"font": #Font0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "Center"
+					"value": "North"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0, 304:1.0, 0, 80"
+					"$columnSpecs": "0, 304:1.0, 0, 0, 80"
 					"$rowSpecs": "0"
 					"$hGap": 5
 					"$vGap": 5
@@ -147,11 +160,17 @@ new FormModel {
 						"gridx": 1
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "saveConfigBtn"
+						"text": "Apply..."
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 3
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
 						"font": #Font0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 3
+						"gridx": 4
 						"gridy": 0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
@@ -162,7 +181,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 555, 420 )
+			"size": new java.awt.Dimension( 555, 435 )
 		} )
 	}
 }

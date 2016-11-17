@@ -17,6 +17,8 @@ import javax.swing.border.*;
 public class GreetingsWindow extends JFrame {
     public GreetingsWindow() {
         initComponents();
+        dialogPane.getRootPane().setDefaultButton(configBtn);
+        configBtn.requestFocus();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
         toFront();
@@ -40,7 +42,7 @@ public class GreetingsWindow extends JFrame {
         // Generated using JFormDesigner Evaluation license - Mark Hedrick
         dialogPane = new JPanel();
         contentPanel = new JPanel();
-        label1 = new JLabel();
+        welcomeLbl = new JLabel();
         scrollPane1 = new JScrollPane();
         textPane1 = new JTextPane();
         buttonBar = new JPanel();
@@ -68,9 +70,9 @@ public class GreetingsWindow extends JFrame {
             //======== contentPanel ========
             {
 
-                //---- label1 ----
-                label1.setText("Welcome to MeshFS");
-                label1.setFont(new Font("Helvetica Neue", label1.getFont().getStyle(), label1.getFont().getSize() + 5));
+                //---- welcomeLbl ----
+                welcomeLbl.setText("Welcome to MeshFS");
+                welcomeLbl.setFont(new Font("Helvetica Neue", welcomeLbl.getFont().getStyle(), welcomeLbl.getFont().getSize() + 5));
 
                 //======== scrollPane1 ========
                 {
@@ -92,14 +94,14 @@ public class GreetingsWindow extends JFrame {
                             .addContainerGap())
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addGap(96, 96, 96)
-                            .addComponent(label1)
-                            .addContainerGap(105, Short.MAX_VALUE))
+                            .addComponent(welcomeLbl)
+                            .addContainerGap(109, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(label1)
+                            .addComponent(welcomeLbl)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                             .addContainerGap())
@@ -138,7 +140,7 @@ public class GreetingsWindow extends JFrame {
     // Generated using JFormDesigner Evaluation license - Mark Hedrick
     private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel label1;
+    private JLabel welcomeLbl;
     private JScrollPane scrollPane1;
     private JTextPane textPane1;
     private JPanel buttonBar;

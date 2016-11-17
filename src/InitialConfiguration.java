@@ -22,6 +22,18 @@ public class InitialConfiguration extends JFrame {
                 onOk();
             }
         });
+        serverModeBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                contentPanel.getRootPane().setDefaultButton(okButton);
+                contentPanel.requestFocus();
+            }
+        });
+        clientModeBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                contentPanel.getRootPane().setDefaultButton(okButton);
+                contentPanel.requestFocus();
+            }
+        });
         ButtonGroup modeRadios = new ButtonGroup();
         modeRadios.add(serverModeBtn);
         modeRadios.add(clientModeBtn);
@@ -32,7 +44,7 @@ public class InitialConfiguration extends JFrame {
         // Generated using JFormDesigner Evaluation license - Mark Hedrick
         dialogPane = new JPanel();
         contentPanel = new JPanel();
-        label1 = new JLabel();
+        modeLbl = new JLabel();
         serverModeBtn = new JRadioButton();
         clientModeBtn = new JRadioButton();
         buttonBar = new JPanel();
@@ -59,9 +71,9 @@ public class InitialConfiguration extends JFrame {
             //======== contentPanel ========
             {
 
-                //---- label1 ----
-                label1.setText("Please select the correct mode of operation:");
-                label1.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                //---- modeLbl ----
+                modeLbl.setText("Please select the correct mode of operation:");
+                modeLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- serverModeBtn ----
                 serverModeBtn.setText("Server");
@@ -79,10 +91,10 @@ public class InitialConfiguration extends JFrame {
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(label1)
-                                    .addContainerGap(27, Short.MAX_VALUE))
+                                    .addComponent(modeLbl)
+                                    .addContainerGap(45, Short.MAX_VALUE))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGap(0, 64, Short.MAX_VALUE)
+                                    .addGap(0, 69, Short.MAX_VALUE)
                                     .addComponent(serverModeBtn)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(clientModeBtn)
@@ -92,12 +104,12 @@ public class InitialConfiguration extends JFrame {
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(label1)
+                            .addComponent(modeLbl)
                             .addGap(18, 18, 18)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(clientModeBtn)
                                 .addComponent(serverModeBtn))
-                            .addContainerGap(18, Short.MAX_VALUE))
+                            .addContainerGap(16, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -128,7 +140,7 @@ public class InitialConfiguration extends JFrame {
     // Generated using JFormDesigner Evaluation license - Mark Hedrick
     private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel label1;
+    private JLabel modeLbl;
     private JRadioButton serverModeBtn;
     private JRadioButton clientModeBtn;
     private JPanel buttonBar;

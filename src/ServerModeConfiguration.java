@@ -1,11 +1,11 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileFilter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Properties;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -22,15 +22,15 @@ import static java.lang.String.valueOf;
  * Created by Mark Hedrick on 10/30/16.
  */
 public class ServerModeConfiguration extends JFrame {
+    String repoPathString;
     public ServerModeConfiguration() {
         initComponents();
-        repoPathTextField.setEditable(false);
-        serverAddress.setEnabled(false);
-        serverAddress.setText(InetAddress.getLoopbackAddress().getHostAddress());
-        freeSpace.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
+        repoPathField.setEditable(false);
+        freeSpaceLbl.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
+
         browseBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JFileChooser fileChooser = new JFileChooser();
+                final JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
 
@@ -38,8 +38,9 @@ public class ServerModeConfiguration extends JFrame {
                 fileChooser.setAcceptAllFileFilterUsed(false);
                 int rVal = fileChooser.showOpenDialog(null);
                 if (rVal == JFileChooser.APPROVE_OPTION) {
-                    repoPathTextField.setText(fileChooser.getSelectedFile().toString());
-                    repoPathTextField.setToolTipText(fileChooser.getSelectedFile().toString());
+                    repoPathField.setText(fileChooser.getSelectedFile().toString());
+                    repoPathField.setToolTipText(fileChooser.getSelectedFile().toString());
+                    repoPathString = fileChooser.getSelectedFile().toString();
                 }
             }
         });
@@ -53,6 +54,29 @@ public class ServerModeConfiguration extends JFrame {
                 importConfig();
             }
         });
+        ipJListField.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseMoved(MouseEvent e) {
+                JList l = (JList)e.getSource();
+                ListModel m = l.getModel();
+                int index = l.locationToIndex(e.getPoint());
+                if( index>-1 ) {
+                    l.setToolTipText(m.getElementAt(index).toString());
+                }
+            }
+        });
+        saveConfigBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    writeConfig();
+                    JOptionPane.showMessageDialog(null, "Configuration was saved!", "MeshFS - Success", JOptionPane.WARNING_MESSAGE);
+
+                }catch (Exception z) {
+                    JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
+
+                }
+            }
+        });
+        //WIP spaceSldr.setMaximum();
 
     }
 
@@ -63,29 +87,33 @@ public class ServerModeConfiguration extends JFrame {
         // Generated using JFormDesigner Evaluation license - Mark Hedrick
         dialogPane = new JPanel();
         contentPanel = new JPanel();
-        label1 = new JLabel();
-        label2 = new JLabel();
-        serverPort = new JFormattedTextField(numberFormat);
-        label3 = new JLabel();
-        label4 = new JLabel();
-        numStripes = new JFormattedTextField(numberFormat);
-        label5 = new JLabel();
-        numStripeCopies = new JFormattedTextField(numberFormat);
-        label6 = new JLabel();
-        numWhole = new JFormattedTextField(numberFormat);
-        label7 = new JLabel();
-        minSpace = new JFormattedTextField(numberFormat);
-        label8 = new JLabel();
-        repoPathTextField = new JTextField();
+        serverNetworkInterfaceLbl = new JLabel();
+        serverPortLbl = new JLabel();
+        serverPortField = new JFormattedTextField(numberFormat);
+        repositoryLbl = new JLabel();
+        repoPathField = new JTextField();
         browseBtn = new JButton();
-        freeSpace = new JLabel();
-        slider1 = new JSlider();
         scrollPane1 = new JScrollPane();
-        ipJList = new JList(Reporting.getIpAddress().toArray());
-        serverAddress = new JTextField();
+        ipJListField = new JList(ipJList().toArray());
+        serverTimeoutLbl = new JLabel();
+        serverTimeoutField = new JFormattedTextField();
+        separator1 = new JSeparator();
+        serverThreadsLbl = new JLabel();
+        serverThreadsField = new JFormattedTextField();
+        numStripeCopiesField = new JFormattedTextField(numberFormat);
+        numWholeField = new JFormattedTextField(numberFormat);
+        stripedCopiesLbl = new JLabel();
+        wholeCopiesLbl = new JLabel();
+        numStripesField = new JFormattedTextField(numberFormat);
+        stripesLbl = new JLabel();
+        minFreeSpaceLbl = new JLabel();
+        minSpaceField = new JFormattedTextField(numberFormat);
+        spaceSldr = new JSlider();
+        freeSpaceLbl = new JLabel();
         buttonBar = new JPanel();
         importConfigBtn = new JButton();
         hSpacer1 = new JPanel(null);
+        saveConfigBtn = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -109,127 +137,150 @@ public class ServerModeConfiguration extends JFrame {
             //======== contentPanel ========
             {
 
-                //---- label1 ----
-                label1.setText("Server Network Interface:");
-                label1.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                //---- serverNetworkInterfaceLbl ----
+                serverNetworkInterfaceLbl.setText("Server Interface:");
+                serverNetworkInterfaceLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
-                //---- label2 ----
-                label2.setText("Server Port:");
-                label2.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                //---- serverPortLbl ----
+                serverPortLbl.setText("Server Port:");
+                serverPortLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
-                //---- serverPort ----
-                serverPort.setText("5704");
-                serverPort.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                //---- serverPortField ----
+                serverPortField.setText("5704");
+                serverPortField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
-                //---- label3 ----
-                label3.setText("Number of:");
-                label3.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                //---- repositoryLbl ----
+                repositoryLbl.setText("Repository:");
+                repositoryLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
-                //---- label4 ----
-                label4.setText("Stripes:");
-                label4.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- numStripes ----
-                numStripes.setText("3");
-                numStripes.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- label5 ----
-                label5.setText("Striped Copies:");
-                label5.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- numStripeCopies ----
-                numStripeCopies.setText("2");
-                numStripeCopies.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- label6 ----
-                label6.setText("Whole Copies:");
-                label6.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- numWhole ----
-                numWhole.setText("2");
-                numWhole.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- label7 ----
-                label7.setText("Minimum Free Space (GB):");
-                label7.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- minSpace ----
-                minSpace.setText("0");
-                minSpace.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- label8 ----
-                label8.setText("Repository:");
-                label8.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- repoPathTextField ----
-                repoPathTextField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                //---- repoPathField ----
+                repoPathField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 //---- browseBtn ----
                 browseBtn.setText("Browse...");
                 browseBtn.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
-                //---- freeSpace ----
-                freeSpace.setText("(free space)");
-                freeSpace.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
                 //======== scrollPane1 ========
                 {
-                    scrollPane1.setViewportView(ipJList);
+                    scrollPane1.setViewportView(ipJListField);
                 }
 
-                //---- serverAddress ----
-                serverAddress.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                //---- serverTimeoutLbl ----
+                serverTimeoutLbl.setText("Server Timeout:");
+                serverTimeoutLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- serverTimeoutField ----
+                serverTimeoutField.setText("90");
+
+                //---- separator1 ----
+                separator1.setOrientation(SwingConstants.VERTICAL);
+
+                //---- serverThreadsLbl ----
+                serverThreadsLbl.setText("Server Threads:");
+                serverThreadsLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- serverThreadsField ----
+                serverThreadsField.setText("16");
+
+                //---- numStripeCopiesField ----
+                numStripeCopiesField.setText("2");
+                numStripeCopiesField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- numWholeField ----
+                numWholeField.setText("2");
+                numWholeField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- stripedCopiesLbl ----
+                stripedCopiesLbl.setText("Striped Copies:");
+                stripedCopiesLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- wholeCopiesLbl ----
+                wholeCopiesLbl.setText("Whole Copies:");
+                wholeCopiesLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- numStripesField ----
+                numStripesField.setText("3");
+                numStripesField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- stripesLbl ----
+                stripesLbl.setText("Stripes:");
+                stripesLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- minFreeSpaceLbl ----
+                minFreeSpaceLbl.setText("Reserved Space:");
+                minFreeSpaceLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- minSpaceField ----
+                minSpaceField.setText("0");
+                minSpaceField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+
+                //---- freeSpaceLbl ----
+                freeSpaceLbl.setText("(free space)");
+                freeSpaceLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(label1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(serverAddress))
-                                    .addGap(14, 14, 14)
-                                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(label2)
-                                    .addGap(12, 12, 12)
-                                    .addComponent(serverPort, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-                                    .addGap(0, 0, Short.MAX_VALUE))
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(label8)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(repoPathTextField, GroupLayout.PREFERRED_SIZE, 329, GroupLayout.PREFERRED_SIZE)
-                                    .addGap(12, 12, 12)
-                                    .addComponent(browseBtn))
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(label3, GroupLayout.Alignment.LEADING)
-                                        .addGroup(GroupLayout.Alignment.LEADING, contentPanelLayout.createSequentialGroup()
-                                            .addGap(80, 80, 80)
+                                    .addContainerGap()
+                                    .addGroup(contentPanelLayout.createParallelGroup()
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(serverNetworkInterfaceLbl)
+                                            .addGap(14, 14, 14)
+                                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(serverThreadsLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(serverTimeoutLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(serverPortLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(separator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(contentPanelLayout.createParallelGroup()
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
                                             .addGroup(contentPanelLayout.createParallelGroup()
                                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                                    .addComponent(label4)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                    .addComponent(numStripes))
+                                                    .addGap(7, 7, 7)
+                                                    .addComponent(wholeCopiesLbl))
                                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                                    .addComponent(label5)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                    .addComponent(numStripeCopies))
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(stripedCopiesLbl)))
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addGroup(contentPanelLayout.createParallelGroup()
                                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                                    .addComponent(label6)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                    .addComponent(numWhole))))
-                                        .addGroup(GroupLayout.Alignment.LEADING, contentPanelLayout.createSequentialGroup()
-                                            .addComponent(label7)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(minSpace, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)))
-                                    .addGap(18, 18, 18)
+                                                    .addGap(0, 0, Short.MAX_VALUE)
+                                                    .addComponent(numStripeCopiesField, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(numWholeField)))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(stripesLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(numStripesField))))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addGroup(contentPanelLayout.createParallelGroup()
-                                        .addComponent(freeSpace, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(repositoryLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(repoPathField, GroupLayout.PREFERRED_SIZE, 329, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(browseBtn))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(minFreeSpaceLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(minSpaceField, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(freeSpaceLbl, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE))
+                                    .addGap(0, 0, Short.MAX_VALUE)))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
@@ -238,50 +289,61 @@ public class ServerModeConfiguration extends JFrame {
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(label1)
-                                        .addComponent(serverPort, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(label2))
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(serverAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(label3)
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(label4)
-                                .addComponent(numStripes, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(contentPanelLayout.createParallelGroup()
+                                        .addComponent(serverNetworkInterfaceLbl)
+                                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                .addComponent(stripesLbl)
+                                                .addComponent(numStripesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                            .addGap(11, 11, 11)
+                                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                .addComponent(stripedCopiesLbl)
+                                                .addComponent(numStripeCopiesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+                                    .addGroup(contentPanelLayout.createParallelGroup()
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addGap(18, 18, 18)
+                                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                .addComponent(serverPortLbl)
+                                                .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                .addComponent(serverThreadsLbl)
+                                                .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                .addComponent(serverTimeoutLbl)
+                                                .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                .addComponent(wholeCopiesLbl)
+                                                .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(separator1))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(numStripeCopies, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(label5))
-                            .addGap(15, 15, 15)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(numWhole, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label6))
-                                .addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(minSpace, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(label7)
-                                .addComponent(freeSpace))
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(label8)
+                                .addComponent(repoPathField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(browseBtn)
-                                .addComponent(repoPathTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18))
+                                .addComponent(repositoryLbl))
+                            .addGap(18, 18, 18)
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(minFreeSpaceLbl)
+                                    .addComponent(minSpaceField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(freeSpaceLbl)
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
-            dialogPane.add(contentPanel, BorderLayout.CENTER);
+            dialogPane.add(contentPanel, BorderLayout.NORTH);
 
             //======== buttonBar ========
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 309, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 309, 0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0};
 
                 //---- importConfigBtn ----
                 importConfigBtn.setText("Import...");
@@ -293,10 +355,16 @@ public class ServerModeConfiguration extends JFrame {
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
+                //---- saveConfigBtn ----
+                saveConfigBtn.setText("Apply...");
+                buttonBar.add(saveConfigBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-                buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -312,29 +380,33 @@ public class ServerModeConfiguration extends JFrame {
     // Generated using JFormDesigner Evaluation license - Mark Hedrick
     private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel label1;
-    private JLabel label2;
-    private JFormattedTextField serverPort;
-    private JLabel label3;
-    private JLabel label4;
-    private JFormattedTextField numStripes;
-    private JLabel label5;
-    private JFormattedTextField numStripeCopies;
-    private JLabel label6;
-    private JFormattedTextField numWhole;
-    private JLabel label7;
-    private JFormattedTextField minSpace;
-    private JLabel label8;
-    private JTextField repoPathTextField;
+    private JLabel serverNetworkInterfaceLbl;
+    private JLabel serverPortLbl;
+    private JFormattedTextField serverPortField;
+    private JLabel repositoryLbl;
+    private JTextField repoPathField;
     private JButton browseBtn;
-    private JLabel freeSpace;
-    private JSlider slider1;
     private JScrollPane scrollPane1;
-    private JList ipJList;
-    private JTextField serverAddress;
+    private JList ipJListField;
+    private JLabel serverTimeoutLbl;
+    private JFormattedTextField serverTimeoutField;
+    private JSeparator separator1;
+    private JLabel serverThreadsLbl;
+    private JFormattedTextField serverThreadsField;
+    private JFormattedTextField numStripeCopiesField;
+    private JFormattedTextField numWholeField;
+    private JLabel stripedCopiesLbl;
+    private JLabel wholeCopiesLbl;
+    private JFormattedTextField numStripesField;
+    private JLabel stripesLbl;
+    private JLabel minFreeSpaceLbl;
+    private JFormattedTextField minSpaceField;
+    private JSlider spaceSldr;
+    private JLabel freeSpaceLbl;
     private JPanel buttonBar;
     private JButton importConfigBtn;
     private JPanel hSpacer1;
+    private JButton saveConfigBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
@@ -344,7 +416,16 @@ public class ServerModeConfiguration extends JFrame {
         serverModeConfiguration.setVisible(true);
     }
 
+    private ArrayList<String> ipJList(){
+        ArrayList<String> x = new ArrayList<>();
+        for(int i = 0; i < Reporting.getIpAddress().size(); i++){
+            x.add((Reporting.getIpAddress().get(i)).substring((Reporting.getIpAddress().get(i).indexOf("[")+1), (Reporting.getIpAddress().get(i).indexOf(","))) + " (" + (Reporting.getIpAddress().get(i)).substring((Reporting.getIpAddress().get(i).indexOf(", ") + 2), (Reporting.getIpAddress().get(i).indexOf("]"))) + ")");
+        }
+        return x;
+    }
+
     public void onOk(){
+        writeConfig();
         dispose();
     }
 
@@ -362,13 +443,28 @@ public class ServerModeConfiguration extends JFrame {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            serverAddress.setText(properties.getProperty("masterIP"));
-            serverPort.setText(properties.getProperty("port"));
-            numStripes.setText(properties.getProperty("numStripes"));
-            numStripeCopies.setText(properties.getProperty("numStripeCopy"));
-            numWhole.setText(properties.getProperty("numWholeCopy"));
-            minSpace.setText(properties.getProperty("minSpace"));
-            repoPathTextField.setText(properties.getProperty("repository"));
+            serverPortField.setText(properties.getProperty("portNumber"));
+            numStripesField.setText(properties.getProperty("numStripes"));
+            numStripeCopiesField.setText(properties.getProperty("numStripeCopy"));
+            numWholeField.setText(properties.getProperty("numWholeCopy"));
+            minSpaceField.setText(properties.getProperty("minSpace"));
+            repoPathField.setText(properties.getProperty("repository"));
+            serverThreadsField.setText(properties.getProperty("serverThreads"));
+            serverTimeoutField.setText(properties.getProperty("serverTimeout"));
         }
+    }
+
+    public void writeConfig(){
+        Properties configProperties = new Properties();
+        configProperties.setProperty("preferredInterface", String.valueOf(ipJListField.getSelectedValue()).substring(0, String.valueOf(ipJListField.getSelectedValue()).indexOf(" (")));
+        configProperties.setProperty("serverTimeout", String.valueOf(serverTimeoutField.getText()));
+        configProperties.setProperty("numWholeCopy", String.valueOf(numWholeField.getText()));
+        configProperties.setProperty("serverThreads", String.valueOf(serverThreadsField.getText()));
+        configProperties.setProperty("numStripeCopy", String.valueOf(numStripeCopiesField.getText()));
+        configProperties.setProperty("repository", String.valueOf(repoPathString));
+        configProperties.setProperty("numStripes", String.valueOf(numStripesField.getText()));
+        configProperties.setProperty("minSpace", String.valueOf(minSpaceField.getText()));
+        configProperties.setProperty("portNumber", String.valueOf(serverPortField.getText()));
+        ConfigParser.write(configProperties);
     }
 }

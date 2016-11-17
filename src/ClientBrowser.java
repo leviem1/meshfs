@@ -23,7 +23,7 @@ public class ClientBrowser extends JFrame {
 
     private void initComponents() {
         String folderLocation = "root";
-        JSONObject jsonObj = JSONReader.getJSONObject("/Users/aronduran/Desktop/test.json");
+        JSONObject jsonObj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode("Root");
         DefaultMutableTreeNode test = new DefaultMutableTreeNode("hello");
         Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj,folderLocation);
