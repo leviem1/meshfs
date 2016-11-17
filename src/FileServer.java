@@ -61,7 +61,7 @@ class ServerInit implements Runnable {
                     //makeDir(requestParts[1]);
 
                 } else if (requestParts[0].equals("107")) {     //107:Get report
-                    //sendReport(out);
+                    sendReport(out);
 
                 } else if (requestParts[0].equals("108")) {     //108:Post report
                     //receiveReport(requestParts[0]);
@@ -87,6 +87,12 @@ class ServerInit implements Runnable {
 
     private void badRequest(PrintWriter out, String request) {
             out.println("ERROR! Bad request:\n\n" + request);
+    }
+
+    private void sendReport(PrintWriter out) {
+        out.print("108|");
+        out.println(Reporting.generate());
+        out.print("EOR");
     }
 
     private String receiveRequest(Socket client) {

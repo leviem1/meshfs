@@ -105,13 +105,12 @@ public class Reporting {
         return macAddress;
     }
 
-    public static String getRepositoryContents(File repository) {
-        return Arrays.toString(repository.listFiles());
+    public static String getRepositoryContents() {
+        return Arrays.toString(new File(MeshFS.properties.getProperty("repository")).listFiles());
     }
 
-    public static String generate(File repository) {
-        String report = "MAC:" + getMacAddress() + "\nIP:" + getIpAddress() + "\nOS:" + getSystemOS() + "\nJavaVersion:" + getJavaVersion() + "\nFreeSpace:" + getSystemStorage() + "\nUptime:" + getUptime() + "\nUsername:" + getUserName() + "\nRepoContents:" + getRepositoryContents(repository);
-        return report;
+    public static String generate() {
+        return "MAC:" + getMacAddress() + "\nIP:" + getIpAddress() + "\nOS:" + getSystemOS() + "\nJavaVersion:" + getJavaVersion() + "\nFreeSpace:" + getSystemStorage() + "\nUptime:" + getUptime() + "\nUsername:" + getUserName() + "\nRepoContents:" + getRepositoryContents();
     }
 
     public static HashMap<String, String> splitter(String report) {
