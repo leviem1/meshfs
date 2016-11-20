@@ -1,8 +1,6 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -10,74 +8,21 @@ import java.util.Properties;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import static java.lang.String.valueOf;
-/*
- * Created by JFormDesigner on Sun Oct 30 15:58:43 MDT 2016
- */
-
-
-
+import static java.lang.Math.toIntExact;
 /**
  * Created by Mark Hedrick on 10/30/16.
  */
 public class ServerModeConfiguration extends JFrame {
-    String repoPathString;
     public ServerModeConfiguration() {
         initComponents();
-        repoPathField.setEditable(false);
+        windowListeners();
         freeSpaceLbl.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
-
-        browseBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                final JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-
-                fileChooser.setDialogTitle("Choose Respository");
-                fileChooser.setAcceptAllFileFilterUsed(false);
-                int rVal = fileChooser.showOpenDialog(null);
-                if (rVal == JFileChooser.APPROVE_OPTION) {
-                    repoPathField.setText(fileChooser.getSelectedFile().toString());
-                    repoPathField.setToolTipText(fileChooser.getSelectedFile().toString());
-                    repoPathString = fileChooser.getSelectedFile().toString();
-                }
-            }
-        });
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOk();
-            }
-        });
-        importConfigBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                importConfig();
-            }
-        });
-        ipJListField.addMouseMotionListener(new MouseMotionAdapter() {
-            public void mouseMoved(MouseEvent e) {
-                JList l = (JList)e.getSource();
-                ListModel m = l.getModel();
-                int index = l.locationToIndex(e.getPoint());
-                if( index>-1 ) {
-                    l.setToolTipText(m.getElementAt(index).toString());
-                }
-            }
-        });
-        saveConfigBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try{
-                    writeConfig();
-                    JOptionPane.showMessageDialog(null, "Configuration was saved!", "MeshFS - Success", JOptionPane.WARNING_MESSAGE);
-
-                }catch (Exception z) {
-                    JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
-
-                }
-            }
-        });
-        //WIP spaceSldr.setMaximum();
-
+        spaceSldr.setMaximum(toIntExact(Reporting.getSystemStorage()/1073741824)-10);
+        spaceSldr.setMinimum(0);
     }
 
     private void initComponents() {
@@ -91,15 +36,15 @@ public class ServerModeConfiguration extends JFrame {
         serverPortLbl = new JLabel();
         serverPortField = new JFormattedTextField(numberFormat);
         repositoryLbl = new JLabel();
-        repoPathField = new JTextField();
+        repoPathField = new JTextField(System.getProperty("user.dir"));
         browseBtn = new JButton();
         scrollPane1 = new JScrollPane();
         ipJListField = new JList(ipJList().toArray());
         serverTimeoutLbl = new JLabel();
-        serverTimeoutField = new JFormattedTextField();
+        serverTimeoutField = new JFormattedTextField(numberFormat);
         separator1 = new JSeparator();
         serverThreadsLbl = new JLabel();
-        serverThreadsField = new JFormattedTextField();
+        serverThreadsField = new JFormattedTextField(numberFormat);
         numStripeCopiesField = new JFormattedTextField(numberFormat);
         numWholeField = new JFormattedTextField(numberFormat);
         stripedCopiesLbl = new JLabel();
@@ -110,10 +55,9 @@ public class ServerModeConfiguration extends JFrame {
         minSpaceField = new JFormattedTextField(numberFormat);
         spaceSldr = new JSlider();
         freeSpaceLbl = new JLabel();
+        label1 = new JLabel();
         buttonBar = new JPanel();
         importConfigBtn = new JButton();
-        hSpacer1 = new JPanel(null);
-        saveConfigBtn = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -218,6 +162,9 @@ public class ServerModeConfiguration extends JFrame {
                 freeSpaceLbl.setText("(free space)");
                 freeSpaceLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
+                //---- label1 ----
+                label1.setText("GB");
+
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
@@ -267,19 +214,21 @@ public class ServerModeConfiguration extends JFrame {
                                             .addComponent(numStripesField))))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addGroup(contentPanelLayout.createParallelGroup()
-                                        .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(repositoryLbl)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(repoPathField, GroupLayout.PREFERRED_SIZE, 329, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(browseBtn))
+                                        .addComponent(freeSpaceLbl, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE)
                                         .addGroup(contentPanelLayout.createSequentialGroup()
                                             .addComponent(minFreeSpaceLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(minSpaceField, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(label1)
+                                            .addGap(18, 18, 18)
                                             .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(freeSpaceLbl, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(repositoryLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(repoPathField, GroupLayout.PREFERRED_SIZE, 329, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(browseBtn)))
                                     .addGap(0, 0, Short.MAX_VALUE)))
                             .addContainerGap())
                 );
@@ -329,7 +278,8 @@ public class ServerModeConfiguration extends JFrame {
                             .addGroup(contentPanelLayout.createParallelGroup()
                                 .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(minFreeSpaceLbl)
-                                    .addComponent(minSpaceField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(minSpaceField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label1))
                                 .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(freeSpaceLbl)
@@ -351,15 +301,6 @@ public class ServerModeConfiguration extends JFrame {
                 buttonBar.add(importConfigBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
-                buttonBar.add(hSpacer1, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
-
-                //---- saveConfigBtn ----
-                saveConfigBtn.setText("Apply...");
-                buttonBar.add(saveConfigBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
@@ -376,6 +317,55 @@ public class ServerModeConfiguration extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
+    private void windowListeners(){
+        browseBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+
+                fileChooser.setDialogTitle("Choose Respository");
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                int rVal = fileChooser.showOpenDialog(null);
+                if (rVal == JFileChooser.APPROVE_OPTION) {
+                    repoPathField.setText(fileChooser.getSelectedFile().toString());
+                    repoPathField.setToolTipText(fileChooser.getSelectedFile().toString());
+                }
+            }
+        });
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onOk();
+            }
+        });
+        importConfigBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                importConfig();
+            }
+        });
+        ipJListField.addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseMoved(MouseEvent e) {
+                JList l = (JList)e.getSource();
+                ListModel m = l.getModel();
+                int index = l.locationToIndex(e.getPoint());
+                if( index>-1 ) {
+                    l.setToolTipText(m.getElementAt(index).toString());
+                }
+            }
+        });
+        spaceSldr.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent ce) {
+                minSpaceField.setText(String.valueOf(spaceSldr.getValue()));
+
+            }
+        });
+        minSpaceField.addKeyListener(new KeyAdapter(){
+            public void keyReleased(KeyEvent ke) {
+                spaceSldr.setValue(0);
+                spaceSldr.setValue(Integer.parseInt(minSpaceField.getText()));
+            }
+        });
+    }
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner Evaluation license - Mark Hedrick
     private JPanel dialogPane;
@@ -403,10 +393,9 @@ public class ServerModeConfiguration extends JFrame {
     private JFormattedTextField minSpaceField;
     private JSlider spaceSldr;
     private JLabel freeSpaceLbl;
+    private JLabel label1;
     private JPanel buttonBar;
     private JButton importConfigBtn;
-    private JPanel hSpacer1;
-    private JButton saveConfigBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
@@ -425,7 +414,19 @@ public class ServerModeConfiguration extends JFrame {
     }
 
     public void onOk(){
-        writeConfig();
+        try{
+            File repoDirectory = new File(String.valueOf(repoPathField.getText()));
+            if (!repoDirectory.exists()) {
+                repoDirectory.mkdirs();
+            }
+            System.out.println(String.valueOf(repoPathField.getText()));
+            writeConfig();
+            JOptionPane.showMessageDialog(null, "Configuration was saved!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+
+        }catch (Exception z) {
+            JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
+
+        }
         dispose();
     }
 
@@ -455,16 +456,21 @@ public class ServerModeConfiguration extends JFrame {
     }
 
     public void writeConfig(){
+        ConfigParser.write(getConfigProperties());
+    }
+
+    public Properties getConfigProperties(){
         Properties configProperties = new Properties();
-        configProperties.setProperty("preferredInterface", String.valueOf(ipJListField.getSelectedValue()).substring(0, String.valueOf(ipJListField.getSelectedValue()).indexOf(" (")));
-        configProperties.setProperty("serverTimeout", String.valueOf(serverTimeoutField.getText()));
-        configProperties.setProperty("numWholeCopy", String.valueOf(numWholeField.getText()));
-        configProperties.setProperty("serverThreads", String.valueOf(serverThreadsField.getText()));
-        configProperties.setProperty("numStripeCopy", String.valueOf(numStripeCopiesField.getText()));
-        configProperties.setProperty("repository", String.valueOf(repoPathString));
         configProperties.setProperty("numStripes", String.valueOf(numStripesField.getText()));
+        configProperties.setProperty("numStripeCopy", String.valueOf(numStripeCopiesField.getText()));
+        configProperties.setProperty("numWholeCopy", String.valueOf(numWholeField.getText()));
         configProperties.setProperty("minSpace", String.valueOf(minSpaceField.getText()));
+        configProperties.setProperty("masterIP", "127.0.0.1");
+        configProperties.setProperty("preferredInterface", String.valueOf(ipJListField.getSelectedValue()).substring(0, String.valueOf(ipJListField.getSelectedValue()).indexOf(" (")));
         configProperties.setProperty("portNumber", String.valueOf(serverPortField.getText()));
-        ConfigParser.write(configProperties);
+        configProperties.setProperty("repository", String.valueOf(repoPathField.getText()));
+        configProperties.setProperty("serverThreads", String.valueOf(serverThreadsField.getText()));
+        configProperties.setProperty("serverTimeout", String.valueOf(serverTimeoutField.getText()));
+        return configProperties;
     }
 }
