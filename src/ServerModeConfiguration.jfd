@@ -154,7 +154,7 @@ new FormModel {
 					"value": "North"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0, 304:1.0, 0, 0, 80"
+					"$columnSpecs": "0, 0, 304:1.0, 80"
 					"$rowSpecs": "0"
 					"$hGap": 5
 					"$vGap": 5
@@ -167,11 +167,22 @@ new FormModel {
 						"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 131072, 0, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "backupConfigBtn"
+						"text": "Backup..."
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer1"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
 						"font": #Font0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 4
+						"gridx": 3
 						"gridy": 0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {

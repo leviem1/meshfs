@@ -74,4 +74,21 @@ public class ConfigParser {
         return properties;
     }
 
+    public static void backup(Properties props, String destination) {
+        OutputStream output = null;
+        try {
+            output = new FileOutputStream(destination + "/backup_config_" + Reporting.getSystemDate() + ".properties");
+            props.store(output, null);
+        } catch (IOException io) {
+            io.printStackTrace();
+        } finally {
+            if (output != null) {
+                try {
+                    output.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

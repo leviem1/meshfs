@@ -58,6 +58,8 @@ public class ServerModeConfiguration extends JFrame {
         label1 = new JLabel();
         buttonBar = new JPanel();
         importConfigBtn = new JButton();
+        backupConfigBtn = new JButton();
+        hSpacer1 = new JPanel(null);
         okButton = new JButton();
 
         //======== this ========
@@ -292,8 +294,8 @@ public class ServerModeConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 309, 0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 309, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
 
                 //---- importConfigBtn ----
                 importConfigBtn.setText("Import...");
@@ -302,10 +304,19 @@ public class ServerModeConfiguration extends JFrame {
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
+                //---- backupConfigBtn ----
+                backupConfigBtn.setText("Backup...");
+                buttonBar.add(backupConfigBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+                buttonBar.add(hSpacer1, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-                buttonBar.add(okButton, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -341,6 +352,11 @@ public class ServerModeConfiguration extends JFrame {
         importConfigBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 importConfig();
+            }
+        });
+        backupConfigBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                backupConfig();
             }
         });
         ipJListField.addMouseMotionListener(new MouseMotionAdapter() {
@@ -396,6 +412,8 @@ public class ServerModeConfiguration extends JFrame {
     private JLabel label1;
     private JPanel buttonBar;
     private JButton importConfigBtn;
+    private JButton backupConfigBtn;
+    private JPanel hSpacer1;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
@@ -434,7 +452,7 @@ public class ServerModeConfiguration extends JFrame {
         Properties properties = null;
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setDialogTitle("Choose Existing Configuration");
         fileChooser.setAcceptAllFileFilterUsed(false);
         int rVal = fileChooser.showOpenDialog(null);
@@ -452,6 +470,25 @@ public class ServerModeConfiguration extends JFrame {
             repoPathField.setText(properties.getProperty("repository"));
             serverThreadsField.setText(properties.getProperty("serverThreads"));
             serverTimeoutField.setText(properties.getProperty("serverTimeout"));
+        }
+    }
+
+    public void backupConfig(){
+        Properties currentProperties = getConfigProperties();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setDialogTitle("Choose Backup Location");
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        int rVal = fileChooser.showOpenDialog(null);
+        if (rVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                ConfigParser.backup(currentProperties, fileChooser.getSelectedFile().toString());
+                JOptionPane.showMessageDialog(null, "Backup Successful!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Backup Failed!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
         }
     }
 
