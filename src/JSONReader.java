@@ -39,6 +39,24 @@ public class JSONReader {
         return contents;
     }
 
+    public static JSONObject removeItem(JSONObject jsonObject, String itemLocation){
+        String item = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
+        String[] test = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
+        JSONObject folderToRead = jsonObject;
+        System.out.println(test.toString());
+        for (String folder : test) {
+            folderToRead = (JSONObject) folderToRead.get(folder);
+        }
+
+        try {
+            folderToRead.remove(item);
+        }
+        catch (Exception e){
+            System.out.println("fail");
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
 
 
 }
