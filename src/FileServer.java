@@ -38,12 +38,12 @@ class ServerInit implements Runnable {
         this.timeout = timeout;
     }
 
-    private void processRequest(String request, PrintWriter out) {
+    private void processRequest(String request, Socket out) {
         if (request != null) {
             try {
                 String[] requestParts = request.split("\\|");
                 if (requestParts[0].equals("101")) {            //101:Get file
-                    //sendFile(requestParts[1], out);
+                    sendFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("102")) {     //102:Post file
                     //receiveFile(requestParts[1], out);
@@ -64,7 +64,7 @@ class ServerInit implements Runnable {
                     sendReport(out);
 
                 } else if (requestParts[0].equals("108")) {     //108:Post report
-                    //receiveReport(requestParts[0]);
+                    //receiveReport(requestParts[1]);
 
                 } else if (requestParts[0].equals("109")) {     //109:Ping
                     ping(out);
@@ -75,24 +75,52 @@ class ServerInit implements Runnable {
                 } else {
                     badRequest(out, request);
                 }
-            } catch (IndexOutOfBoundsException ioobe) {
+            } catch (Exception e) {
                 badRequest(out, request);
             }
         }
     }
 
-    private void ping(PrintWriter out) {
+    private void ping(Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("Pong!");
+        out.flush();
     }
 
-    private void badRequest(PrintWriter out, String request) {
+    private void badRequest(Socket client, String request) {
+        try {
+            PrintWriter out = new PrintWriter(client.getOutputStream());
             out.println("ERROR! Bad request:\n\n" + request);
+            out.flush();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
-    private void sendReport(PrintWriter out) {
+    private void sendReport(Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
         out.print("108|");
         out.println(Reporting.generate());
         out.print("EOR");
+        out.flush();
+    }
+
+    private void sendFile(String filename, Socket client) throws Exception {
+        int br;
+        byte[] data = new byte[4096];
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + filename);
+        
+        while ((br = fis.read(data, 0, data.length)) != -1) {
+            dos.write(data, 0, br);
+        }
+
+        fis.close();
+        dos.close();
+    }
+
+    private void receiveReport(String report){
+
     }
 
     private String receiveRequest(Socket client) {
@@ -117,8 +145,7 @@ class ServerInit implements Runnable {
                 try {
                     Socket client = server.accept();
                     client.setSoTimeout(timeout);
-                    PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-                    processRequest(receiveRequest(client), out);
+                    processRequest(receiveRequest(client), client);
                     client.close();
                 } catch (IOException io) {
                     io.printStackTrace();

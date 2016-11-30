@@ -66,7 +66,6 @@ public class Distributor {
 
              int lastResortComp = 0;
              int lapNum = 0;
-             boolean noStorage = false;
              List<String> computersForStripes = new ArrayList<>();
              for (int computerNumS = stopOfWholes+1; computerNumS < ((numOfStripes * numOfStripedCopies) + stopOfWholes+1); computerNumS++) {
                  String ipAddress;
@@ -124,13 +123,11 @@ public class Distributor {
              }
 
              List<List<String>> stripes = new ArrayList<>();
-             if (!noStorage){
-                 stripes.add(computersForWholes);
-             }
+             stripes.add(computersForWholes);
 
              boolean allowStripes = false;
              for (String computer : computersForStripes){
-                if (computer != computersForStripes.get(0)){
+                if (!computer.equals(computersForStripes.get(0))){
                     allowStripes = true;
                     break;
                 }
