@@ -46,7 +46,7 @@ class ServerInit implements Runnable {
                     sendFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("102")) {     //102:Post file
-                    //receiveFile(requestParts[1], out);
+                    receiveFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("103")) {     //103:Move file (virtual only)
                     //moveFile(requestParts[1], requestParts[2]);
@@ -105,12 +105,16 @@ class ServerInit implements Runnable {
         out.flush();
     }
 
+    private void receiveReport(String report){
+
+    }
+
     private void sendFile(String filename, Socket client) throws Exception {
         int br;
         byte[] data = new byte[4096];
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + filename);
-        
+
         while ((br = fis.read(data, 0, data.length)) != -1) {
             dos.write(data, 0, br);
         }
@@ -119,8 +123,18 @@ class ServerInit implements Runnable {
         dos.close();
     }
 
-    private void receiveReport(String report){
+    private void receiveFile(String filename, Socket client) throws Exception{
+        int br;
+        byte[] data = new byte[4096];
+        DataInputStream dis = new DataInputStream(client.getInputStream());
+        FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
+        while ((br = dis.read(data, 0, data.length)) != -1){
+            fos.write(data, 0, br);
+        }
+
+        fos.close();
+        dis.close();
     }
 
     private String receiveRequest(Socket client) {
