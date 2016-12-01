@@ -21,20 +21,40 @@ public class ClientBrowser extends JFrame {
         initComponents();
     }
 
+
+
+    private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
+        Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
+        for (String name : folderContents.keySet()) {
+            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
+            leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
+            if (leaf.getAllowsChildren()){
+                String folderLocation2 = folderLocation + "/" + name;
+                readFolder(folderLocation2, jsonObj, leaf);
+            }
+            branch.add(leaf);
+        }
+        return branch;
+    }
+
+
+
     private void initComponents() {
         String folderLocation = "root";
-        JSONObject jsonObj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");
-        DefaultMutableTreeNode tree = new DefaultMutableTreeNode("Root");
-        DefaultMutableTreeNode test = new DefaultMutableTreeNode("hello");
-        Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj,folderLocation);
+        JSONObject jsonObj = JSONReader.getJSONObject("/Users/aronduran/Desktop/test.json");
+        DefaultMutableTreeNode tree = new DefaultMutableTreeNode("root");
+        Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
         for (String name : folderContents.keySet()) {
-            tree.add(new DefaultMutableTreeNode(name));
+            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
+            leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
+            if (leaf.getAllowsChildren()){
+                String folderLocation2 = folderLocation + "/" + name;
+                readFolder(folderLocation2,jsonObj,leaf);
+            }
+            tree.add(leaf);
         }
 
-        DefaultMutableTreeNode vegetableNode = new DefaultMutableTreeNode("Vegetables");
-        DefaultMutableTreeNode fruitNode = new DefaultMutableTreeNode("Fruits");
-        tree.add(vegetableNode);
-        tree.add(fruitNode);
+
 
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Mark Hedrick

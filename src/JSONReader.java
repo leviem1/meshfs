@@ -24,17 +24,24 @@ public class JSONReader {
     }
 
 
-    public static HashMap<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation){
+    public static Map<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation){
         String[] Tree = folderLocation.split("/");
         JSONObject folderToRead = jsonObject;
-        HashMap<String,String> contents = null;
         for (String folder : Tree) {
             folderToRead = (JSONObject) folderToRead.get(folder);
         }
+        Map<String,String> contents = new HashMap<>();
         for (Object key : folderToRead.keySet()) {
-            String keyStr = (String) key;
-            String type = (String) ((JSONObject) folderToRead.get(keyStr)).get("type");
-            contents.put(keyStr,type);
+            String keyStr = key.toString();
+            try{
+                String type = (((JSONObject) folderToRead.get(keyStr)).get("type")).toString();
+                contents.put(keyStr,type);
+            }
+            catch (Exception e){}
+
+
+
+
         }
         return contents;
     }
@@ -43,7 +50,6 @@ public class JSONReader {
         String item = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         String[] test = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
         JSONObject folderToRead = jsonObject;
-        System.out.println(test.toString());
         for (String folder : test) {
             folderToRead = (JSONObject) folderToRead.get(folder);
         }
