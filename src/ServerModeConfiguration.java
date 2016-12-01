@@ -426,7 +426,7 @@ public class ServerModeConfiguration extends JFrame {
     private ArrayList<String> ipJList(){
         ArrayList<String> x = new ArrayList<>();
         for(int i = 0; i < Reporting.getIpAddress().size(); i++){
-            x.add((Reporting.getIpAddress().get(i)).substring((Reporting.getIpAddress().get(i).indexOf("[")+1), (Reporting.getIpAddress().get(i).indexOf(","))) + " (" + (Reporting.getIpAddress().get(i)).substring((Reporting.getIpAddress().get(i).indexOf(", ") + 2), (Reporting.getIpAddress().get(i).indexOf("]"))) + ")");
+            x.add("[" + Reporting.getIpAddress().get(i).get(0).toString() + ", " + Reporting.getIpAddress().get(i).get(1).toString() + "]");
         }
         return x;
     }
@@ -443,7 +443,7 @@ public class ServerModeConfiguration extends JFrame {
 
         }catch (Exception z) {
             JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
-
+            z.printStackTrace();
         }
         dispose();
     }

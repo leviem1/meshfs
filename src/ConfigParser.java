@@ -8,13 +8,20 @@ import java.util.Properties;
 public class ConfigParser {
 
     public static Properties loadDefaultProperties() {
+        String iface;
+
+        try {
+            iface = Reporting.getIpAddress().get(0).get(0).toString();
+        } catch (IndexOutOfBoundsException ioobe) {
+            iface = "";
+        }
         Properties defaultProperties = new Properties();
         defaultProperties.setProperty("numStripes","3");
         defaultProperties.setProperty("numStripeCopy", "2");
         defaultProperties.setProperty("numWholeCopy", "2");
         defaultProperties.setProperty("minSpace", "0");
         defaultProperties.setProperty("masterIP","127.0.0.1");
-        defaultProperties.setProperty("preferredInterface", "");
+        defaultProperties.setProperty("preferredInterface", iface);
         defaultProperties.setProperty("portNumber","5704");
         defaultProperties.setProperty("repository", ("repo" + File.separator));
         defaultProperties.setProperty("serverThreads", "16");
