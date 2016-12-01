@@ -1,7 +1,5 @@
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -43,16 +41,7 @@ public class ClientBrowser extends JFrame {
         String folderLocation = "root";
         JSONObject jsonObj = JSONReader.getJSONObject("/Users/aronduran/Desktop/test.json");
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode("root");
-        Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
-        for (String name : folderContents.keySet()) {
-            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
-            leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
-            if (leaf.getAllowsChildren()){
-                String folderLocation2 = folderLocation + "/" + name;
-                readFolder(folderLocation2,jsonObj,leaf);
-            }
-            tree.add(leaf);
-        }
+        tree = (readFolder(folderLocation,jsonObj,tree));
 
 
 
