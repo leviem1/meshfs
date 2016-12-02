@@ -10,6 +10,10 @@ import java.util.List;
  */
 public class JSONPreWriter {
     public static void addToIndex(String fileName, List<List<String>> stripes, String destinationFilePath, String JSONFilePath) {
+        addToIndex(stripes,destinationFilePath, JSONFilePath, "all");
+    }
+
+    public static void addToIndex(List<List<String>> stripes, String itemLocation, String JSONFilePath, String group) {
 
         JSONObject jsonFile = JSONReader.getJSONObject(JSONFilePath);
 
@@ -20,8 +24,8 @@ public class JSONPreWriter {
         JSONObject objChild2 = new JSONObject();
         JSONObject objChild3 = new JSONObject();
         JSONArray ipArray = new JSONArray();
-        /*
-        List<String> filePath = new ArrayList<>();
+
+        /*List<String> filePath = new ArrayList<>();
         int startName = 0;
         int stopName;
         while (true){
@@ -34,22 +38,18 @@ public class JSONPreWriter {
                 filePath.add(destinationFilePath.substring(startName));
                 break;
             }
-        }
-        int startSearch = 0;
-        int JSONIndex;
-        */
-        /*
-        for (String part:filePath) {
-            try{
+        }*/
+        String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
+        String[] folders = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
+        JSONObject folderToRead = jsonFile;
+        for (String folder : folders) {
+            try {
+                folderToRead = (JSONObject) folderToRead.get(folder);
+            }
+            catch (Exception e){
 
             }
-            catch(Exception e){
-
-            }
-
-
         }
-        */
 
 
         for (int stripe = 0; stripe < stripes.size(); stripe++){
@@ -66,7 +66,7 @@ public class JSONPreWriter {
 
         }
 
-        objChild3.put("group", "all");
+        objChild3.put("group", group);
         objChild3.put("type", "file");
         objChild2.put(fileName, objChild3);
 
