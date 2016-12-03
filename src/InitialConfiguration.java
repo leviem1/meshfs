@@ -15,6 +15,9 @@ import javax.swing.border.*;
  * Created by Mark Hedrick on 10/30/16.
  */
 public class InitialConfiguration extends JFrame {
+
+    private static JFrame initialConfiguration;
+
     public InitialConfiguration() {
         initComponents();
         okButton.addActionListener(new ActionListener() {
@@ -146,19 +149,19 @@ public class InitialConfiguration extends JFrame {
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
-    public static void run() {
-        JFrame initialConfiguration = new InitialConfiguration();
-        CenterWindow.centerOnScreen(initialConfiguration);
+    public static void run(JFrame sender) {
+        initialConfiguration = new InitialConfiguration();
+        CenterWindow.centerOnWindow(sender, initialConfiguration);
         initialConfiguration.setVisible(true);
     }
 
     public void onOk() {
         if(clientModeBtn.isSelected()){
-            ClientModeConfiguration.run();
+            ClientModeConfiguration.run(initialConfiguration);
             dispose();
         }
         else if(serverModeBtn.isSelected()){
-            ServerModeConfiguration.run();
+            ServerModeConfiguration.run(initialConfiguration);
             dispose();
         }
         else{

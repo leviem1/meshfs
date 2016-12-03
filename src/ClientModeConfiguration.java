@@ -223,9 +223,9 @@ public class ClientModeConfiguration extends JFrame {
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public static void run() {
+    public static void run(JFrame sender) {
         JFrame clientModeConfiguration = new ClientModeConfiguration();
-        CenterWindow.centerOnScreen(clientModeConfiguration);
+        CenterWindow.centerOnWindow(sender, clientModeConfiguration);
         clientModeConfiguration.setVisible(true);
     }
 

@@ -15,6 +15,9 @@ import javax.swing.border.*;
  * Created by Mark Hedrick on 10/30/16.
  */
 public class GreetingsWindow extends JFrame {
+
+    private static JFrame greetingsWindow;
+
     public GreetingsWindow() {
         initComponents();
         dialogPane.getRootPane().setDefaultButton(configBtn);
@@ -36,7 +39,7 @@ public class GreetingsWindow extends JFrame {
     }
 
     private void onConfigure(){
-        InitialConfiguration.run();
+        InitialConfiguration.run(greetingsWindow);
     }
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -150,7 +153,7 @@ public class GreetingsWindow extends JFrame {
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     public static void run() {
-        JFrame greetingsWindow = new GreetingsWindow();
+        greetingsWindow = new GreetingsWindow();
         CenterWindow.centerOnScreen(greetingsWindow);
         greetingsWindow.setVisible(true);
     }

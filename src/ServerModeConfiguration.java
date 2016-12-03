@@ -417,9 +417,9 @@ public class ServerModeConfiguration extends JFrame {
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public static void run() {
+    public static void run(JFrame sender) {
         JFrame serverModeConfiguration = new ServerModeConfiguration();
-        CenterWindow.centerOnScreen(serverModeConfiguration);
+        CenterWindow.centerOnWindow(sender, serverModeConfiguration);
         serverModeConfiguration.setVisible(true);
     }
 
