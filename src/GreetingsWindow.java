@@ -29,6 +29,7 @@ public class GreetingsWindow extends JFrame {
         });
         quitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                dispose();
                 System.exit(0);
             }
         });

@@ -8,6 +8,7 @@ import java.util.*;
 public class MeshFS {
 
     public static Properties properties;
+    public static FileServer fileServer;
 
     public static void main(String[] args) {
         properties = ConfigParser.loadProperties();
@@ -19,9 +20,16 @@ public class MeshFS {
         }
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
+        Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
 
-        FileServer fileServer = new FileServer();
-        fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout"))*100);
+        try {
+            fileServer = new FileServer();
+            fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout")) * 100);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error: Server start failure");
+            System.exit(1);
+        }
 
         GreetingsWindow.run();
 
@@ -88,5 +96,11 @@ public class MeshFS {
         System.out.println(obj.get("root"));
         System.out.println(array.size());
         */
+    }
+}
+
+class onQuit implements Runnable {
+    public void run() {
+        MeshFS.fileServer.stopServer();
     }
 }
