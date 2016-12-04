@@ -193,7 +193,7 @@ public class Distributor {
              }
 
              String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-             JSONPreWriter.addToIndex(fileName, stripes, destinationFilePath, JSONFilePath);
+             JSONPreWriter.addToIndex(stripes,destinationFilePath + "/"+ fileName, JSONFilePath);
          }
          catch (Exception e) {
              e.printStackTrace();

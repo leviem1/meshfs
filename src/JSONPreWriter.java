@@ -9,8 +9,8 @@ import java.util.List;
  * Created by Aaron Duran on 10/25/16.
  */
 public class JSONPreWriter {
-    public static void addToIndex(String fileName, List<List<String>> stripes, String destinationFilePath, String JSONFilePath) {
-        addToIndex(stripes,destinationFilePath, JSONFilePath, "all");
+    public static void addToIndex(List<List<String>> stripes, String itemFilePath, String JSONFilePath) {
+        addToIndex(stripes,itemFilePath, JSONFilePath, "all");
     }
 
     public static void addToIndex(List<List<String>> stripes, String itemLocation, String JSONFilePath, String group) {
@@ -42,13 +42,22 @@ public class JSONPreWriter {
         String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         String[] folders = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
         JSONObject folderToRead = jsonFile;
+        JSONObject folderToReadNew;
         for (String folder : folders) {
-            try {
+            System.out.println(folderToRead);
+            System.out.println(folder);
+            folderToReadNew = (JSONObject) folderToRead.get(folder);
+            if (folderToReadNew == null){
+                JSONObject folderCreator = new JSONObject();
+                folderCreator.put("type", "directory");
+                folderToRead.put(folder, folderCreator);
                 folderToRead = (JSONObject) folderToRead.get(folder);
             }
-            catch (Exception e){
-
+            else{
+                folderToRead = folderToReadNew;
             }
+
+
         }
 
 
@@ -68,20 +77,20 @@ public class JSONPreWriter {
 
         objChild3.put("group", group);
         objChild3.put("type", "file");
-        objChild2.put(fileName, objChild3);
+        folderToRead.put(fileName, objChild3);
 
 
 
-
+/*
         objChild2.put("type", "directory");
         objChild1.put("videos", objChild2);
 
 
         objParent.put("root", objChild1);
-        System.out.println(objParent);
+        */
         String shortName = fileName.substring(0, fileName.lastIndexOf("."));
         try{
-            JSONWriter.writeJSONObject("/Users/aronduran/Desktop/" + shortName + ".json", objParent);
+            JSONWriter.writeJSONObject(JSONFilePath, jsonFile);
         }catch(IOException e){
             e.printStackTrace();
         }
