@@ -80,10 +80,6 @@ public class Reporting {
         return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
-    public static String getSystemTime(){
-        return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME);
-    }
-
     public static String getMacAddress(){
         String macAddress = null;
         try {

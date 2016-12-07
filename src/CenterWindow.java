@@ -11,7 +11,7 @@ import java.awt.*;
  * @version 1.0.0
  */
 
-public class CenterWindow {
+public final class CenterWindow {
 
     /**
      * This method is used to center a window

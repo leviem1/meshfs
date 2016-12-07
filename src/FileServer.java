@@ -137,7 +137,7 @@ class ServerInit implements Runnable {
 
     private void ping(Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
-        out.println("Pong!");
+        out.println("201");
         out.flush();
     }
 
