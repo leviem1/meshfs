@@ -9,6 +9,7 @@ public class MeshFS {
 
     public static Properties properties;
     public static FileServer fileServer;
+    public static boolean isMaster;
 
     public static void main(String[] args) {
         properties = ConfigParser.loadProperties();
@@ -18,6 +19,22 @@ public class MeshFS {
         if (!repo.exists()) {
             repo.mkdirs();
         }
+
+        List<List> possibleIP = Reporting.getIpAddress();
+
+        if (properties.getProperty("masterIP").equals("127.0.0.1")) {
+            isMaster = true;
+        } else {
+            for (List iface : possibleIP) {
+                if (iface.get(1).equals(properties.getProperty("masterIP"))) {
+                    isMaster = true;
+                    break;
+                } else {
+                    isMaster = false;
+                }
+            }
+        }
+
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));

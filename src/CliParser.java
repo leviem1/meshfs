@@ -11,6 +11,7 @@ public class CliParser {
     public CliParser(String[] args, Properties properties) {
         opt.addOption("h", "help", false, "Display application's help message.");
         opt.addOption("m", "masterIP", true, "IP of master (if self, use 127.0.0.1 or own IP).");
+        opt.addOption("i", "interface", true, "Preferred interface to allow connections on.");
         opt.addOption("r", "regenConfig", false, "Regenerate application's default configuration file.");
         DefaultParser parser = new DefaultParser();
         try {
