@@ -71,7 +71,7 @@ public class FileServer {
 }
 
 class ServerInit implements Runnable {
-    private static ServerSocket server;
+    private ServerSocket server;
     private int timeout;
 
     public ServerInit(ServerSocket server, int timeout) {

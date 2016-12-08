@@ -20,11 +20,26 @@ public final class CenterWindow {
      */
 
     public static void centerOnScreen(final Component window) {
+        GraphicsConfiguration config = window.getGraphicsConfiguration();
+        GraphicsDevice currentScreen = config.getDevice();
+        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] allScreens = environment.getScreenDevices();
+        GraphicsDevice activeScreen = null;
+
+        for (GraphicsDevice screenI : allScreens) {
+            if (screenI.equals(currentScreen)) {
+                activeScreen = screenI;
+                break;
+            }
+        }
+        System.out.println(activeScreen);
         final int width = window.getWidth();
         final int height = window.getHeight();
-        final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (screenSize.width / 2) - (width / 2);
-        int y = (screenSize.height / 2) - (height / 2);
+        final int screenWidth = activeScreen.getDisplayMode().getWidth();
+        final int screenHeight = activeScreen.getDisplayMode().getHeight();
+        System.out.println(screenWidth + "x" + screenHeight);
+        int x = (screenWidth / 2) - (width / 2);
+        int y = (screenHeight / 2) - (height / 2);
         window.setLocation(x, y);
     }
 

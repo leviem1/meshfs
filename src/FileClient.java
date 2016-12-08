@@ -76,7 +76,7 @@ public final class FileClient {
      */
 
     public static boolean ping(String serverAddress, int port) throws IOException{
-        Socket client =  new Socket(serverAddress, port);
+        Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -96,4 +96,31 @@ public final class FileClient {
             return false;
         }
     }
+
+    /**
+     * This method is used to generate and send a report to a server.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @throws IOException on error connecting
+     */
+
+    public static void sendReport(String serverAddress, int port) throws IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+        try {
+            out.println("107");
+            String response = input.readLine();
+
+            if (response.equals("201")) {
+                out.println(Reporting.generate());
+            }
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+    }
+
 }
