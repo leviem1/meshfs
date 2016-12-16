@@ -1,6 +1,8 @@
 /**
  * Created by Aaron Duran on 10/13/16.
  */
+import org.json.simple.JSONObject;
+
 import java.io.File;
 import java.util.*;
 
@@ -50,9 +52,12 @@ public class Distributor {
              */
 
 
-             int stopOfWholes = (0-1);
+             int stopOfWholes = (-1);
 
              List<String> computersForWholes = new ArrayList<>();
+             JSONObject jsonObj = JSONReader.getJSONObject(JSONFilePath);
+             String currentName = jsonObj.get("currentName").toString();
+             String newName = incrementName(currentName);
              for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
                  String ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
                  if (sortedCompStorageMap.get(ipAddress) >= sizeOfFile) {
@@ -136,7 +141,7 @@ public class Distributor {
              for (String item : computersForWholes) {
 
                  String computerToReceive = item;
-                 //FileReader.writeStripe(computerToReceive, filePath, 0, sizeOfFile - 1);
+                 //FileReader.writeStripe(computerToReceive, filePath, newName + "_w", 0, sizeOfFile - 1);
              }
 
              if (allowStripes){
@@ -169,17 +174,17 @@ public class Distributor {
                                      }
                                      if (isNotBroken){
                                          stripes.get(currentStripe + 1).add(computerToReceive);
-                                         //long startByte = (sizeOfStripe * currentStripe);
-                                         //long stopByte = (startByte + (sizeOfStripe - 1));
-                                         //FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);
+                                         long startByte = (sizeOfStripe * currentStripe);
+                                         long stopByte = (startByte + (sizeOfStripe - 1));
+                                         //FileReader.writeStripe(computerToReceive, filePath, newName + "_s" + currentStripe, startByte, stopByte);
                                          break;
                                      }
                                  }
                                  else {
                                      stripes.get(currentStripe + 1).add(computerToReceive);
-                                     //long startByte = (sizeOfStripe * currentStripe);
-                                     //long stopByte = (startByte + (sizeOfStripe - 1));
-                                     //FileReader.writeStripe(computerToReceive, filePath, startByte, stopByte);
+                                     long startByte = (sizeOfStripe * currentStripe);
+                                     long stopByte = (startByte + (sizeOfStripe - 1));
+                                     //FileReader.writeStripe(computerToReceive, filePath, newName + "_s" + currentStripe, startByte, stopByte);
                                      break;
                                  }
                              }
@@ -193,12 +198,36 @@ public class Distributor {
              }
 
              String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-             JSONPreWriter.addToIndex(stripes,destinationFilePath + "/"+ fileName, JSONFilePath);
+             JSONPreWriter.addToIndex(stripes,destinationFilePath + "/"+ fileName, JSONFilePath, newName);
          }
          catch (Exception e) {
              e.printStackTrace();
          }
 
+    }
+
+
+    private static String incrementName(String name){
+        String alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        int incrementReverseIndex = 1;
+        String toAdd = "";
+
+
+        while(true) {
+            try {
+                char lastChar = name.charAt(name.length()-incrementReverseIndex);
+                toAdd += alphabet.charAt(alphabet.indexOf(lastChar) + 1);
+                break;
+            } catch (IndexOutOfBoundsException iobe) {
+                toAdd += alphabet.charAt(0);
+                incrementReverseIndex++;
+            }
+        }
+        String newName = name.substring(0,name.length()-(toAdd.length()));
+        for (int reverseIndex = (toAdd.length()-1); reverseIndex >= 0; reverseIndex--) {
+            newName += toAdd.charAt(reverseIndex);
+        }
+        return newName;
     }
 }
 
