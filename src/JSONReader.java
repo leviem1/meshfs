@@ -64,5 +64,56 @@ public class JSONReader {
         return jsonObject;
     }
 
+    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
+        String itemName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
+        String[] folders = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
+
+        JSONObject folderToRead = jsonObject;
+        for (String folder : folders) {
+            folderToRead = (JSONObject) folderToRead.get(folder);
+        }
+
+        String[] destFolders = destinationLocation.split("/");
+        JSONObject destFolderToRead = jsonObject;
+        JSONObject folderToReadNew;
+        for (String folder : destFolders) {
+            folderToReadNew = (JSONObject) destFolderToRead.get(folder);
+            if (folderToReadNew == null){
+                JSONObject folderCreator = new JSONObject();
+                folderCreator.put("type", "directory");
+                destFolderToRead.put(folder, folderCreator);
+                destFolderToRead = (JSONObject) destFolderToRead.get(folder);
+            }
+            else{
+                destFolderToRead = folderToReadNew;
+            }
+
+        }
+
+        destFolderToRead.put(itemName,folderToRead.get(itemName));
+        return jsonObject;
+    }
+
+    public static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
+        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation);
+        jsonObject = removeItem(jsonObject, itemLocation);
+        return jsonObject;
+    }
+
+    public static void pullFile(JSONObject jsonObject, String itemLocation, String compInfoJSONFilelocation){
+        String itemName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
+        String[] folders = itemLocation.split("/");
+        JSONObject itemToRead = jsonObject;
+        for (String folder : folders) {
+            itemToRead = (JSONObject) itemToRead.get(folder);
+        }
+
+        String fileName = itemToRead.get("fileName").toString();
+        JSONObject compInfoFile = getJSONObject(compInfoJSONFilelocation);
+
+
+        itemToRead.keySet();
+
+    }
 
 }
