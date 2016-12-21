@@ -58,9 +58,8 @@ public class JSONReader {
         return jsonObject;
     }
 
-    public static JSONObject putItemInFolder(JSONObject jsonObject, String itemDestinationLocation, JSONObject itemContents){
-        String fileName = itemDestinationLocation.substring(itemDestinationLocation.lastIndexOf("/")+1);
-        String[] folders = itemDestinationLocation.substring(0,itemDestinationLocation.lastIndexOf("/")).split("/");
+    public static JSONObject putItemInFolder(JSONObject jsonObject, String itemDestinationLocation, String fileName, JSONObject itemContents){
+        String[] folders = itemDestinationLocation.split("/");
         JSONObject folderToRead = jsonObject;
         JSONObject folderToReadNew;
         for (String folder : folders) {
@@ -90,7 +89,8 @@ public class JSONReader {
 
     public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
         JSONObject itemContents = getItemContents(jsonObject,itemLocation);
-        jsonObject = putItemInFolder(jsonObject, destinationLocation,itemContents);
+        String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
+        jsonObject = putItemInFolder(jsonObject, destinationLocation, fileName, itemContents);
         return jsonObject;
     }
 

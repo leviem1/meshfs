@@ -9,11 +9,11 @@ import java.util.List;
  * Created by Aaron Duran on 10/25/16.
  */
 public class JSONPreWriter {
-    public static void addToIndex(List<List<String>> stripes, String itemFilePath, String JSONFilePath, String alphanumericName) {
-        addToIndex(stripes,itemFilePath, JSONFilePath, alphanumericName, "all");
+    public static void addToIndex(List<List<String>> stripes, String itemFilePath, String fileName, String JSONFilePath, String alphanumericName) {
+        addToIndex(stripes,itemFilePath, fileName, JSONFilePath, alphanumericName, "all");
     }
 
-    public static void addToIndex(List<List<String>> stripes, String itemLocation, String JSONFilePath, String alphanumericName,String group) {
+    public static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String group) {
 
         JSONObject jsonFile = JSONReader.getJSONObject(JSONFilePath);
         jsonFile.replace("currentName", alphanumericName);
@@ -42,7 +42,7 @@ public class JSONPreWriter {
         objChild.put("type", "file");
         objChild.put("fileName", alphanumericName);
 
-        jsonFile = JSONReader.putItemInFolder(jsonFile,itemLocation,objChild);
+        jsonFile = JSONReader.putItemInFolder(jsonFile, itemLocation, fileName,objChild);
 
 
         try{
