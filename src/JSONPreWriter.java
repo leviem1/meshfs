@@ -19,30 +19,9 @@ public class JSONPreWriter {
         jsonFile.replace("currentName", alphanumericName);
 
 
-        //JSONObject objParent = new JSONObject();
-        //JSONObject objChild1 = new JSONObject();
-        //JSONObject objChild2 = new JSONObject();
-        JSONObject objChild3 = new JSONObject();
+        JSONObject objChild = new JSONObject();
         JSONArray ipArray = new JSONArray();
 
-        String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
-        String[] folders = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
-        JSONObject folderToRead = jsonFile;
-        JSONObject folderToReadNew;
-        for (String folder : folders) {
-            folderToReadNew = (JSONObject) folderToRead.get(folder);
-            if (folderToReadNew == null){
-                JSONObject folderCreator = new JSONObject();
-                folderCreator.put("type", "directory");
-                folderToRead.put(folder, folderCreator);
-                folderToRead = (JSONObject) folderToRead.get(folder);
-            }
-            else{
-                folderToRead = folderToReadNew;
-            }
-
-
-        }
 
 
         for (int stripe = 0; stripe < stripes.size(); stripe++){
@@ -50,30 +29,22 @@ public class JSONPreWriter {
                 ipArray.add(stripes.get(stripe).get(copy));
             }
             if (stripe == 0){
-                objChild3.put("whole", ipArray.clone());
+                objChild.put("whole", ipArray.clone());
             }
             else{
-                objChild3.put("stripe" + String.valueOf(stripe), ipArray.clone());
+                objChild.put("stripe" + String.valueOf(stripe), ipArray.clone());
             }
             ipArray.clear();
 
         }
 
-        objChild3.put("group", group);
-        objChild3.put("type", "file");
-        objChild3.put("fileName", alphanumericName);
-        folderToRead.put(fileName, objChild3);
+        objChild.put("group", group);
+        objChild.put("type", "file");
+        objChild.put("fileName", alphanumericName);
+
+        jsonFile = JSONReader.putItemInFolder(jsonFile,itemLocation,objChild);
 
 
-
-/*
-        objChild2.put("type", "directory");
-        objChild1.put("videos", objChild2);
-
-
-        objParent.put("root", objChild1);
-        */
-        String shortName = fileName.substring(0, fileName.lastIndexOf("."));
         try{
             JSONWriter.writeJSONObject(JSONFilePath, jsonFile);
         }catch(IOException e){
