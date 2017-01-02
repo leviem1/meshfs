@@ -23,14 +23,20 @@ public class ClientBrowser extends JFrame {
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
         Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
-        for (String name : folderContents.keySet()) {
-            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
-            leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
-            if (leaf.getAllowsChildren()){
-                String folderLocation2 = folderLocation + "/" + name;
-                readFolder(folderLocation2, jsonObj, leaf);
-            }
+        if (folderContents.keySet().isEmpty()){
+            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
             branch.add(leaf);
+        }
+        else {
+            for (String name : folderContents.keySet()) {
+                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
+                leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
+                if (leaf.getAllowsChildren()) {
+                    String folderLocation2 = folderLocation + "/" + name;
+                    readFolder(folderLocation2, jsonObj, leaf);
+                }
+                branch.add(leaf);
+            }
         }
         return branch;
     }
