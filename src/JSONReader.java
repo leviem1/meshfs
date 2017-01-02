@@ -14,12 +14,10 @@ public class JSONReader {
         JSONObject jsonObject = null;
         try {
             Object obj = reader.parse(new FileReader(filePath));
-
             jsonObject = (JSONObject) obj;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return jsonObject;
     }
 
@@ -51,10 +49,6 @@ public class JSONReader {
                 contents.put(keyStr,type);
             }
             catch (Exception e){}
-
-
-
-
         }
         return contents;
     }
@@ -77,33 +71,39 @@ public class JSONReader {
         return jsonObject;
     }
 
-    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
-        String itemName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
-        String[] folders = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
+    public static JSONObject putItemInFolder(JSONObject jsonObject, String itemDestinationLocation, String fileName, JSONObject itemContents){
+        String[] folders = itemDestinationLocation.split("/");
+        JSONObject folderToRead = jsonObject;
+        JSONObject folderToReadNew;
+        for (String folder : folders) {
+            folderToReadNew = (JSONObject) folderToRead.get(folder);
+            if (folderToReadNew == null){
+                JSONObject folderCreator = new JSONObject();
+                folderCreator.put("type", "directory");
+                folderToRead.put(folder, folderCreator);
+                folderToRead = (JSONObject) folderToRead.get(folder);
+            }
+            else{
+                folderToRead = folderToReadNew;
+            }
+        }
+        folderToRead.put(fileName, itemContents);
+        return jsonObject;
+    }
 
+    public static JSONObject getItemContents(JSONObject jsonObject, String itemLocation){
+        String[] folders = itemLocation.split("/");
         JSONObject folderToRead = jsonObject;
         for (String folder : folders) {
             folderToRead = (JSONObject) folderToRead.get(folder);
         }
+        return folderToRead;
+    }
 
-        String[] destFolders = destinationLocation.split("/");
-        JSONObject destFolderToRead = jsonObject;
-        JSONObject folderToReadNew;
-        for (String folder : destFolders) {
-            folderToReadNew = (JSONObject) destFolderToRead.get(folder);
-            if (folderToReadNew == null){
-                JSONObject folderCreator = new JSONObject();
-                folderCreator.put("type", "directory");
-                destFolderToRead.put(folder, folderCreator);
-                destFolderToRead = (JSONObject) destFolderToRead.get(folder);
-            }
-            else{
-                destFolderToRead = folderToReadNew;
-            }
-
-        }
-
-        destFolderToRead.put(itemName,folderToRead.get(itemName));
+    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
+        JSONObject itemContents = getItemContents(jsonObject,itemLocation);
+        String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
+        jsonObject = putItemInFolder(jsonObject, destinationLocation, fileName, itemContents);
         return jsonObject;
     }
 
@@ -113,6 +113,10 @@ public class JSONReader {
         return jsonObject;
     }
 
+
+
+
+    /*
     public static void pullFile(JSONObject jsonObject, String itemLocation, String compInfoJSONFilelocation){
         String itemName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         String[] folders = itemLocation.split("/");
@@ -128,5 +132,5 @@ public class JSONReader {
         itemToRead.keySet();
 
     }
-
+    */
 }
