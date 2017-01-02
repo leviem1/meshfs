@@ -23,6 +23,19 @@ public class JSONReader {
         return jsonObject;
     }
 
+    public static JSONArray getJSONArray(String filePath) {
+        JSONParser reader = new JSONParser();
+        JSONArray jsonArray = null;
+        try {
+            Object obj = reader.parse(new FileReader(filePath));
+
+            jsonArray = (JSONArray) obj;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jsonArray;
+    }
 
     public static Map<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation){
         String[] Tree = folderLocation.split("/");

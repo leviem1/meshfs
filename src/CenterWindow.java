@@ -32,12 +32,10 @@ public final class CenterWindow {
                 break;
             }
         }
-        System.out.println(activeScreen);
         final int width = window.getWidth();
         final int height = window.getHeight();
         final int screenWidth = activeScreen.getDisplayMode().getWidth();
         final int screenHeight = activeScreen.getDisplayMode().getHeight();
-        System.out.println(screenWidth + "x" + screenHeight);
         int x = (screenWidth / 2) - (width / 2);
         int y = (screenHeight / 2) - (height / 2);
         window.setLocation(x, y);
