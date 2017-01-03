@@ -13,6 +13,7 @@ public class CliParser {
         opt.addOption("m", "masterIP", true, "IP of master (if self, use 127.0.0.1 or own IP).");
         opt.addOption("i", "interface", true, "Preferred interface to allow connections on.");
         opt.addOption("r", "regenConfig", false, "Regenerate application's default configuration file.");
+        opt.addOption("", "nogui", false, "Run MeshFS without graphical user interface (server mode only)");
         DefaultParser parser = new DefaultParser();
         try {
             CommandLine cmd = parser.parse(opt, args);
@@ -27,6 +28,10 @@ public class CliParser {
 
             if (cmd.hasOption("r")) {
                 ConfigParser.loadDefaultProperties();
+            }
+
+            if (cmd.hasOption("nogui")) {
+                MeshFS.nogui = true;
             }
 
         } catch (ParseException e) {

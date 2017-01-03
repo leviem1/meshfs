@@ -1,6 +1,9 @@
 /**
  * Created by Levi Muniz on 10/13/16.
  */
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.net.*;
@@ -106,18 +109,25 @@ public class Reporting {
     }
 
     public static String generate() {
-        return "MAC:" + getMacAddress() + "\nIP:" + getIpAddress() + "\nOS:" + getSystemOS() + "\nJavaVersion:" + getJavaVersion() + "\nFreeSpace:" + getSystemStorage() + "\nUptime:" + getUptime() + "\nUsername:" + getUserName() + "\nRepoContents:" + getRepositoryContents();
+        return getMacAddress() + "|IP:" + getIpAddress() + ";OS:" + getSystemOS() + ";JavaVersion:" + getJavaVersion() + ";FreeSpace:" + getSystemStorage() + ";Uptime:" + getUptime() + ";Username:" + getUserName() + ";RepoContents:" + getRepositoryContents();
     }
 
-    public static HashMap<String, String> splitter(String report) {
-        HashMap<String, String> map = new HashMap<>();
-        String[] reportLines = report.split("\n");
+    public static JSONObject splitter(String report) {
+        JSONArray jsonArray = new JSONArray();
+        JSONObject mainObj = new JSONObject();
 
-        for (String line : reportLines){
-            String[] lineSplit = line.split(":");
-            map.put(lineSplit[0], lineSplit[1]);
+        String[] reportArray = report.split("\\|");
+        String[] reportObjects = reportArray[1].split(";");
+
+        for (String reportSet : reportObjects) {
+            String[] reportSetData = reportSet.split(":");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(reportSetData[0],reportSetData[1]);
+            jsonArray.add(jsonObject);
         }
 
-        return map;
+        mainObj.put(reportArray[0],jsonArray);
+
+        return mainObj;
     }
 }

@@ -9,6 +9,7 @@ public class MeshFS {
 
     public static Properties properties;
     public static FileServer fileServer;
+    public static boolean nogui = false;
     public static boolean isMaster;
 
     public static void main(String[] args) {
@@ -41,14 +42,18 @@ public class MeshFS {
 
         try {
             fileServer = new FileServer();
-            fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout")) * 100);
+            fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout")) * 1000);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Error: Server start failure");
             System.exit(1);
         }
 
-        GreetingsWindow.run();
+        if (nogui) {
+            System.setProperty("java.awt.headless", "true");
+        } else {
+            GreetingsWindow.run();
+        }
 
         /*
         Map<String, Long> hostStorage = new HashMap<>();
