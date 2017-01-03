@@ -2,6 +2,7 @@
  * Created by Levi Muniz on 10/3/16.
  */
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 
@@ -26,8 +27,8 @@ public class MeshFS {
         if (properties.getProperty("masterIP").equals("127.0.0.1")) {
             isMaster = true;
         } else {
-            for (List iface : possibleIP) {
-                if (iface.get(1).equals(properties.getProperty("masterIP"))) {
+            for (List iFace : possibleIP) {
+                if (iFace.get(1).equals(properties.getProperty("masterIP"))) {
                     isMaster = true;
                     break;
                 } else {
@@ -43,10 +44,20 @@ public class MeshFS {
         try {
             fileServer = new FileServer();
             fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout")) * 1000);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error: Server start failure");
-            System.exit(1);
+        } catch (IOException e) {
+            boolean serverStarted = false;
+            for (List iFace : possibleIP) {
+                if (FileClient.ping(iFace.get(1).toString(), Integer.parseInt(properties.getProperty("portNumber")))) {
+                    serverStarted = true;
+                    break;
+                }
+            }
+            if (!serverStarted) {
+                e.printStackTrace();
+                System.out.println("Error: Server start failure");
+            } else {
+                System.out.println("Server already started!");
+            }
         }
 
         if (nogui) {

@@ -29,10 +29,10 @@ public class FileServer {
      * @param port       the port number
      * @param maxThreads the amount of sockets
      * @param timeout    the maximum amount of seconds that a client can be idle for
-     * @throws Exception if a socket cannot be initialized for any reason
+     * @throws IOException if a socket cannot be initialized
      */
 
-    public void startServer(int port, int maxThreads, int timeout) throws Exception {
+    public void startServer(int port, int maxThreads, int timeout) throws IOException {
 
         ServerSocket FileServer = new ServerSocket();
         FileServer.setPerformancePreferences(1,0,1);
