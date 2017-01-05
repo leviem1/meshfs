@@ -2,6 +2,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -116,7 +117,7 @@ public class JSONReader {
 
 
 
-    /*
+
     public static void pullFile(JSONObject jsonObject, String itemLocation, String compInfoJSONFilelocation){
         String itemName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         String[] folders = itemLocation.split("/");
@@ -124,13 +125,24 @@ public class JSONReader {
         for (String folder : folders) {
             itemToRead = (JSONObject) itemToRead.get(folder);
         }
+        JSONObject fileInfo = (JSONObject) itemToRead.clone();
+        fileInfo.remove("type");
+        String fileName = fileInfo.get("fileName").toString();
+        fileInfo.remove("fileName");
+        String group = fileInfo.get("group").toString();
+        fileInfo.remove("group");
 
-        String fileName = itemToRead.get("fileName").toString();
+        for (Object stripe: fileInfo.keySet() ){
+            System.out.println("test");
+        }
+
+
         JSONObject compInfoFile = getJSONObject(compInfoJSONFilelocation);
+
 
 
         itemToRead.keySet();
 
     }
-    */
+
 }
