@@ -41,26 +41,26 @@ public class MeshFS {
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
 
-        try {
-            fileServer = new FileServer();
-            fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout")) * 1000);
-        } catch (IOException e) {
-            boolean serverStarted = false;
-            for (List iFace : possibleIP) {
-                if (FileClient.ping(iFace.get(1).toString(), Integer.parseInt(properties.getProperty("portNumber")))) {
-                    serverStarted = true;
-                    break;
-                }
-            }
-            if (!serverStarted) {
-                e.printStackTrace();
-                System.out.println("Error: Server start failure");
-            } else {
-                System.out.println("Server already started!");
-            }
-        }
 
         if (nogui) {
+            try {
+                fileServer = new FileServer();
+                fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout")) * 1000);
+            } catch (IOException e) {
+                boolean serverStarted = false;
+                for (List iFace : possibleIP) {
+                    if (FileClient.ping(iFace.get(1).toString(), Integer.parseInt(properties.getProperty("portNumber")))) {
+                        serverStarted = true;
+                        break;
+                    }
+                }
+                if (!serverStarted) {
+                    e.printStackTrace();
+                    System.out.println("Error: Server start failure");
+                } else {
+                    System.out.println("Server already started!");
+                }
+            }
             System.setProperty("java.awt.headless", "true");
         } else {
             GreetingsWindow.run();
@@ -134,6 +134,7 @@ public class MeshFS {
 
 class onQuit implements Runnable {
     public void run() {
+
         MeshFS.fileServer.stopServer();
     }
 }

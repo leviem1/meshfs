@@ -1,8 +1,6 @@
 /**
  * Created by Levi Muniz on 10/16/16.
  */
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.net.*;

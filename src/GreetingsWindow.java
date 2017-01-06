@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -43,12 +42,12 @@ public class GreetingsWindow extends JFrame {
     }
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Mark Hedrick
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         welcomeLbl = new JLabel();
         scrollPane1 = new JScrollPane();
-        textPane1 = new JTextPane();
+        greetingsPane = new JTextPane();
         buttonBar = new JPanel();
         configBtn = new JButton();
         quitButton = new JButton();
@@ -61,14 +60,6 @@ public class GreetingsWindow extends JFrame {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-            // JFormDesigner evaluation mark
-            dialogPane.setBorder(new javax.swing.border.CompoundBorder(
-                new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                    "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-                    javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                    java.awt.Color.red), dialogPane.getBorder())); dialogPane.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
-
             dialogPane.setLayout(new BorderLayout());
 
             //======== contentPanel ========
@@ -81,11 +72,11 @@ public class GreetingsWindow extends JFrame {
                 //======== scrollPane1 ========
                 {
 
-                    //---- textPane1 ----
-                    textPane1.setText("Before you can begin using MeshFS, you must set it up to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the Server address, and authentication details. If you plan to run MeshFS in Server mode, please refer to our Help guide for more guidance. Thank you for using MeshFS");
-                    textPane1.setEditable(false);
-                    textPane1.setFont(new Font("Helvetica Neue", textPane1.getFont().getStyle() & ~Font.BOLD, textPane1.getFont().getSize()));
-                    scrollPane1.setViewportView(textPane1);
+                    //---- greetingsPane ----
+                    greetingsPane.setText("Before you can begin using MeshFS, you must set it up to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the Server address, and authentication details. If you plan to run MeshFS in Server mode, please refer to our Help guide for more guidance. Thank you for using MeshFS");
+                    greetingsPane.setEditable(false);
+                    greetingsPane.setFont(new Font("Helvetica Neue", greetingsPane.getFont().getStyle() & ~Font.BOLD, greetingsPane.getFont().getSize()));
+                    scrollPane1.setViewportView(greetingsPane);
                 }
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
@@ -141,12 +132,12 @@ public class GreetingsWindow extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Mark Hedrick
+    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel welcomeLbl;
     private JScrollPane scrollPane1;
-    private JTextPane textPane1;
+    private JTextPane greetingsPane;
     private JPanel buttonBar;
     private JButton configBtn;
     private JButton quitButton;

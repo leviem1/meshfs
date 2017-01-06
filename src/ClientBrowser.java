@@ -1,5 +1,8 @@
 import org.json.simple.JSONObject;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -17,6 +20,25 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class ClientBrowser extends JFrame {
     public ClientBrowser() {
         initComponents();
+        uploadBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                fileChooser.setDialogTitle("Choose File to Upload");
+                fileChooser.setAcceptAllFileFilterUsed(true);
+                int rVal = fileChooser.showOpenDialog(null);
+                if (rVal == JFileChooser.APPROVE_OPTION) {
+                    //
+                }
+            }
+        });
+        refreshBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                tree1.updateUI();
+            }
+        });
     }
 
 
@@ -45,27 +67,28 @@ public class ClientBrowser extends JFrame {
 
     private void initComponents() {
         String folderLocation = "root";
-        JSONObject jsonObj = JSONReader.getJSONObject("repo/catalog.json");
+        JSONObject jsonObj = JSONReader.getJSONObject(MeshFS.properties.getProperty("repository") + "catalog.json");
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode("root");
         tree = (readFolder(folderLocation,jsonObj,tree));
 
 
 
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Mark Hedrick
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         scrollPane1 = new JScrollPane();
         tree1 = new JTree(tree);
         panel1 = new JPanel();
-        button2 = new JButton();
-        button1 = new JButton();
-        button3 = new JButton();
-        button4 = new JButton();
-        button5 = new JButton();
-        button6 = new JButton();
+        downloadBtn = new JButton();
+        propertiesBtn = new JButton();
+        renameBtn = new JButton();
+        removeBtn = new JButton();
+        duplicateBtn = new JButton();
+        moveBtn = new JButton();
+        uploadBtn = new JButton();
         buttonBar = new JPanel();
-        button7 = new JButton();
+        refreshBtn = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -76,14 +99,6 @@ public class ClientBrowser extends JFrame {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-            // JFormDesigner evaluation mark
-            dialogPane.setBorder(new javax.swing.border.CompoundBorder(
-                new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                    "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-                    javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                    java.awt.Color.red), dialogPane.getBorder())); dialogPane.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
-
             dialogPane.setLayout(new BorderLayout());
 
             //======== contentPanel ========
@@ -97,23 +112,26 @@ public class ClientBrowser extends JFrame {
                 //======== panel1 ========
                 {
 
-                    //---- button2 ----
-                    button2.setText("Download");
+                    //---- downloadBtn ----
+                    downloadBtn.setText("Download");
 
-                    //---- button1 ----
-                    button1.setText("Properties");
+                    //---- propertiesBtn ----
+                    propertiesBtn.setText("Properties");
 
-                    //---- button3 ----
-                    button3.setText("Rename...");
+                    //---- renameBtn ----
+                    renameBtn.setText("Rename...");
 
-                    //---- button4 ----
-                    button4.setText("Remove...");
+                    //---- removeBtn ----
+                    removeBtn.setText("Remove...");
 
-                    //---- button5 ----
-                    button5.setText("Duplicate");
+                    //---- duplicateBtn ----
+                    duplicateBtn.setText("Duplicate");
 
-                    //---- button6 ----
-                    button6.setText("Move...");
+                    //---- moveBtn ----
+                    moveBtn.setText("Move...");
+
+                    //---- uploadBtn ----
+                    uploadBtn.setText("Upload...");
 
                     GroupLayout panel1Layout = new GroupLayout(panel1);
                     panel1.setLayout(panel1Layout);
@@ -122,30 +140,34 @@ public class ClientBrowser extends JFrame {
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(panel1Layout.createParallelGroup()
-                                    .addComponent(button2, GroupLayout.Alignment.TRAILING)
-                                    .addComponent(button1, GroupLayout.Alignment.TRAILING)
-                                    .addComponent(button3, GroupLayout.Alignment.TRAILING)
-                                    .addComponent(button4, GroupLayout.Alignment.TRAILING)
-                                    .addComponent(button5, GroupLayout.Alignment.TRAILING)
-                                    .addComponent(button6, GroupLayout.Alignment.TRAILING))
+                                    .addComponent(downloadBtn, GroupLayout.Alignment.TRAILING)
+                                    .addComponent(propertiesBtn, GroupLayout.Alignment.TRAILING)
+                                    .addComponent(renameBtn, GroupLayout.Alignment.TRAILING)
+                                    .addComponent(removeBtn, GroupLayout.Alignment.TRAILING)
+                                    .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(uploadBtn, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(moveBtn, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(duplicateBtn, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addContainerGap())
                     );
                     panel1Layout.setVerticalGroup(
                         panel1Layout.createParallelGroup()
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(button2)
+                                .addComponent(downloadBtn)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(button1)
+                                .addComponent(propertiesBtn)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(button3)
+                                .addComponent(renameBtn)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(button4)
+                                .addComponent(removeBtn)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(button5)
+                                .addComponent(duplicateBtn)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(button6)
-                                .addContainerGap(50, Short.MAX_VALUE))
+                                .addComponent(moveBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(uploadBtn)
+                                .addContainerGap(27, Short.MAX_VALUE))
                     );
                 }
 
@@ -155,18 +177,18 @@ public class ClientBrowser extends JFrame {
                     contentPanelLayout.createParallelGroup()
                         .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
                             .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 408, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 0, Short.MAX_VALUE))
-                        .addGroup(contentPanelLayout.createSequentialGroup()
                             .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
                             .addContainerGap())
+                        .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                            .addGap(0, 0, Short.MAX_VALUE)
+                            .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -178,9 +200,9 @@ public class ClientBrowser extends JFrame {
                 ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
                 ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
-                //---- button7 ----
-                button7.setText("Refresh");
-                buttonBar.add(button7, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                //---- refreshBtn ----
+                refreshBtn.setText("Refresh");
+                buttonBar.add(refreshBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
@@ -207,20 +229,21 @@ public class ClientBrowser extends JFrame {
 
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Mark Hedrick
+    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JScrollPane scrollPane1;
     private JTree tree1;
     private JPanel panel1;
-    private JButton button2;
-    private JButton button1;
-    private JButton button3;
-    private JButton button4;
-    private JButton button5;
-    private JButton button6;
+    private JButton downloadBtn;
+    private JButton propertiesBtn;
+    private JButton renameBtn;
+    private JButton removeBtn;
+    private JButton duplicateBtn;
+    private JButton moveBtn;
+    private JButton uploadBtn;
     private JPanel buttonBar;
-    private JButton button7;
+    private JButton refreshBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

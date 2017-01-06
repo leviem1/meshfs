@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.5.0.333" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "5.2.5.1.342" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -10,8 +10,8 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq t {comp scrollPane1:::p:408:p, space :::p, comp panel1:::p::p, space :::x}}"
-					"$verticalGroup": "par l {seq {comp panel1:::p::p, space :0:0:x}, seq {comp scrollPane1::::0:x, space :::p}}"
+					"$horizontalGroup": "par l {seq t {comp scrollPane1:::p:408:p, space u:::p, comp panel1:::p::p, space :::x}}"
+					"$verticalGroup": "par l {seq {comp scrollPane1::::0:x, space :::p}, seq t {space :0:0:x, comp panel1:::p::p}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -24,33 +24,37 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::x, par l {comp button2::t:p::p, comp button1::t:p::p, comp button3::t:p::p, comp button4::t:p::p, comp button5::t:p::p, comp button6::t:p::p}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp button2:::p::p, space :::p, comp button1:::p::p, space :::p, comp button3:::p::p, space :::p, comp button4:::p::p, space :::p, comp button5:::p::p, space :::p, comp button6:::p::p, space ::50:x}}"
+						"$horizontalGroup": "par l {seq {space :::x, par l {comp downloadBtn::t:p::p, comp propertiesBtn::t:p::p, comp renameBtn::t:p::p, comp removeBtn::t:p::p, par l:t::p {comp uploadBtn::t:::x, comp moveBtn::t:::x, comp duplicateBtn::t:::x}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp downloadBtn:::p::p, space :::p, comp propertiesBtn:::p::p, space :::p, comp renameBtn:::p::p, space :::p, comp removeBtn:::p::p, space :::p, comp duplicateBtn:::p::p, space :::p, comp moveBtn:::p::p, space :::p, comp uploadBtn:::p::p, space ::27:x}}"
 					} ) {
 						name: "panel1"
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "button2"
+							name: "downloadBtn"
 							"text": "Download"
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "button1"
+							name: "propertiesBtn"
 							"text": "Properties"
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "button3"
+							name: "renameBtn"
 							"text": "Rename..."
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "button4"
+							name: "removeBtn"
 							"text": "Remove..."
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "button5"
+							name: "duplicateBtn"
 							"text": "Duplicate"
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "button6"
+							name: "moveBtn"
 							"text": "Move..."
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "uploadBtn"
+							"text": "Upload..."
 						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
@@ -65,7 +69,7 @@ new FormModel {
 					name: "buttonBar"
 					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button7"
+						name: "refreshBtn"
 						"text": "Refresh"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JButton" ) {
