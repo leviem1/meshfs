@@ -68,7 +68,7 @@ public final class FileClient {
      *
      * @param serverAddress the IP address of the server to connect to
      * @param port the port of the server to connect to
-     * @throws java.io.IOException on error connecting
+     * @return true on success, false on failure
      */
 
     public static boolean ping(String serverAddress, int port) {
@@ -117,6 +117,14 @@ public final class FileClient {
         }
     }
 
+    /**
+     * This method is used to request a report from a server.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @throws IOException on error connecting
+     */
+
     public static void receiveReport(String serverAddress, int port) throws IOException {
         String reportPart;
         String reportFull = "";
@@ -137,6 +145,60 @@ public final class FileClient {
             }
             reportFull = reportFull.trim();
             JSONWriter.writeJSONObject("manifest.json", Reporting.splitter(reportFull));
+        }
+    }
+
+    public static void sendFile(String serverAddress, int port, String filepath) throws IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+        try {
+            out.println("102\n");
+
+            if (input.readLine().equals("201")) {
+                int br;
+                byte[] data = new byte[4096];
+                DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+                FileInputStream fis = new FileInputStream(filepath);
+                while ((br = fis.read(data, 0, data.length)) != -1) {
+                    dos.write(data, 0, br);
+                }
+
+                fis.close();
+                dos.close();
+            }
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+    }
+
+    public static void recieveFile(String serverAddress, int port, String filepath) throws IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+        try {
+            out.println("101\n");
+
+            if (input.readLine().equals("201")) {
+                int br;
+                byte[] data = new byte[4096];
+                DataInputStream dis = new DataInputStream(client.getInputStream());
+                FileOutputStream fos = new FileOutputStream(filepath);
+
+                while ((br = dis.read(data, 0, data.length)) != -1){
+                    fos.write(data, 0, br);
+                }
+
+                fos.close();
+                dis.close();
+            }
+
+        } catch (SocketTimeoutException ste) {
+            client.close();
         }
     }
 
