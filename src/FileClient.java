@@ -2,9 +2,6 @@
  * Created by Levi Muniz on 12/6/16.
  */
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;

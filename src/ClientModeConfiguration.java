@@ -1,8 +1,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.io.IOException;
 import java.text.NumberFormat;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -36,22 +35,13 @@ public class ClientModeConfiguration extends JFrame {
                 }
             }
         });
-        serverAddressField.addFocusListener(new FocusAdapter() {
-            public void focusLost(FocusEvent e) {
-                checkServerStatus();
-            }
-        });
-    }
-
-    private void createUIComponents() {
-        // TODO: add custom component creation code here
     }
 
     private void initComponents() {
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setGroupingUsed(false);
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Mark Hedrick
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         serverAddressLbl = new JLabel();
@@ -75,14 +65,6 @@ public class ClientModeConfiguration extends JFrame {
         //======== dialogPane ========
         {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-
-            // JFormDesigner evaluation mark
-            dialogPane.setBorder(new javax.swing.border.CompoundBorder(
-                new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                    "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-                    javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                    java.awt.Color.red), dialogPane.getBorder())); dialogPane.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
-
             dialogPane.setLayout(new BorderLayout());
 
             //======== contentPanel ========
@@ -113,6 +95,7 @@ public class ClientModeConfiguration extends JFrame {
 
                 //---- serverPortField ----
                 serverPortField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                serverPortField.setText("5704");
 
                 //---- usernameField ----
                 usernameField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
@@ -142,7 +125,7 @@ public class ClientModeConfiguration extends JFrame {
                                     .addComponent(bindAnonLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(bindAnonymouslyCheckBox)
-                                    .addGap(0, 229, Short.MAX_VALUE))
+                                    .addGap(0, 221, Short.MAX_VALUE))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                                         .addGroup(contentPanelLayout.createSequentialGroup()
@@ -178,7 +161,7 @@ public class ClientModeConfiguration extends JFrame {
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(passwordLbl)
                                 .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(11, Short.MAX_VALUE))
+                            .addContainerGap(2, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -206,7 +189,7 @@ public class ClientModeConfiguration extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Mark Hedrick
+    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel serverAddressLbl;
@@ -230,6 +213,20 @@ public class ClientModeConfiguration extends JFrame {
     }
 
     public void onOk(){
+        if(!(FileClient.ping(serverAddressField.getText(), Integer.parseInt(serverPortField.getText())))){
+            JOptionPane.showMessageDialog(null, "Connection to Server Failed!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+            serverAddressField.setText("");
+            serverPortField.setText("");
+            usernameField.setText("");
+            passwordField.setText("");
+            bindAnonymouslyCheckBox.setSelected(false);
+        }
+        JOptionPane.showMessageDialog(null, "Ping Worked", "MeshFS - Info", JOptionPane.INFORMATION_MESSAGE);
+        try{
+            FileClient.recieveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), "catalog.json");
+        }catch(IOException ioe){
+            System.out.println("error");
+        }
         ClientBrowser.run();
         dispose();
 
@@ -246,10 +243,6 @@ public class ClientModeConfiguration extends JFrame {
             usernameField.setEnabled(true);
             passwordField.setEnabled(true);
         }
-
-    }
-
-    public void checkServerStatus(){
 
     }
 }

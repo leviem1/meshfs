@@ -2,8 +2,6 @@
  * Created by Aaron Duran on 10/13/16.
  */
 import org.json.simple.JSONObject;
-
-import java.io.File;
 import java.util.*;
 
 public class Distributor {
