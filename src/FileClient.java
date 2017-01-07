@@ -155,7 +155,7 @@ public final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("102\n");
+            out.println("102|" + filepath + "\n");
 
             if (input.readLine().equals("201")) {
                 int br;
@@ -174,20 +174,48 @@ public final class FileClient {
         }
     }
 
-    public static void recieveFile(String serverAddress, int port, String filepath) throws IOException {
+    public static void receiveFile(String serverAddress, int port, String fileName) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("101\n");
+            out.println("101|" + fileName + "\n");
 
             if (input.readLine().equals("201")) {
                 int br;
                 byte[] data = new byte[4096];
                 DataInputStream dis = new DataInputStream(client.getInputStream());
-                FileOutputStream fos = new FileOutputStream(filepath);
+                FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + fileName);
+
+                while ((br = dis.read(data, 0, data.length)) != -1){
+                    fos.write(data, 0, br);
+                }
+
+                fos.close();
+                dis.close();
+            }
+
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+    }
+
+    public static void receiveFile(String serverAddress, int port, String fileName, String fileOut) throws IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+        try {
+            out.println("101|" + fileName + "\n");
+
+            if (input.readLine().equals("201")) {
+                int br;
+                byte[] data = new byte[4096];
+                DataInputStream dis = new DataInputStream(client.getInputStream());
+                FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + fileOut);
 
                 while ((br = dis.read(data, 0, data.length)) != -1){
                     fos.write(data, 0, br);
