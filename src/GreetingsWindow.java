@@ -19,11 +19,15 @@ public class GreetingsWindow extends JFrame {
 
     public GreetingsWindow() {
         initComponents();
+        frameListeners();
         dialogPane.getRootPane().setDefaultButton(configBtn);
         configBtn.requestFocus();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(true);
+        setResizable(false);
         toFront();
+    }
+
+    private void frameListeners(){
         configBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onConfigure();
@@ -73,7 +77,7 @@ public class GreetingsWindow extends JFrame {
                 {
 
                     //---- greetingsPane ----
-                    greetingsPane.setText("Before you can begin using MeshFS, you must set it up to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the Server address, and authentication details. If you plan to run MeshFS in Server mode, please refer to our Help guide for more guidance. Thank you for using MeshFS");
+                    greetingsPane.setText("Before using MeshFS, you will need to configure it to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the address of the server that you wish to connect to, as well as any authentication credentials (if required). If you plan on running MeshFS in Server mode, please refer to our Help guide for detailed setup instructions.  Thank you for choosing MeshFS!");
                     greetingsPane.setEditable(false);
                     greetingsPane.setFont(new Font("Helvetica Neue", greetingsPane.getFont().getStyle() & ~Font.BOLD, greetingsPane.getFont().getSize()));
                     scrollPane1.setViewportView(greetingsPane);
@@ -117,7 +121,7 @@ public class GreetingsWindow extends JFrame {
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- quitButton ----
-                quitButton.setText("Quit");
+                quitButton.setText("Exit");
                 quitButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
                 buttonBar.add(quitButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -147,5 +151,6 @@ public class GreetingsWindow extends JFrame {
         greetingsWindow = new GreetingsWindow();
         CenterWindow.centerOnScreen(greetingsWindow);
         greetingsWindow.setVisible(true);
+
     }
 }

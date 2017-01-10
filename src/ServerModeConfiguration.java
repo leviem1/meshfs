@@ -8,8 +8,7 @@ import java.util.Properties;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import static java.lang.String.valueOf;
@@ -20,10 +19,12 @@ import static java.lang.Math.toIntExact;
 public class ServerModeConfiguration extends JFrame {
     public ServerModeConfiguration() {
         initComponents();
-        windowListeners();
+        frameListeners();
+        ipJListField.setSelectedIndex(0);
         freeSpaceLbl.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
         spaceSldr.setMaximum(toIntExact(Reporting.getSystemStorage()/1073741824)-10);
         spaceSldr.setMinimum(0);
+        setResizable(false);
     }
 
     private void initComponents() {
@@ -324,7 +325,7 @@ public class ServerModeConfiguration extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
-    private void windowListeners(){
+    private void frameListeners(){
         browseBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final JFileChooser fileChooser = new JFileChooser();
@@ -375,6 +376,185 @@ public class ServerModeConfiguration extends JFrame {
                 spaceSldr.setValue(Integer.parseInt(minSpaceField.getText()));
             }
         });
+        serverPortField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(checkFields(serverPortField))) {
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                }else {
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
+                }
+
+            }
+        });
+        serverThreadsField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(checkFields(serverThreadsField))) {
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                }else {
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
+                }
+
+            }
+        });
+        serverTimeoutField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(checkFields(serverTimeoutField))) {
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                }else {
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
+                }
+
+            }
+        });
+        numStripesField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(checkFields(numStripesField))) {
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                }else {
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
+                }
+
+            }
+        });
+        numStripeCopiesField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(checkFields(numStripeCopiesField))) {
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                }else {
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
+                }
+
+            }
+        });
+        numWholeField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(checkFields(numWholeField))) {
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                }else {
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
+                }
+
+            }
+        });
+        repoPathField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (repoPathField.getText().isEmpty() == true){
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                }else{
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
+                }
+            }
+        });
+        minSpaceField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(checkFields(minSpaceField))) {
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                }else {
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
+                }
+
+            }
+        });
+
+
+
+
     }
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
@@ -412,12 +592,6 @@ public class ServerModeConfiguration extends JFrame {
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public static void run(JFrame sender) {
-        JFrame serverModeConfiguration = new ServerModeConfiguration();
-        CenterWindow.centerOnWindow(sender, serverModeConfiguration);
-        serverModeConfiguration.setVisible(true);
-    }
-
     private ArrayList<String> ipJList(){
         ArrayList<String> x = new ArrayList<>();
         for(int i = 0; i < Reporting.getIpAddress().size(); i++){
@@ -440,6 +614,8 @@ public class ServerModeConfiguration extends JFrame {
             JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
             z.printStackTrace();
         }
+        ServerConfigConfirmation.run(this, "Interface: " + MeshFS.properties.getProperty("preferredInterface") + "\n\nTimeout: " + MeshFS.properties.getProperty("serverTimeout") + "s\n\nPort: " + MeshFS.properties.getProperty("portNumber") + "\n\nFile Copies / Stripes / Striped Copies" + MeshFS.properties.getProperty("numWholeCopy") + "/" + MeshFS.properties.getProperty("numStripes") + "/" + MeshFS.properties.getProperty("numStripeCopy") + "\n\nRepository: " + MeshFS.properties.getProperty("repository") + "\n\nMinimum Space: " + MeshFS.properties.getProperty("minSpace") + "\n\nServerThreads: " + MeshFS.properties.getProperty("serverThreads"));
+
         dispose();
     }
 
@@ -507,5 +683,19 @@ public class ServerModeConfiguration extends JFrame {
         configProperties.setProperty("serverThreads", String.valueOf(serverThreadsField.getText()));
         configProperties.setProperty("serverTimeout", String.valueOf(serverTimeoutField.getText()));
         return configProperties;
+    }
+
+    public boolean checkFields(JFormattedTextField field) {
+        if (field.getText().isEmpty() == true){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public static void run(JFrame sender) {
+        JFrame serverModeConfiguration = new ServerModeConfiguration();
+        CenterWindow.centerOnWindow(sender, serverModeConfiguration);
+        serverModeConfiguration.setVisible(true);
     }
 }

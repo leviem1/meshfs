@@ -5,30 +5,22 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
-			"title": "MeshFS - Initial Configuration"
+			"title": "MeshFS - Server Configuration Confirmation"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space ::75:x, comp serverModeBtn:::p::p, space :::p, comp clientModeBtn:::p::p, space :p:90:p}, comp modeLbl::l:::x}"
-					"$verticalGroup": "par l {seq l {space :::p, comp modeLbl:::p::p, space :p:18:p, par b {comp clientModeBtn::b:p::p, comp serverModeBtn::b:p::p}, space ::16:x}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp label1::::362:x, comp formattedTextField1::::362:x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space :::p, comp formattedTextField1::::174:x, space :::p}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "modeLbl"
-						"text": "Please select the correct mode of operation:"
-						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
+						name: "label1"
+						"text": "Confirm the following values before the server launches:"
 						"horizontalAlignment": 0
 					} )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "serverModeBtn"
-						"text": "Server"
-						"font": #Font0
-					} )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "clientModeBtn"
-						"text": "Client"
-						"font": #Font0
+					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+						name: "formattedTextField1"
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -44,9 +36,9 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
-						"font": #Font0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
+						"gridy": 0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "South"
@@ -56,7 +48,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 335, 175 )
+			"size": new java.awt.Dimension( 400, 300 )
 		} )
 	}
 }

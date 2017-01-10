@@ -23,7 +23,7 @@ new FormModel {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTextPane" ) {
 							name: "greetingsPane"
-							"text": "Before you can begin using MeshFS, you must set it up to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the Server address, and authentication details. If you plan to run MeshFS in Server mode, please refer to our Help guide for more guidance. Thank you for using MeshFS"
+							"text": "Before using MeshFS, you will need to configure it to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the address of the server that you wish to connect to, as well as any authentication credentials (if required). If you plan on running MeshFS in Server mode, please refer to our Help guide for detailed setup instructions.  Thank you for choosing MeshFS!"
 							"editable": false
 							"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 65536, 0, false )
 						} )
@@ -46,7 +46,7 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "quitButton"
-						"text": "Quit"
+						"text": "Exit"
 						"font": #Font0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1

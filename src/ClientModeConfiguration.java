@@ -6,6 +6,8 @@ import java.text.NumberFormat;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 /*
  * Created by JFormDesigner on Sun Oct 30 15:17:23 MDT 2016
  */
@@ -18,23 +20,13 @@ import javax.swing.border.*;
 public class ClientModeConfiguration extends JFrame {
     public ClientModeConfiguration() {
         initComponents();
+        frameListeners();
+        okButton.setEnabled(false);
+        bindAnonymouslyCheckBox.setSelected(true);
+        usernameField.setEnabled(false);
+        passwordField.setEnabled(false);
+        setResizable(false);
 
-
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOk();
-            }
-        });
-        bindAnonymouslyCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(bindAnonymouslyCheckBox.isSelected()){
-                    bindAnonymously("yes");
-                }
-                else{
-                    bindAnonymously("no");
-                }
-            }
-        });
     }
 
     private void initComponents() {
@@ -188,6 +180,102 @@ public class ClientModeConfiguration extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
+    private void frameListeners(){
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onOk();
+            }
+        });
+        bindAnonymouslyCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(bindAnonymouslyCheckBox.isSelected()){
+                    bindAnonymously("yes");
+                }
+                else{
+                    bindAnonymously("no");
+                }
+            }
+        });
+        serverAddressField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(checkFields(serverAddressField))) {
+                    okButton.setEnabled(false);
+                }else {
+                    okButton.setEnabled(true);
+                }
+
+            }
+        });
+        serverPortField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (serverPortField.getText().isEmpty() == true){
+                    okButton.setEnabled(false);
+                }else {
+                    okButton.setEnabled(true);
+                }
+            }
+        });
+        passwordField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (passwordField.getText().isEmpty() == true){
+                    okButton.setEnabled(false);
+                }else {
+                    okButton.setEnabled(true);
+                }
+            }
+        });
+        usernameField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(checkFields(usernameField))) {
+                    okButton.setEnabled(false);
+                }else {
+                    okButton.setEnabled(true);
+                }
+
+            }
+        });
+    }
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
@@ -206,12 +294,6 @@ public class ClientModeConfiguration extends JFrame {
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public static void run(JFrame sender) {
-        JFrame clientModeConfiguration = new ClientModeConfiguration();
-        CenterWindow.centerOnWindow(sender, clientModeConfiguration);
-        clientModeConfiguration.setVisible(true);
-    }
-
     public void onOk(){
         if(!(FileClient.ping(serverAddressField.getText(), Integer.parseInt(serverPortField.getText())))){
             JOptionPane.showMessageDialog(null, "Connection to Server Failed!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
@@ -223,7 +305,7 @@ public class ClientModeConfiguration extends JFrame {
         }
         JOptionPane.showMessageDialog(null, "Ping Worked", "MeshFS - Info", JOptionPane.INFORMATION_MESSAGE);
         try{
-            FileClient.recieveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), "catalog.json");
+            FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), "catalog.json");
         }catch(IOException ioe){
             System.out.println("error");
         }
@@ -244,5 +326,19 @@ public class ClientModeConfiguration extends JFrame {
             passwordField.setEnabled(true);
         }
 
+    }
+
+    public boolean checkFields(JTextField field) {
+        if (field.getText().isEmpty() == true){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public static void run(JFrame sender) {
+        JFrame clientModeConfiguration = new ClientModeConfiguration();
+        CenterWindow.centerOnWindow(sender, clientModeConfiguration);
+        clientModeConfiguration.setVisible(true);
     }
 }

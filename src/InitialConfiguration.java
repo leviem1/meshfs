@@ -17,28 +17,11 @@ public class InitialConfiguration extends JFrame {
 
     private static JFrame initialConfiguration;
 
-    public InitialConfiguration() {
+    private InitialConfiguration() {
         initComponents();
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOk();
-            }
-        });
-        serverModeBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                contentPanel.getRootPane().setDefaultButton(okButton);
-                contentPanel.requestFocus();
-            }
-        });
-        clientModeBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                contentPanel.getRootPane().setDefaultButton(okButton);
-                contentPanel.requestFocus();
-            }
-        });
-        ButtonGroup modeRadios = new ButtonGroup();
-        modeRadios.add(serverModeBtn);
-        modeRadios.add(clientModeBtn);
+        frameListeners();
+        okButton.setEnabled(false);
+        setResizable(false);
     }
 
     private void initComponents() {
@@ -68,6 +51,7 @@ public class InitialConfiguration extends JFrame {
                 //---- modeLbl ----
                 modeLbl.setText("Please select the correct mode of operation:");
                 modeLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                modeLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
                 //---- serverModeBtn ----
                 serverModeBtn.setText("Server");
@@ -82,17 +66,12 @@ public class InitialConfiguration extends JFrame {
                 contentPanelLayout.setHorizontalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(modeLbl)
-                                    .addContainerGap(45, Short.MAX_VALUE))
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGap(0, 69, Short.MAX_VALUE)
-                                    .addComponent(serverModeBtn)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(clientModeBtn)
-                                    .addGap(90, 90, 90))))
+                            .addContainerGap(75, Short.MAX_VALUE)
+                            .addComponent(serverModeBtn)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(clientModeBtn)
+                            .addGap(90, 90, 90))
+                        .addComponent(modeLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -130,6 +109,46 @@ public class InitialConfiguration extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
+    private void frameListeners(){
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onOk();
+            }
+        });
+        serverModeBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                okButton.setEnabled(true);
+                contentPanel.getRootPane().setDefaultButton(okButton);
+                contentPanel.requestFocus();
+            }
+        });
+        clientModeBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                okButton.setEnabled(true);
+                contentPanel.getRootPane().setDefaultButton(okButton);
+                contentPanel.requestFocus();
+            }
+        });
+        ButtonGroup modeRadios = new ButtonGroup();
+        modeRadios.add(serverModeBtn);
+        modeRadios.add(clientModeBtn);
+    }
+
+    private void onOk() {
+        if(clientModeBtn.isSelected()){
+            ClientModeConfiguration.run(initialConfiguration);
+            dispose();
+        }
+        else if(serverModeBtn.isSelected()){
+            ServerModeConfiguration.run(initialConfiguration);
+            dispose();
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "You must select a mode!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
+        }
+
+    }
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
@@ -146,18 +165,5 @@ public class InitialConfiguration extends JFrame {
         initialConfiguration.setVisible(true);
     }
 
-    public void onOk() {
-        if(clientModeBtn.isSelected()){
-            ClientModeConfiguration.run(initialConfiguration);
-            dispose();
-        }
-        else if(serverModeBtn.isSelected()){
-            ServerModeConfiguration.run(initialConfiguration);
-            dispose();
-        }
-        else{
-            JOptionPane.showMessageDialog(null, "You must select a mode!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
-        }
 
-    }
 }
