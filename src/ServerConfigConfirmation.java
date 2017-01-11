@@ -1,4 +1,7 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -10,7 +13,10 @@ import javax.swing.border.*;
 public class ServerConfigConfirmation extends JFrame {
     public ServerConfigConfirmation(String test1) {
         initComponents();
-        formattedTextField1.setText(test1);
+        frameListeners();
+        configValues.setContentType("text/html");
+        configValues.setText(test1);
+        configValues.setCaretPosition(0);
 
     }
 
@@ -20,9 +26,11 @@ public class ServerConfigConfirmation extends JFrame {
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         label1 = new JLabel();
-        formattedTextField1 = new JFormattedTextField();
+        configValuesPane = new JScrollPane();
+        configValues = new JTextPane();
         buttonBar = new JPanel();
         okButton = new JButton();
+        titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Server Configuration Confirmation");
@@ -41,6 +49,11 @@ public class ServerConfigConfirmation extends JFrame {
                 label1.setText("Confirm the following values before the server launches:");
                 label1.setHorizontalAlignment(SwingConstants.CENTER);
 
+                //======== configValuesPane ========
+                {
+                    configValuesPane.setViewportView(configValues);
+                }
+
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
@@ -49,7 +62,7 @@ public class ServerConfigConfirmation extends JFrame {
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
                                 .addComponent(label1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-                                .addComponent(formattedTextField1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
+                                .addComponent(configValuesPane, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
@@ -57,9 +70,9 @@ public class ServerConfigConfirmation extends JFrame {
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addComponent(label1)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(formattedTextField1, GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
-                            .addContainerGap())
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(configValuesPane, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -78,11 +91,33 @@ public class ServerConfigConfirmation extends JFrame {
                     new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
+
+            //---- titleLbl ----
+            titleLbl.setText("Config Parameters");
+            titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+            dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
+    }
+
+    private void frameListeners(){
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    onOk();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void onOk() throws IOException {
+        //MeshFS.restartAsServer();
     }
 
     public static void run(JFrame sender, String content) {
@@ -96,8 +131,10 @@ public class ServerConfigConfirmation extends JFrame {
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel label1;
-    private JFormattedTextField formattedTextField1;
+    private JScrollPane configValuesPane;
+    private JTextPane configValues;
     private JPanel buttonBar;
     private JButton okButton;
+    private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

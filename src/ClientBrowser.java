@@ -25,7 +25,7 @@ public class ClientBrowser extends JFrame {
 
     private void initComponents() {
         String folderLocation = "root";
-        JSONObject jsonObj = JSONReader.getJSONObject(MeshFS.properties.getProperty("repository") + "catalog.json");
+        JSONObject jsonObj = JSONReader.getJSONObject("test");
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode("root");
         tree = (readFolder(folderLocation,jsonObj,tree));
 

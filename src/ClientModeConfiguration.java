@@ -17,7 +17,7 @@ import javax.swing.event.DocumentListener;
 /**
  * Created by Mark Hedrick on 10/30/16.
  */
-public class ClientModeConfiguration extends JFrame {
+public class ClientModeConfiguration extends JFrame{
     public ClientModeConfiguration() {
         initComponents();
         frameListeners();
@@ -48,6 +48,7 @@ public class ClientModeConfiguration extends JFrame {
         passwordField = new JPasswordField();
         buttonBar = new JPanel();
         okButton = new JButton();
+        titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Client Configuration");
@@ -103,32 +104,30 @@ public class ClientModeConfiguration extends JFrame {
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
                                 .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(bindAnonLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(bindAnonymouslyCheckBox)
+                                    .addGap(0, 229, Short.MAX_VALUE))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addGroup(contentPanelLayout.createParallelGroup()
                                         .addGroup(contentPanelLayout.createSequentialGroup()
                                             .addComponent(serverAddressLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(serverAddressField, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+                                            .addComponent(serverAddressField, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(contentPanelLayout.createSequentialGroup()
                                             .addComponent(serverPortLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)))
-                                    .addGap(12, 12, 12))
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(bindAnonLbl)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(bindAnonymouslyCheckBox)
-                                    .addGap(0, 221, Short.MAX_VALUE))
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                        .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(passwordLbl)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(passwordField))
-                                        .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(usernameLbl)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE)))
-                                    .addContainerGap(158, Short.MAX_VALUE))))
+                                            .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(contentPanelLayout.createSequentialGroup()
+                                                .addComponent(passwordLbl)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(passwordField))
+                                            .addGroup(contentPanelLayout.createSequentialGroup()
+                                                .addComponent(usernameLbl)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE))))
+                                    .addContainerGap(64, Short.MAX_VALUE))))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -153,7 +152,7 @@ public class ClientModeConfiguration extends JFrame {
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(passwordLbl)
                                 .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(2, Short.MAX_VALUE))
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -173,6 +172,12 @@ public class ClientModeConfiguration extends JFrame {
                     new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
+
+            //---- titleLbl ----
+            titleLbl.setText("Client Connection Settings");
+            titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+            dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
@@ -247,7 +252,7 @@ public class ClientModeConfiguration extends JFrame {
                 changed();
             }
             public void changed() {
-                if (passwordField.getText().isEmpty() == true){
+                if (passwordField.getPassword().length == 0){
                     okButton.setEnabled(false);
                 }else {
                     okButton.setEnabled(true);
@@ -292,18 +297,18 @@ public class ClientModeConfiguration extends JFrame {
     private JPasswordField passwordField;
     private JPanel buttonBar;
     private JButton okButton;
+    private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     public void onOk(){
         if(!(FileClient.ping(serverAddressField.getText(), Integer.parseInt(serverPortField.getText())))){
-            JOptionPane.showMessageDialog(null, "Connection to Server Failed!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setText("");
             serverPortField.setText("");
             usernameField.setText("");
             passwordField.setText("");
             bindAnonymouslyCheckBox.setSelected(false);
         }
-        JOptionPane.showMessageDialog(null, "Ping Worked", "MeshFS - Info", JOptionPane.INFORMATION_MESSAGE);
         try{
             FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), "catalog.json");
         }catch(IOException ioe){
@@ -311,7 +316,6 @@ public class ClientModeConfiguration extends JFrame {
         }
         ClientBrowser.run();
         dispose();
-
     }
 
     public void bindAnonymously(String mode){

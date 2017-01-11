@@ -10,8 +10,8 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp label1::::362:x, comp formattedTextField1::::362:x}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space :::p, comp formattedTextField1::::174:x, space :::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp label1::::362:x, comp configValuesPane::::362:x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space u:::p, comp configValuesPane:::p:174:p, space :::x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -19,8 +19,11 @@ new FormModel {
 						"text": "Confirm the following values before the server launches:"
 						"horizontalAlignment": 0
 					} )
-					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
-						name: "formattedTextField1"
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "configValuesPane"
+						add( new FormComponent( "javax.swing.JTextPane" ) {
+							name: "configValues"
+						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -42,6 +45,14 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "South"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "titleLbl"
+					"text": "Config Parameters"
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 0, 5, false )
+					"horizontalAlignment": 0
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "North"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"

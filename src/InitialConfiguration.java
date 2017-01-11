@@ -19,6 +19,9 @@ public class InitialConfiguration extends JFrame {
 
     private InitialConfiguration() {
         initComponents();
+        modeSelectionBox.addItem("none");
+        modeSelectionBox.addItem("Server Mode");
+        modeSelectionBox.addItem("Client Mode");
         frameListeners();
         okButton.setEnabled(false);
         setResizable(false);
@@ -29,9 +32,9 @@ public class InitialConfiguration extends JFrame {
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
+        titleLbl = new JLabel();
         modeLbl = new JLabel();
-        serverModeBtn = new JRadioButton();
-        clientModeBtn = new JRadioButton();
+        modeSelectionBox = new JComboBox();
         buttonBar = new JPanel();
         okButton = new JButton();
 
@@ -48,41 +51,38 @@ public class InitialConfiguration extends JFrame {
             //======== contentPanel ========
             {
 
+                //---- titleLbl ----
+                titleLbl.setText("Mode");
+                titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+                titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+
                 //---- modeLbl ----
                 modeLbl.setText("Please select the correct mode of operation:");
                 modeLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
                 modeLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
-                //---- serverModeBtn ----
-                serverModeBtn.setText("Server");
-                serverModeBtn.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
-                //---- clientModeBtn ----
-                clientModeBtn.setText("Client");
-                clientModeBtn.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
                     contentPanelLayout.createParallelGroup()
+                        .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap(75, Short.MAX_VALUE)
-                            .addComponent(serverModeBtn)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(clientModeBtn)
-                            .addGap(90, 90, 90))
-                        .addComponent(modeLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addContainerGap()
+                            .addComponent(modeLbl, GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                            .addContainerGap())
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addGap(84, 84, 84)
+                            .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(88, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
+                            .addComponent(titleLbl)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(modeLbl)
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(clientModeBtn)
-                                .addComponent(serverModeBtn))
-                            .addContainerGap(16, Short.MAX_VALUE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                            .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -115,47 +115,37 @@ public class InitialConfiguration extends JFrame {
                 onOk();
             }
         });
-        serverModeBtn.addActionListener(new ActionListener() {
+        modeSelectionBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                okButton.setEnabled(true);
+                if(modeSelectionBox.getSelectedItem().toString().equals("none")){
+                    okButton.setEnabled(false);
+                }else{
+                    okButton.setEnabled(true);
+                }
                 contentPanel.getRootPane().setDefaultButton(okButton);
                 contentPanel.requestFocus();
             }
         });
-        clientModeBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                okButton.setEnabled(true);
-                contentPanel.getRootPane().setDefaultButton(okButton);
-                contentPanel.requestFocus();
-            }
-        });
-        ButtonGroup modeRadios = new ButtonGroup();
-        modeRadios.add(serverModeBtn);
-        modeRadios.add(clientModeBtn);
     }
 
     private void onOk() {
-        if(clientModeBtn.isSelected()){
-            ClientModeConfiguration.run(initialConfiguration);
-            dispose();
-        }
-        else if(serverModeBtn.isSelected()){
+        if(modeSelectionBox.getSelectedItem().toString().equals("Server Mode")){
             ServerModeConfiguration.run(initialConfiguration);
             dispose();
         }
-        else{
-            JOptionPane.showMessageDialog(null, "You must select a mode!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
+        else if(modeSelectionBox.getSelectedItem().toString().equals("Client Mode")){
+            ClientModeConfiguration.run(initialConfiguration);
+            dispose();
         }
-
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
+    private JLabel titleLbl;
     private JLabel modeLbl;
-    private JRadioButton serverModeBtn;
-    private JRadioButton clientModeBtn;
+    private JComboBox modeSelectionBox;
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

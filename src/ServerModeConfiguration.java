@@ -33,8 +33,8 @@ public class ServerModeConfiguration extends JFrame {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
-        tabbedPane1 = new JTabbedPane();
-        panel1 = new JPanel();
+        serverSettingPane = new JTabbedPane();
+        networkTab = new JPanel();
         serverPortLbl = new JLabel();
         serverPortField = new JFormattedTextField(numberFormat);
         serverThreadsLbl = new JLabel();
@@ -50,7 +50,7 @@ public class ServerModeConfiguration extends JFrame {
         serverNetworkInterfaceLbl = new JLabel();
         scrollPane1 = new JScrollPane();
         ipJListField = new JList(ipJList().toArray());
-        panel2 = new JPanel();
+        storageTab = new JPanel();
         repositoryLbl = new JLabel();
         repoPathField = new JTextField(System.getProperty("user.dir"));
         minFreeSpaceLbl = new JLabel();
@@ -62,8 +62,9 @@ public class ServerModeConfiguration extends JFrame {
         buttonBar = new JPanel();
         importConfigBtn = new JButton();
         backupConfigBtn = new JButton();
-        hSpacer1 = new JPanel(null);
+        resetConfigBtn = new JButton();
         okButton = new JButton();
+        titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Server Configuration");
@@ -75,12 +76,12 @@ public class ServerModeConfiguration extends JFrame {
             dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
             dialogPane.setLayout(new BorderLayout());
 
-            //======== tabbedPane1 ========
+            //======== serverSettingPane ========
             {
 
-                //======== panel1 ========
+                //======== networkTab ========
                 {
-                    panel1.setBackground(new Color(229, 229, 229));
+                    networkTab.setBackground(new Color(229, 229, 229));
 
                     //---- serverPortLbl ----
                     serverPortLbl.setText("Network Port:");
@@ -137,14 +138,14 @@ public class ServerModeConfiguration extends JFrame {
                         scrollPane1.setViewportView(ipJListField);
                     }
 
-                    GroupLayout panel1Layout = new GroupLayout(panel1);
-                    panel1.setLayout(panel1Layout);
-                    panel1Layout.setHorizontalGroup(
-                        panel1Layout.createParallelGroup()
-                            .addGroup(panel1Layout.createSequentialGroup()
+                    GroupLayout networkTabLayout = new GroupLayout(networkTab);
+                    networkTab.setLayout(networkTabLayout);
+                    networkTabLayout.setHorizontalGroup(
+                        networkTabLayout.createParallelGroup()
+                            .addGroup(networkTabLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(panel1Layout.createSequentialGroup()
+                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(networkTabLayout.createSequentialGroup()
                                         .addComponent(serverPortLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
@@ -152,64 +153,69 @@ public class ServerModeConfiguration extends JFrame {
                                         .addComponent(stripedCopiesLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(numStripeCopiesField, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                            .addGroup(GroupLayout.Alignment.LEADING, panel1Layout.createSequentialGroup()
-                                                .addComponent(serverTimeoutLbl)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(GroupLayout.Alignment.LEADING, panel1Layout.createSequentialGroup()
+                                    .addGroup(networkTabLayout.createSequentialGroup()
+                                        .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                            .addGroup(GroupLayout.Alignment.LEADING, networkTabLayout.createSequentialGroup()
                                                 .addComponent(stripesLbl)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(numStripesField, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(GroupLayout.Alignment.LEADING, panel1Layout.createSequentialGroup()
-                                                .addComponent(serverThreadsLbl)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)))
-                                        .addGap(18, 18, 18)
-                                        .addGroup(panel1Layout.createParallelGroup()
-                                            .addGroup(panel1Layout.createSequentialGroup()
-                                                .addComponent(wholeCopiesLbl)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(serverNetworkInterfaceLbl)))
-                                    .addComponent(scrollPane1, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(3, Short.MAX_VALUE))
+                                            .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(GroupLayout.Alignment.LEADING, networkTabLayout.createSequentialGroup()
+                                                    .addComponent(serverTimeoutLbl)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(GroupLayout.Alignment.LEADING, networkTabLayout.createSequentialGroup()
+                                                    .addComponent(serverThreadsLbl)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))))
+                                        .addGroup(networkTabLayout.createParallelGroup()
+                                            .addGroup(networkTabLayout.createSequentialGroup()
+                                                .addGap(18, 18, 18)
+                                                .addGroup(networkTabLayout.createParallelGroup()
+                                                    .addGroup(networkTabLayout.createSequentialGroup()
+                                                        .addComponent(wholeCopiesLbl)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
+                                                    .addComponent(serverNetworkInterfaceLbl)))
+                                            .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
+                                                .addGap(94, 94, 94)
+                                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)))))
+                                .addContainerGap(22, Short.MAX_VALUE))
                     );
-                    panel1Layout.setVerticalGroup(
-                        panel1Layout.createParallelGroup()
-                            .addGroup(panel1Layout.createSequentialGroup()
+                    networkTabLayout.setVerticalGroup(
+                        networkTabLayout.createParallelGroup()
+                            .addGroup(networkTabLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverPortLbl)
                                     .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(stripedCopiesLbl)
                                     .addComponent(numStripeCopiesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverThreadsLbl)
                                     .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(wholeCopiesLbl)
                                     .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverTimeoutLbl)
                                     .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(serverNetworkInterfaceLbl))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(panel1Layout.createParallelGroup()
-                                    .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(stripesLbl)
-                                        .addComponent(numStripesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(networkTabLayout.createParallelGroup()
+                                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(numStripesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(stripesLbl)))
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                 }
-                tabbedPane1.addTab("Network", panel1);
+                serverSettingPane.addTab("Network", networkTab);
 
-                //======== panel2 ========
+                //======== storageTab ========
                 {
-                    panel2.setBackground(new Color(229, 229, 229));
+                    storageTab.setBackground(new Color(229, 229, 229));
 
                     //---- repositoryLbl ----
                     repositoryLbl.setText("Repository:");
@@ -237,62 +243,62 @@ public class ServerModeConfiguration extends JFrame {
                     browseBtn.setText("Browse...");
                     browseBtn.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
 
-                    GroupLayout panel2Layout = new GroupLayout(panel2);
-                    panel2.setLayout(panel2Layout);
-                    panel2Layout.setHorizontalGroup(
-                        panel2Layout.createParallelGroup()
-                            .addGroup(panel2Layout.createSequentialGroup()
+                    GroupLayout storageTabLayout = new GroupLayout(storageTab);
+                    storageTab.setLayout(storageTabLayout);
+                    storageTabLayout.setHorizontalGroup(
+                        storageTabLayout.createParallelGroup()
+                            .addGroup(storageTabLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(panel2Layout.createParallelGroup()
-                                    .addGroup(panel2Layout.createSequentialGroup()
+                                .addGroup(storageTabLayout.createParallelGroup()
+                                    .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(repositoryLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(browseBtn))
-                                    .addGroup(panel2Layout.createSequentialGroup()
+                                    .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(minFreeSpaceLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(minSpaceField, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(label1)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(spaceSldr, GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
-                                    .addGroup(panel2Layout.createSequentialGroup()
+                                        .addComponent(spaceSldr, GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
+                                    .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(freeSpaceLbl, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 80, Short.MAX_VALUE)))
+                                        .addGap(0, 99, Short.MAX_VALUE)))
                                 .addContainerGap())
                     );
-                    panel2Layout.setVerticalGroup(
-                        panel2Layout.createParallelGroup()
-                            .addGroup(panel2Layout.createSequentialGroup()
+                    storageTabLayout.setVerticalGroup(
+                        storageTabLayout.createParallelGroup()
+                            .addGroup(storageTabLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(panel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addGroup(storageTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(repositoryLbl)
                                     .addComponent(repoPathField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(browseBtn))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(panel2Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                    .addGroup(panel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addGroup(storageTabLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                    .addGroup(storageTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                         .addComponent(minFreeSpaceLbl)
                                         .addComponent(minSpaceField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(label1))
                                     .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(freeSpaceLbl)
-                                .addContainerGap(76, Short.MAX_VALUE))
+                                .addContainerGap(112, Short.MAX_VALUE))
                     );
                 }
-                tabbedPane1.addTab("Storage", panel2);
+                serverSettingPane.addTab("Storage", storageTab);
             }
-            dialogPane.add(tabbedPane1, BorderLayout.CENTER);
+            dialogPane.add(serverSettingPane, BorderLayout.CENTER);
 
             //======== buttonBar ========
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 309, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 309, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0, 0.0, 0.0};
 
                 //---- importConfigBtn ----
                 importConfigBtn.setText("Import...");
@@ -306,21 +312,30 @@ public class ServerModeConfiguration extends JFrame {
                 buttonBar.add(backupConfigBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
-                buttonBar.add(hSpacer1, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+
+                //---- resetConfigBtn ----
+                resetConfigBtn.setText("Reset");
+                buttonBar.add(resetConfigBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
-                buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
+
+            //---- titleLbl ----
+            titleLbl.setText("Server Settings");
+            titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+            dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        pack();
+        setSize(490, 365);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -551,6 +566,11 @@ public class ServerModeConfiguration extends JFrame {
 
             }
         });
+        resetConfigBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                resetConfig();
+            }
+        });
 
 
 
@@ -559,8 +579,8 @@ public class ServerModeConfiguration extends JFrame {
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
-    private JTabbedPane tabbedPane1;
-    private JPanel panel1;
+    private JTabbedPane serverSettingPane;
+    private JPanel networkTab;
     private JLabel serverPortLbl;
     private JFormattedTextField serverPortField;
     private JLabel serverThreadsLbl;
@@ -576,7 +596,7 @@ public class ServerModeConfiguration extends JFrame {
     private JLabel serverNetworkInterfaceLbl;
     private JScrollPane scrollPane1;
     private JList ipJListField;
-    private JPanel panel2;
+    private JPanel storageTab;
     private JLabel repositoryLbl;
     private JTextField repoPathField;
     private JLabel minFreeSpaceLbl;
@@ -588,8 +608,9 @@ public class ServerModeConfiguration extends JFrame {
     private JPanel buttonBar;
     private JButton importConfigBtn;
     private JButton backupConfigBtn;
-    private JPanel hSpacer1;
+    private JButton resetConfigBtn;
     private JButton okButton;
+    private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     private ArrayList<String> ipJList(){
@@ -614,7 +635,7 @@ public class ServerModeConfiguration extends JFrame {
             JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
             z.printStackTrace();
         }
-        ServerConfigConfirmation.run(this, "Interface: " + MeshFS.properties.getProperty("preferredInterface") + "\n\nTimeout: " + MeshFS.properties.getProperty("serverTimeout") + "s\n\nPort: " + MeshFS.properties.getProperty("portNumber") + "\n\nFile Copies / Stripes / Striped Copies" + MeshFS.properties.getProperty("numWholeCopy") + "/" + MeshFS.properties.getProperty("numStripes") + "/" + MeshFS.properties.getProperty("numStripeCopy") + "\n\nRepository: " + MeshFS.properties.getProperty("repository") + "\n\nMinimum Space: " + MeshFS.properties.getProperty("minSpace") + "\n\nServerThreads: " + MeshFS.properties.getProperty("serverThreads"));
+        ServerConfigConfirmation.run(this, "<html><center><b>Interface:</b> " + MeshFS.properties.getProperty("preferredInterface") + "<br><br><b>Timeout:</b> " + MeshFS.properties.getProperty("serverTimeout") + "s<br><br><b>Port:</b> " + MeshFS.properties.getProperty("portNumber") + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + MeshFS.properties.getProperty("numWholeCopy") + "/" + MeshFS.properties.getProperty("numStripes") + "/" + MeshFS.properties.getProperty("numStripeCopy") + "<br><br><b>Repository:</b> " + MeshFS.properties.getProperty("repository") + "<br><br><b>Minimum Space:</b> " + MeshFS.properties.getProperty("minSpace") + "<br><br><b>Server Threads:</b> " + MeshFS.properties.getProperty("serverThreads") + "</center></html>");
 
         dispose();
     }
@@ -664,6 +685,17 @@ public class ServerModeConfiguration extends JFrame {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void resetConfig(){
+        serverPortField.setText(MeshFS.properties.getProperty("portNumber"));
+        numStripesField.setText(MeshFS.properties.getProperty("numStripes"));
+        numStripeCopiesField.setText(MeshFS.properties.getProperty("numStripeCopy"));
+        numWholeField.setText(MeshFS.properties.getProperty("numWholeCopy"));
+        minSpaceField.setText(MeshFS.properties.getProperty("minSpace"));
+        repoPathField.setText(MeshFS.properties.getProperty("repository"));
+        serverThreadsField.setText(MeshFS.properties.getProperty("serverThreads"));
+        serverTimeoutField.setText(MeshFS.properties.getProperty("serverTimeout"));
     }
 
     public void writeConfig(){

@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.5.0.333" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "5.2.5.1.342" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -10,7 +10,7 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1::::262:x, seq {par l {seq {comp label2:::p::p, space :::p, comp label7:::p::p}, seq l {comp label3:::p::p, space :::p, comp label8:::p::p}, seq l {comp label5:::p::p, space :::p, comp label10:::p::p}, comp label6::l:p::p, seq l {comp label4:::p::p, space :::p, comp label9:::p::p}}, space :0:134:x}}, space :::p}}"
+					"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1::::262:x, seq {par l {seq {comp label2:::p::p, space :::p, comp label7:::p::p}, seq l {comp label3:::p::p, space :::p, comp label8:::p::p}, seq l {comp label5:::p::p, space :::p, comp label10:::p::p}, comp label6::l:p::p, seq l {comp label4:::p::p, space :::p, comp label9:::p::p}}, space :0:136:x}}, space :::p}}"
 					"$verticalGroup": "par l {seq l {space :::p, par b {comp label2::b:p::p, comp label7::b:p::p}, space s:::p, par b {comp label3::b:p::p, comp label8::b:p::p}, space s:::p, par b {comp label4::b:p::p, comp label9::b:p::p}, space s:::p, par b {comp label5::b:p::p, comp label10::b:p::p}, space s:::p, comp label6:::p::p, space :::p, comp scrollPane1:::p:108:p, space :::x}}"
 				} ) {
 					name: "contentPanel"
@@ -76,6 +76,14 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "South"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "titleLbl"
+					"text": "File Properties"
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 0, 5, false )
+					"horizontalAlignment": 0
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "North"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"

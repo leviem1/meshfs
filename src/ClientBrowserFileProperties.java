@@ -34,6 +34,7 @@ public class ClientBrowserFileProperties extends JFrame {
         label10 = new JLabel();
         buttonBar = new JPanel();
         okButton = new JButton();
+        titleLbl = new JLabel();
 
         //======== this ========
         setTitle("filename - Properties");
@@ -107,7 +108,7 @@ public class ClientBrowserFileProperties extends JFrame {
                                             .addComponent(label4)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(label9)))
-                                    .addGap(0, 134, Short.MAX_VALUE)))
+                                    .addGap(0, 136, Short.MAX_VALUE)))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
@@ -152,6 +153,12 @@ public class ClientBrowserFileProperties extends JFrame {
                     new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
+
+            //---- titleLbl ----
+            titleLbl.setText("File Properties");
+            titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+            dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
@@ -176,5 +183,6 @@ public class ClientBrowserFileProperties extends JFrame {
     private JLabel label10;
     private JPanel buttonBar;
     private JButton okButton;
+    private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
