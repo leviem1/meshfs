@@ -134,7 +134,8 @@ public class MeshFS {
 
 class onQuit implements Runnable {
     public void run() {
-
-        MeshFS.fileServer.stopServer();
+        if (MeshFS.nogui) {
+            MeshFS.fileServer.stopServer();
+        }
     }
 }

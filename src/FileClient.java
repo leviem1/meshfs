@@ -125,7 +125,6 @@ public final class FileClient {
     public static void receiveReport(String serverAddress, int port) throws IOException {
         String reportPart;
         String reportFull = "";
-        Map<String, String> map = new HashMap<>();
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -148,19 +147,22 @@ public final class FileClient {
     public static void sendFile(String serverAddress, int port, String filepath) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("102|" + filepath + "\n");
+            dos.writeChars("102|" + filepath + "\n");
+            dos.flush();
 
             if (input.readLine().equals("201")) {
                 int br;
                 byte[] data = new byte[4096];
-                DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+
                 FileInputStream fis = new FileInputStream(filepath);
+
                 while ((br = fis.read(data, 0, data.length)) != -1) {
                     dos.write(data, 0, br);
+                    dos.flush();
                 }
 
                 fis.close();
@@ -175,19 +177,19 @@ public final class FileClient {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        DataInputStream dis = new DataInputStream(client.getInputStream());
 
         try {
             out.println("101|" + fileName + "\n");
 
-            if (input.readLine().equals("201")) {
+            if (dis.readLine().trim().equals("201")) {
                 int br;
                 byte[] data = new byte[4096];
-                DataInputStream dis = new DataInputStream(client.getInputStream());
                 FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + fileName);
 
-                while ((br = dis.read(data, 0, data.length)) != -1){
+                while ((br = dis.read(data, 0, data.length)) != -1) {
                     fos.write(data, 0, br);
+                    fos.flush();
                 }
 
                 fos.close();
@@ -203,25 +205,25 @@ public final class FileClient {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        DataInputStream dis = new DataInputStream(client.getInputStream());
 
         try {
             out.println("101|" + fileName + "\n");
 
-            if (input.readLine().equals("201")) {
+            if (dis.readLine().trim().equals("201")) {
                 int br;
                 byte[] data = new byte[4096];
-                DataInputStream dis = new DataInputStream(client.getInputStream());
-                FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + fileOut);
+
+                FileOutputStream fos = new FileOutputStream(fileOut);
 
                 while ((br = dis.read(data, 0, data.length)) != -1){
                     fos.write(data, 0, br);
+                    fos.flush();
                 }
 
                 fos.close();
                 dis.close();
             }
-
         } catch (SocketTimeoutException ste) {
             client.close();
         }

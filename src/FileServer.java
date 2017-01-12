@@ -153,7 +153,6 @@ class ServerInit implements Runnable {
     private void receiveReport(Socket client) throws IOException {
         String reportPart;
         String reportFull = "";
-        Map<String, String> map = new HashMap<>();
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
@@ -168,29 +167,40 @@ class ServerInit implements Runnable {
         JSONWriter.writeJSONObject("manifest.json", Reporting.splitter(reportFull));
     }
 
-    private void sendFile(String filename, Socket client) throws Exception {
+    private void sendFile(String filename, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+        out.println("201");
+
         FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + filename);
+
         while ((br = fis.read(data, 0, data.length)) != -1) {
             dos.write(data, 0, br);
+            dos.flush();
         }
 
         fis.close();
         dos.close();
     }
 
-    private void receiveFile(String filename, Socket client) throws Exception{
+    private void receiveFile(String filename, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+        out.println("201\n");
+
         DataInputStream dis = new DataInputStream(client.getInputStream());
         FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
         while ((br = dis.read(data, 0, data.length)) != -1){
             fos.write(data, 0, br);
+            fos.flush();
         }
-
+        out.close();
         fos.close();
         dis.close();
     }
@@ -199,7 +209,7 @@ class ServerInit implements Runnable {
         String requestPart;
         String requestFull = "";
         try {
-            BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            DataInputStream input = new DataInputStream(client.getInputStream());
 
             while (((requestPart = input.readLine()) != null) && (requestFull.length() < 2048)) {
                 if (requestPart.equals("")) break;
