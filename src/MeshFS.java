@@ -21,11 +21,6 @@ public class MeshFS {
 
         properties = ConfigParser.loadProperties();
         new CliParser(args, properties);
-        File repo = new File(properties.getProperty("repository"));
-        if (!repo.exists()) {
-            repo.mkdirs();
-        }
-
         List<List> possibleIP = Reporting.getIpAddress();
 
         if (properties.getProperty("masterIP").equals("127.0.0.1")) {
@@ -49,6 +44,10 @@ public class MeshFS {
 
 
         if (nogui) {
+            File repo = new File(properties.getProperty("repository"));
+            if (!repo.exists()) {
+                repo.mkdirs();
+            }
             try {
                 fileServer = new FileServer();
                 fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("timeout")) * 1000);

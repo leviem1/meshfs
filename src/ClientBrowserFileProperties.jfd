@@ -10,20 +10,20 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1::::262:x, seq {par l {seq {comp label2:::p::p, space :::p, comp label7:::p::p}, seq l {comp label3:::p::p, space :::p, comp label8:::p::p}, seq l {comp label5:::p::p, space :::p, comp label10:::p::p}, comp label6::l:p::p, seq l {comp label4:::p::p, space :::p, comp label9:::p::p}}, space :0:136:x}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp label2::b:p::p, comp label7::b:p::p}, space s:::p, par b {comp label3::b:p::p, comp label8::b:p::p}, space s:::p, par b {comp label4::b:p::p, comp label9::b:p::p}, space s:::p, par b {comp label5::b:p::p, comp label10::b:p::p}, space s:::p, comp label6:::p::p, space :::p, comp scrollPane1:::p:108:p, space :::x}}"
+					"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1::::262:x, seq {par l {seq {comp fileNameLbl:::p::p, space :::p, comp fileNameValue:::p::p}, seq l {comp fileSizeLbl:::p::p, space :::p, comp fileSizeValue:::p::p}, seq l {comp label5:::p::p, space :::p, comp label10:::p::p}, comp label6::l:p::p, seq l {comp creationDateLbl:::p::p, space :::p, comp creationDateValue:::p::p}}, space :0:136:x}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp fileNameLbl::b:p::p, comp fileNameValue::b:p::p}, space s:::p, par b {comp fileSizeLbl::b:p::p, comp fileSizeValue::b:p::p}, space s:::p, par b {comp creationDateLbl::b:p::p, comp creationDateValue::b:p::p}, space s:::p, par b {comp label5::b:p::p, comp label10::b:p::p}, space s:::p, comp label6:::p::p, space :::p, comp scrollPane1:::p:108:p, space :::x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label2"
+						name: "fileNameLbl"
 						"text": "File Name:"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label3"
+						name: "fileSizeLbl"
 						"text": "File Size:"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label4"
+						name: "creationDateLbl"
 						"text": "Creation Date:"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -41,16 +41,25 @@ new FormModel {
 						} )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label7"
+						name: "fileNameValue"
 						"text": "null"
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JLabel(fileName);"
+						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label8"
+						name: "fileSizeValue"
 						"text": "null"
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JLabel(fileSize);"
+						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label9"
+						name: "creationDateValue"
 						"text": "null"
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JLabel(creationDate);"
+						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label10"
