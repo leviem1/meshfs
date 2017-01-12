@@ -20,54 +20,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class ClientBrowser extends JFrame {
     public ClientBrowser() {
         initComponents();
-        uploadBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                final JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-                fileChooser.setDialogTitle("Choose File to Upload");
-                fileChooser.setAcceptAllFileFilterUsed(true);
-                int rVal = fileChooser.showOpenDialog(null);
-                if (rVal == JFileChooser.APPROVE_OPTION) {
-                    //
-                }
-            }
-        });
-        refreshBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                tree1.updateUI();
-            }
-        });
+        frameListeners();
     }
-
-
-
-    private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
-        Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
-        if (folderContents.keySet().isEmpty()){
-            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
-            branch.add(leaf);
-        }
-        else {
-            for (String name : folderContents.keySet()) {
-                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
-                leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
-                if (leaf.getAllowsChildren()) {
-                    String folderLocation2 = folderLocation + "/" + name;
-                    readFolder(folderLocation2, jsonObj, leaf);
-                }
-                branch.add(leaf);
-            }
-        }
-        return branch;
-    }
-
-
 
     private void initComponents() {
         String folderLocation = "root";
-        JSONObject jsonObj = JSONReader.getJSONObject(MeshFS.properties.getProperty("repository") + "catalog.json");
+        JSONObject jsonObj = JSONReader.getJSONObject("test");
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode("root");
         tree = (readFolder(folderLocation,jsonObj,tree));
 
@@ -220,13 +178,53 @@ public class ClientBrowser extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
+    private void frameListeners(){
+        uploadBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                final JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                fileChooser.setDialogTitle("Choose File to Upload");
+                fileChooser.setAcceptAllFileFilterUsed(true);
+                int rVal = fileChooser.showOpenDialog(null);
+                if (rVal == JFileChooser.APPROVE_OPTION) {
+                    //
+                }
+            }
+        });
+        refreshBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                tree1.updateUI();
+            }
+        });
+    }
+
+    private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
+        Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
+        if (folderContents.keySet().isEmpty()){
+            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
+            branch.add(leaf);
+        }
+        else {
+            for (String name : folderContents.keySet()) {
+                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
+                leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
+                if (leaf.getAllowsChildren()) {
+                    String folderLocation2 = folderLocation + "/" + name;
+                    readFolder(folderLocation2, jsonObj, leaf);
+                }
+                branch.add(leaf);
+            }
+        }
+        return branch;
+    }
+
     public static void run() {
         JFrame clientBrowser = new ClientBrowser();
         CenterWindow.centerOnScreen(clientBrowser);
         clientBrowser.setVisible(true);
     }
-
-
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license

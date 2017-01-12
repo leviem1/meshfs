@@ -1,6 +1,11 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -19,11 +24,15 @@ public class GreetingsWindow extends JFrame {
 
     public GreetingsWindow() {
         initComponents();
+        frameListeners();
         dialogPane.getRootPane().setDefaultButton(configBtn);
         configBtn.requestFocus();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(true);
+        setResizable(false);
         toFront();
+    }
+
+    private void frameListeners(){
         configBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onConfigure();
@@ -45,7 +54,7 @@ public class GreetingsWindow extends JFrame {
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
-        welcomeLbl = new JLabel();
+        titleLbl = new JLabel();
         scrollPane1 = new JScrollPane();
         greetingsPane = new JTextPane();
         buttonBar = new JPanel();
@@ -65,15 +74,15 @@ public class GreetingsWindow extends JFrame {
             //======== contentPanel ========
             {
 
-                //---- welcomeLbl ----
-                welcomeLbl.setText("Welcome to MeshFS");
-                welcomeLbl.setFont(new Font("Helvetica Neue", welcomeLbl.getFont().getStyle(), welcomeLbl.getFont().getSize() + 5));
+                //---- titleLbl ----
+                titleLbl.setText("Welcome to MeshFS");
+                titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
 
                 //======== scrollPane1 ========
                 {
 
                     //---- greetingsPane ----
-                    greetingsPane.setText("Before you can begin using MeshFS, you must set it up to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the Server address, and authentication details. If you plan to run MeshFS in Server mode, please refer to our Help guide for more guidance. Thank you for using MeshFS");
+                    greetingsPane.setText("Before using MeshFS, you will need to configure it to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the address of the server that you wish to connect to, as well as any authentication credentials (if required). If you plan on running MeshFS in Server mode, please refer to our Help guide for detailed setup instructions.  Thank you for choosing MeshFS!");
                     greetingsPane.setEditable(false);
                     greetingsPane.setFont(new Font("Helvetica Neue", greetingsPane.getFont().getStyle() & ~Font.BOLD, greetingsPane.getFont().getSize()));
                     scrollPane1.setViewportView(greetingsPane);
@@ -84,19 +93,19 @@ public class GreetingsWindow extends JFrame {
                 contentPanelLayout.setHorizontalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addGap(96, 96, 96)
+                            .addComponent(titleLbl)
+                            .addContainerGap(109, Short.MAX_VALUE))
+                        .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
                             .addContainerGap())
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addGap(96, 96, 96)
-                            .addComponent(welcomeLbl)
-                            .addContainerGap(109, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(welcomeLbl)
+                            .addComponent(titleLbl)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                             .addContainerGap())
@@ -117,7 +126,7 @@ public class GreetingsWindow extends JFrame {
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- quitButton ----
-                quitButton.setText("Quit");
+                quitButton.setText("Exit");
                 quitButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
                 buttonBar.add(quitButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -135,7 +144,7 @@ public class GreetingsWindow extends JFrame {
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel welcomeLbl;
+    private JLabel titleLbl;
     private JScrollPane scrollPane1;
     private JTextPane greetingsPane;
     private JPanel buttonBar;
@@ -147,5 +156,6 @@ public class GreetingsWindow extends JFrame {
         greetingsWindow = new GreetingsWindow();
         CenterWindow.centerOnScreen(greetingsWindow);
         greetingsWindow.setVisible(true);
+
     }
 }

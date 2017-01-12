@@ -1,9 +1,13 @@
 /**
  * Created by Levi Muniz on 10/3/16.
  */
+import com.apple.eawt.Application;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
+
+import javax.swing.*;
 
 
 public class MeshFS {
@@ -14,8 +18,11 @@ public class MeshFS {
     public static boolean isMaster;
 
     public static void main(String[] args) {
+        if(Reporting.getSystemOS().toLowerCase().contains("mac")){
+            Application.getApplication().setDockIconImage(new ImageIcon("app_icon.png").getImage());
+        }
+
         properties = ConfigParser.loadProperties();
-        
         new CliParser(args, properties);
         File repo = new File(properties.getProperty("repository"));
         if (!repo.exists()) {
@@ -39,6 +46,8 @@ public class MeshFS {
 
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
+
+
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
 
 
