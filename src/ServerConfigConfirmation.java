@@ -1,3 +1,5 @@
+import javafx.scene.shape.Mesh;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -118,6 +120,9 @@ public class ServerConfigConfirmation extends JFrame {
 
     public void onOk() throws IOException {
         //MeshFS.restartAsServer();
+        MeshFS.nogui = true;
+        MeshFS.fileServer = new FileServer();
+        MeshFS.fileServer.startServer(Integer.valueOf(MeshFS.properties.getProperty("portNumber")), Integer.valueOf(MeshFS.properties.getProperty("serverThreads")), Integer.valueOf(MeshFS.properties.getProperty("serverTimeout")) * 1000);
     }
 
     public static void run(JFrame sender, String content) {

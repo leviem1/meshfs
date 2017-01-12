@@ -217,6 +217,7 @@ public class ClientModeConfiguration extends JFrame{
                     okButton.setEnabled(false);
                 }else {
                     okButton.setEnabled(true);
+                    buttonBar.getRootPane().setDefaultButton(okButton);
                 }
 
             }
@@ -310,11 +311,12 @@ public class ClientModeConfiguration extends JFrame{
             bindAnonymouslyCheckBox.setSelected(false);
         }
         try{
-            FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), "catalog.json");
+            //FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()));
+            FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), "catalog.json", ".catalog.json");
         }catch(IOException ioe){
             System.out.println("error");
         }
-        ClientBrowser.run();
+        ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()));
         dispose();
     }
 
