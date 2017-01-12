@@ -18,9 +18,6 @@ public class MeshFS {
     public static boolean isMaster;
 
     public static void main(String[] args) {
-        if(Reporting.getSystemOS().toLowerCase().contains("mac")){
-            Application.getApplication().setDockIconImage(new ImageIcon("app_icon.png").getImage());
-        }
 
         properties = ConfigParser.loadProperties();
         new CliParser(args, properties);
@@ -66,12 +63,17 @@ public class MeshFS {
                 if (!serverStarted) {
                     e.printStackTrace();
                     System.out.println("Error: Server start failure");
+                    System.exit(1);
                 } else {
                     System.out.println("Server already started!");
+                    System.exit(2);
                 }
             }
             System.setProperty("java.awt.headless", "true");
         } else {
+            if(Reporting.getSystemOS().toLowerCase().contains("mac")){
+                Application.getApplication().setDockIconImage(new ImageIcon("app_icon.png").getImage());
+            }
             GreetingsWindow.run();
         }
 

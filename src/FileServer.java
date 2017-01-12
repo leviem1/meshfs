@@ -6,8 +6,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+
 
 /**
  * The FileServer class starts a file server
@@ -82,6 +81,24 @@ class ServerInit implements Runnable {
         this.timeout = timeout;
     }
 
+    @SuppressWarnings("deprecation")
+    private String receiveRequest(Socket client) {
+        String requestPart;
+        String requestFull = "";
+        try {
+            DataInputStream input = new DataInputStream(client.getInputStream());
+
+            while (((requestPart = input.readLine()) != null) && (requestFull.length() < 2048)) {
+                if (requestPart.equals("")) break;
+                requestFull = requestFull + requestPart;
+            }
+
+            return requestFull;
+        } catch (IOException ioe) {
+            return requestFull;
+        }
+    }
+
     private void processRequest(String request, Socket out) {
 
         if (request != null) {
@@ -133,16 +150,6 @@ class ServerInit implements Runnable {
         out.flush();
     }
 
-    private void badRequest(Socket client, String request) {
-        try {
-            PrintWriter out = new PrintWriter(client.getOutputStream());
-            out.println("202\n Bad request:\n\n" + request);
-            out.flush();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-
     private void sendReport(Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
@@ -191,7 +198,7 @@ class ServerInit implements Runnable {
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
-        out.println("201\n");
+        out.println("201");
 
         DataInputStream dis = new DataInputStream(client.getInputStream());
         FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
@@ -205,20 +212,13 @@ class ServerInit implements Runnable {
         dis.close();
     }
 
-    private String receiveRequest(Socket client) {
-        String requestPart;
-        String requestFull = "";
+    private void badRequest(Socket client, String request) {
         try {
-            DataInputStream input = new DataInputStream(client.getInputStream());
-
-            while (((requestPart = input.readLine()) != null) && (requestFull.length() < 2048)) {
-                if (requestPart.equals("")) break;
-                requestFull = requestFull + requestPart;
-            }
-
-            return requestFull;
+            PrintWriter out = new PrintWriter(client.getOutputStream());
+            out.println("202\n Bad request:\n\n" + request);
+            out.flush();
         } catch (IOException ioe) {
-            return requestFull;
+            ioe.printStackTrace();
         }
     }
 

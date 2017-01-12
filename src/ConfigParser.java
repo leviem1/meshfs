@@ -25,7 +25,7 @@ public class ConfigParser {
         defaultProperties.setProperty("portNumber","5704");
         defaultProperties.setProperty("repository", ("repo" + File.separator));
         defaultProperties.setProperty("serverThreads", "16");
-        defaultProperties.setProperty("serverTimeout", "90");
+        defaultProperties.setProperty("timeout", "5");
         return defaultProperties;
     }
 

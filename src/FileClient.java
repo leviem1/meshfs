@@ -5,8 +5,6 @@
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The FileClient class handles connecting to
@@ -19,45 +17,13 @@ import java.util.Map;
 public final class FileClient {
 
     /*
-
-    private static void processRequest(Socket client, String request) throws IOException {
-
-        String[] requestParts = request.split("\\|");
-        if (requestParts[0].equals("101")) {            //101:Get file
-            out.println("201");
-            sendFile(requestParts[1]);
-
-        } else if (requestParts[0].equals("102")) {     //102:Post file
-            out.println("201");
-            receiveFile(requestParts[1], out);
-
         } else if (requestParts[0].equals("103")) {     //103:Move file (virtual only)
-            out.println("201");
-            //moveFile(requestParts[1], requestParts[2]);
 
         } else if (requestParts[0].equals("104")) {     //104:Copy file (virtual only)
-            out.println("201");
-            //copyFile(requestParts[1], requestParts[2]);
 
         } else if (requestParts[0].equals("105")) {     //105:Delete file (virtual and physical)
-            out.println("201");
-            //deleteFile(requestParts[1], requestParts[2]);
 
         } else if (requestParts[0].equals("106")) {     //106:Make directory (virtual)
-            out.println("201");
-            //makeDir(requestParts[1]);
-
-
-        } else if (requestParts[0].equals("108")) {     //108:Post report
-            out.println("201");
-            //receiveReport(requestParts[1]);
-
-
-        } else if (requestParts[0].equals("110")) {     //110:Bind
-            out.println("201");
-            //bindClient(requestParts[1], requestParts[2]);
-        }
-    }
     */
 
     /**
@@ -71,18 +37,18 @@ public final class FileClient {
     public static boolean ping(String serverAddress, int port) {
         try {
             Socket client = new Socket(serverAddress, port);
-            client.setSoTimeout(1000);
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                out.println("109\n");
-                String response = input.readLine();
-                client.close();
+            out.println("109\n");
 
-                if (response.equals("201")) {
-                    return true;
-                } else {
-                    return false;
-                }
+            if (input.readLine().trim().equals("201")) {
+                client.close();
+                return true;
+            } else {
+                client.close();
+                return false;
+            }
         } catch (IOException ioe) {
             return false;
         }
@@ -98,15 +64,14 @@ public final class FileClient {
 
     public static void sendReport(String serverAddress, int port) throws IOException {
         Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
             out.println("108\n");
-            String response = input.readLine();
 
-            if (response.equals("201")) {
+            if (input.readLine().trim().equals("201")) {
                 out.println(Reporting.generate() + "\n");
             }
         } catch (SocketTimeoutException ste) {
@@ -126,14 +91,13 @@ public final class FileClient {
         String reportPart;
         String reportFull = "";
         Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
         out.println("107\n");
 
-        if (input.readLine().equals("201")) {
-
+        if (input.readLine().trim().equals("201")) {
             while (true) {
                 reportPart = input.readLine();
                 if ((reportPart == null) || (reportPart.equals("\n"))) break;
@@ -146,15 +110,15 @@ public final class FileClient {
 
     public static void sendFile(String serverAddress, int port, String filepath) throws IOException {
         Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            dos.writeChars("102|" + filepath + "\n");
-            dos.flush();
+            out.println("102|" + (new File(filepath)).getName() + "\n");
 
-            if (input.readLine().equals("201")) {
+            if (input.readLine().trim().equals("201")) {
                 int br;
                 byte[] data = new byte[4096];
 
@@ -173,9 +137,10 @@ public final class FileClient {
         }
     }
 
+    @SuppressWarnings( "deprecation" )
     public static void receiveFile(String serverAddress, int port, String fileName) throws IOException {
         Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         DataInputStream dis = new DataInputStream(client.getInputStream());
 
@@ -201,9 +166,10 @@ public final class FileClient {
         }
     }
 
+    @SuppressWarnings( "deprecation" )
     public static void receiveFile(String serverAddress, int port, String fileName, String fileOut) throws IOException {
         Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         DataInputStream dis = new DataInputStream(client.getInputStream());
 
