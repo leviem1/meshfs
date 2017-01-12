@@ -635,7 +635,7 @@ public class ServerModeConfiguration extends JFrame {
             JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
             z.printStackTrace();
         }
-        ServerConfigConfirmation.run(this, "<html><center><b>Interface:</b> " + MeshFS.properties.getProperty("preferredInterface") + "<br><br><b>Timeout:</b> " + MeshFS.properties.getProperty("serverTimeout") + "s<br><br><b>Port:</b> " + MeshFS.properties.getProperty("portNumber") + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + MeshFS.properties.getProperty("numWholeCopy") + "/" + MeshFS.properties.getProperty("numStripes") + "/" + MeshFS.properties.getProperty("numStripeCopy") + "<br><br><b>Repository:</b> " + MeshFS.properties.getProperty("repository") + "<br><br><b>Minimum Space:</b> " + MeshFS.properties.getProperty("minSpace") + "<br><br><b>Server Threads:</b> " + MeshFS.properties.getProperty("serverThreads") + "</center></html>");
+        ServerConfigConfirmation.run(this, "<html><center><b>Interface:</b> " + MeshFS.properties.getProperty("preferredInterface") + "<br><br><b>Timeout:</b> " + MeshFS.properties.getProperty("timeout") + "s<br><br><b>Port:</b> " + MeshFS.properties.getProperty("portNumber") + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + MeshFS.properties.getProperty("numWholeCopy") + "/" + MeshFS.properties.getProperty("numStripes") + "/" + MeshFS.properties.getProperty("numStripeCopy") + "<br><br><b>Repository:</b> " + MeshFS.properties.getProperty("repository") + "<br><br><b>Minimum Space:</b> " + MeshFS.properties.getProperty("minSpace") + "<br><br><b>Server Threads:</b> " + MeshFS.properties.getProperty("serverThreads") + "</center></html>");
 
         dispose();
     }
@@ -695,7 +695,7 @@ public class ServerModeConfiguration extends JFrame {
         minSpaceField.setText(MeshFS.properties.getProperty("minSpace"));
         repoPathField.setText(MeshFS.properties.getProperty("repository"));
         serverThreadsField.setText(MeshFS.properties.getProperty("serverThreads"));
-        serverTimeoutField.setText(MeshFS.properties.getProperty("serverTimeout"));
+        serverTimeoutField.setText(MeshFS.properties.getProperty("timeout"));
     }
 
     public void writeConfig(){
@@ -713,7 +713,7 @@ public class ServerModeConfiguration extends JFrame {
         configProperties.setProperty("portNumber", String.valueOf(serverPortField.getText()));
         configProperties.setProperty("repository", String.valueOf(repoPathField.getText()));
         configProperties.setProperty("serverThreads", String.valueOf(serverThreadsField.getText()));
-        configProperties.setProperty("serverTimeout", String.valueOf(serverTimeoutField.getText()));
+        configProperties.setProperty("timeout", String.valueOf(serverTimeoutField.getText()));
         return configProperties;
     }
 

@@ -51,7 +51,7 @@ public class MeshFS {
         if (nogui) {
             try {
                 fileServer = new FileServer();
-                fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("serverTimeout")) * 1000);
+                fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("timeout")) * 1000);
             } catch (IOException e) {
                 boolean serverStarted = false;
                 for (List iFace : possibleIP) {
