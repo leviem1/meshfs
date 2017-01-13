@@ -37,10 +37,14 @@ public class FileServer {
         if (MeshFS.properties.getProperty("preferredInterface").equals("")) {
             FileServer.bind(new InetSocketAddress(port));
         } else {
-            NetworkInterface iface = NetworkInterface.getByName(MeshFS.properties.getProperty("preferredInterface"));
-            Enumeration<InetAddress> ipList = iface.getInetAddresses();
-            InetAddress ip = InetAddress.getByName(ipList.nextElement().getHostName());
-            FileServer.bind(new InetSocketAddress(ip, port));
+            try {
+                NetworkInterface iface = NetworkInterface.getByName(MeshFS.properties.getProperty("preferredInterface"));
+                Enumeration<InetAddress> ipList = iface.getInetAddresses();
+                InetAddress ip = InetAddress.getByName(ipList.nextElement().getHostName());
+                FileServer.bind(new InetSocketAddress(ip, port));
+            } catch (NullPointerException npe) {
+                FileServer.bind(new InetSocketAddress(port));
+            }
         }
 
         for (int threads = 0; threads < maxThreads; threads++) {
