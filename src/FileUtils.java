@@ -1,7 +1,5 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.List;
 
 /**
  * Created by Levi Muniz on 1/12/17.
@@ -23,7 +21,6 @@ public class FileUtils {
 
         while ((br != -1) && (len > 0)) {
             if (len <= 4096) {
-                System.out.println("Go!");
                 read = Math.toIntExact(len);
             } else {
                 read = data.length;
@@ -35,5 +32,27 @@ public class FileUtils {
 
             len -= br;
         }
+
+        fis.close();
+        fos.close();
+    }
+
+    static void combineStripes(List<String> stripes, String outFile) throws IOException {
+        FileOutputStream fos = new FileOutputStream(outFile);
+
+        for (String stripe : stripes) {
+            int br;
+            byte[] data = new byte[4096];
+            FileInputStream fis = new FileInputStream(stripe);
+
+            while ((br = fis.read(data, 0, data.length)) != -1) {
+                fos.write(data, 0, br);
+                fos.flush();
+            }
+
+            fis.close();
+        }
+
+        fos.close();
     }
 }
