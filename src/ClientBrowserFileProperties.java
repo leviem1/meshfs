@@ -1,7 +1,10 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 /*
  * Created by JFormDesigner on Thu Dec 01 19:07:39 MST 2016
  */
@@ -12,25 +15,33 @@ import javax.swing.border.*;
  * @author Mark Hedrick
  */
 public class ClientBrowserFileProperties extends JFrame {
-    public ClientBrowserFileProperties() {
-        initComponents();
+    public ClientBrowserFileProperties(String fileName, String fileSize, String creationDate) {
+        initComponents(fileName, fileSize, creationDate);
+        frameListeners();
+        fileNameValue.setText(fileName);
+        fileSizeValue.setText(fileSize);
+        creationDateValue.setText(creationDate);
+        this.setTitle(fileName + " - Properties");
+
     }
 
-    private void initComponents() {
+
+    private void initComponents(String fileName, String fileSize, String creationDate) {
+
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
-        label2 = new JLabel();
-        label3 = new JLabel();
-        label4 = new JLabel();
+        fileNameLbl = new JLabel();
+        fileSizeLbl = new JLabel();
+        creationDateLbl = new JLabel();
         label5 = new JLabel();
         label6 = new JLabel();
         scrollPane1 = new JScrollPane();
         list1 = new JList();
-        label7 = new JLabel();
-        label8 = new JLabel();
-        label9 = new JLabel();
+        fileNameValue = new JLabel(fileName);
+        fileSizeValue = new JLabel(fileSize);
+        creationDateValue = new JLabel(creationDate);
         label10 = new JLabel();
         buttonBar = new JPanel();
         okButton = new JButton();
@@ -49,14 +60,14 @@ public class ClientBrowserFileProperties extends JFrame {
             //======== contentPanel ========
             {
 
-                //---- label2 ----
-                label2.setText("File Name:");
+                //---- fileNameLbl ----
+                fileNameLbl.setText("File Name:");
 
-                //---- label3 ----
-                label3.setText("File Size:");
+                //---- fileSizeLbl ----
+                fileSizeLbl.setText("File Size:");
 
-                //---- label4 ----
-                label4.setText("Creation Date:");
+                //---- creationDateLbl ----
+                creationDateLbl.setText("Creation Date:");
 
                 //---- label5 ----
                 label5.setText("Added By:");
@@ -69,14 +80,14 @@ public class ClientBrowserFileProperties extends JFrame {
                     scrollPane1.setViewportView(list1);
                 }
 
-                //---- label7 ----
-                label7.setText("null");
+                //---- fileNameValue ----
+                fileNameValue.setText("null");
 
-                //---- label8 ----
-                label8.setText("null");
+                //---- fileSizeValue ----
+                fileSizeValue.setText("null");
 
-                //---- label9 ----
-                label9.setText("null");
+                //---- creationDateValue ----
+                creationDateValue.setText("null");
 
                 //---- label10 ----
                 label10.setText("null");
@@ -92,22 +103,22 @@ public class ClientBrowserFileProperties extends JFrame {
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addGroup(contentPanelLayout.createParallelGroup()
                                         .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(label2)
+                                            .addComponent(fileNameLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(label7))
+                                            .addComponent(fileNameValue))
                                         .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(label3)
+                                            .addComponent(fileSizeLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(label8))
+                                            .addComponent(fileSizeValue))
                                         .addGroup(contentPanelLayout.createSequentialGroup()
                                             .addComponent(label5)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(label10))
                                         .addComponent(label6)
                                         .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(label4)
+                                            .addComponent(creationDateLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(label9)))
+                                            .addComponent(creationDateValue)))
                                     .addGap(0, 136, Short.MAX_VALUE)))
                             .addContainerGap())
                 );
@@ -116,16 +127,16 @@ public class ClientBrowserFileProperties extends JFrame {
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(label2)
-                                .addComponent(label7))
+                                .addComponent(fileNameLbl)
+                                .addComponent(fileNameValue))
                             .addGap(18, 18, 18)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(label3)
-                                .addComponent(label8))
+                                .addComponent(fileSizeLbl)
+                                .addComponent(fileSizeValue))
                             .addGap(18, 18, 18)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(label4)
-                                .addComponent(label9))
+                                .addComponent(creationDateLbl)
+                                .addComponent(creationDateValue))
                             .addGap(18, 18, 18)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(label5)
@@ -166,20 +177,34 @@ public class ClientBrowserFileProperties extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
+    private void frameListeners(){
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+    }
+
+    public static void run(String fileName, String fileSize, String creationDate) {
+        JFrame clientBrowserFileProperties = new ClientBrowserFileProperties(fileName, fileSize, creationDate);
+        CenterWindow.centerOnScreen(clientBrowserFileProperties);
+        clientBrowserFileProperties.setVisible(true);
+    }
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel label2;
-    private JLabel label3;
-    private JLabel label4;
+    private JLabel fileNameLbl;
+    private JLabel fileSizeLbl;
+    private JLabel creationDateLbl;
     private JLabel label5;
     private JLabel label6;
     private JScrollPane scrollPane1;
     private JList list1;
-    private JLabel label7;
-    private JLabel label8;
-    private JLabel label9;
+    private JLabel fileNameValue;
+    private JLabel fileSizeValue;
+    private JLabel creationDateValue;
     private JLabel label10;
     private JPanel buttonBar;
     private JButton okButton;

@@ -1,3 +1,4 @@
+import com.sun.deploy.util.SessionState;
 import org.json.simple.JSONObject;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -5,12 +6,14 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 /*
  * Created by JFormDesigner on Sun Nov 06 18:04:04 MST 2016
  */
@@ -22,8 +25,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class ClientBrowser extends JFrame {
 
+    private boolean isLoaded = false;
     private String serverAddress;
     private int port;
+    private DefaultMutableTreeNode tree;
+    private JSONObject jsonObj;
 
     public ClientBrowser(String serverAddress, int port) {
         this.serverAddress = serverAddress;
@@ -34,13 +40,16 @@ public class ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
-        String folderLocation = "root";
-        JSONObject jsonObj = JSONReader.getJSONObject(".catalog.json");
-        DefaultMutableTreeNode tree = new DefaultMutableTreeNode("root");
-        tree = (readFolder(folderLocation,jsonObj,tree));
+        jsonObj = JSONReader.getJSONObject(".catalog.json");
+        tree = new DefaultMutableTreeNode("root");
+        tree = (readFolder("root",jsonObj,tree));
 
 
 
+        if (isLoaded) {
+            dialogPane.repaint();
+            dialogPane.revalidate();
+        }
 
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -189,6 +198,7 @@ public class ClientBrowser extends JFrame {
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
+        isLoaded = true;
     }
 
     private void frameListeners(){
@@ -208,7 +218,13 @@ public class ClientBrowser extends JFrame {
         });
         refreshBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                tree1.updateUI();
+                System.out.println("test");
+                try {
+                    FileClient.receiveFile(serverAddress, port, "catalog.json", ".catalog.json");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                ClientBrowser.run(serverAddress, port);
             }
         });
         tree1.addTreeSelectionListener(new TreeSelectionListener() {
@@ -250,7 +266,20 @@ public class ClientBrowser extends JFrame {
                 }
             }
         });
+        propertiesBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*,[ ]*|[ ]", "/");
+                JSONObject fileProperties = JSONReader.getItemContents(jsonObj, jsonPath);
+
+                Object fileSize = fileProperties.get("fileSize");
+                Object creationDate = fileProperties.get("creationDate");
+
+                ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString());
+            }
+        });
     }
+
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
         Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
@@ -286,7 +315,6 @@ public class ClientBrowser extends JFrame {
             ioe.printStackTrace();
         }
     }
-
     private void browserBtns(boolean state){
         downloadBtn.setEnabled(state);
         downloadAsBtn.setEnabled(state);
@@ -297,6 +325,7 @@ public class ClientBrowser extends JFrame {
         moveBtn.setEnabled(state);
         uploadBtn.setEnabled(state);
     }
+
 
     public static void run(String serverAddress, int port) {
         JFrame clientBrowser = new ClientBrowser(serverAddress, port);

@@ -2,6 +2,7 @@
  * Created by Levi Muniz on 10/3/16.
  */
 import com.apple.eawt.Application;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -21,11 +22,6 @@ public class MeshFS {
 
         properties = ConfigParser.loadProperties();
         new CliParser(args, properties);
-        File repo = new File(properties.getProperty("repository"));
-        if (!repo.exists()) {
-            repo.mkdirs();
-        }
-
         List<List> possibleIP = Reporting.getIpAddress();
 
         if (properties.getProperty("masterIP").equals("127.0.0.1")) {
@@ -49,6 +45,10 @@ public class MeshFS {
 
 
         if (nogui) {
+            File repo = new File(properties.getProperty("repository"));
+            if (!repo.exists()) {
+                repo.mkdirs();
+            }
             try {
                 fileServer = new FileServer();
                 fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("timeout")) * 1000);
@@ -72,7 +72,7 @@ public class MeshFS {
             System.setProperty("java.awt.headless", "true");
         } else {
             if(Reporting.getSystemOS().toLowerCase().contains("mac")){
-                Application.getApplication().setDockIconImage(new ImageIcon("app_icon.png").getImage());
+                Application.getApplication().setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
             }
             GreetingsWindow.run();
         }
