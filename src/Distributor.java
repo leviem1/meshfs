@@ -25,9 +25,11 @@ public class Distributor {
         return sortedMap;
     }
 
-    public void distributor(Map compStorageMap, String filePath, String destinationFilePath, String JSONFilePath){
+    public void distributor(Map compStorageMap, String filePath, String filePathInCatalog, String JSONFilePath, String DestinationRepoLocation){
 
          try {
+             String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+             DestinationRepoLocation += fileName;
              //FileReader reader = new FileReader(filePath);
              //long sizeOfFile = reader.getSize();
              long sizeOfFile = 5000000000L;
@@ -139,7 +141,7 @@ public class Distributor {
              for (String item : computersForWholes) {
 
                  String computerToReceive = item;
-                 //FileReader.writeStripe(computerToReceive, filePath, newName + "_w", 0, sizeOfFile - 1);
+                 //FileUtils.writeStripe(computerToReceive, filePath, DestinationRepoLocation, newName + "_w", 0L, sizeOfFile);
              }
 
              if (allowStripes){
@@ -173,16 +175,15 @@ public class Distributor {
                                      if (isNotBroken){
                                          stripes.get(currentStripe + 1).add(computerToReceive);
                                          long startByte = (sizeOfStripe * currentStripe);
-                                         long stopByte = (startByte + (sizeOfStripe - 1));
-                                         //FileReader.writeStripe(computerToReceive, filePath, newName + "_s" + currentStripe, startByte, stopByte);
+                                         //FileReader.writeStripe(computerToReceive, filePath, DestinationRepoLocation, newName + "_s" + currentStripe, startByte, sizeOfStripe);
                                          break;
                                      }
                                  }
                                  else {
                                      stripes.get(currentStripe + 1).add(computerToReceive);
                                      long startByte = (sizeOfStripe * currentStripe);
-                                     long stopByte = (startByte + (sizeOfStripe - 1));
-                                     //FileReader.writeStripe(computerToReceive, filePath, newName + "_s" + currentStripe, startByte, stopByte);
+                                     long stopByte = (startByte + (sizeOfStripe));
+                                     //FileReader.writeStripe(computerToReceive, filePath, DestinationRepoLocation, newName + "_s" + currentStripe, startByte, stopByte);
                                      break;
                                  }
                              }
@@ -195,8 +196,7 @@ public class Distributor {
                  }
              }
 
-             String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-             JSONPreWriter.addToIndex(stripes,destinationFilePath, fileName, JSONFilePath, newName);
+             JSONPreWriter.addToIndex(stripes,filePathInCatalog, fileName, JSONFilePath, newName);
          }
          catch (Exception e) {
              e.printStackTrace();

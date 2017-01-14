@@ -112,7 +112,7 @@ public class Reporting {
     }
 
     public static JSONObject splitter(String report) {
-        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
         JSONObject mainObj = new JSONObject();
 
         String[] reportArray = report.split("\\|");
@@ -120,12 +120,30 @@ public class Reporting {
 
         for (String reportSet : reportObjects) {
             String[] reportSetData = reportSet.split(":");
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(reportSetData[0],reportSetData[1]);
-            jsonArray.add(jsonObject);
+            if (reportSetData[0].equals("IP")) {
+                String[] IPArray = reportSetData[1].substring(reportSetData[1].indexOf("[") + 2, reportSetData[1].lastIndexOf("]") - 1).split("], \\[");
+                JSONObject jsonIPs = new JSONObject();
+                for (String IP : IPArray) {
+                    JSONArray jsonIP = new JSONArray();
+                    jsonIPs.put(IP.substring(0,IP.indexOf(",")),IP.substring(IP.indexOf(",")+2));
+                }
+                jsonObject.put(reportSetData[0],jsonIPs);
+            }
+            else if (reportSetData[0].equals("RepoContents")){
+                JSONArray Contents = new JSONArray();
+                String[] files = reportSetData[1].substring(0,reportSetData[1].length() -1).split(",");
+                for (String file : files){
+                    Contents.add(file.substring(file.lastIndexOf("/")+1));
+                }
+                jsonObject.put(reportSetData[0],Contents);
+            }
+
+            else{
+                jsonObject.put(reportSetData[0],reportSetData[1]);
+            }
         }
 
-        mainObj.put(reportArray[0],jsonArray);
+        mainObj.put(reportArray[0], jsonObject);
 
         return mainObj;
     }
