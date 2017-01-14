@@ -311,7 +311,7 @@ public class ClientModeConfiguration extends JFrame{
             bindAnonymouslyCheckBox.setSelected(false);
         }
         try{
-            FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), "catalog.json", ".catalog.json");
+            FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", ".catalog.json");
         }catch(IOException ioe){
             System.out.println("error");
         }

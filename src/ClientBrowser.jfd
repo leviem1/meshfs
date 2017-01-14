@@ -42,7 +42,7 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "removeBtn"
-							"text": "Remove..."
+							"text": "Remove"
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "duplicateBtn"
@@ -88,3 +88,4 @@ new FormModel {
 		} )
 	}
 }
+

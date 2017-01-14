@@ -1,7 +1,7 @@
 /**
  * Created by Levi Muniz on 10/3/16.
  */
-import com.apple.eawt.Application;
+//import com.apple.eawt.Application;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class MeshFS {
             System.setProperty("java.awt.headless", "true");
         } else {
             if(Reporting.getSystemOS().toLowerCase().contains("mac")){
-                Application.getApplication().setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+                //Application.getApplication().setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
             }
             GreetingsWindow.run();
         }

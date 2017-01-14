@@ -49,4 +49,24 @@ public class JSONPreWriter {
             e.printStackTrace();
         }
     }
+
+    public static void addToIndex(String itemLocation, String fileName, String JSONFilePath) {
+
+        JSONObject jsonFile = JSONReader.getJSONObject(JSONFilePath);
+
+        JSONObject objChild = new JSONObject();
+
+
+        objChild.put("type", "file");
+        objChild.put("fileName", fileName);
+
+        jsonFile = JSONReader.putItemInFolder(jsonFile, itemLocation, fileName,objChild);
+
+
+        try{
+            JSONWriter.writeJSONObject(JSONFilePath, jsonFile);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
 }

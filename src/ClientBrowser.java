@@ -4,7 +4,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 import javax.swing.*;
@@ -43,14 +47,10 @@ public class ClientBrowser extends JFrame {
         jsonObj = JSONReader.getJSONObject(".catalog.json");
         tree = new DefaultMutableTreeNode("root");
         tree = (readFolder("root",jsonObj,tree));
-
-
-
         if (isLoaded) {
             dialogPane.repaint();
             dialogPane.revalidate();
         }
-
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
@@ -100,7 +100,7 @@ public class ClientBrowser extends JFrame {
                     renameBtn.setText("Rename...");
 
                     //---- removeBtn ----
-                    removeBtn.setText("Remove...");
+                    removeBtn.setText("Remove");
 
                     //---- duplicateBtn ----
                     duplicateBtn.setText("Duplicate");
@@ -212,19 +212,54 @@ public class ClientBrowser extends JFrame {
                 fileChooser.setAcceptAllFileFilterUsed(true);
                 int rVal = fileChooser.showOpenDialog(null);
                 if (rVal == JFileChooser.APPROVE_OPTION) {
-                    //
+                    String pathToFile = fileChooser.getSelectedFile().getPath();
+                    File file = new File(pathToFile);
+                    Long size = (file.length());
+                    String fileSize = "";
+                    if((int)(Math.log10(size.intValue())+1) >= 2 && (int)(Math.log10(size.intValue())+1) < 5){
+                        fileSize = size.intValue() + " B";
+                    }
+                    else if((int)(Math.log10(size.intValue())+1) >= 5 && (int)(Math.log10(size.intValue())+1) < 7){
+                        fileSize = size.intValue()/1000 + " KB";
+                    }
+                    else if((int)(Math.log10(size.intValue())+1) >= 7 && (int)(Math.log10(size.intValue())+1) < 9){
+                        fileSize = size.intValue()/1000000 + " MB";
+                    }
+                    else if((int)(Math.log10(size.intValue())+1) >= 9 && (int)(Math.log10(size.intValue())+1) < 11){
+                        fileSize = size.intValue()/1000000000 + " GB";
+                    }
+                    DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
+                    Date dateObj = new Date();
+                    String creationDate = df.format(dateObj);
+
+                    JSONObject fileObj = new JSONObject();
+                    fileObj.put("type", "file");
+                    fileObj.put("fileSize", fileSize);
+                    fileObj.put("creationDate", creationDate);
+                    try {
+                        JSONWriter.writeJSONObject(".catalog.json", JSONReader.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    try {
+                        FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    try {
+                        FileClient.sendFile(serverAddress, port, ".catalog.json");
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    refreshWindow();
                 }
             }
         });
         refreshBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("test");
-                try {
-                    FileClient.receiveFile(serverAddress, port, "catalog.json", ".catalog.json");
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                ClientBrowser.run(serverAddress, port);
+                refreshWindow();
             }
         });
         tree1.addTreeSelectionListener(new TreeSelectionListener() {
@@ -250,6 +285,7 @@ public class ClientBrowser extends JFrame {
 
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 downloadFile(node.toString());
+
             }
         });
         downloadAsBtn.addActionListener(new ActionListener() {
@@ -269,17 +305,55 @@ public class ClientBrowser extends JFrame {
         propertiesBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*,[ ]*|[ ]", "/");
+                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 JSONObject fileProperties = JSONReader.getItemContents(jsonObj, jsonPath);
-
                 Object fileSize = fileProperties.get("fileSize");
                 Object creationDate = fileProperties.get("creationDate");
 
                 ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString());
             }
         });
-    }
+        removeBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+                try {
+                    JSONWriter.writeJSONObject(".catalog.json", JSONReader.removeItem(jsonObj, jsonPath));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    FileClient.sendFile(serverAddress, port, ".catalog.json");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                refreshWindow();
+            }
 
+        });
+        duplicateBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+                try {
+                    JSONWriter.writeJSONObject(".catalog.json", JSONReader.copyFile(jsonObj, jsonPath, jsonPath.substring(0, jsonPath.lastIndexOf("/"))));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    FileClient.sendFile(serverAddress, port, ".catalog.json");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                refreshWindow();
+            }
+
+        });
+        moveBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString());
+            }
+
+        });
+    }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
         Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
@@ -308,6 +382,7 @@ public class ClientBrowser extends JFrame {
             ioe.printStackTrace();
         }
     }
+
     public void downloadFile(String node, String path){
         try{
             FileClient.receiveFile(serverAddress, port, node.toString(), path);
@@ -315,6 +390,7 @@ public class ClientBrowser extends JFrame {
             ioe.printStackTrace();
         }
     }
+
     private void browserBtns(boolean state){
         downloadBtn.setEnabled(state);
         downloadAsBtn.setEnabled(state);
@@ -323,9 +399,17 @@ public class ClientBrowser extends JFrame {
         removeBtn.setEnabled(state);
         duplicateBtn.setEnabled(state);
         moveBtn.setEnabled(state);
-        uploadBtn.setEnabled(state);
     }
 
+    private void refreshWindow(){
+        try {
+            FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        ClientBrowser.run(serverAddress, port);
+        dispose();
+    }
 
     public static void run(String serverAddress, int port) {
         JFrame clientBrowser = new ClientBrowser(serverAddress, port);

@@ -1,6 +1,9 @@
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
 import java.io.FileReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,15 +60,14 @@ public class JSONReader {
         String item = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         String[] folders = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
         JSONObject folderToRead = jsonObject;
+
         for (String folder : folders) {
             folderToRead = (JSONObject) folderToRead.get(folder);
         }
-
         try {
             folderToRead.remove(item);
         }
         catch (Exception e){
-            System.out.println("fail");
             e.printStackTrace();
         }
         return jsonObject;
@@ -103,7 +105,10 @@ public class JSONReader {
     public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
         JSONObject itemContents = getItemContents(jsonObject,itemLocation);
         String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
-        jsonObject = putItemInFolder(jsonObject, destinationLocation, fileName, itemContents);
+        DateFormat df = new SimpleDateFormat("h:mm a");
+        Date dateObj = new Date();
+
+        jsonObject = putItemInFolder(jsonObject, destinationLocation, fileName+" ("+ df.format(dateObj)+")", itemContents);
         return jsonObject;
     }
 
@@ -132,7 +137,6 @@ public class JSONReader {
         fileInfo.remove("group");
 
         for (Object stripe: fileInfo.keySet() ){
-            System.out.println("test");
         }
 
 
