@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 
 /**
@@ -20,6 +21,7 @@ import java.util.Enumeration;
 public class FileServer {
 
     private ArrayList<Thread> sockets = new ArrayList<>();
+    private ServerSocket fileServer;
 
     /**
      * This method is used to start the file server.
@@ -31,24 +33,24 @@ public class FileServer {
 
     public void startServer(int port, int maxThreads, int timeout) throws IOException {
 
-        ServerSocket FileServer = new ServerSocket();
-        FileServer.setPerformancePreferences(1,0,1);
+        fileServer = new ServerSocket();
+        fileServer.setPerformancePreferences(1,0,1);
 
         if (MeshFS.properties.getProperty("preferredInterface").equals("")) {
-            FileServer.bind(new InetSocketAddress(port));
+            fileServer.bind(new InetSocketAddress(port));
         } else {
             try {
                 NetworkInterface iface = NetworkInterface.getByName(MeshFS.properties.getProperty("preferredInterface"));
                 Enumeration<InetAddress> ipList = iface.getInetAddresses();
-                InetAddress ip = InetAddress.getByName(ipList.nextElement().getHostName());
-                FileServer.bind(new InetSocketAddress(ip, port));
+                InetAddress ip = Inet4Address.getByName(ipList.nextElement().getHostName());
+                fileServer.bind(new InetSocketAddress(ip, port));
             } catch (NullPointerException npe) {
-                FileServer.bind(new InetSocketAddress(port));
+                fileServer.bind(new InetSocketAddress(port));
             }
         }
 
         for (int threads = 0; threads < maxThreads; threads++) {
-            sockets.add(new Thread(new ServerInit(FileServer, timeout)));
+            sockets.add(new Thread(new ServerInit(fileServer, timeout)));
             System.out.println("Socket " + threads + " initialized...");
         }
 
@@ -63,16 +65,25 @@ public class FileServer {
      */
 
     public void stopServer() {
-        for (int thread = 0; thread < sockets.size(); thread++) {
-            sockets.get(thread).interrupt();
-        }
-        for (int thread = 0; thread < sockets.size(); thread++) {
-            try {
-                sockets.get(thread).join();
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (fileServer.isBound()) {
+            for (int thread = 0; thread < sockets.size(); thread++) {
+                sockets.get(thread).interrupt();
+            }
+            for (int thread = 0; thread < sockets.size(); thread++) {
+                try {
+                    sockets.get(thread).join();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+
+    public List<Object> getServerDetails() {
+        List<Object> ipDetails = new ArrayList<>();
+        ipDetails.add(fileServer.getInetAddress());
+        ipDetails.add(fileServer.getLocalPort());
+        return ipDetails;
     }
 }
 
