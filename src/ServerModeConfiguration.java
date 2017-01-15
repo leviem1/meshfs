@@ -17,6 +17,8 @@ import static java.lang.Math.toIntExact;
  * Created by Mark Hedrick on 10/30/16.
  */
 public class ServerModeConfiguration extends JFrame {
+
+    private static JFrame serverModeConfiguration;
     public ServerModeConfiguration() {
         initComponents();
         frameListeners();
@@ -24,6 +26,7 @@ public class ServerModeConfiguration extends JFrame {
         freeSpaceLbl.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
         spaceSldr.setMaximum(toIntExact(Reporting.getSystemStorage()/1073741824)-10);
         spaceSldr.setMinimum(0);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
     }
 
@@ -576,42 +579,6 @@ public class ServerModeConfiguration extends JFrame {
 
 
     }
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JTabbedPane serverSettingPane;
-    private JPanel networkTab;
-    private JLabel serverPortLbl;
-    private JFormattedTextField serverPortField;
-    private JLabel serverThreadsLbl;
-    private JFormattedTextField serverThreadsField;
-    private JLabel serverTimeoutLbl;
-    private JFormattedTextField serverTimeoutField;
-    private JLabel stripesLbl;
-    private JFormattedTextField numStripesField;
-    private JLabel stripedCopiesLbl;
-    private JFormattedTextField numStripeCopiesField;
-    private JLabel wholeCopiesLbl;
-    private JFormattedTextField numWholeField;
-    private JLabel serverNetworkInterfaceLbl;
-    private JScrollPane scrollPane1;
-    private JList ipJListField;
-    private JPanel storageTab;
-    private JLabel repositoryLbl;
-    private JTextField repoPathField;
-    private JLabel minFreeSpaceLbl;
-    private JFormattedTextField minSpaceField;
-    private JLabel label1;
-    private JSlider spaceSldr;
-    private JLabel freeSpaceLbl;
-    private JButton browseBtn;
-    private JPanel buttonBar;
-    private JButton importConfigBtn;
-    private JButton backupConfigBtn;
-    private JButton resetConfigBtn;
-    private JButton okButton;
-    private JLabel titleLbl;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     private ArrayList<String> ipJList(){
         ArrayList<String> x = new ArrayList<>();
@@ -730,4 +697,41 @@ public class ServerModeConfiguration extends JFrame {
         CenterWindow.centerOnWindow(sender, serverModeConfiguration);
         serverModeConfiguration.setVisible(true);
     }
+
+    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JTabbedPane serverSettingPane;
+    private JPanel networkTab;
+    private JLabel serverPortLbl;
+    private JFormattedTextField serverPortField;
+    private JLabel serverThreadsLbl;
+    private JFormattedTextField serverThreadsField;
+    private JLabel serverTimeoutLbl;
+    private JFormattedTextField serverTimeoutField;
+    private JLabel stripesLbl;
+    private JFormattedTextField numStripesField;
+    private JLabel stripedCopiesLbl;
+    private JFormattedTextField numStripeCopiesField;
+    private JLabel wholeCopiesLbl;
+    private JFormattedTextField numWholeField;
+    private JLabel serverNetworkInterfaceLbl;
+    private JScrollPane scrollPane1;
+    private JList ipJListField;
+    private JPanel storageTab;
+    private JLabel repositoryLbl;
+    private JTextField repoPathField;
+    private JLabel minFreeSpaceLbl;
+    private JFormattedTextField minSpaceField;
+    private JLabel label1;
+    private JSlider spaceSldr;
+    private JLabel freeSpaceLbl;
+    private JButton browseBtn;
+    private JPanel buttonBar;
+    private JButton importConfigBtn;
+    private JButton backupConfigBtn;
+    private JButton resetConfigBtn;
+    private JButton okButton;
+    private JLabel titleLbl;
+    // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

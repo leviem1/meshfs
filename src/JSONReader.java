@@ -102,18 +102,22 @@ public class JSONReader {
         return folderToRead;
     }
 
-    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
+    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate){
         JSONObject itemContents = getItemContents(jsonObject,itemLocation);
         String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         DateFormat df = new SimpleDateFormat("h:mm a");
         Date dateObj = new Date();
+        if(showDate){
+            jsonObject = putItemInFolder(jsonObject, destinationLocation, fileName+" ("+ df.format(dateObj)+")", itemContents);
+        }else{
+            jsonObject = putItemInFolder(jsonObject, destinationLocation, fileName, itemContents);
+        }
 
-        jsonObject = putItemInFolder(jsonObject, destinationLocation, fileName+" ("+ df.format(dateObj)+")", itemContents);
         return jsonObject;
     }
 
     public static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
-        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation);
+        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false);
         jsonObject = removeItem(jsonObject, itemLocation);
         return jsonObject;
     }

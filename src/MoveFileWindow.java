@@ -1,6 +1,9 @@
 import org.json.simple.JSONObject;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -15,13 +18,27 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 
 /**
- * @author User #1
+ * @author Mark Hedrick
  */
 public class MoveFileWindow extends JFrame {
-    public MoveFileWindow(String fileName) {
+    private String currentJsonPath;
+    private String fileName;
+    private String serverAddress;
+    private int port;
+    private JSONObject jsonObj;
+    private static JFrame sender;
+
+    public MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, JSONObject jsonObj) {
+        this.fileName = fileName;
+        this.currentJsonPath = currentJsonPath;
+        this.serverAddress = serverAddress;
+        this.port = port;
+        this.jsonObj = jsonObj;
         initComponents();
         frameListeners();
         this.setTitle(fileName + " - Move");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
     }
 
     private void initComponents() {
@@ -112,17 +129,26 @@ public class MoveFileWindow extends JFrame {
                 }
             }
         });
-    }
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
+                System.out.println(newJsonPath);
+                System.out.println(currentJsonPath);
+                try {
+                    JSONWriter.writeJSONObject(".catalog.json", JSONReader.moveFile(jsonObj, currentJsonPath, newJsonPath));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    FileClient.sendFile(serverAddress, port, ".catalog.json");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                dispose();
+            }
+        });
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JScrollPane scrollPane1;
-    private JTree tree1;
-    private JPanel buttonBar;
-    private JButton okButton;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
+    }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
         Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
@@ -145,9 +171,20 @@ public class MoveFileWindow extends JFrame {
         return branch;
     }
 
-    public static void run(String fileName) {
-        JFrame moveFileWindow = new MoveFileWindow(fileName);
+    public static void run(String fileName, String filePath, String serverAddress, int port, JSONObject jsonObj) {
+        JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, jsonObj);
         CenterWindow.centerOnScreen(moveFileWindow);
         moveFileWindow.setVisible(true);
     }
+
+    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JScrollPane scrollPane1;
+    private JTree tree1;
+    private JPanel buttonBar;
+    private JButton okButton;
+    // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

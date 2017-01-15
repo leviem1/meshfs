@@ -22,7 +22,8 @@ public class ClientBrowserFileProperties extends JFrame {
         fileSizeValue.setText(fileSize);
         creationDateValue.setText(creationDate);
         this.setTitle(fileName + " - Properties");
-
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
     }
 
 
@@ -185,9 +186,9 @@ public class ClientBrowserFileProperties extends JFrame {
         });
     }
 
-    public static void run(String fileName, String fileSize, String creationDate) {
+    public static void run(String fileName, String fileSize, String creationDate, JFrame sender) {
         JFrame clientBrowserFileProperties = new ClientBrowserFileProperties(fileName, fileSize, creationDate);
-        CenterWindow.centerOnScreen(clientBrowserFileProperties);
+        CenterWindow.centerOnScreen(sender);
         clientBrowserFileProperties.setVisible(true);
     }
 

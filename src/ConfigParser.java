@@ -33,7 +33,7 @@ public class ConfigParser {
         OutputStream output = null;
 
         try {
-            output = new FileOutputStream("config.properties");
+            output = new FileOutputStream(".config.properties");
             props.store(output, null);
         } catch (IOException io) {
             io.printStackTrace();
@@ -64,7 +64,7 @@ public class ConfigParser {
         Properties properties;
 
         try {
-            properties = reader("config.properties");
+            properties = reader(".config.properties");
             Properties defaultProperties = loadDefaultProperties();
 
             if (!properties.stringPropertyNames().equals(defaultProperties.stringPropertyNames())) {

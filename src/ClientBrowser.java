@@ -8,16 +8,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.GroupLayout;
+import javax.swing.Timer;
 import javax.swing.border.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 /*
  * Created by JFormDesigner on Sun Nov 06 18:04:04 MST 2016
  */
@@ -34,6 +32,8 @@ public class ClientBrowser extends JFrame {
     private int port;
     private DefaultMutableTreeNode tree;
     private JSONObject jsonObj;
+    private static JFrame clientBrowser;
+    private int fileSizeCurrent;
 
     public ClientBrowser(String serverAddress, int port) {
         this.serverAddress = serverAddress;
@@ -41,6 +41,8 @@ public class ClientBrowser extends JFrame {
         initComponents();
         browserBtns(false);
         frameListeners();
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
     }
 
     private void initComponents() {
@@ -68,6 +70,9 @@ public class ClientBrowser extends JFrame {
         downloadAsBtn = new JButton();
         buttonBar = new JPanel();
         refreshBtn = new JButton();
+        progressBar = new JProgressBar();
+        sizeLbl = new JLabel();
+        quitBtn = new JButton();
 
         //======== this ========
         setTitle("MeshFS - Client Browser");
@@ -183,14 +188,29 @@ public class ClientBrowser extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
 
                 //---- refreshBtn ----
                 refreshBtn.setText("Refresh");
                 buttonBar.add(refreshBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
+                buttonBar.add(progressBar, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+
+                //---- sizeLbl ----
+                sizeLbl.setText("(status)");
+                buttonBar.add(sizeLbl, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+
+                //---- quitBtn ----
+                quitBtn.setText("Quit");
+                buttonBar.add(quitBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -216,6 +236,7 @@ public class ClientBrowser extends JFrame {
                     File file = new File(pathToFile);
                     Long size = (file.length());
                     String fileSize = "";
+
                     if((int)(Math.log10(size.intValue())+1) >= 2 && (int)(Math.log10(size.intValue())+1) < 5){
                         fileSize = size.intValue() + " B";
                     }
@@ -235,6 +256,7 @@ public class ClientBrowser extends JFrame {
                     JSONObject fileObj = new JSONObject();
                     fileObj.put("type", "file");
                     fileObj.put("fileSize", fileSize);
+                    fileObj.put("fileSizeActual", size.intValue());
                     fileObj.put("creationDate", creationDate);
                     try {
                         JSONWriter.writeJSONObject(".catalog.json", JSONReader.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
@@ -282,10 +304,8 @@ public class ClientBrowser extends JFrame {
         });
         downloadBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                downloadFile(node.toString());
-
+                downloadFile(node.toString(), System.getProperty("user.home") + "/Downloads/" + node.toString());
             }
         });
         downloadAsBtn.addActionListener(new ActionListener() {
@@ -310,7 +330,7 @@ public class ClientBrowser extends JFrame {
                 Object fileSize = fileProperties.get("fileSize");
                 Object creationDate = fileProperties.get("creationDate");
 
-                ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString());
+                ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString(), clientBrowser);
             }
         });
         removeBtn.addActionListener(new ActionListener() {
@@ -334,7 +354,7 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 try {
-                    JSONWriter.writeJSONObject(".catalog.json", JSONReader.copyFile(jsonObj, jsonPath, jsonPath.substring(0, jsonPath.lastIndexOf("/"))));
+                    JSONWriter.writeJSONObject(".catalog.json", JSONReader.copyFile(jsonObj, jsonPath, jsonPath.substring(0, jsonPath.lastIndexOf("/")), true));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -349,9 +369,14 @@ public class ClientBrowser extends JFrame {
         });
         moveBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString());
+                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, jsonObj);
             }
 
+        });
+        quitBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
         });
     }
 
@@ -407,11 +432,11 @@ public class ClientBrowser extends JFrame {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        ClientBrowser.run(serverAddress, port);
+        ClientBrowser.run(serverAddress, port, clientBrowser);
         dispose();
     }
 
-    public static void run(String serverAddress, int port) {
+    public static void run(String serverAddress, int port, JFrame sender) {
         JFrame clientBrowser = new ClientBrowser(serverAddress, port);
         CenterWindow.centerOnScreen(clientBrowser);
         clientBrowser.setVisible(true);
@@ -434,5 +459,8 @@ public class ClientBrowser extends JFrame {
     private JButton downloadAsBtn;
     private JPanel buttonBar;
     private JButton refreshBtn;
+    private JProgressBar progressBar;
+    private JLabel sizeLbl;
+    private JButton quitBtn;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
