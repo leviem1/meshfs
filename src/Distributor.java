@@ -2,6 +2,7 @@
  * Created by Aaron Duran on 10/13/16.
  */
 import org.json.simple.JSONObject;
+
 import java.util.*;
 
 public class Distributor {
@@ -15,18 +16,39 @@ public class Distributor {
         this.numOfStripes = numOfStripes;
         this.numOfWholeCopies = numOfWholeCopies;
         this.numOfStripedCopies = numOfStripedCopies;
-
     }
 
-    public static Map sortMapByValues(Map unsortedMap){
-        Map sortedMap = new TreeMap(new ValueComparator(unsortedMap));
-        sortedMap.putAll(unsortedMap);
-
+    public LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
+        LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
+        sortedMap.put("temp", 99999999999990L);
+        for (String key : storageMap.keySet()){
+            Long storageAmount = storageMap.get(key);
+            List<String> moreStorage = new ArrayList<>();
+            boolean isBroken = false;
+            for (String sortedKey : sortedMap.keySet()){
+                if (storageAmount >= sortedMap.get(sortedKey)){
+                    LinkedHashMap<String,Long>  reorderStorageMap = (LinkedHashMap<String,Long>) sortedMap.clone();
+                    sortedMap.clear();
+                    for (String reorderKey : reorderStorageMap.keySet()){
+                        if (reorderKey.equals(sortedKey)){
+                            sortedMap.put(key,storageAmount);
+                        }
+                        sortedMap.put(reorderKey, reorderStorageMap.get(reorderKey));
+                    }
+                    isBroken = true;
+                    break;
+                }
+                moreStorage.add(sortedKey);
+            }
+            if (!isBroken){
+                sortedMap.put(key,storageMap.get(key));
+            }
+        }
+        sortedMap.remove("temp");
         return sortedMap;
     }
 
-    public void distributor(Map compStorageMap, String filePath, String filePathInCatalog, String JSONFilePath, String DestinationRepoLocation){
-
+    public void distributor(LinkedHashMap<String, Long> compStorageMap, String filePath, String filePathInCatalog, String JSONFilePath, String DestinationRepoLocation){
          try {
              String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
              DestinationRepoLocation += fileName;
@@ -37,21 +59,17 @@ public class Distributor {
              long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
 
              compStorageMap.put("0.0.0.0",0L);
-             Map<String, Long> sortedCompStorageMap = sortMapByValues(compStorageMap);
+             LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap);
              for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){
                  String ipAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
                  sortedCompStorageMap.replace(ipAddress, sortedCompStorageMap.get(String.valueOf(ipAddress)) - minFreeSpace);
              }
-
              /* //uncomment me for dynamic resigning of numStripes by number of computers that are on
              int numOfComputersUsed = sortedCompStorageMap.size();
-
              if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
                  numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
              }
              */
-
-
              int stopOfWholes = (-1);
 
              List<String> computersForWholes = new ArrayList<>();
@@ -106,15 +124,11 @@ public class Distributor {
                                  availableStorage -= sizeOfFile;
                              }
 
-
-
                              if (availableStorage >= sizeOfStripe) {
                                  computersForStripes.add(ipAddress);
                                  break;
                              }
-
                              lastResortComp++;
-
                          }
                          if (lastResortComp >= sortedCompStorageMap.size()){
                              break;
@@ -159,7 +173,6 @@ public class Distributor {
                                      break;
                                  }
 
-
                                  String computerToReceive = computersForStripes.get((copy * numOfStripes) + currentStripe);
 
                                  if (stripes.get(currentStripe + 1).size() > 0){
@@ -192,7 +205,6 @@ public class Distributor {
                              System.out.println("You are out of Storage!");
                          }
                      }
-
                  }
              }
 
@@ -201,9 +213,7 @@ public class Distributor {
          catch (Exception e) {
              e.printStackTrace();
          }
-
     }
-
 
     private static String incrementName(String name){
         String alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -226,20 +236,5 @@ public class Distributor {
             newName += toAdd.charAt(reverseIndex);
         }
         return newName;
-    }
-}
-
-class ValueComparator implements Comparator {
-    Map map;
-
-    public ValueComparator(Map map) {
-        this.map = map;
-    }
-
-    public int compare(Object keyA, Object keyB) {
-        Comparable valueA = (Comparable) map.get(keyA);
-        Comparable valueB = (Comparable) map.get(keyB);
-        return valueB.compareTo(valueA);
-
     }
 }

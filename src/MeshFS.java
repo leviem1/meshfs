@@ -75,31 +75,31 @@ public class MeshFS {
                 //Application.getApplication().setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
             }
             GreetingsWindow.run();
+            /*
+            LinkedHashMap<String, Long> hostStorage = new LinkedHashMap();
+            hostStorage.put("10.15.20.1", 800000000000L);
+            hostStorage.put("10.15.20.2", 700000000000L);
+            hostStorage.put("10.15.20.3", 600000000000L);
+            hostStorage.put("10.15.20.4", 900000000000L);
+            hostStorage.put("10.15.20.5", 500000000000L);
+            hostStorage.put("10.15.20.6", 10000000000L);
+            hostStorage.put("10.15.20.7", 10000000000L);
+            hostStorage.put("10.15.20.8", 1000000000000L);
+            hostStorage.put("10.15.20.9", 750000000000L);
+            hostStorage.put("10.15.20.10", 650000000000L);
+            hostStorage.put("10.15.20.11", 980000000000L);
+            hostStorage.put("10.15.20.12", 540000000000L);
+            hostStorage.put("10.15.20.13", 430000000000L);
+            hostStorage.put("10.15.20.14", 880000000000L);
+            hostStorage.put("10.15.20.15", 110000000000L);
+            hostStorage.put("10.15.20.16", 120000000000L);
+
+            Distributor test = new Distributor(6,2,2);
+            test.distributor(hostStorage, "/Users/aronduran/Desktop/football.mp4", "root/hello World/Movies2", "/Users/aronduran/Desktop/helloSuper.json", "/Users/aronduran/Desktop/TSA/MeshFS/repo");
+            //*/
+
         }
-
         /*
-        Map<String, Long> hostStorage = new HashMap<>();
-        hostStorage.put("10.15.20.1", 800000000000L);
-        hostStorage.put("10.15.20.2", 700000000000L);
-        hostStorage.put("10.15.20.3", 600000000000L);
-        hostStorage.put("10.15.20.4", 900000000000L);
-        hostStorage.put("10.15.20.5", 500000000000L);
-        hostStorage.put("10.15.20.6", 10000000000L);
-        hostStorage.put("10.15.20.7", 100000000000L);
-        hostStorage.put("10.15.20.8", 1000000000000L);
-        hostStorage.put("10.15.20.9", 750000000000L);
-        hostStorage.put("10.15.20.10", 650000000000L);
-        hostStorage.put("10.15.20.11", 980000000000L);
-        hostStorage.put("10.15.20.12", 540000000000L);
-        hostStorage.put("10.15.20.13", 430000000000L);
-        hostStorage.put("10.15.20.14", 880000000000L);
-        hostStorage.put("10.15.20.15", 110000000000L);
-        hostStorage.put("10.15.20.16", 120000000000L);
-
-
-        Distributor test = new Distributor(6,2,2);
-        test.distributor(hostStorage, "/Users/aronduran/Desktop/pigskin.mp4");
-
         JSONObject obj = JSONReader.getJSONObject("/Users/markhedrick/Desktop/test.json");
         JSONObject objParent = new JSONObject();
         JSONObject objChild1 = new JSONObject();
