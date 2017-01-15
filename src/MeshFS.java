@@ -3,6 +3,8 @@
  */
 //import com.apple.eawt.Application;
 
+import org.json.simple.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -46,8 +48,21 @@ public class MeshFS {
 
         if (nogui) {
             File repo = new File(properties.getProperty("repository"));
+            File catalog = new File(".catalog.json");
             if (!repo.exists()) {
                 repo.mkdirs();
+            }
+            if(!catalog.exists()){
+                JSONObject newCatalog = new JSONObject();
+                JSONObject root = new JSONObject();
+                root.put("type", "directory");
+                newCatalog.put("currentName", "0000000000000000");
+                newCatalog.put("root", root);
+                try {
+                    JSONWriter.writeJSONObject(properties.getProperty("repository")+".catalog.json", newCatalog);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             try {
                 fileServer = new FileServer();

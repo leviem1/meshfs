@@ -24,6 +24,7 @@ public class InitialConfiguration extends JFrame {
         modeSelectionBox.addItem("Client Mode");
         frameListeners();
         okButton.setEnabled(false);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
     }
 
@@ -139,6 +140,12 @@ public class InitialConfiguration extends JFrame {
         }
     }
 
+    public static void run(JFrame sender) {
+        initialConfiguration = new InitialConfiguration();
+        CenterWindow.centerOnWindow(sender, initialConfiguration);
+        initialConfiguration.setVisible(true);
+    }
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
@@ -149,11 +156,5 @@ public class InitialConfiguration extends JFrame {
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
-    public static void run(JFrame sender) {
-        initialConfiguration = new InitialConfiguration();
-        CenterWindow.centerOnWindow(sender, initialConfiguration);
-        initialConfiguration.setVisible(true);
-    }
-
 
 }

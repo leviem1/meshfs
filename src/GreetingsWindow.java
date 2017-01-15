@@ -27,28 +27,11 @@ public class GreetingsWindow extends JFrame {
         frameListeners();
         dialogPane.getRootPane().setDefaultButton(configBtn);
         configBtn.requestFocus();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         toFront();
     }
 
-    private void frameListeners(){
-        configBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onConfigure();
-            }
-        });
-        quitButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                System.exit(0);
-            }
-        });
-    }
-
-    private void onConfigure(){
-        InitialConfiguration.run(greetingsWindow);
-    }
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -91,24 +74,24 @@ public class GreetingsWindow extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addGap(96, 96, 96)
-                            .addComponent(titleLbl)
-                            .addContainerGap(109, Short.MAX_VALUE))
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-                            .addContainerGap())
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addGap(96, 96, 96)
+                                        .addComponent(titleLbl)
+                                        .addContainerGap(109, Short.MAX_VALUE))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                                        .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(titleLbl)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                            .addContainerGap())
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(titleLbl)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                                        .addContainerGap())
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.NORTH);
@@ -122,15 +105,15 @@ public class GreetingsWindow extends JFrame {
                 configBtn.setText("Configuration...");
                 configBtn.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
                 buttonBar.add(configBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- quitButton ----
                 quitButton.setText("Exit");
                 quitButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
                 buttonBar.add(quitButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -138,6 +121,32 @@ public class GreetingsWindow extends JFrame {
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
+    }
+
+    private void frameListeners(){
+        configBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                onConfigure();
+            }
+        });
+        quitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                System.exit(0);
+            }
+        });
+    }
+
+    private void onConfigure(){
+        InitialConfiguration.run(greetingsWindow);
+        dispose();
+    }
+
+    public static void run() {
+        greetingsWindow = new GreetingsWindow();
+        CenterWindow.centerOnScreen(greetingsWindow);
+        greetingsWindow.setVisible(true);
+
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
@@ -152,10 +161,4 @@ public class GreetingsWindow extends JFrame {
     private JButton quitButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public static void run() {
-        greetingsWindow = new GreetingsWindow();
-        CenterWindow.centerOnScreen(greetingsWindow);
-        greetingsWindow.setVisible(true);
-
-    }
 }

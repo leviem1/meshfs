@@ -19,7 +19,8 @@ public class ServerConfigConfirmation extends JFrame {
         configValues.setContentType("text/html");
         configValues.setText(test1);
         configValues.setCaretPosition(0);
-
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
     }
 
     private void initComponents() {

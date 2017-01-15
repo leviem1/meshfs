@@ -18,6 +18,9 @@ import javax.swing.event.DocumentListener;
  * Created by Mark Hedrick on 10/30/16.
  */
 public class ClientModeConfiguration extends JFrame{
+
+    private static JFrame clientModeConfiguration;
+
     public ClientModeConfiguration() {
         initComponents();
         frameListeners();
@@ -25,6 +28,7 @@ public class ClientModeConfiguration extends JFrame{
         bindAnonymouslyCheckBox.setSelected(true);
         usernameField.setEnabled(false);
         passwordField.setEnabled(false);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
     }
@@ -315,7 +319,7 @@ public class ClientModeConfiguration extends JFrame{
         }catch(IOException ioe){
             System.out.println("error");
         }
-        ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()));
+        ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration);
         dispose();
     }
 
