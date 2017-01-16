@@ -3,7 +3,10 @@ import javafx.scene.shape.Mesh;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -121,9 +124,32 @@ public class ServerConfigConfirmation extends JFrame {
 
     public void onOk() throws IOException {
         //MeshFS.restartAsServer();
-        MeshFS.nogui = true;
-        MeshFS.fileServer = new FileServer();
-        MeshFS.fileServer.startServer(Integer.valueOf(MeshFS.properties.getProperty("portNumber")), Integer.valueOf(MeshFS.properties.getProperty("serverThreads")), Integer.valueOf(MeshFS.properties.getProperty("serverTimeout")) * 1000);
+        final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+        System.out.println(javaBin);
+        final File currentJar;
+        try {
+            currentJar = new File(MeshFS.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+            System.out.println(currentJar);
+            if(!currentJar.getName().endsWith(".jar")) {
+                return;
+            }
+            final ArrayList<String> command = new ArrayList<>();
+            command.add(javaBin);
+            command.add("-cp");
+            command.add(MeshFS.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            command.add("-jar");
+            command.add(currentJar.getPath());
+            command.add("--nogui");
+
+            System.out.println(command.toString());
+
+            final ProcessBuilder builder = new ProcessBuilder(command);
+            builder.start();
+            dispose();
+            System.exit(0);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void run(JFrame sender, String content) {

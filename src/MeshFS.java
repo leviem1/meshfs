@@ -17,7 +17,7 @@ public class MeshFS {
     public static boolean isMaster;
 
     public static void main(String[] args) {
-        System.setProperty("java.net.preferIPv4Stack" , "true");
+        //System.setProperty("java.net.preferIPv4Stack" , "true");
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
@@ -79,7 +79,7 @@ public class MeshFS {
             if(Reporting.getSystemOS().toLowerCase().contains("mac")){
                 //Application.getApplication().setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
             }
-            GreetingsWindow.run("client");
+            GreetingsWindow.run("server");
         }
     }
 }

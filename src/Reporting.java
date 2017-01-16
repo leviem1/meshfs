@@ -34,12 +34,9 @@ public class Reporting {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 NetworkInterface iface = interfaces.nextElement();
-
                 if (iface.isLoopback() || !iface.isUp())
                     continue;
-
                 Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                
                 while(addresses.hasMoreElements()) {
                     ip.add(addresses.nextElement().getHostAddress());
                 }
@@ -47,7 +44,6 @@ public class Reporting {
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
-
         for(int x = 0; x < ip.size(); x++){
             if(ip.get(x).contains("%")){
                 try {
@@ -61,8 +57,6 @@ public class Reporting {
                 }
             }
         }
-
-
         return ipRefined;
     }
 
