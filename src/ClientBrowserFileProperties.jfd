@@ -63,7 +63,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label10"
-						"text": "null"
+						"text": "guest"
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"

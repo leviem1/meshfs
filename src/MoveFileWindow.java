@@ -1,3 +1,4 @@
+import com.sun.deploy.util.SessionState;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
@@ -26,14 +27,16 @@ public class MoveFileWindow extends JFrame {
     private String serverAddress;
     private int port;
     private JSONObject jsonObj;
-    private static JFrame sender;
+    private JFrame caller;
+    private static JFrame moveFileWindow;
 
-    public MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, JSONObject jsonObj) {
+    public MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, JSONObject jsonObj, JFrame caller) {
         this.fileName = fileName;
         this.currentJsonPath = currentJsonPath;
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
+        this.caller = caller;
         initComponents();
         frameListeners();
         this.setTitle(fileName + " - Move");
@@ -132,8 +135,6 @@ public class MoveFileWindow extends JFrame {
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
-                System.out.println(newJsonPath);
-                System.out.println(currentJsonPath);
                 try {
                     JSONWriter.writeJSONObject(".catalog.json", JSONReader.moveFile(jsonObj, currentJsonPath, newJsonPath));
                 } catch (IOException e1) {
@@ -145,6 +146,7 @@ public class MoveFileWindow extends JFrame {
                     e1.printStackTrace();
                 }
                 dispose();
+                ClientBrowser.run(serverAddress, port, moveFileWindow);
             }
         });
 
@@ -165,14 +167,13 @@ public class MoveFileWindow extends JFrame {
                     readFolder(folderLocation2, jsonObj, leaf);
                     branch.add(leaf);
                 }
-
             }
         }
         return branch;
     }
 
-    public static void run(String fileName, String filePath, String serverAddress, int port, JSONObject jsonObj) {
-        JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, jsonObj);
+    public static void run(String fileName, String filePath, String serverAddress, int port, JSONObject jsonObj, JFrame caller) {
+        JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, jsonObj, caller);
         CenterWindow.centerOnScreen(moveFileWindow);
         moveFileWindow.setVisible(true);
     }

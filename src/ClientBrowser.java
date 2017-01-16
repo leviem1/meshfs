@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -33,7 +34,6 @@ public class ClientBrowser extends JFrame {
     private DefaultMutableTreeNode tree;
     private JSONObject jsonObj;
     private static JFrame clientBrowser;
-    private int fileSizeCurrent;
 
     public ClientBrowser(String serverAddress, int port) {
         this.serverAddress = serverAddress;
@@ -41,7 +41,7 @@ public class ClientBrowser extends JFrame {
         initComponents();
         browserBtns(false);
         frameListeners();
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
     }
 
@@ -199,9 +199,6 @@ public class ClientBrowser extends JFrame {
                 buttonBar.add(progressBar, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
-
-                //---- sizeLbl ----
-                sizeLbl.setText("(status)");
                 buttonBar.add(sizeLbl, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
@@ -234,29 +231,32 @@ public class ClientBrowser extends JFrame {
                 if (rVal == JFileChooser.APPROVE_OPTION) {
                     String pathToFile = fileChooser.getSelectedFile().getPath();
                     File file = new File(pathToFile);
-                    Long size = (file.length());
+                    int size = Math.toIntExact(file.length());
                     String fileSize = "";
 
-                    if((int)(Math.log10(size.intValue())+1) >= 2 && (int)(Math.log10(size.intValue())+1) < 5){
-                        fileSize = size.intValue() + " B";
+                    System.out.println(size);
+
+                    if((int)(Math.log10(size)+1) >= 2 && (int)(Math.log10(size)+1) < 5){
+                        fileSize = size + " B";
                     }
-                    else if((int)(Math.log10(size.intValue())+1) >= 5 && (int)(Math.log10(size.intValue())+1) < 7){
-                        fileSize = size.intValue()/1000 + " KB";
+                    else if((int)(Math.log10(size)+1) >= 5 && (int)(Math.log10(size)+1) <= 7){
+                        fileSize = size/1000 + " KB";
                     }
-                    else if((int)(Math.log10(size.intValue())+1) >= 7 && (int)(Math.log10(size.intValue())+1) < 9){
-                        fileSize = size.intValue()/1000000 + " MB";
+                    else if((int)(Math.log10(size)+1) > 7 && (int)(Math.log10(size)+1) <= 9){
+                        fileSize = size/1000000 + " MB";
                     }
-                    else if((int)(Math.log10(size.intValue())+1) >= 9 && (int)(Math.log10(size.intValue())+1) < 11){
-                        fileSize = size.intValue()/1000000000 + " GB";
+                    else if((int)(Math.log10(size)+1) > 9 && (int)(Math.log10(size)+1) <= 11){
+                        fileSize = size/1000000000 + " GB";
                     }
+
+                    System.out.println(fileSize);
                     DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
-                    Date dateObj = new Date();
-                    String creationDate = df.format(dateObj);
+                    String creationDate = df.format(new Date());
 
                     JSONObject fileObj = new JSONObject();
                     fileObj.put("type", "file");
                     fileObj.put("fileSize", fileSize);
-                    fileObj.put("fileSizeActual", size.intValue());
+                    fileObj.put("fileSizeActual", size);
                     fileObj.put("creationDate", creationDate);
                     try {
                         JSONWriter.writeJSONObject(".catalog.json", JSONReader.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
@@ -305,7 +305,37 @@ public class ClientBrowser extends JFrame {
         downloadBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                downloadFile(node.toString(), System.getProperty("user.home") + "/Downloads/" + node.toString());
+                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+                JSONObject fileProperties = JSONReader.getItemContents(jsonObj, jsonPath);
+                int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
+                File localFile  = new File(System.getProperty("user.home") + "/Downloads/" + node.toString());
+                if((localFile.exists())){
+                    JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                progressBar.setMinimum(0);
+                progressBar.setMaximum(fileSizeActual);
+                Thread download = new Thread() {
+                    public void run() {
+                        downloadFile(node.toString(), System.getProperty("user.home") + "/Downloads/" + node.toString());
+                        sizeLbl.setText("done");
+                        JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                };
+                download.start();
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        File outputFile = new File(System.getProperty("user.home") + "/Downloads/" + node.toString());
+                        progressBar.setValue(Math.toIntExact(outputFile.length()));
+                        sizeLbl.setText(outputFile.length() + "/" + fileSizeActual);
+                        if(progressBar.getValue() == progressBar.getMaximum()){
+                            cancel();
+                        }
+                    }
+                };
+                java.util.Timer timer = new java.util.Timer();
+                timer.scheduleAtFixedRate(timerTask, 0, 10);
             }
         });
         downloadAsBtn.addActionListener(new ActionListener() {
@@ -314,12 +344,38 @@ public class ClientBrowser extends JFrame {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.showSaveDialog(null);
                 fileChooser.setDialogTitle("Choose Save Location");
-                try {
-                    downloadFile(node.toString(), fileChooser.getSelectedFile().toString());
-                } catch (Exception e1) {
-                    JOptionPane.showMessageDialog(null, "Download of  " + node.toString() + " failed!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                    e1.printStackTrace();
+                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+                JSONObject fileProperties = JSONReader.getItemContents(jsonObj, jsonPath);
+                int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
+                File localFile  = new File(fileChooser.getSelectedFile().toString());
+                System.out.println("Writing file to: " + fileChooser.getSelectedFile().toString());
+                if((localFile.exists())){
+                    JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
+                progressBar.setMinimum(0);
+                progressBar.setMaximum(fileSizeActual);
+                Thread download = new Thread() {
+                    public void run() {
+                        downloadFile(node.toString(), fileChooser.getSelectedFile().toString());
+                        sizeLbl.setText("done");
+                        JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                };
+
+                download.start();
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        File outputFile = new File(fileChooser.getSelectedFile().toString());
+                        progressBar.setValue(Math.toIntExact(outputFile.length()));
+                        if(progressBar.getValue() == progressBar.getMaximum()){
+                            cancel();
+                        }
+                    }
+                };
+                java.util.Timer timer = new java.util.Timer();
+                timer.scheduleAtFixedRate(timerTask, 0, 10);
             }
         });
         propertiesBtn.addActionListener(new ActionListener() {
@@ -369,7 +425,7 @@ public class ClientBrowser extends JFrame {
         });
         moveBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, jsonObj);
+                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, jsonObj, clientBrowser);
             }
 
         });

@@ -3,6 +3,8 @@ out
 misc.xml
 uiDesigner.xml
 modules.xml
-config.properties
+.config.properties
 repo/
+.manifest.json
 manifest.json
+.catalog.json

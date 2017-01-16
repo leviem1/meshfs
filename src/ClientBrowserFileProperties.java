@@ -19,6 +19,7 @@ public class ClientBrowserFileProperties extends JFrame {
         initComponents(fileName, fileSize, creationDate);
         frameListeners();
         fileNameValue.setText(fileName);
+        fileNameValue.setToolTipText(fileName);
         fileSizeValue.setText(fileSize);
         creationDateValue.setText(creationDate);
         this.setTitle(fileName + " - Properties");
@@ -91,7 +92,7 @@ public class ClientBrowserFileProperties extends JFrame {
                 creationDateValue.setText("null");
 
                 //---- label10 ----
-                label10.setText("null");
+                label10.setText("guest");
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -188,7 +189,7 @@ public class ClientBrowserFileProperties extends JFrame {
 
     public static void run(String fileName, String fileSize, String creationDate, JFrame sender) {
         JFrame clientBrowserFileProperties = new ClientBrowserFileProperties(fileName, fileSize, creationDate);
-        CenterWindow.centerOnScreen(sender);
+        CenterWindow.centerOnScreen(clientBrowserFileProperties);
         clientBrowserFileProperties.setVisible(true);
     }
 

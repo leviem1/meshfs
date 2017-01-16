@@ -574,13 +574,10 @@ public class ServerModeConfiguration extends JFrame {
                 resetConfig();
             }
         });
-
-
-
-
     }
 
     private ArrayList<String> ipJList(){
+        System.out.println(Reporting.getIpAddress());
         ArrayList<String> x = new ArrayList<>();
         for(int i = 0; i < Reporting.getIpAddress().size(); i++){
             x.add(Reporting.getIpAddress().get(i).get(0).toString() + " (" + Reporting.getIpAddress().get(i).get(1).toString() + ")");
