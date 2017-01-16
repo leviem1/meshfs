@@ -1,4 +1,3 @@
-import com.sun.deploy.util.SessionState;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
@@ -45,7 +44,7 @@ public class MoveFileWindow extends JFrame {
     }
 
     private void initComponents() {
-        JSONObject jsonObj = JSONReader.getJSONObject(".catalog.json");
+        JSONObject jsonObj = JSONManipulator.getJSONObject(".catalog.json");
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode("root");
         tree = (readFolder("root",jsonObj,tree));
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -136,7 +135,7 @@ public class MoveFileWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
                 try {
-                    JSONWriter.writeJSONObject(".catalog.json", JSONReader.moveFile(jsonObj, currentJsonPath, newJsonPath));
+                    JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.moveFile(jsonObj, currentJsonPath, newJsonPath));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -153,7 +152,7 @@ public class MoveFileWindow extends JFrame {
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
-        Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
+        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation);
         if (!(folderContents.values().contains("directory"))){
             DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no folders)");
             branch.add(leaf);
