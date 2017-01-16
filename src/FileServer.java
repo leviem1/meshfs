@@ -2,10 +2,10 @@
  * Created by Levi Muniz on 10/16/16.
  */
 
+import com.sun.javafx.event.EventDispatchTreeImpl;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -113,10 +113,10 @@ class ServerInit implements Runnable {
                     moveFile(requestParts[1], requestParts[2], out);
 
                 } else if (requestParts[0].equals("104")) {     //104:Copy file (virtual only)
-                    //copyFile(requestParts[1], requestParts[2]);
+                    duplicateFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("105")) {     //105:Delete file (virtual and physical)
-                    //deleteFile(requestParts[1], requestParts[2]);
+                    deleteFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("106")) {     //106:Make directory (virtual)
                     //makeDir(requestParts[1]);
@@ -159,14 +159,26 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
-        JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonObj = JSONManipulator.getJSONObject(".catalog.json");
-            JSONObject currentJsonPath = (JSONObject) parser.parse(currentPath);
-            JSONManipulator.writeJSONObject(".catalog", JSONManipulator.moveFile(jsonObj, currentJsonPath.toString(), newPath));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.moveFile(jsonObj, currentPath.toString(), newPath));
+    }
+
+    private void deleteFile(String jsonPath, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println("201");
+        out.flush();
+
+        JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
+        System.out.println(jsonPath);
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.removeItem(jsonObj, jsonPath));
+    }
+
+    private void duplicateFile(String currentPath, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println("201");
+        out.flush();
+        JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.copyFile(jsonObj, currentPath, currentPath.substring(0, currentPath.lastIndexOf("/")), true));
     }
 
     private void receiveReport(Socket client) throws IOException {
@@ -222,6 +234,16 @@ class ServerInit implements Runnable {
         out.close();
         fos.close();
         dis.close();
+
+        Thread distributor = new Thread() {
+            public void run() {
+                Distributor distributorObj = new Distributor(Integer.parseInt(MeshFS.properties.getProperty("numStripes")), Integer.parseInt(MeshFS.properties.getProperty("numWholeCopy")), Integer.parseInt(MeshFS.properties.getProperty("numStripeCopy")));
+                //Run Distributor Code
+            }
+        };
+        distributor.setDaemon(true);
+        distributor.start();
+
     }
 
     private void badRequest(Socket client, String request) {

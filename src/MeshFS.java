@@ -15,29 +15,50 @@ public class MeshFS {
     public static Properties properties;
     public static FileServer fileServer;
     public static boolean nogui = false;
-    public static boolean isMaster;
+    public static boolean isMaster = false;
+    public static  boolean configure = false;
 
     public static void main(String[] args) {
         //System.setProperty("java.net.preferIPv4Stack" , "true");
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
-        properties = ConfigParser.loadProperties();
-        new CliParser(args, properties);
-        List<List> possibleIP = Reporting.getIpAddress();
-        if (properties.getProperty("masterIP").equals("127.0.0.1")) {
-            isMaster = true;
-        } else {
-            for (List iFace : possibleIP) {
-                if (iFace.get(1).equals(properties.getProperty("masterIP"))) {
-                    isMaster = true;
-                    break;
-                } else {
-                    isMaster = false;
+
+        if (nogui) {
+
+            properties = ConfigParser.loadProperties();
+            new CliParser(args, properties);
+            List<List> possibleIP = Reporting.getIpAddress();
+            if (properties.getProperty("masterIP").equals("127.0.0.1")) {
+                isMaster = true;
+            } else {
+                for (List iFace : possibleIP) {
+                    if (iFace.get(1).equals(properties.getProperty("masterIP"))) {
+                        isMaster = true;
+                        break;
+                    }
                 }
             }
-        }
-        if (nogui) {
+
+
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if(!(isMaster)){
+                        if(FileClient.ping(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("port")))) {
+                            try {
+                                FileClient.sendReport(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("port")));
+                            } catch (IOException ioe) {
+                                ioe.printStackTrace();
+                            }
+                        }
+
+                    }
+                }
+            };
+            java.util.Timer timer = new java.util.Timer();
+            timer.scheduleAtFixedRate(timerTask, 0, 60000);
+
             File repo = new File(properties.getProperty("repository"));
             File catalog = new File(properties.getProperty("repository")+".catalog.json");
             if (!repo.exists()) {
@@ -80,7 +101,13 @@ public class MeshFS {
             if(Reporting.getSystemOS().toLowerCase().contains("mac")){
                 com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
             }
-            GreetingsWindow.run("server");
+            File properties = new File(".config.properties");
+            if (!properties.exists() || configure) {
+                GreetingsWindow.run(true);
+            } else {
+                GreetingsWindow.run(false);
+            }
+
         }
     }
 }

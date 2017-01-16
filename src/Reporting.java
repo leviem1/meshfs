@@ -39,7 +39,7 @@ public class Reporting {
                 Enumeration<InetAddress> addresses = iface.getInetAddresses();
                 while(addresses.hasMoreElements()) {
                     InetAddress nextElement;
-                    if ((nextElement = addresses.nextElement()) instanceof Inet4Address) ip.add(addresses.nextElement().getHostAddress());
+                    if ((nextElement = addresses.nextElement()) instanceof Inet4Address) ip.add(nextElement.getHostAddress());
                 }
             }
         } catch (SocketException e) {

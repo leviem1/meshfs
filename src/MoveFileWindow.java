@@ -1,3 +1,4 @@
+import com.sun.org.apache.bcel.internal.generic.InstructionConstants;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
@@ -118,8 +119,10 @@ public class MoveFileWindow extends JFrame {
         tree1.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) throws NullPointerException {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                buttonBar.getRootPane().setDefaultButton(okButton);
                 try{
                     if(node.getChildCount() == 0){
+
                         if(!(node.toString().equals("root"))){
                             tree1.setSelectionPath(null);
                         }
@@ -135,17 +138,15 @@ public class MoveFileWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
                 try {
-                    JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.moveFile(jsonObj, currentJsonPath, newJsonPath));
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                try {
                     FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
                 dispose();
+                caller.dispose();
+
                 ClientBrowser.run(serverAddress, port, moveFileWindow);
+
             }
         });
 

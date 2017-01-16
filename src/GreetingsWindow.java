@@ -21,10 +21,10 @@ import javax.swing.border.*;
 public class GreetingsWindow extends JFrame {
 
     private static JFrame greetingsWindow;
-    private String type;
+    private boolean runType;
 
-    public GreetingsWindow(String type) {
-        this.type = type;
+    public GreetingsWindow(boolean runType) {
+        this.runType = runType;
         initComponents();
         frameListeners();
         dialogPane.getRootPane().setDefaultButton(configBtn);
@@ -128,11 +128,11 @@ public class GreetingsWindow extends JFrame {
     private void frameListeners(){
         configBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(type.equals("client")){
+                if(runType){
                     ClientModeConfiguration.run(greetingsWindow);
                     dispose();
                 }
-                else if(type.equals("server")){
+                else{
                     onConfigure();
                 }
 
@@ -151,8 +151,8 @@ public class GreetingsWindow extends JFrame {
         dispose();
     }
 
-    public static void run(String type) {
-        greetingsWindow = new GreetingsWindow(type);
+    public static void run(boolean runType) {
+        greetingsWindow = new GreetingsWindow(runType);
         CenterWindow.centerOnScreen(greetingsWindow);
         greetingsWindow.setVisible(true);
 

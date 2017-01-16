@@ -12,13 +12,13 @@ public class Distributor {
     private int numOfStripedCopies;
     private long minFreeSpace = 0L; // 5GB is 5368709120L
 
-    public Distributor(int numOfStripes, int numOfWholeCopies, int numOfStripedCopies){
+    Distributor(int numOfStripes, int numOfWholeCopies, int numOfStripedCopies){
         this.numOfStripes = numOfStripes;
         this.numOfWholeCopies = numOfWholeCopies;
         this.numOfStripedCopies = numOfStripedCopies;
     }
 
-    public LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
+    private LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
         sortedMap.put("temp", 99999999999990L);
         for (String key : storageMap.keySet()){
