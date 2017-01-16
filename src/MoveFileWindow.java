@@ -140,7 +140,7 @@ public class MoveFileWindow extends JFrame {
                     e1.printStackTrace();
                 }
                 try {
-                    FileClient.sendFile(serverAddress, port, ".catalog.json");
+                    FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
