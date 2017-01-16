@@ -20,7 +20,6 @@ public class MeshFS {
         System.setProperty("java.net.preferIPv4Stack" , "true");
         System.setProperty("apple.laf.useScreenMenuBar", "true");
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
-        System.out.println(System.getProperties());
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
         properties = ConfigParser.loadProperties();
         new CliParser(args, properties);
@@ -76,14 +75,11 @@ public class MeshFS {
                 }
             }
             System.setProperty("java.awt.headless", "true");
-            for(Object x : fileServer.getServerDetails()){
-                System.out.println(x.toString());
-            }
         } else {
             if(Reporting.getSystemOS().toLowerCase().contains("mac")){
                 //Application.getApplication().setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
             }
-            GreetingsWindow.run();
+            GreetingsWindow.run("client");
         }
     }
 }
