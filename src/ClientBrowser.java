@@ -255,7 +255,7 @@ public class ClientBrowser extends JFrame {
                     fileObj.put("fileSizeActual", size);
                     fileObj.put("creationDate", creationDate);
                     try {
-                        JSONWriter.writeJSONObject(".catalog.json", JSONManipulator.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
+                        JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -389,7 +389,7 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 try {
-                    JSONWriter.writeJSONObject(".catalog.json", JSONManipulator.removeItem(jsonObj, jsonPath));
+                    JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.removeItem(jsonObj, jsonPath));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -406,7 +406,7 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 try {
-                    JSONWriter.writeJSONObject(".catalog.json", JSONManipulator.copyFile(jsonObj, jsonPath, jsonPath.substring(0, jsonPath.lastIndexOf("/")), true));
+                    JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.copyFile(jsonObj, jsonPath, jsonPath.substring(0, jsonPath.lastIndexOf("/")), true));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
