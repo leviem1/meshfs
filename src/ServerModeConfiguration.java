@@ -55,7 +55,7 @@ public class ServerModeConfiguration extends JFrame {
         ipJListField = new JList(ipJList().toArray());
         storageTab = new JPanel();
         repositoryLbl = new JLabel();
-        repoPathField = new JTextField(System.getProperty("user.dir"));
+        repoPathField = new JTextField(System.getProperty("user.dir")+"/repo");
         minFreeSpaceLbl = new JLabel();
         minSpaceField = new JFormattedTextField(numberFormat);
         label1 = new JLabel();
@@ -289,7 +289,7 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(freeSpaceLbl)
-                                .addContainerGap(112, Short.MAX_VALUE))
+                                .addContainerGap(122, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Storage", storageTab);

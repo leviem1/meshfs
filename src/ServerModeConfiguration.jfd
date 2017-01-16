@@ -113,7 +113,7 @@ new FormModel {
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp repositoryLbl:::p::p, space :::p, comp repoPathField::::285:x, space :::p, comp browseBtn:::p::p}, seq l {comp minFreeSpaceLbl:::p::p, space u:::p, comp minSpaceField:::p:121:p, space :::p, comp label1:::p::p, space :::p, comp spaceSldr::::185:x}, seq l {comp freeSpaceLbl:::p:351:p, space :0:99:x}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, par b {comp repositoryLbl::b:p::p, comp repoPathField::b:p::p, comp browseBtn::b:p::p}, space u:::p, par t {par b {comp minFreeSpaceLbl::b:p::p, comp minSpaceField::b:p::p, comp label1::b:p::p}, comp spaceSldr:::p::p}, space :::p, comp freeSpaceLbl:::p::p, space ::112:x}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp repositoryLbl::b:p::p, comp repoPathField::b:p::p, comp browseBtn::b:p::p}, space u:::p, par t {par b {comp minFreeSpaceLbl::b:p::p, comp minSpaceField::b:p::p, comp label1::b:p::p}, comp spaceSldr:::p::p}, space :::p, comp freeSpaceLbl:::p::p, space ::122:x}}"
 					} ) {
 						name: "storageTab"
 						"background": new java.awt.Color( 229, 229, 229, 255 )
@@ -126,7 +126,7 @@ new FormModel {
 							name: "repoPathField"
 							"font": #Font0
 							auxiliary() {
-								"JavaCodeGenerator.customCreateCode": "new JTextField(System.getProperty(\"user.dir\"));"
+								"JavaCodeGenerator.customCreateCode": "new JTextField(System.getProperty(\"user.dir\")+\"/repo\");"
 							}
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
