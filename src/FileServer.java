@@ -25,6 +25,7 @@ public class FileServer {
 
     /**
      * This method is used to start the file server.
+     *
      * @param port       the port number
      * @param maxThreads the amount of sockets
      * @param timeout    the maximum amount of seconds that a client can be idle for
@@ -34,20 +35,8 @@ public class FileServer {
     public void startServer(int port, int maxThreads, int timeout) throws IOException {
 
         fileServer = new ServerSocket();
-        fileServer.setPerformancePreferences(1,0,1);
-
-        if (MeshFS.properties.getProperty("preferredInterface").equals("")) {
-            fileServer.bind(new InetSocketAddress(port));
-        } else {
-            try {
-                NetworkInterface iface = NetworkInterface.getByName(MeshFS.properties.getProperty("preferredInterface"));
-                Enumeration<InetAddress> ipList = iface.getInetAddresses();
-                InetAddress ip = Inet4Address.getByName(ipList.nextElement().getHostName());
-                fileServer.bind(new InetSocketAddress(ip, port));
-            } catch (NullPointerException npe) {
-                fileServer.bind(new InetSocketAddress(port));
-            }
-        }
+        fileServer.setPerformancePreferences(1, 0, 1);
+        fileServer.bind(new InetSocketAddress(port));
 
         for (int threads = 0; threads < maxThreads; threads++) {
             sockets.add(new Thread(new ServerInit(fileServer, timeout)));
@@ -77,13 +66,6 @@ public class FileServer {
                 }
             }
         }
-    }
-
-    public List<Object> getServerDetails() {
-        List<Object> ipDetails = new ArrayList<>();
-        ipDetails.add(fileServer.getInetAddress());
-        ipDetails.add(fileServer.getLocalPort());
-        return ipDetails;
     }
 }
 
