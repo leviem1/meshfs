@@ -24,23 +24,23 @@ public class MeshFS {
         System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
 
-        if (nogui) {
+        properties = ConfigParser.loadProperties();
+        new CliParser(args, properties);
+        List<List> possibleIP = Reporting.getIpAddress();
+        if (properties.getProperty("masterIP").equals("127.0.0.1")) {
+            isMaster = true;
+        } else {
+            for (List iFace : possibleIP) {
+                if (iFace.get(1).equals(properties.getProperty("masterIP"))) {
+                    isMaster = true;
+                    break;
+                } else {
+                    isMaster = false;
 
-            properties = ConfigParser.loadProperties();
-            new CliParser(args, properties);
-            List<List> possibleIP = Reporting.getIpAddress();
-            if (properties.getProperty("masterIP").equals("127.0.0.1")) {
-                isMaster = true;
-            } else {
-                for (List iFace : possibleIP) {
-                    if (iFace.get(1).equals(properties.getProperty("masterIP"))) {
-                        isMaster = true;
-                        break;
-                    }
                 }
             }
-
-
+        }
+         if (nogui) {
             TimerTask timerTask = new TimerTask() {
                 @Override
                 public void run() {
