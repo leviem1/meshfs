@@ -108,6 +108,26 @@ public final class FileClient {
         }
     }
 
+    public static void moveFile(String serverAddress, int port, String currFile, String destFile) throws IOException {
+        String response;
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+        try {
+            out.println("103|" + currFile + "|" + destFile + "\n");
+
+            if ((response = input.readLine().trim()).equals("201")) {
+            } else {
+                System.err.println(response);
+            }
+
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+    }
+
     public static void sendFile(String serverAddress, int port, String filepath) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);

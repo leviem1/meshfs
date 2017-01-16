@@ -38,23 +38,23 @@ public class Reporting {
                     continue;
                 Enumeration<InetAddress> addresses = iface.getInetAddresses();
                 while(addresses.hasMoreElements()) {
-                    ip.add(addresses.nextElement().getHostAddress());
+                    InetAddress nextElement;
+                    if ((nextElement = addresses.nextElement()) instanceof Inet4Address) ip.add(addresses.nextElement().getHostAddress());
                 }
             }
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
         for(int x = 0; x < ip.size(); x++){
-            if(ip.get(x).contains("%")){
-                try {
-                    if (ip.get(x + 1).contains(".")) {
-                        List<String> tempList = new ArrayList<>();
-                        tempList.add(ip.get(x).substring(ip.get(x).indexOf("%") + 1));
-                        tempList.add(ip.get(x + 1));
-                        ipRefined.add(tempList);
-                    }
-                } catch (IndexOutOfBoundsException ae) {
+            System.out.println("");
+            try {
+                if (ip.get(x + 1).contains(".")) {
+                    List<String> tempList = new ArrayList<>();
+                    tempList.add(ip.get(x).substring(ip.get(x).indexOf("%") + 1));
+                    tempList.add(ip.get(x + 1));
+                    ipRefined.add(tempList);
                 }
+            } catch (IndexOutOfBoundsException ae) {
             }
         }
         return ipRefined;
