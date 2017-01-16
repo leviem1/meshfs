@@ -104,7 +104,7 @@ public final class FileClient {
                 reportFull = reportFull + reportPart + "\n";
             }
             reportFull = reportFull.trim();
-            JSONWriter.writeJSONObject("manifest.json", Reporting.splitter(reportFull));
+            JSONManipulator.writeJSONObject("manifest.json", Reporting.splitter(reportFull));
         }
     }
 

@@ -5,8 +5,6 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
 
 
 /**
@@ -168,7 +166,7 @@ class ServerInit implements Runnable {
             reportFull = reportFull + reportPart + "\n";
         }
         reportFull = reportFull.trim();
-        JSONWriter.writeJSONObject("manifest.json", Reporting.splitter(reportFull));
+        JSONManipulator.writeJSONObject("manifest.json", Reporting.splitter(reportFull));
     }
 
     private void sendFile(String filename, Socket client) throws IOException {

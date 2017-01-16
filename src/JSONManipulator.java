@@ -1,16 +1,19 @@
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Levi Muniz on 10/19/16.
  */
-public class JSONReader {
+public class JSONManipulator {
 
     public static JSONObject getJSONObject(String filePath) {
         JSONParser reader = new JSONParser();
@@ -122,7 +125,74 @@ public class JSONReader {
         return jsonObject;
     }
 
+    public static void addToIndex(List<List<String>> stripes, String itemFilePath, String fileName, String JSONFilePath, String alphanumericName) {
+        addToIndex(stripes,itemFilePath, fileName, JSONFilePath, alphanumericName, "all");
+    }
 
+    public static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String group) {
+
+        JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
+        jsonFile.replace("currentName", alphanumericName);
+
+
+        JSONObject objChild = new JSONObject();
+        JSONArray ipArray = new JSONArray();
+
+
+
+        for (int stripe = 0; stripe < stripes.size(); stripe++){
+            for (int copy = 0; copy < (stripes.get(stripe)).size(); copy++){
+                ipArray.add(stripes.get(stripe).get(copy));
+            }
+            if (stripe == 0){
+                objChild.put("whole", ipArray.clone());
+            }
+            else{
+                objChild.put("stripe" + String.valueOf(stripe), ipArray.clone());
+            }
+            ipArray.clear();
+
+        }
+
+        objChild.put("group", group);
+        objChild.put("type", "file");
+        objChild.put("fileName", alphanumericName);
+
+        jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName,objChild);
+
+
+        try{
+            writeJSONObject(JSONFilePath, jsonFile);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void addToIndex(String itemLocation, String fileName, String JSONFilePath) {
+
+        JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
+
+        JSONObject objChild = new JSONObject();
+
+
+        objChild.put("type", "file");
+        objChild.put("fileName", fileName);
+
+        jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName,objChild);
+
+
+        try{
+            writeJSONObject(JSONFilePath, jsonFile);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
+        try (FileWriter file = new FileWriter(filePath)) {
+            file.write(obj.toJSONString());
+        }
+    }
 
 
 

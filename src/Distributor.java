@@ -73,7 +73,7 @@ public class Distributor {
              int stopOfWholes = (-1);
 
              List<String> computersForWholes = new ArrayList<>();
-             JSONObject jsonObj = JSONReader.getJSONObject(JSONFilePath);
+             JSONObject jsonObj = JSONManipulator.getJSONObject(JSONFilePath);
              String currentName = jsonObj.get("currentName").toString();
              String newName = incrementName(currentName);
              for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
@@ -208,7 +208,7 @@ public class Distributor {
                  }
              }
 
-             JSONPreWriter.addToIndex(stripes,filePathInCatalog, fileName, JSONFilePath, newName);
+             JSONManipulator.addToIndex(stripes,filePathInCatalog, fileName, JSONFilePath, newName);
          }
          catch (Exception e) {
              e.printStackTrace();

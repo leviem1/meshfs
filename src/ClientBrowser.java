@@ -1,18 +1,14 @@
-import com.sun.deploy.util.SessionState;
 import org.json.simple.JSONObject;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.GroupLayout;
-import javax.swing.Timer;
 import javax.swing.border.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -46,7 +42,7 @@ public class ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
-        jsonObj = JSONReader.getJSONObject(".catalog.json");
+        jsonObj = JSONManipulator.getJSONObject(".catalog.json");
         tree = new DefaultMutableTreeNode("root");
         tree = (readFolder("root",jsonObj,tree));
         if (isLoaded) {
@@ -259,7 +255,7 @@ public class ClientBrowser extends JFrame {
                     fileObj.put("fileSizeActual", size);
                     fileObj.put("creationDate", creationDate);
                     try {
-                        JSONWriter.writeJSONObject(".catalog.json", JSONReader.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
+                        JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -306,7 +302,7 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                JSONObject fileProperties = JSONReader.getItemContents(jsonObj, jsonPath);
+                JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
                 int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
                 File localFile  = new File(System.getProperty("user.home") + "/Downloads/" + node.toString());
                 if((localFile.exists())){
@@ -345,7 +341,7 @@ public class ClientBrowser extends JFrame {
                 fileChooser.showSaveDialog(null);
                 fileChooser.setDialogTitle("Choose Save Location");
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                JSONObject fileProperties = JSONReader.getItemContents(jsonObj, jsonPath);
+                JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
                 int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
                 File localFile  = new File(fileChooser.getSelectedFile().toString());
                 System.out.println("Writing file to: " + fileChooser.getSelectedFile().toString());
@@ -382,7 +378,7 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                JSONObject fileProperties = JSONReader.getItemContents(jsonObj, jsonPath);
+                JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
                 Object fileSize = fileProperties.get("fileSize");
                 Object creationDate = fileProperties.get("creationDate");
 
@@ -393,7 +389,7 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 try {
-                    JSONWriter.writeJSONObject(".catalog.json", JSONReader.removeItem(jsonObj, jsonPath));
+                    JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.removeItem(jsonObj, jsonPath));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -410,7 +406,7 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 try {
-                    JSONWriter.writeJSONObject(".catalog.json", JSONReader.copyFile(jsonObj, jsonPath, jsonPath.substring(0, jsonPath.lastIndexOf("/")), true));
+                    JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.copyFile(jsonObj, jsonPath, jsonPath.substring(0, jsonPath.lastIndexOf("/")), true));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -437,7 +433,7 @@ public class ClientBrowser extends JFrame {
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
-        Map<String,String> folderContents = JSONReader.getMapOfFolderContents(jsonObj, folderLocation);
+        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation);
         if (folderContents.keySet().isEmpty()){
             DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
             branch.add(leaf);
