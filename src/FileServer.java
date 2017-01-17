@@ -119,7 +119,7 @@ class ServerInit implements Runnable {
                     deleteFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("106")) {     //106:Make directory (virtual)
-                    //makeDir(requestParts[1]);
+                    createDirectory(requestParts[1], requestParts[2], out);
 
                 } else if (requestParts[0].equals("107")) {     //107:Get report
                     sendReport(out);
@@ -132,9 +132,6 @@ class ServerInit implements Runnable {
 
                 } else if (requestParts[0].equals("110")) {     //110:Bind
                     //bindClient(requestParts[1], requestParts[2]);
-
-                } else if (requestParts[0].equals("111")) {     //111:New Directory
-                    createDirectory(requestParts[1], requestParts[2], out);
 
                 } else {
                     badRequest(out, request);

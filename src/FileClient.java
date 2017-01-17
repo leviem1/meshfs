@@ -17,16 +17,6 @@ import java.net.SocketTimeoutException;
 public final class FileClient {
     public static int timeout;
 
-    /*
-        } else if (requestParts[0].equals("103")) {     //103:Move file (virtual only)
-
-        } else if (requestParts[0].equals("104")) {     //104:Copy file (virtual only)
-
-        } else if (requestParts[0].equals("105")) {     //105:Delete file (virtual and physical)
-
-        } else if (requestParts[0].equals("106")) {     //106:Make directory (virtual)
-    */
-
     /**
      * This method is used to ping a server.
      *
@@ -214,7 +204,7 @@ public final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("111|" + directoryPath + "|" + directoryName + "\n");
+            out.println("106|" + directoryPath + "|" + directoryName + "\n");
             if ((response = input.readLine().trim()).equals("201")) {
             } else {
                 System.err.println(response);
