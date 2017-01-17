@@ -119,6 +119,13 @@ public class JSONManipulator {
         return jsonObject;
     }
 
+    public static JSONObject addFolder(JSONObject jsonObject, String jsonPath, String directoryName){
+        JSONObject type = new JSONObject();
+        type.put("type", "directory");
+        jsonObject = putItemInFolder(jsonObject, jsonPath, directoryName, type);
+        return jsonObject;
+    }
+
     public static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
         jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false);
         jsonObject = removeItem(jsonObject, itemLocation);
@@ -193,8 +200,6 @@ public class JSONManipulator {
             file.write(obj.toJSONString());
         }
     }
-
-
 
     public static void pullFile(JSONObject jsonObject, String itemLocation, String compInfoJSONFilelocation){
         String itemName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);

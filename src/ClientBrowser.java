@@ -432,6 +432,12 @@ public class ClientBrowser extends JFrame {
                 dispose();
             }
         });
+        newDirBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                NewDirectoryWindow.run(serverAddress, port, jsonObj, clientBrowser);
+            }
+        });
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){

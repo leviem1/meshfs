@@ -132,6 +132,10 @@ class ServerInit implements Runnable {
 
                 } else if (requestParts[0].equals("110")) {     //110:Bind
                     //bindClient(requestParts[1], requestParts[2]);
+
+                } else if (requestParts[0].equals("111")) {     //111:New Directory
+                    createDirectory(requestParts[1], requestParts[2], out);
+
                 } else {
                     badRequest(out, request);
                 }
@@ -243,6 +247,19 @@ class ServerInit implements Runnable {
         };
         distributor.setDaemon(true);
         distributor.start();
+
+    }
+
+    private void createDirectory(String directoryPath, String directoryName, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println("201");
+        out.flush();
+
+        JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
+        System.out.println(directoryPath);
+        System.out.println(directoryName);
+        System.out.println(jsonObj);
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.addFolder(jsonObj, directoryPath, directoryName));
 
     }
 
