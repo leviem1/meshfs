@@ -46,7 +46,6 @@ public class Reporting {
             throw new RuntimeException(e);
         }
         for(int x = 0; x < ip.size(); x++){
-            System.out.println("");
             try {
                 if (ip.get(x + 1).contains(".")) {
                     List<String> tempList = new ArrayList<>();

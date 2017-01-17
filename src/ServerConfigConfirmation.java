@@ -125,11 +125,9 @@ public class ServerConfigConfirmation extends JFrame {
     public void onOk() throws IOException {
         //MeshFS.restartAsServer();
         final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
-        System.out.println(javaBin);
         final File currentJar;
         try {
             currentJar = new File(MeshFS.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-            System.out.println(currentJar);
             if(!currentJar.getName().endsWith(".jar")) {
                 return;
             }
@@ -140,9 +138,6 @@ public class ServerConfigConfirmation extends JFrame {
             command.add("-jar");
             command.add(currentJar.getPath());
             command.add("--nogui");
-
-            System.out.println(command.toString());
-
             final ProcessBuilder builder = new ProcessBuilder(command);
             builder.start();
             dispose();

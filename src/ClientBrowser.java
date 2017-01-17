@@ -242,9 +242,6 @@ public class ClientBrowser extends JFrame {
                     File file = new File(pathToFile);
                     int size = Math.toIntExact(file.length());
                     String fileSize = "";
-
-                    System.out.println(size);
-
                     if((int)(Math.log10(size)+1) >= 2 && (int)(Math.log10(size)+1) < 5){
                         fileSize = size + " B";
                     }
@@ -257,11 +254,8 @@ public class ClientBrowser extends JFrame {
                     else if((int)(Math.log10(size)+1) > 9 && (int)(Math.log10(size)+1) <= 11){
                         fileSize = size/1000000000 + " GB";
                     }
-
-                    System.out.println(fileSize);
                     DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
                     String creationDate = df.format(new Date());
-
                     JSONObject fileObj = new JSONObject();
                     fileObj.put("type", "file");
                     fileObj.put("fileSize", fileSize);
@@ -272,13 +266,11 @@ public class ClientBrowser extends JFrame {
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-
                     try {
                         FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath());
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
-
                     try {
                         FileClient.sendFile(serverAddress, port, ".catalog.json");
                     } catch (IOException e1) {
@@ -297,17 +289,22 @@ public class ClientBrowser extends JFrame {
             public void valueChanged(TreeSelectionEvent e) throws NullPointerException {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 try{
-                    if(node.getChildCount() != 0){
-                        if(!(node.toString().equals("root"))){
-                            browserBtns(false);
-                            tree1.setSelectionPath(null);
+                    if(node.toString().equals("(no files)")){
+                        browserBtns(false);
+                        tree1.setSelectionPath(null);
+                    }else{
+                        if(node.getChildCount() != 0){
+                            if(!(node.toString().equals("root"))){
+                                browserBtns(false);
+                                removeBtn.setEnabled(true);
+                            }
+                        }
+                        else{
+                            browserBtns(true);
+                            removeBtn.setEnabled(true);
                         }
                     }
-                    else{
-                        browserBtns(true);
-                    }
                 }catch(NullPointerException npe){
-
                 }
             }
         });
@@ -357,7 +354,6 @@ public class ClientBrowser extends JFrame {
                 JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
                 int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
                 File localFile  = new File(fileChooser.getSelectedFile().toString());
-                System.out.println("Writing file to: " + fileChooser.getSelectedFile().toString());
                 if((localFile.exists())){
                     JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                     return;

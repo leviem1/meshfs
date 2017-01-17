@@ -21,8 +21,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author User #1
  */
 public class NewDirectoryWindow extends JFrame {
-    private String currentJsonPath;
-    private String fileName;
     private String serverAddress;
     private int port;
     private JSONObject jsonObj;
@@ -34,6 +32,7 @@ public class NewDirectoryWindow extends JFrame {
         this.jsonObj = jsonObj;
         this.caller = sender;
         initComponents();
+        okButton.setEnabled(false);
         frameListeners();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -108,7 +107,7 @@ public class NewDirectoryWindow extends JFrame {
                             .addComponent(label2)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(18, Short.MAX_VALUE))
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -138,10 +137,12 @@ public class NewDirectoryWindow extends JFrame {
         tree1.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) throws NullPointerException {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                if(node != null){
+                    okButton.setEnabled(true);
+                }
                 buttonBar.getRootPane().setDefaultButton(okButton);
                 try{
                     if(node.getChildCount() == 0){
-
                         if(!(node.toString().equals("root"))){
                             tree1.setSelectionPath(null);
                         }
@@ -149,7 +150,6 @@ public class NewDirectoryWindow extends JFrame {
                     else{
                     }
                 }catch(NullPointerException npe){
-
                 }
             }
         });
@@ -157,7 +157,13 @@ public class NewDirectoryWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String newFolderPath = (tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/");
                 String directoryName = dirNameTextField.getText();
-                System.out.println(newFolderPath);
+                for(int i = 0; i < tree1.getModel().getChildCount(tree1.getModel().getRoot()); i++){
+                    if(directoryName.equals(tree1.getModel().getChild(tree1.getModel().getRoot(), i).toString())){
+                        dirNameTextField.setText("");
+                        JOptionPane.showMessageDialog(null, "Directory already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
                 try {
                     FileClient.addFolder(serverAddress, port, newFolderPath, directoryName);
                 } catch (IOException e1) {
@@ -165,9 +171,7 @@ public class NewDirectoryWindow extends JFrame {
                 }
                 dispose();
                 caller.dispose();
-
                 ClientBrowser.run(serverAddress, port, newDirectoryWindow);
-
             }
         });
     }

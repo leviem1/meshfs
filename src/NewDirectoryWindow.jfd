@@ -11,7 +11,7 @@ new FormModel {
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp dirNameLbl:::p::p, space u:::p, comp dirNameTextField:::::x}, seq {par l {comp label2::l:p::p, comp scrollPane1::l:p:362:p}, space :0:0:x}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp dirNameLbl::b:p::p, comp dirNameTextField::b:p::p}, space u:::p, comp label2:::p::p, space :::p, comp scrollPane1:::p:196:p, space ::18:x}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp dirNameLbl::b:p::p, comp dirNameTextField::b:p::p}, space u:::p, comp label2:::p::p, space :::p, comp scrollPane1:::p:196:p, space :::x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -60,7 +60,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 400, 370 )
+			"size": new java.awt.Dimension( 400, 355 )
 		} )
 	}
 }
