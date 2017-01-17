@@ -3,12 +3,11 @@ import org.json.simple.*;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Levi Muniz on 10/19/16.
@@ -194,32 +193,68 @@ public class JSONManipulator {
         }
     }
 
-
-
-    public static void pullFile(JSONObject jsonObject, String itemLocation, String compInfoJSONFilelocation){
+    public static boolean pullFile(String JSONFileLocation, String itemLocation, String compInfoJSONFileLocation) throws IOException {
+        int port = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
+        String repo = MeshFS.properties.getProperty("repository");
         String itemName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         String[] folders = itemLocation.split("/");
-        JSONObject itemToRead = jsonObject;
+        JSONObject itemToRead = JSONManipulator.getJSONObject(JSONFileLocation);
         for (String folder : folders) {
             itemToRead = (JSONObject) itemToRead.get(folder);
         }
-        JSONObject fileInfo = (JSONObject) itemToRead.clone();
-        fileInfo.remove("type");
-        String fileName = fileInfo.get("fileName").toString();
-        fileInfo.remove("fileName");
-        String group = fileInfo.get("group").toString();
-        fileInfo.remove("group");
-
-        for (Object stripe: fileInfo.keySet() ){
+        if (!itemToRead.get("type").toString().equals("file")){
+            System.out.println("Select a file, not a folder!");
+            return false;
         }
+        String fileName = itemToRead.get("fileName").toString();
 
+        JSONObject compInfoFile = getJSONObject(compInfoJSONFileLocation);
+        List<String> stripeNames = new ArrayList<>();
+        boolean wholeNecessary = false;
+        for (Object stripe: itemToRead.keySet() ) {
+            if (stripe.toString().contains("stripe")) {
+                String fileNameWNum = fileName + stripe.toString().substring(stripe.toString().lastIndexOf("_"));
+                JSONArray compsWithStripe = (JSONArray) itemToRead.get(stripe);
+                boolean cantContinue = true;
+                for (Object MACAddress : compsWithStripe) {
+                    if (compInfoFile.containsKey(MACAddress)) {
+                        if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameWNum)){
+                            String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
+                            FileClient.receiveFile(IPAddress, port, fileNameWNum, repo + fileNameWNum);
+                            stripeNames.add(fileNameWNum);
+                            cantContinue = false;
+                            break;
+                        }
+                    }
+                }
+                if (cantContinue) {
+                    wholeNecessary = true;
+                    break;
+                }
+            }
+        }
+        if (wholeNecessary){
+            String fileNameW = fileName +"_w";
+            JSONArray compsWithWhole = (JSONArray) itemToRead.get("whole");
+            for (Object MACAddress : compsWithWhole) {
+                if (compInfoFile.containsKey(MACAddress)) {
+                    if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
+                        String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
+                        FileClient.receiveFile(IPAddress, port,fileNameW, repo + itemName);
+                        return true;
+                    }
+                }
+            }
+            System.out.println("File is unrecoverable!");
+            return false;
+        }
+        else {
+            FileUtils.combineStripes(stripeNames,repo + itemName);
+            for (String filePath:stripeNames){
+                Files.deleteIfExists(Paths.get(filePath));
+            }
 
-        JSONObject compInfoFile = getJSONObject(compInfoJSONFilelocation);
-
-
-
-        itemToRead.keySet();
-
+            return true;
+        }
     }
-
 }
