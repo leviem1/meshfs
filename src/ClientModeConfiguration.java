@@ -317,7 +317,6 @@ public class ClientModeConfiguration extends JFrame{
         try{
             FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", ".catalog.json");
         }catch(IOException ioe){
-            System.out.println("error");
         }
         ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration);
         dispose();

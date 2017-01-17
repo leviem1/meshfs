@@ -577,7 +577,6 @@ public class ServerModeConfiguration extends JFrame {
     }
 
     private ArrayList<String> ipJList(){
-        System.out.println(Reporting.getIpAddress());
         ArrayList<String> x = new ArrayList<>();
         for(int i = 0; i < Reporting.getIpAddress().size(); i++){
             x.add(Reporting.getIpAddress().get(i).get(0).toString() + " (" + Reporting.getIpAddress().get(i).get(1).toString() + ")");
@@ -591,7 +590,6 @@ public class ServerModeConfiguration extends JFrame {
             if (!repoDirectory.exists()) {
                 repoDirectory.mkdirs();
             }
-            System.out.println(String.valueOf(repoPathField.getText()));
             writeConfig();
             JOptionPane.showMessageDialog(null, "Configuration was saved!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
 

@@ -2,6 +2,10 @@
  * Created by Levi Muniz on 10/16/16.
  */
 
+import com.sun.javafx.event.EventDispatchTreeImpl;
+import org.json.simple.JSONObject;
+
+import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -98,7 +102,7 @@ class ServerInit implements Runnable {
 
         if (request != null) {
             try {
-                String[] requestParts = request.split("\\|");
+                String[] requestParts = request.trim().split("\\|");
                 if (requestParts[0].equals("101")) {            //101:Get file
                     sendFile(requestParts[1], out);
 
@@ -106,13 +110,13 @@ class ServerInit implements Runnable {
                     receiveFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("103")) {     //103:Move file (virtual only)
-                    //moveFile(requestParts[1], requestParts[2]);
+                    moveFile(requestParts[1], requestParts[2], out);
 
                 } else if (requestParts[0].equals("104")) {     //104:Copy file (virtual only)
-                    //copyFile(requestParts[1], requestParts[2]);
+                    duplicateFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("105")) {     //105:Delete file (virtual and physical)
-                    //deleteFile(requestParts[1], requestParts[2]);
+                    deleteFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("106")) {     //106:Make directory (virtual)
                     //makeDir(requestParts[1]);
@@ -128,6 +132,9 @@ class ServerInit implements Runnable {
 
                 } else if (requestParts[0].equals("110")) {     //110:Bind
                     //bindClient(requestParts[1], requestParts[2]);
+
+                } else if (requestParts[0].equals("111")) {     //111:New Directory
+                    createDirectory(requestParts[1], requestParts[2], out);
 
                 } else {
                     badRequest(out, request);
@@ -150,6 +157,32 @@ class ServerInit implements Runnable {
         out.println("201");
         out.print(Reporting.generate());
         out.flush();
+    }
+
+    private void moveFile(String currentPath, String newPath, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println("201");
+        out.flush();
+        JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.moveFile(jsonObj, currentPath.toString(), newPath));
+    }
+
+    private void deleteFile(String jsonPath, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println("201");
+        out.flush();
+
+        JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
+        System.out.println(jsonPath);
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.removeItem(jsonObj, jsonPath));
+    }
+
+    private void duplicateFile(String currentPath, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println("201");
+        out.flush();
+        JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.copyFile(jsonObj, currentPath, currentPath.substring(0, currentPath.lastIndexOf("/")), true));
     }
 
     private void receiveReport(Socket client) throws IOException {
@@ -205,6 +238,29 @@ class ServerInit implements Runnable {
         out.close();
         fos.close();
         dis.close();
+
+        Thread distributor = new Thread() {
+            public void run() {
+                Distributor distributorObj = new Distributor(Integer.parseInt(MeshFS.properties.getProperty("numStripes")), Integer.parseInt(MeshFS.properties.getProperty("numWholeCopy")), Integer.parseInt(MeshFS.properties.getProperty("numStripeCopy")));
+                //Run Distributor Code
+            }
+        };
+        distributor.setDaemon(true);
+        distributor.start();
+
+    }
+
+    private void createDirectory(String directoryPath, String directoryName, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println("201");
+        out.flush();
+
+        JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
+        System.out.println(directoryPath);
+        System.out.println(directoryName);
+        System.out.println(jsonObj);
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.addFolder(jsonObj, directoryPath, directoryName));
+
     }
 
     private void badRequest(Socket client, String request) {

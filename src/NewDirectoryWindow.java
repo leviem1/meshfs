@@ -1,4 +1,3 @@
-import com.sun.org.apache.bcel.internal.generic.InstructionConstants;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
@@ -13,33 +12,28 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 /*
- * Created by JFormDesigner on Sat Jan 14 16:33:36 MST 2017
+ * Created by JFormDesigner on Mon Jan 16 18:44:07 MST 2017
  */
 
 
 
 /**
- * @author Mark Hedrick
+ * @author User #1
  */
-public class MoveFileWindow extends JFrame {
-    private String currentJsonPath;
-    private String fileName;
+public class NewDirectoryWindow extends JFrame {
     private String serverAddress;
     private int port;
     private JSONObject jsonObj;
-    private JFrame sender;
-    private static JFrame moveFileWindow;
-
-    public MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
-        this.fileName = fileName;
-        this.currentJsonPath = currentJsonPath;
+    private JFrame caller;
+    private static JFrame newDirectoryWindow;
+    public NewDirectoryWindow(String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
-        this.sender = sender;
+        this.caller = sender;
         initComponents();
+        okButton.setEnabled(false);
         frameListeners();
-        this.setTitle(fileName + " - Move");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
     }
@@ -52,13 +46,16 @@ public class MoveFileWindow extends JFrame {
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
+        dirNameLbl = new JLabel();
+        dirNameTextField = new JTextField();
+        label2 = new JLabel();
         scrollPane1 = new JScrollPane();
         tree1 = new JTree(tree);
         buttonBar = new JPanel();
         okButton = new JButton();
 
         //======== this ========
-        setTitle("filename - Move");
+        setTitle("New Directory - MeshFS");
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
@@ -69,6 +66,12 @@ public class MoveFileWindow extends JFrame {
 
             //======== contentPanel ========
             {
+
+                //---- dirNameLbl ----
+                dirNameLbl.setText("Directory Name:");
+
+                //---- label2 ----
+                label2.setText("Directory Parent Folder");
 
                 //======== scrollPane1 ========
                 {
@@ -81,14 +84,29 @@ public class MoveFileWindow extends JFrame {
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(dirNameLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(dirNameTextField))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addGroup(contentPanelLayout.createParallelGroup()
+                                        .addComponent(label2)
+                                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 362, GroupLayout.PREFERRED_SIZE))
+                                    .addGap(0, 0, Short.MAX_VALUE)))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(dirNameLbl)
+                                .addComponent(dirNameTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(label2)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE)
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
@@ -119,10 +137,12 @@ public class MoveFileWindow extends JFrame {
         tree1.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) throws NullPointerException {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                if(node != null){
+                    okButton.setEnabled(true);
+                }
                 buttonBar.getRootPane().setDefaultButton(okButton);
                 try{
                     if(node.getChildCount() == 0){
-
                         if(!(node.toString().equals("root"))){
                             tree1.setSelectionPath(null);
                         }
@@ -130,26 +150,30 @@ public class MoveFileWindow extends JFrame {
                     else{
                     }
                 }catch(NullPointerException npe){
-
                 }
             }
         });
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
+                String newFolderPath = (tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/");
+                String directoryName = dirNameTextField.getText();
+                for(int i = 0; i < tree1.getModel().getChildCount(tree1.getModel().getRoot()); i++){
+                    if(directoryName.equals(tree1.getModel().getChild(tree1.getModel().getRoot(), i).toString())){
+                        dirNameTextField.setText("");
+                        JOptionPane.showMessageDialog(null, "Directory already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
                 try {
-                    FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
+                    FileClient.addFolder(serverAddress, port, newFolderPath, directoryName);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
                 dispose();
-                sender.dispose();
-
-                ClientBrowser.run(serverAddress, port, moveFileWindow);
-
+                caller.dispose();
+                ClientBrowser.run(serverAddress, port, newDirectoryWindow);
             }
         });
-
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
@@ -172,20 +196,23 @@ public class MoveFileWindow extends JFrame {
         return branch;
     }
 
-    public static void run(String fileName, String filePath, String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
-        JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, jsonObj, sender);
-        CenterWindow.centerOnScreen(moveFileWindow);
-        moveFileWindow.setVisible(true);
+    public static void run(String serverAddress, int port, JSONObject jsonObj, JFrame sender){
+        JFrame newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, jsonObj, sender);
+        CenterWindow.centerOnScreen(newDirectoryWindow);
+        newDirectoryWindow.setVisible(true);
+
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
+    private JLabel dirNameLbl;
+    private JTextField dirNameTextField;
+    private JLabel label2;
     private JScrollPane scrollPane1;
     private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
-
 }

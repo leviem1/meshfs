@@ -15,7 +15,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author Mark Hedrick
  */
 public class ClientBrowserFileProperties extends JFrame {
-    public ClientBrowserFileProperties(String fileName, String fileSize, String creationDate) {
+    ClientBrowserFileProperties(String fileName, String fileSize, String creationDate) {
         initComponents(fileName, fileSize, creationDate);
         frameListeners();
         fileNameValue.setText(fileName);
