@@ -1,5 +1,3 @@
-import javafx.scene.shape.Mesh;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +14,7 @@ import javax.swing.border.*;
 
 
 public class ServerConfigConfirmation extends JFrame {
-    public ServerConfigConfirmation(String test1) {
+    private ServerConfigConfirmation(String test1) {
         initComponents();
         frameListeners();
         configValues.setContentType("text/html");
@@ -24,6 +22,9 @@ public class ServerConfigConfirmation extends JFrame {
         configValues.setCaretPosition(0);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
     }
 
     private void initComponents() {
@@ -54,6 +55,7 @@ public class ServerConfigConfirmation extends JFrame {
                 //---- label1 ----
                 label1.setText("Confirm the following values before the server launches:");
                 label1.setHorizontalAlignment(SwingConstants.CENTER);
+                label1.setFont(new Font("Arial", label1.getFont().getStyle(), label1.getFont().getSize() + 1));
 
                 //======== configValuesPane ========
                 {
@@ -92,6 +94,7 @@ public class ServerConfigConfirmation extends JFrame {
 
                 //---- okButton ----
                 okButton.setText("OK");
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -100,7 +103,7 @@ public class ServerConfigConfirmation extends JFrame {
 
             //---- titleLbl ----
             titleLbl.setText("Config Parameters");
-            titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
             titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
@@ -122,7 +125,7 @@ public class ServerConfigConfirmation extends JFrame {
         });
     }
 
-    public void onOk() throws IOException {
+    private void onOk() throws IOException {
         //MeshFS.restartAsServer();
         final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
         final File currentJar;

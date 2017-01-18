@@ -17,18 +17,22 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "dirNameLbl"
 						"text": "Directory Name:"
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "dirNameTextField"
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label2"
 						"text": "Directory Parent Folder"
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTree" ) {
 							name: "tree1"
+							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JTree(tree);"
 							}
@@ -48,6 +52,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 						"gridy": 0

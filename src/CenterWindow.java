@@ -1,6 +1,7 @@
 /**
  * Created by muniz on 10/10/16.
  */
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -48,7 +49,7 @@ public final class CenterWindow {
      * @param windowToBeCentered the window that will be centered on the guide window
      */
 
-    public static void centerOnWindow(final Component guideWindow, final Component windowToBeCentered) {
+    public static void centerOnWindow(final JFrame guideWindow, final JFrame windowToBeCentered) {
         int x = guideWindow.getX() + (guideWindow.getWidth()/2 - windowToBeCentered.getWidth()/2);
         int y = guideWindow.getY();
 

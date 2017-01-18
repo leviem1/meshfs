@@ -13,7 +13,6 @@ import javax.swing.border.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 /*
  * Created by JFormDesigner on Sun Nov 06 18:04:04 MST 2016
  */
@@ -32,7 +31,7 @@ public class ClientBrowser extends JFrame {
     private JSONObject jsonObj;
     private static JFrame clientBrowser;
 
-    ClientBrowser(String serverAddress, int port) {
+    private ClientBrowser(String serverAddress, int port) {
         this.serverAddress = serverAddress;
         this.port = port;
         initComponents();
@@ -40,9 +39,13 @@ public class ClientBrowser extends JFrame {
         frameListeners();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
     }
 
     private void initComponents() {
+
         try {
             FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
         } catch (IOException e1) {
@@ -92,6 +95,9 @@ public class ClientBrowser extends JFrame {
 
                 //======== scrollPane1 ========
                 {
+
+                    //---- tree1 ----
+                    tree1.setFont(new Font("Arial", tree1.getFont().getStyle(), tree1.getFont().getSize() + 1));
                     scrollPane1.setViewportView(tree1);
                 }
 
@@ -100,30 +106,39 @@ public class ClientBrowser extends JFrame {
 
                     //---- uploadBtn ----
                     uploadBtn.setText("Upload...");
+                    uploadBtn.setFont(new Font("Arial", uploadBtn.getFont().getStyle(), uploadBtn.getFont().getSize() + 1));
 
                     //---- downloadBtn ----
                     downloadBtn.setText("Save");
+                    downloadBtn.setFont(new Font("Arial", downloadBtn.getFont().getStyle(), downloadBtn.getFont().getSize() + 1));
 
                     //---- newDirBtn ----
                     newDirBtn.setText("New Dir...");
+                    newDirBtn.setFont(new Font("Arial", newDirBtn.getFont().getStyle(), newDirBtn.getFont().getSize() + 1));
 
                     //---- downloadAsBtn ----
                     downloadAsBtn.setText("Save As...");
+                    downloadAsBtn.setFont(new Font("Arial", downloadAsBtn.getFont().getStyle(), downloadAsBtn.getFont().getSize() + 1));
 
                     //---- moveBtn ----
                     moveBtn.setText("Move...");
+                    moveBtn.setFont(new Font("Arial", moveBtn.getFont().getStyle(), moveBtn.getFont().getSize() + 1));
 
                     //---- duplicateBtn ----
                     duplicateBtn.setText("Duplicate");
+                    duplicateBtn.setFont(new Font("Arial", duplicateBtn.getFont().getStyle(), duplicateBtn.getFont().getSize() + 1));
 
                     //---- renameBtn ----
                     renameBtn.setText("Rename...");
+                    renameBtn.setFont(new Font("Arial", renameBtn.getFont().getStyle(), renameBtn.getFont().getSize() + 1));
 
                     //---- propertiesBtn ----
                     propertiesBtn.setText("Properties");
+                    propertiesBtn.setFont(new Font("Arial", propertiesBtn.getFont().getStyle(), propertiesBtn.getFont().getSize() + 1));
 
                     //---- removeBtn ----
                     removeBtn.setText("Remove");
+                    removeBtn.setFont(new Font("Arial", removeBtn.getFont().getStyle(), removeBtn.getFont().getSize() + 1));
 
                     GroupLayout panel1Layout = new GroupLayout(panel1);
                     panel1.setLayout(panel1Layout);
@@ -167,7 +182,7 @@ public class ClientBrowser extends JFrame {
                                 .addComponent(propertiesBtn)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(removeBtn)
-                                .addContainerGap(8, Short.MAX_VALUE))
+                                .addContainerGap(15, Short.MAX_VALUE))
                     );
                 }
 
@@ -183,13 +198,11 @@ public class ClientBrowser extends JFrame {
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
-                            .addContainerGap())
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(17, Short.MAX_VALUE))
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addContainerGap())
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -203,6 +216,7 @@ public class ClientBrowser extends JFrame {
 
                 //---- refreshBtn ----
                 refreshBtn.setText("Refresh");
+                refreshBtn.setFont(new Font("Arial", refreshBtn.getFont().getStyle(), refreshBtn.getFont().getSize() + 1));
                 buttonBar.add(refreshBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
@@ -215,6 +229,7 @@ public class ClientBrowser extends JFrame {
 
                 //---- quitBtn ----
                 quitBtn.setText("Quit");
+                quitBtn.setFont(new Font("Arial", quitBtn.getFont().getStyle(), quitBtn.getFont().getSize() + 1));
                 buttonBar.add(quitBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -300,12 +315,16 @@ public class ClientBrowser extends JFrame {
                                 browserBtns(false);
                                 removeBtn.setEnabled(true);
                                 renameBtn.setEnabled(true);
+                                duplicateBtn.setEnabled(true);
+                                moveBtn.setEnabled(true);
                             }
                         }
                         else{
                             browserBtns(true);
                             removeBtn.setEnabled(true);
                             renameBtn.setEnabled(true);
+                            duplicateBtn.setEnabled(true);
+                            moveBtn.setEnabled(true);
                         }
                     }
                 }catch(NullPointerException npe){

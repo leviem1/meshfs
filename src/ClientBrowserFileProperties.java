@@ -4,7 +4,6 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 /*
  * Created by JFormDesigner on Thu Dec 01 19:07:39 MST 2016
  */
@@ -15,7 +14,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author Mark Hedrick
  */
 public class ClientBrowserFileProperties extends JFrame {
-    ClientBrowserFileProperties(String fileName, String fileSize, String creationDate) {
+    private ClientBrowserFileProperties(String fileName, String fileSize, String creationDate) {
         initComponents(fileName, fileSize, creationDate);
         frameListeners();
         fileNameValue.setText(fileName);
@@ -25,6 +24,9 @@ public class ClientBrowserFileProperties extends JFrame {
         this.setTitle(fileName + " - Properties");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
     }
 
 
@@ -64,18 +66,23 @@ public class ClientBrowserFileProperties extends JFrame {
 
                 //---- fileNameLbl ----
                 fileNameLbl.setText("File Name:");
+                fileNameLbl.setFont(new Font("Arial", fileNameLbl.getFont().getStyle(), fileNameLbl.getFont().getSize() + 1));
 
                 //---- fileSizeLbl ----
                 fileSizeLbl.setText("File Size:");
+                fileSizeLbl.setFont(new Font("Arial", fileSizeLbl.getFont().getStyle(), fileSizeLbl.getFont().getSize() + 1));
 
                 //---- creationDateLbl ----
                 creationDateLbl.setText("Creation Date:");
+                creationDateLbl.setFont(new Font("Arial", creationDateLbl.getFont().getStyle(), creationDateLbl.getFont().getSize() + 1));
 
                 //---- label5 ----
                 label5.setText("Added By:");
+                label5.setFont(new Font("Arial", label5.getFont().getStyle(), label5.getFont().getSize() + 1));
 
                 //---- label6 ----
                 label6.setText("Access Permissions:");
+                label6.setFont(new Font("Arial", label6.getFont().getStyle(), label6.getFont().getSize() + 1));
 
                 //======== scrollPane1 ========
                 {
@@ -84,15 +91,19 @@ public class ClientBrowserFileProperties extends JFrame {
 
                 //---- fileNameValue ----
                 fileNameValue.setText("null");
+                fileNameValue.setFont(new Font("Arial", fileNameValue.getFont().getStyle(), fileNameValue.getFont().getSize() + 1));
 
                 //---- fileSizeValue ----
                 fileSizeValue.setText("null");
+                fileSizeValue.setFont(new Font("Arial", fileSizeValue.getFont().getStyle(), fileSizeValue.getFont().getSize() + 1));
 
                 //---- creationDateValue ----
                 creationDateValue.setText("null");
+                creationDateValue.setFont(new Font("Arial", creationDateValue.getFont().getStyle(), creationDateValue.getFont().getSize() + 1));
 
                 //---- label10 ----
                 label10.setText("guest");
+                label10.setFont(new Font("Arial", label10.getFont().getStyle(), label10.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -161,6 +172,7 @@ public class ClientBrowserFileProperties extends JFrame {
 
                 //---- okButton ----
                 okButton.setText("OK");
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -189,7 +201,7 @@ public class ClientBrowserFileProperties extends JFrame {
 
     public static void run(String fileName, String fileSize, String creationDate, JFrame sender) {
         JFrame clientBrowserFileProperties = new ClientBrowserFileProperties(fileName, fileSize, creationDate);
-        CenterWindow.centerOnScreen(clientBrowserFileProperties);
+        CenterWindow.centerOnWindow(sender, clientBrowserFileProperties);
         clientBrowserFileProperties.setVisible(true);
     }
 

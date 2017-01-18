@@ -1,5 +1,4 @@
 import org.json.simple.JSONObject;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,7 +17,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 
 /**
- * @author User #1
+ * @author Mark Hedrick
  */
 public class NewDirectoryWindow extends JFrame {
     private String serverAddress;
@@ -26,7 +25,7 @@ public class NewDirectoryWindow extends JFrame {
     private JSONObject jsonObj;
     private JFrame caller;
     private static JFrame newDirectoryWindow;
-    public NewDirectoryWindow(String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
+    private NewDirectoryWindow(String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
@@ -36,6 +35,9 @@ public class NewDirectoryWindow extends JFrame {
         frameListeners();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
     }
 
     private void initComponents() {
@@ -69,12 +71,20 @@ public class NewDirectoryWindow extends JFrame {
 
                 //---- dirNameLbl ----
                 dirNameLbl.setText("Directory Name:");
+                dirNameLbl.setFont(new Font("Arial", dirNameLbl.getFont().getStyle(), dirNameLbl.getFont().getSize() + 1));
+
+                //---- dirNameTextField ----
+                dirNameTextField.setFont(new Font("Arial", dirNameTextField.getFont().getStyle(), dirNameTextField.getFont().getSize() + 1));
 
                 //---- label2 ----
                 label2.setText("Directory Parent Folder");
+                label2.setFont(new Font("Arial", label2.getFont().getStyle(), label2.getFont().getSize() + 1));
 
                 //======== scrollPane1 ========
                 {
+
+                    //---- tree1 ----
+                    tree1.setFont(new Font("Arial", tree1.getFont().getStyle(), tree1.getFont().getSize() + 1));
                     scrollPane1.setViewportView(tree1);
                 }
 
@@ -121,6 +131,7 @@ public class NewDirectoryWindow extends JFrame {
 
                 //---- okButton ----
                 okButton.setText("OK");
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -198,7 +209,7 @@ public class NewDirectoryWindow extends JFrame {
 
     public static void run(String serverAddress, int port, JSONObject jsonObj, JFrame sender){
         JFrame newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, jsonObj, sender);
-        CenterWindow.centerOnScreen(newDirectoryWindow);
+        CenterWindow.centerOnWindow(sender, newDirectoryWindow);
         newDirectoryWindow.setVisible(true);
 
     }

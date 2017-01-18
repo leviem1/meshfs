@@ -17,17 +17,21 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "currentNameLbl"
 						"text": "Current Name:"
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "currentNameValue"
 						"text": "(file name)"
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "newNameLbl"
 						"text": "New Name:"
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "newNameValueField"
+						"font": #SwingDerivedFont0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -43,6 +47,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 						"gridy": 0

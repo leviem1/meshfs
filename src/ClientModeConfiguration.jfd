@@ -17,38 +17,38 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "serverAddressLbl"
 						"text": "Server Address:"
-						"font": new java.awt.Font( "Helvetica Neue", 0, 13 )
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "serverPortLbl"
 						"text": "Server Port:"
-						"font": new java.awt.Font( "Helvetica Neue", 0, 13 )
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "usernameLbl"
 						"text": "Username:"
-						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "passwordLbl"
 						"text": "Password:"
-						"font": #Font0
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "bindAnonLbl"
 						"text": "Bind Anonymously:"
-						"font": #Font0
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "bindAnonymouslyCheckBox"
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "serverAddressField"
-						"font": &Font1 new java.awt.Font( "Helvetica Neue", 0, 13 )
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 						name: "serverPortField"
-						"font": #Font1
+						"font": #SwingDerivedFont0
 						"text": "5704"
 						auxiliary() {
 							"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
@@ -56,11 +56,11 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "usernameField"
-						"font": #Font1
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JPasswordField" ) {
 						name: "passwordField"
-						"font": #Font1
+						"font": #SwingDerivedFont0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -76,7 +76,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
-						"font": #Font1
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 						"gridy": 0
@@ -87,7 +87,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "titleLbl"
 					"text": "Client Connection Settings"
-					"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 0, 5, false )
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
 					"horizontalAlignment": 0
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "North"
