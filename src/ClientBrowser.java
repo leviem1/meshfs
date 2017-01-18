@@ -262,6 +262,7 @@ public class ClientBrowser extends JFrame {
                     fileObj.put("fileSize", fileSize);
                     fileObj.put("fileSizeActual", size);
                     fileObj.put("creationDate", creationDate);
+                    fileObj.put("fileName", fileChooser.getSelectedFile().getName());
                     try {
                         JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
                     } catch (IOException e1) {
@@ -326,7 +327,7 @@ public class ClientBrowser extends JFrame {
                 progressBar.setMaximum(fileSizeActual);
                 Thread download = new Thread() {
                     public void run() {
-                        downloadFile(node.toString(), System.getProperty("user.home") + "/Downloads/" + node.toString());
+                        downloadFile(fileProperties.get("fileName").toString(), System.getProperty("user.home") + "/Downloads/" + node.toString());
                         sizeLbl.setText("done");
                         JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                     }

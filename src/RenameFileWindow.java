@@ -7,6 +7,8 @@ import java.io.IOException;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 /*
  * Created by JFormDesigner on Tue Jan 17 18:36:29 MST 2017
  */
@@ -31,6 +33,7 @@ public class RenameFileWindow extends JFrame {
         initComponents();
         frameListeners();
         currentNameValue.setText(currentName);
+        okButton.setEnabled(false);
 
     }
 
@@ -123,6 +126,26 @@ public class RenameFileWindow extends JFrame {
     }
 
     private void frameListeners(){
+        newNameValueField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (newNameValueField.getText().isEmpty() == true){
+                    okButton.setEnabled(false);
+                }else{
+                    okButton.setEnabled(true);
+                    buttonBar.getRootPane().setDefaultButton(okButton);
+                }
+            }
+        });
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {

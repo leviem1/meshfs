@@ -105,16 +105,20 @@ public class JSONManipulator {
         }
         return folderToRead;
     }
-
-    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate){
-        JSONObject itemContents = getItemContents(jsonObject,itemLocation);
+    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate) {
         String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
+        return(copyFile(jsonObject, itemLocation, destinationLocation, showDate, fileName));
+    }
+
+    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate, String newName){
+        JSONObject itemContents = getItemContents(jsonObject,itemLocation);
+
         DateFormat df = new SimpleDateFormat("h:mm a");
         Date dateObj = new Date();
         if(showDate){
-            jsonObject = putItemInFolder(jsonObject, destinationLocation, fileName+" ("+ df.format(dateObj)+")", itemContents);
+            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName+" ("+ df.format(dateObj)+")", itemContents);
         }else{
-            jsonObject = putItemInFolder(jsonObject, destinationLocation, fileName, itemContents);
+            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName, itemContents);
         }
 
         return jsonObject;
@@ -127,17 +131,17 @@ public class JSONManipulator {
         return jsonObject;
     }
 
-    public static JSONObject renameFile(JSONObject jsonObject, String jsonPath, String newName){
-        JSONObject updatedName = new JSONObject();
-        updatedName.put("newName", newName);
-        String objName = jsonPath.substring((jsonPath.lastIndexOf("/")));
-        System.out.println(jsonPath);
-        jsonObject = putItemInFolder(jsonObject, jsonPath, objName, updatedName);
-        return jsonObject;
+    public static JSONObject renameFile(JSONObject jsonObject, String itemLocation, String newName){
+        return moveFile(jsonObject,itemLocation,itemLocation.substring(0,itemLocation.lastIndexOf("/")),newName);
     }
 
     public static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
-        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false);
+        String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
+        return (moveFile(jsonObject,itemLocation,destinationLocation,fileName));
+    }
+
+    public static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation, String NewName){
+        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false, NewName);
         jsonObject = removeItem(jsonObject, itemLocation);
         return jsonObject;
     }

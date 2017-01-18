@@ -126,7 +126,7 @@ new FormModel {
 							name: "repoPathField"
 							"font": #Font0
 							auxiliary() {
-								"JavaCodeGenerator.customCreateCode": "new JTextField(System.getProperty(\"user.dir\")+\"/repo\");"
+								"JavaCodeGenerator.customCreateCode": "new JTextField(System.getProperty(\"user.dir\")+ File.separator + \"repo\");"
 							}
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {

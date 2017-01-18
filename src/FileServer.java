@@ -170,7 +170,6 @@ class ServerInit implements Runnable {
         out.flush();
 
         JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
-        System.out.println(jsonPath);
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.removeItem(jsonObj, jsonPath));
     }
 
@@ -251,11 +250,7 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
-
         JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
-        System.out.println(directoryPath);
-        System.out.println(directoryName);
-        System.out.println(jsonObj);
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.addFolder(jsonObj, directoryPath, directoryName));
 
     }

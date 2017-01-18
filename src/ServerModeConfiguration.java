@@ -55,7 +55,7 @@ public class ServerModeConfiguration extends JFrame {
         ipJListField = new JList(ipJList().toArray());
         storageTab = new JPanel();
         repositoryLbl = new JLabel();
-        repoPathField = new JTextField(System.getProperty("user.dir")+"/repo");
+        repoPathField = new JTextField(System.getProperty("user.dir")+ File.separator + "repo");
         minFreeSpaceLbl = new JLabel();
         minSpaceField = new JFormattedTextField(numberFormat);
         label1 = new JLabel();

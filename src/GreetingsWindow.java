@@ -62,6 +62,7 @@ public class GreetingsWindow extends JFrame {
                 //---- titleLbl ----
                 titleLbl.setText("Welcome to MeshFS");
                 titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+                titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
                 //======== scrollPane1 ========
                 {
@@ -78,12 +79,10 @@ public class GreetingsWindow extends JFrame {
                 contentPanelLayout.setHorizontalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addGap(96, 96, 96)
-                            .addComponent(titleLbl)
-                            .addContainerGap(109, Short.MAX_VALUE))
-                        .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                                .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
