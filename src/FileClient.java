@@ -135,6 +135,32 @@ public final class FileClient {
         }
     }
 
+    public static void renameFile(String serverAddress, int port, String jsonObj, String newName) throws IOException {
+        String response;
+        Socket client = new Socket(serverAddress, port);
+        try{
+            if(MeshFS.properties.getProperty("timeout") != null){
+                timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
+            }
+            else{
+                timeout = 5;
+            }
+        }catch(NullPointerException npe){}
+        client.setSoTimeout(timeout * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+        try {
+            out.println("110|" + jsonObj + "|" + newName + "\n");
+            if ((response = input.readLine().trim()).equals("201")) {
+            } else {
+                System.err.println(response);
+            }
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+    }
+
     public static void moveFile(String serverAddress, int port, String currFile, String destFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -213,7 +239,6 @@ public final class FileClient {
             client.close();
         }
     }
-
 
     public static void sendFile(String serverAddress, int port, String filepath) throws IOException {
         Socket client = new Socket(serverAddress, port);

@@ -1,5 +1,7 @@
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
+import org.json.simple.parser.ParseException;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -122,6 +124,15 @@ public class JSONManipulator {
         JSONObject type = new JSONObject();
         type.put("type", "directory");
         jsonObject = putItemInFolder(jsonObject, jsonPath, directoryName, type);
+        return jsonObject;
+    }
+
+    public static JSONObject renameFile(JSONObject jsonObject, String jsonPath, String newName){
+        JSONObject updatedName = new JSONObject();
+        updatedName.put("newName", newName);
+        String objName = jsonPath.substring((jsonPath.lastIndexOf("/")));
+        System.out.println(jsonPath);
+        jsonObject = putItemInFolder(jsonObject, jsonPath, objName, updatedName);
         return jsonObject;
     }
 

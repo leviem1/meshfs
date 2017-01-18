@@ -13,6 +13,7 @@ import javax.swing.border.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 /*
  * Created by JFormDesigner on Sun Nov 06 18:04:04 MST 2016
  */
@@ -297,11 +298,13 @@ public class ClientBrowser extends JFrame {
                             if(!(node.toString().equals("root"))){
                                 browserBtns(false);
                                 removeBtn.setEnabled(true);
+                                renameBtn.setEnabled(true);
                             }
                         }
                         else{
                             browserBtns(true);
                             removeBtn.setEnabled(true);
+                            renameBtn.setEnabled(true);
                         }
                     }
                 }catch(NullPointerException npe){
@@ -432,6 +435,13 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 NewDirectoryWindow.run(serverAddress, port, jsonObj, clientBrowser);
+            }
+        });
+        renameBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+                RenameFileWindow.run(serverAddress, port, clientBrowser, jsonPath, node.toString());
             }
         });
     }

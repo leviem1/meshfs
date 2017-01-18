@@ -130,8 +130,8 @@ class ServerInit implements Runnable {
                 } else if (requestParts[0].equals("109")) {     //109:Ping
                     ping(out);
 
-                } else if (requestParts[0].equals("110")) {     //110:Bind
-                    //bindClient(requestParts[1], requestParts[2]);
+                } else if (requestParts[0].equals("110")) {     //110:Rename File (virtual only)
+                    renameFile(requestParts[1], requestParts[2], out);
 
                 } else {
                     badRequest(out, request);
@@ -258,6 +258,15 @@ class ServerInit implements Runnable {
         System.out.println(jsonObj);
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.addFolder(jsonObj, directoryPath, directoryName));
 
+    }
+
+    private void renameFile(String jsonPath, String newName, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println("201");
+        out.flush();
+
+        JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.renameFile(jsonObj, jsonPath, newName));
     }
 
     private void badRequest(Socket client, String request) {
