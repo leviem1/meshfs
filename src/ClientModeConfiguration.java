@@ -313,6 +313,7 @@ public class ClientModeConfiguration extends JFrame{
             usernameField.setText("");
             passwordField.setText("");
             bindAnonymouslyCheckBox.setSelected(false);
+            return;
         }
         try{
             FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", ".catalog.json");
