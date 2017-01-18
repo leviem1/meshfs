@@ -44,7 +44,7 @@ public class ConfigParser {
         Properties prop = new Properties();
         InputStream input = new FileInputStream(path);
         prop.load(input);
-        if (!(prop.getProperty("repository").substring(prop.getProperty("repository").length()-1)).equals("/")) {
+        if (!(prop.getProperty("repository").substring(prop.getProperty("repository").length()-1)).equals(File.separator)) {
             prop.setProperty("repository", prop.getProperty("repository") + File.separator);
             write(prop);
         }
