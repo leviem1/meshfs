@@ -17,7 +17,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "titleLbl"
 						"text": "Welcome to MeshFS"
-						"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 0, 5, false )
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 7, false )
 						"horizontalAlignment": 0
 					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -26,7 +26,7 @@ new FormModel {
 							name: "greetingsPane"
 							"text": "Before using MeshFS, you will need to configure it to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the address of the server that you wish to connect to, as well as any authentication credentials (if required). If you plan on running MeshFS in Server mode, please refer to our Help guide for detailed setup instructions.  Thank you for choosing MeshFS!"
 							"editable": false
-							"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 65536, 0, false )
+							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 2, false )
 						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
@@ -43,12 +43,12 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "configBtn"
 						"text": "Configuration..."
-						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "quitButton"
 						"text": "Exit"
-						"font": #Font0
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 					} )

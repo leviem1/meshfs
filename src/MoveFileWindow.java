@@ -1,4 +1,3 @@
-import com.sun.org.apache.bcel.internal.generic.InstructionConstants;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
@@ -30,7 +29,7 @@ public class MoveFileWindow extends JFrame {
     private JFrame sender;
     private static JFrame moveFileWindow;
 
-    public MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
+    private MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
         this.fileName = fileName;
         this.currentJsonPath = currentJsonPath;
         this.serverAddress = serverAddress;
@@ -42,6 +41,9 @@ public class MoveFileWindow extends JFrame {
         this.setTitle(fileName + " - Move");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
     }
 
     private void initComponents() {
@@ -72,6 +74,9 @@ public class MoveFileWindow extends JFrame {
 
                 //======== scrollPane1 ========
                 {
+
+                    //---- tree1 ----
+                    tree1.setFont(new Font("Arial", tree1.getFont().getStyle(), tree1.getFont().getSize() + 1));
                     scrollPane1.setViewportView(tree1);
                 }
 
@@ -103,6 +108,7 @@ public class MoveFileWindow extends JFrame {
 
                 //---- okButton ----
                 okButton.setText("OK");
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -138,18 +144,21 @@ public class MoveFileWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
                 try {
+                    if(currentJsonPath.equals(newJsonPath.substring(0, newJsonPath.lastIndexOf("/")))){
+                        JOptionPane.showMessageDialog(null, "Cannot move directory to this location!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                        tree1.setSelectionPath(null);
+                        okButton.setEnabled(false);
+                        return;
+                    }
                     FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
                 dispose();
                 sender.dispose();
-
                 ClientBrowser.run(serverAddress, port, moveFileWindow);
-
             }
         });
-
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
@@ -174,7 +183,7 @@ public class MoveFileWindow extends JFrame {
 
     public static void run(String fileName, String filePath, String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
         JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, jsonObj, sender);
-        CenterWindow.centerOnScreen(moveFileWindow);
+        CenterWindow.centerOnWindow(sender, moveFileWindow);
         moveFileWindow.setVisible(true);
     }
 

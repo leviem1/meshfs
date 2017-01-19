@@ -21,7 +21,7 @@ public class ClientModeConfiguration extends JFrame{
 
     private static JFrame clientModeConfiguration;
 
-    public ClientModeConfiguration() {
+    private ClientModeConfiguration() {
         initComponents();
         frameListeners();
         okButton.setEnabled(false);
@@ -30,7 +30,9 @@ public class ClientModeConfiguration extends JFrame{
         passwordField.setEnabled(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
-
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
     }
 
     private void initComponents() {
@@ -69,36 +71,36 @@ public class ClientModeConfiguration extends JFrame{
 
                 //---- serverAddressLbl ----
                 serverAddressLbl.setText("Server Address:");
-                serverAddressLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                serverAddressLbl.setFont(new Font("Arial", serverAddressLbl.getFont().getStyle(), serverAddressLbl.getFont().getSize() + 1));
 
                 //---- serverPortLbl ----
                 serverPortLbl.setText("Server Port:");
-                serverPortLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                serverPortLbl.setFont(new Font("Arial", serverPortLbl.getFont().getStyle(), serverPortLbl.getFont().getSize() + 1));
 
                 //---- usernameLbl ----
                 usernameLbl.setText("Username:");
-                usernameLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                usernameLbl.setFont(new Font("Arial", usernameLbl.getFont().getStyle(), usernameLbl.getFont().getSize() + 1));
 
                 //---- passwordLbl ----
                 passwordLbl.setText("Password:");
-                passwordLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                passwordLbl.setFont(new Font("Arial", passwordLbl.getFont().getStyle(), passwordLbl.getFont().getSize() + 1));
 
                 //---- bindAnonLbl ----
                 bindAnonLbl.setText("Bind Anonymously:");
-                bindAnonLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                bindAnonLbl.setFont(new Font("Arial", bindAnonLbl.getFont().getStyle(), bindAnonLbl.getFont().getSize() + 1));
 
                 //---- serverAddressField ----
-                serverAddressField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                serverAddressField.setFont(new Font("Arial", serverAddressField.getFont().getStyle(), serverAddressField.getFont().getSize() + 1));
 
                 //---- serverPortField ----
-                serverPortField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle(), serverPortField.getFont().getSize() + 1));
                 serverPortField.setText("5704");
 
                 //---- usernameField ----
-                usernameField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                usernameField.setFont(new Font("Arial", usernameField.getFont().getStyle(), usernameField.getFont().getSize() + 1));
 
                 //---- passwordField ----
-                passwordField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                passwordField.setFont(new Font("Arial", passwordField.getFont().getStyle(), passwordField.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -170,7 +172,7 @@ public class ClientModeConfiguration extends JFrame{
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -179,7 +181,7 @@ public class ClientModeConfiguration extends JFrame{
 
             //---- titleLbl ----
             titleLbl.setText("Client Connection Settings");
-            titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
             titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
@@ -305,11 +307,11 @@ public class ClientModeConfiguration extends JFrame{
     private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public void onOk(){
+    private void onOk(){
         if(!(FileClient.ping(serverAddressField.getText(), Integer.parseInt(serverPortField.getText())))){
             JOptionPane.showMessageDialog(null, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setText("");
-            serverPortField.setText(null);
+            serverPortField.setText("5704");
             usernameField.setText("");
             passwordField.setText("");
             bindAnonymouslyCheckBox.setSelected(false);
@@ -323,7 +325,7 @@ public class ClientModeConfiguration extends JFrame{
         dispose();
     }
 
-    public void bindAnonymously(String mode){
+    private void bindAnonymously(String mode){
         if(mode.equals("yes")){
             usernameField.setEnabled(false);
             usernameField.setText("");
@@ -337,7 +339,7 @@ public class ClientModeConfiguration extends JFrame{
 
     }
 
-    public boolean checkFields(JTextField field) {
+    private boolean checkFields(JTextField field) {
         if (field.getText().isEmpty() == true){
             return false;
         }else{

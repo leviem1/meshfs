@@ -1,5 +1,3 @@
-import org.json.simple.JSONObject;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +14,7 @@ import javax.swing.event.DocumentListener;
 
 
 /**
- * @author User #1
+ * @author Mark Hedrick
  */
 public class RenameFileWindow extends JFrame {
     private String serverAddress;
@@ -25,7 +23,7 @@ public class RenameFileWindow extends JFrame {
     private JFrame caller;
     private String newName;
     private static JFrame renameFileWindow;
-    public RenameFileWindow(String serverAddress, int port, String jsonObj, JFrame sender, String currentName) {
+    private RenameFileWindow(String serverAddress, int port, String jsonObj, JFrame sender, String currentName) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
@@ -34,7 +32,9 @@ public class RenameFileWindow extends JFrame {
         frameListeners();
         currentNameValue.setText(currentName);
         okButton.setEnabled(false);
-
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
     }
 
     private void initComponents() {
@@ -64,12 +64,18 @@ public class RenameFileWindow extends JFrame {
 
                 //---- currentNameLbl ----
                 currentNameLbl.setText("Current Name:");
+                currentNameLbl.setFont(new Font("Arial", currentNameLbl.getFont().getStyle(), currentNameLbl.getFont().getSize() + 1));
 
                 //---- currentNameValue ----
                 currentNameValue.setText("(file name)");
+                currentNameValue.setFont(new Font("Arial", currentNameValue.getFont().getStyle(), currentNameValue.getFont().getSize() + 1));
 
                 //---- newNameLbl ----
                 newNameLbl.setText("New Name:");
+                newNameLbl.setFont(new Font("Arial", newNameLbl.getFont().getStyle(), newNameLbl.getFont().getSize() + 1));
+
+                //---- newNameValueField ----
+                newNameValueField.setFont(new Font("Arial", newNameValueField.getFont().getStyle(), newNameValueField.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -113,6 +119,7 @@ public class RenameFileWindow extends JFrame {
 
                 //---- okButton ----
                 okButton.setText("OK");
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -127,7 +134,6 @@ public class RenameFileWindow extends JFrame {
 
     private void frameListeners(){
         newNameValueField.getDocument().addDocumentListener(new DocumentListener() {
-
             public void changedUpdate(DocumentEvent e) {
                 changed();
             }
@@ -138,11 +144,16 @@ public class RenameFileWindow extends JFrame {
                 changed();
             }
             public void changed() {
-                if (newNameValueField.getText().isEmpty() == true){
-                    okButton.setEnabled(false);
+
+                if(!(currentNameValue.getText().equals(newNameValueField.getText()))){
+                    if (newNameValueField.getText().isEmpty()){
+                        okButton.setEnabled(false);
+                    }else{
+                        okButton.setEnabled(true);
+                        buttonBar.getRootPane().setDefaultButton(okButton);
+                    }
                 }else{
-                    okButton.setEnabled(true);
-                    buttonBar.getRootPane().setDefaultButton(okButton);
+                    okButton.setEnabled(false);
                 }
             }
         });
@@ -162,7 +173,7 @@ public class RenameFileWindow extends JFrame {
 
     public static void run(String serverAddress, int port, JFrame sender, String jsonObj, String currentName){
         JFrame renameFileWindow = new RenameFileWindow(serverAddress, port, jsonObj, sender, currentName);
-        CenterWindow.centerOnScreen(renameFileWindow);
+        CenterWindow.centerOnWindow(sender, renameFileWindow);
         renameFileWindow.setVisible(true);
 
     }

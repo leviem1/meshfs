@@ -2,10 +2,7 @@
  * Created by Levi Muniz on 10/16/16.
  */
 
-import com.sun.javafx.event.EventDispatchTreeImpl;
 import org.json.simple.JSONObject;
-
-import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;

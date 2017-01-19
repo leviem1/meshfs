@@ -20,13 +20,13 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "titleLbl"
 						"text": "Mode"
-						"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 0, 5, false )
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
 						"horizontalAlignment": 0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "modeLbl"
 						"text": "Please select the correct mode of operation:"
-						"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 						"horizontalAlignment": 0
 					} )
 					add( new FormComponent( "javax.swing.JComboBox" ) {
@@ -46,7 +46,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
-						"font": #Font0
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 					} )

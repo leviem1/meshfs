@@ -26,6 +26,9 @@ public class InitialConfiguration extends JFrame {
         okButton.setEnabled(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
     }
 
     private void initComponents() {
@@ -53,12 +56,12 @@ public class InitialConfiguration extends JFrame {
 
                 //---- titleLbl ----
                 titleLbl.setText("Mode");
-                titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+                titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
                 titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
                 //---- modeLbl ----
                 modeLbl.setText("Please select the correct mode of operation:");
-                modeLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                modeLbl.setFont(new Font("Arial", modeLbl.getFont().getStyle(), modeLbl.getFont().getSize() + 1));
                 modeLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
@@ -96,7 +99,7 @@ public class InitialConfiguration extends JFrame {
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));

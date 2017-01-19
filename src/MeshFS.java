@@ -3,10 +3,12 @@
  */
 
 import org.json.simple.JSONObject;
-
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.List;
 
@@ -17,7 +19,9 @@ public class MeshFS {
     public static boolean isMaster = false;
     public static  boolean configure = false;
 
+
     public static void main(String[] args) {
+
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException e) {
@@ -118,6 +122,15 @@ public class MeshFS {
                 GreetingsWindow.run(false);
             }
 
+        }
+    }
+    public static void setUIFont (javax.swing.plaf.FontUIResource f){
+        java.util.Enumeration keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get (key);
+            if (value != null && value instanceof javax.swing.plaf.FontUIResource)
+                UIManager.put (key, f);
         }
     }
 }

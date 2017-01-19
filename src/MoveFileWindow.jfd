@@ -18,6 +18,7 @@ new FormModel {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTree" ) {
 							name: "tree1"
+							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JTree(tree);"
 							}
@@ -37,6 +38,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 						"gridy": 0

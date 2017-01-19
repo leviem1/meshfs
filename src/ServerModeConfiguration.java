@@ -19,7 +19,7 @@ import static java.lang.Math.toIntExact;
 public class ServerModeConfiguration extends JFrame {
 
     private static JFrame serverModeConfiguration;
-    public ServerModeConfiguration() {
+    private ServerModeConfiguration() {
         initComponents();
         frameListeners();
         ipJListField.setSelectedIndex(0);
@@ -28,6 +28,9 @@ public class ServerModeConfiguration extends JFrame {
         spaceSldr.setMinimum(0);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
     }
 
     private void initComponents() {
@@ -88,53 +91,55 @@ public class ServerModeConfiguration extends JFrame {
 
                     //---- serverPortLbl ----
                     serverPortLbl.setText("Network Port:");
-                    serverPortLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    serverPortLbl.setFont(new Font("Arial", serverPortLbl.getFont().getStyle(), serverPortLbl.getFont().getSize() + 1));
 
                     //---- serverPortField ----
                     serverPortField.setText("5704");
-                    serverPortField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle(), serverPortField.getFont().getSize() + 1));
 
                     //---- serverThreadsLbl ----
                     serverThreadsLbl.setText("Network Threads:");
-                    serverThreadsLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    serverThreadsLbl.setFont(new Font("Arial", serverThreadsLbl.getFont().getStyle(), serverThreadsLbl.getFont().getSize() + 1));
 
                     //---- serverThreadsField ----
                     serverThreadsField.setText("16");
+                    serverThreadsField.setFont(new Font("Arial", serverThreadsField.getFont().getStyle(), serverThreadsField.getFont().getSize() + 1));
 
                     //---- serverTimeoutLbl ----
                     serverTimeoutLbl.setText("Server Timeout:");
-                    serverTimeoutLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    serverTimeoutLbl.setFont(new Font("Arial", serverTimeoutLbl.getFont().getStyle(), serverTimeoutLbl.getFont().getSize() + 1));
 
                     //---- serverTimeoutField ----
                     serverTimeoutField.setText("90");
+                    serverTimeoutField.setFont(new Font("Arial", serverTimeoutField.getFont().getStyle(), serverTimeoutField.getFont().getSize() + 1));
 
                     //---- stripesLbl ----
                     stripesLbl.setText("Stripes:");
-                    stripesLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    stripesLbl.setFont(new Font("Arial", stripesLbl.getFont().getStyle(), stripesLbl.getFont().getSize() + 1));
 
                     //---- numStripesField ----
                     numStripesField.setText("3");
-                    numStripesField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    numStripesField.setFont(new Font("Arial", numStripesField.getFont().getStyle(), numStripesField.getFont().getSize() + 1));
 
                     //---- stripedCopiesLbl ----
                     stripedCopiesLbl.setText("Striped Copies:");
-                    stripedCopiesLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    stripedCopiesLbl.setFont(new Font("Arial", stripedCopiesLbl.getFont().getStyle(), stripedCopiesLbl.getFont().getSize() + 1));
 
                     //---- numStripeCopiesField ----
                     numStripeCopiesField.setText("2");
-                    numStripeCopiesField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    numStripeCopiesField.setFont(new Font("Arial", numStripeCopiesField.getFont().getStyle(), numStripeCopiesField.getFont().getSize() + 1));
 
                     //---- wholeCopiesLbl ----
                     wholeCopiesLbl.setText("Whole Copies:");
-                    wholeCopiesLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    wholeCopiesLbl.setFont(new Font("Arial", wholeCopiesLbl.getFont().getStyle(), wholeCopiesLbl.getFont().getSize() + 1));
 
                     //---- numWholeField ----
                     numWholeField.setText("2");
-                    numWholeField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    numWholeField.setFont(new Font("Arial", numWholeField.getFont().getStyle(), numWholeField.getFont().getSize() + 1));
 
                     //---- serverNetworkInterfaceLbl ----
                     serverNetworkInterfaceLbl.setText("Network Interface:");
-                    serverNetworkInterfaceLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    serverNetworkInterfaceLbl.setFont(new Font("Arial", serverNetworkInterfaceLbl.getFont().getStyle(), serverNetworkInterfaceLbl.getFont().getSize() + 1));
 
                     //======== scrollPane1 ========
                     {
@@ -222,29 +227,30 @@ public class ServerModeConfiguration extends JFrame {
 
                     //---- repositoryLbl ----
                     repositoryLbl.setText("Repository:");
-                    repositoryLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    repositoryLbl.setFont(new Font("Arial", repositoryLbl.getFont().getStyle(), repositoryLbl.getFont().getSize() + 1));
 
                     //---- repoPathField ----
-                    repoPathField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    repoPathField.setFont(new Font("Arial", repoPathField.getFont().getStyle(), repoPathField.getFont().getSize() + 1));
 
                     //---- minFreeSpaceLbl ----
                     minFreeSpaceLbl.setText("Reserved Space:");
-                    minFreeSpaceLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    minFreeSpaceLbl.setFont(new Font("Arial", minFreeSpaceLbl.getFont().getStyle(), minFreeSpaceLbl.getFont().getSize() + 1));
 
                     //---- minSpaceField ----
                     minSpaceField.setText("0");
-                    minSpaceField.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    minSpaceField.setFont(new Font("Arial", minSpaceField.getFont().getStyle(), minSpaceField.getFont().getSize() + 1));
 
                     //---- label1 ----
                     label1.setText("GB");
+                    label1.setFont(new Font("Arial", label1.getFont().getStyle(), label1.getFont().getSize() + 1));
 
                     //---- freeSpaceLbl ----
                     freeSpaceLbl.setText("(free space)");
-                    freeSpaceLbl.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    freeSpaceLbl.setFont(new Font("Arial", freeSpaceLbl.getFont().getStyle(), freeSpaceLbl.getFont().getSize() + 1));
 
                     //---- browseBtn ----
                     browseBtn.setText("Browse...");
-                    browseBtn.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                    browseBtn.setFont(new Font("Arial", browseBtn.getFont().getStyle(), browseBtn.getFont().getSize() + 1));
 
                     GroupLayout storageTabLayout = new GroupLayout(storageTab);
                     storageTab.setLayout(storageTabLayout);
@@ -305,26 +311,28 @@ public class ServerModeConfiguration extends JFrame {
 
                 //---- importConfigBtn ----
                 importConfigBtn.setText("Import...");
-                importConfigBtn.setFont(new Font("Helvetica Neue", importConfigBtn.getFont().getStyle() & ~Font.ITALIC, importConfigBtn.getFont().getSize()));
+                importConfigBtn.setFont(new Font("Arial", importConfigBtn.getFont().getStyle(), importConfigBtn.getFont().getSize() + 1));
                 buttonBar.add(importConfigBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- backupConfigBtn ----
                 backupConfigBtn.setText("Backup...");
+                backupConfigBtn.setFont(new Font("Arial", backupConfigBtn.getFont().getStyle(), backupConfigBtn.getFont().getSize() + 1));
                 buttonBar.add(backupConfigBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- resetConfigBtn ----
                 resetConfigBtn.setText("Reset");
+                resetConfigBtn.setFont(new Font("Arial", resetConfigBtn.getFont().getStyle(), resetConfigBtn.getFont().getSize() + 1));
                 buttonBar.add(resetConfigBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Helvetica Neue", Font.PLAIN, 13));
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -584,7 +592,7 @@ public class ServerModeConfiguration extends JFrame {
         return x;
     }
 
-    public void onOk(){
+    private void onOk(){
         try{
             File repoDirectory = new File(String.valueOf(repoPathField.getText()));
             if (!repoDirectory.exists()) {
@@ -602,7 +610,7 @@ public class ServerModeConfiguration extends JFrame {
         dispose();
     }
 
-    public void importConfig() {
+    private void importConfig() {
         Properties properties = null;
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
@@ -630,7 +638,7 @@ public class ServerModeConfiguration extends JFrame {
         }
     }
 
-    public void backupConfig(){
+    private void backupConfig(){
         Properties currentProperties = getConfigProperties();
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
@@ -649,7 +657,7 @@ public class ServerModeConfiguration extends JFrame {
         }
     }
 
-    public void resetConfig(){
+    private void resetConfig(){
         serverPortField.setText(MeshFS.properties.getProperty("portNumber"));
         numStripesField.setText(MeshFS.properties.getProperty("numStripes"));
         numStripeCopiesField.setText(MeshFS.properties.getProperty("numStripeCopy"));

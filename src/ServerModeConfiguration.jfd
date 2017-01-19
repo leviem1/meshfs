@@ -21,12 +21,12 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "serverPortLbl"
 							"text": "Network Port:"
-							"font": &Font0 new java.awt.Font( "Helvetica Neue", 0, 13 )
+							"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 							name: "serverPortField"
 							"text": "5704"
-							"font": #Font0
+							"font": #SwingDerivedFont0
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
 							}
@@ -34,11 +34,12 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "serverThreadsLbl"
 							"text": "Network Threads:"
-							"font": new java.awt.Font( "Helvetica Neue", 0, 13 )
+							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 							name: "serverThreadsField"
 							"text": "16"
+							"font": #SwingDerivedFont0
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
 							}
@@ -46,11 +47,12 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "serverTimeoutLbl"
 							"text": "Server Timeout:"
-							"font": new java.awt.Font( "Helvetica Neue", 0, 13 )
+							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 							name: "serverTimeoutField"
 							"text": "90"
+							"font": #SwingDerivedFont0
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
 							}
@@ -58,12 +60,12 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "stripesLbl"
 							"text": "Stripes:"
-							"font": #Font0
+							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 							name: "numStripesField"
 							"text": "3"
-							"font": #Font0
+							"font": #SwingDerivedFont0
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
 							}
@@ -71,12 +73,12 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "stripedCopiesLbl"
 							"text": "Striped Copies:"
-							"font": #Font0
+							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 							name: "numStripeCopiesField"
 							"text": "2"
-							"font": #Font0
+							"font": #SwingDerivedFont0
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
 							}
@@ -84,12 +86,12 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "wholeCopiesLbl"
 							"text": "Whole Copies:"
-							"font": #Font0
+							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 							name: "numWholeField"
 							"text": "2"
-							"font": #Font0
+							"font": #SwingDerivedFont0
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
 							}
@@ -97,7 +99,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "serverNetworkInterfaceLbl"
 							"text": "Network Interface:"
-							"font": #Font0
+							"font": #SwingDerivedFont0
 						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane1"
@@ -120,11 +122,11 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "repositoryLbl"
 							"text": "Repository:"
-							"font": #Font0
+							"font": &SwingDerivedFont1 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "repoPathField"
-							"font": #Font0
+							"font": #SwingDerivedFont1
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JTextField(System.getProperty(\"user.dir\")+ File.separator + \"repo\");"
 							}
@@ -132,12 +134,12 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "minFreeSpaceLbl"
 							"text": "Reserved Space:"
-							"font": #Font0
+							"font": #SwingDerivedFont1
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 							name: "minSpaceField"
 							"text": "0"
-							"font": #Font0
+							"font": #SwingDerivedFont1
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
 							}
@@ -145,6 +147,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label1"
 							"text": "GB"
+							"font": #SwingDerivedFont1
 						} )
 						add( new FormComponent( "javax.swing.JSlider" ) {
 							name: "spaceSldr"
@@ -152,12 +155,12 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "freeSpaceLbl"
 							"text": "(free space)"
-							"font": #Font0
+							"font": #SwingDerivedFont1
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "browseBtn"
 							"text": "Browse..."
-							"font": #Font0
+							"font": #SwingDerivedFont1
 						} )
 					}, new FormLayoutConstraints( null ) {
 						"title": "Storage"
@@ -176,24 +179,26 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "importConfigBtn"
 						"text": "Import..."
-						"font": new com.jformdesigner.model.SwingDerivedFont( "Helvetica Neue", 131072, 0, false )
+						"font": #SwingDerivedFont1
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "backupConfigBtn"
 						"text": "Backup..."
+						"font": #SwingDerivedFont1
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "resetConfigBtn"
 						"text": "Reset"
+						"font": #SwingDerivedFont1
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 3
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
-						"font": #Font0
+						"font": #SwingDerivedFont1
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 4
 					} )
