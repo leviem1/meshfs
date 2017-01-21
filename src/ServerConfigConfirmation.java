@@ -2,9 +2,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -14,11 +18,13 @@ import javax.swing.border.*;
 
 
 public class ServerConfigConfirmation extends JFrame {
-    private ServerConfigConfirmation(String test1) {
+    private HashMap accountDetails;
+    private ServerConfigConfirmation(String content, HashMap accountDetails) {
+        this.accountDetails = accountDetails;
         initComponents();
         frameListeners();
         configValues.setContentType("text/html");
-        configValues.setText(test1);
+        configValues.setText(content);
         configValues.setCaretPosition(0);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -126,7 +132,11 @@ public class ServerConfigConfirmation extends JFrame {
     }
 
     private void onOk() throws IOException {
-        //MeshFS.restartAsServer();
+        FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository")+".auth");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(accountDetails);
+        oos.flush();
+
         final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
         final File currentJar;
         try {
@@ -140,7 +150,7 @@ public class ServerConfigConfirmation extends JFrame {
             command.add(MeshFS.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
             command.add("-jar");
             command.add(currentJar.getPath());
-            command.add("--nogui");
+            command.add("-nogui");
             final ProcessBuilder builder = new ProcessBuilder(command);
             builder.start();
             dispose();
@@ -150,8 +160,8 @@ public class ServerConfigConfirmation extends JFrame {
         }
     }
 
-    public static void run(JFrame sender, String content) {
-        JFrame serverConfigConfirmation = new ServerConfigConfirmation(content);
+    public static void run(JFrame sender, String content, HashMap accountDetails) {
+        JFrame serverConfigConfirmation = new ServerConfigConfirmation(content, accountDetails);
         CenterWindow.centerOnWindow(sender, serverConfigConfirmation);
         serverConfigConfirmation.setVisible(true);
     }

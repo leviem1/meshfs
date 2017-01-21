@@ -10,7 +10,7 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp bindAnonLbl:::p::p, space :::p, comp bindAnonymouslyCheckBox:::p::p, space :0:229:x}, seq {par l {seq l {comp serverAddressLbl:::p::p, space u:::p, comp serverAddressField:::p:198:p}, seq l {comp serverPortLbl:::p::p, space u:::p, comp serverPortField:::p:50:p}, par t:l::p {seq {comp passwordLbl:::p::p, space u:::p, comp passwordField:::::x}, seq t {comp usernameLbl:::p::p, space u:::p, comp usernameField:::p:135:p}}}, space ::64:x}}}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp bindAnonLbl:::p::p, space :::p, comp bindAnonymouslyCheckBox:::p::p, space :0:221:x}, seq {par l {seq l {comp serverAddressLbl:::p::p, space u:::p, comp serverAddressField:::p:198:p}, seq l {comp serverPortLbl:::p::p, space u:::p, comp serverPortField:::p:50:p}, par t:l::p {seq {comp passwordLbl:::p::p, space u:::p, comp passwordField:::::x}, seq t {comp usernameLbl:::p::p, space u:::p, comp usernameField:::p:135:p}}}, space ::56:x}}}}"
 					"$verticalGroup": "par l {seq l {space :::p, par b {comp serverAddressLbl::b:p::p, comp serverAddressField::b:p::p}, space :p:14:p, par b {comp serverPortLbl::b:p::p, comp serverPortField::b:p::p}, space s:::p, par l {comp bindAnonLbl:::p::p, comp bindAnonymouslyCheckBox:::p::p}, space s:::p, par b {comp usernameLbl::b:p::p, comp usernameField::b:p::p}, space s:::p, par b {comp passwordLbl::b:p::p, comp passwordField::b:p::p}, space :::x}}"
 				} ) {
 					name: "contentPanel"
@@ -36,7 +36,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "bindAnonLbl"
-						"text": "Bind Anonymously:"
+						"text": "Bind as Guest:"
 						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {

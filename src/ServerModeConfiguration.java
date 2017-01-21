@@ -1,9 +1,16 @@
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -19,7 +26,9 @@ import static java.lang.Math.toIntExact;
 public class ServerModeConfiguration extends JFrame {
 
     private static JFrame serverModeConfiguration;
+    private DefaultListModel model;
     private ServerModeConfiguration() {
+        model = new DefaultListModel();
         initComponents();
         frameListeners();
         ipJListField.setSelectedIndex(0);
@@ -31,6 +40,10 @@ public class ServerModeConfiguration extends JFrame {
         if(Reporting.getSystemOS().contains("Windows")){
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
+    }
+
+    private void createUIComponents() {
+        // TODO: add custom component creation code here
     }
 
     private void initComponents() {
@@ -65,6 +78,16 @@ public class ServerModeConfiguration extends JFrame {
         spaceSldr = new JSlider();
         freeSpaceLbl = new JLabel();
         browseBtn = new JButton();
+        userAccounts = new JPanel();
+        textArea1 = new JTextArea();
+        usernameLbl = new JLabel();
+        usernameValueField = new JTextField();
+        passwordValueField = new JPasswordField();
+        passwordLbl = new JLabel();
+        submitBtn = new JButton();
+        removeUserBtn = new JButton();
+        scrollPane2 = new JScrollPane();
+        userAccountDataList = new JList(model);
         buttonBar = new JPanel();
         importConfigBtn = new JButton();
         backupConfigBtn = new JButton();
@@ -84,6 +107,7 @@ public class ServerModeConfiguration extends JFrame {
 
             //======== serverSettingPane ========
             {
+                serverSettingPane.setFont(new Font("Arial", serverSettingPane.getFont().getStyle(), serverSettingPane.getFont().getSize()));
 
                 //======== networkTab ========
                 {
@@ -188,7 +212,7 @@ public class ServerModeConfiguration extends JFrame {
                                             .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
                                                 .addGap(94, 94, 94)
                                                 .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)))))
-                                .addContainerGap(22, Short.MAX_VALUE))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                     networkTabLayout.setVerticalGroup(
                         networkTabLayout.createParallelGroup()
@@ -262,7 +286,7 @@ public class ServerModeConfiguration extends JFrame {
                                     .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(repositoryLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)
+                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(browseBtn))
                                     .addGroup(storageTabLayout.createSequentialGroup()
@@ -272,10 +296,10 @@ public class ServerModeConfiguration extends JFrame {
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(label1)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(spaceSldr, GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
+                                        .addComponent(spaceSldr, GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))
                                     .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(freeSpaceLbl, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 99, Short.MAX_VALUE)))
+                                        .addGap(0, 95, Short.MAX_VALUE)))
                                 .addContainerGap())
                     );
                     storageTabLayout.setVerticalGroup(
@@ -295,10 +319,100 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(freeSpaceLbl)
-                                .addContainerGap(122, Short.MAX_VALUE))
+                                .addContainerGap(119, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Storage", storageTab);
+
+                //======== userAccounts ========
+                {
+                    userAccounts.setBackground(new Color(229, 229, 229));
+
+                    //---- usernameLbl ----
+                    usernameLbl.setText("Username:");
+                    usernameLbl.setFont(new Font("Arial", usernameLbl.getFont().getStyle(), usernameLbl.getFont().getSize() + 1));
+
+                    //---- usernameValueField ----
+                    usernameValueField.setFont(new Font("Arial", usernameValueField.getFont().getStyle(), usernameValueField.getFont().getSize() + 1));
+
+                    //---- passwordValueField ----
+                    passwordValueField.setFont(new Font("Arial", passwordValueField.getFont().getStyle(), passwordValueField.getFont().getSize() + 1));
+
+                    //---- passwordLbl ----
+                    passwordLbl.setText("Password:");
+                    passwordLbl.setFont(new Font("Arial", passwordLbl.getFont().getStyle(), passwordLbl.getFont().getSize() + 1));
+
+                    //---- submitBtn ----
+                    submitBtn.setText("Submit");
+                    submitBtn.setFont(new Font("Arial", submitBtn.getFont().getStyle(), submitBtn.getFont().getSize() + 1));
+
+                    //---- removeUserBtn ----
+                    removeUserBtn.setText("Remove User");
+                    removeUserBtn.setFont(new Font("Arial", removeUserBtn.getFont().getStyle(), removeUserBtn.getFont().getSize() + 1));
+
+                    //======== scrollPane2 ========
+                    {
+                        scrollPane2.setViewportView(userAccountDataList);
+                    }
+
+                    GroupLayout userAccountsLayout = new GroupLayout(userAccounts);
+                    userAccounts.setLayout(userAccountsLayout);
+                    userAccountsLayout.setHorizontalGroup(
+                        userAccountsLayout.createParallelGroup()
+                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                .addGroup(userAccountsLayout.createParallelGroup()
+                                    .addGroup(GroupLayout.Alignment.TRAILING, userAccountsLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(removeUserBtn))
+                                    .addGroup(userAccountsLayout.createSequentialGroup()
+                                        .addGroup(userAccountsLayout.createParallelGroup()
+                                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                                .addGap(238, 238, 238)
+                                                .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addGroup(userAccountsLayout.createParallelGroup()
+                                                    .addGroup(userAccountsLayout.createSequentialGroup()
+                                                        .addComponent(usernameLbl)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(usernameValueField, GroupLayout.PREFERRED_SIZE, 143, GroupLayout.PREFERRED_SIZE))
+                                                    .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(submitBtn)
+                                                        .addGroup(userAccountsLayout.createSequentialGroup()
+                                                            .addComponent(passwordLbl)
+                                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                            .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE))))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 226, GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap())
+                    );
+                    userAccountsLayout.setVerticalGroup(
+                        userAccountsLayout.createParallelGroup()
+                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(userAccountsLayout.createParallelGroup()
+                                    .addGroup(userAccountsLayout.createSequentialGroup()
+                                        .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(usernameLbl)
+                                            .addComponent(usernameValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(passwordLbl)
+                                            .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(submitBtn)
+                                        .addGap(58, 58, 58))
+                                    .addGroup(GroupLayout.Alignment.TRAILING, userAccountsLayout.createSequentialGroup()
+                                        .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 172, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)))
+                                .addComponent(removeUserBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    );
+                }
+                serverSettingPane.addTab("User Accounts", userAccounts);
             }
             dialogPane.add(serverSettingPane, BorderLayout.CENTER);
 
@@ -346,7 +460,7 @@ public class ServerModeConfiguration extends JFrame {
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(490, 365);
+        setSize(505, 380);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -582,6 +696,40 @@ public class ServerModeConfiguration extends JFrame {
                 resetConfig();
             }
         });
+        submitBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int pos = userAccountDataList.getModel().getSize();
+                String password = String.valueOf(passwordValueField.getPassword());
+                String value = "<html>Username: " + usernameValueField.getText() + "<br>Password: " + password + "</html>";
+                if(userAccountDataList.getModel().getSize() > 0) {
+                    for (int i = 0; i < userAccountDataList.getModel().getSize(); i++) {
+                        if (userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>")).equals(usernameValueField.getText())) {
+                            usernameValueField.setText("");
+                            passwordValueField.setText("");
+                            JOptionPane.showMessageDialog(null, "Duplicate users cannot be created!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        } else if (!(userAccountDataList.getModel().getElementAt(i).toString().equals(value))) {
+                            model.add(pos, value);
+                            usernameValueField.setText("");
+                            passwordValueField.setText("");
+                            return;
+                        }
+                    }
+                }else{
+                    model.add(pos, value);
+                    usernameValueField.setText("");
+                    passwordValueField.setText("");
+                }
+            }
+        });
+        removeUserBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int index = userAccountDataList.getSelectedIndex();
+                if(index > -1){
+                    userAccountDataList.remove(index);
+                }
+            }
+        });
     }
 
     private ArrayList<String> ipJList(){
@@ -593,6 +741,7 @@ public class ServerModeConfiguration extends JFrame {
     }
 
     private void onOk(){
+        HashMap<String, String> accounts = new HashMap<>();
         try{
             File repoDirectory = new File(String.valueOf(repoPathField.getText()));
             if (!repoDirectory.exists()) {
@@ -600,13 +749,32 @@ public class ServerModeConfiguration extends JFrame {
             }
             writeConfig();
             JOptionPane.showMessageDialog(null, "Configuration was saved!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
-
         }catch (Exception z) {
             JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
             z.printStackTrace();
         }
-        ServerConfigConfirmation.run(this, "<html><center><b>Interface:</b> " + MeshFS.properties.getProperty("preferredInterface") + "<br><br><b>Timeout:</b> " + MeshFS.properties.getProperty("timeout") + "s<br><br><b>Port:</b> " + MeshFS.properties.getProperty("portNumber") + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + MeshFS.properties.getProperty("numWholeCopy") + "/" + MeshFS.properties.getProperty("numStripes") + "/" + MeshFS.properties.getProperty("numStripeCopy") + "<br><br><b>Repository:</b> " + MeshFS.properties.getProperty("repository") + "<br><br><b>Minimum Space:</b> " + MeshFS.properties.getProperty("minSpace") + "<br><br><b>Server Threads:</b> " + MeshFS.properties.getProperty("serverThreads") + "</center></html>");
-
+        String out = "";
+        for (int i = 0; i < userAccountDataList.getModel().getSize(); i++) {
+            String user = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>"));
+            String pass = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
+            for(int x = 0; x < user.length()-1; x=x+2){
+                try{
+                    pass += user.charAt(x);
+                }catch(IndexOutOfBoundsException ioobe){
+                }
+            }
+            MessageDigest messageDigest = null;
+            try {
+                messageDigest = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            messageDigest.update(pass.getBytes(),0, pass.length());
+            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + pass + "</i><br>";
+            accounts.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
+            System.out.println("Creating user: " + user + " with password: " + pass + " encrypted pass: " + new BigInteger(1,messageDigest.digest()).toString(256));
+        }
+        ServerConfigConfirmation.run(this, "<html><center><b>Interface:</b> " + MeshFS.properties.getProperty("preferredInterface") + "<br><br><b>Timeout:</b> " + MeshFS.properties.getProperty("timeout") + "s<br><br><b>Port:</b> " + MeshFS.properties.getProperty("portNumber") + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + MeshFS.properties.getProperty("numWholeCopy") + "/" + MeshFS.properties.getProperty("numStripes") + "/" + MeshFS.properties.getProperty("numStripeCopy") + "<br><br><b>Repository:</b> " + MeshFS.properties.getProperty("repository") + "<br><br><b>Minimum Space:</b> " + MeshFS.properties.getProperty("minSpace") + "<br><br><b>Server Threads:</b> " + MeshFS.properties.getProperty("serverThreads") + "<br><br><b>Accounts:</b><br>" + out + "</center></html>", accounts);
         dispose();
     }
 
@@ -679,7 +847,7 @@ public class ServerModeConfiguration extends JFrame {
         configProperties.setProperty("numWholeCopy", String.valueOf(numWholeField.getText()));
         configProperties.setProperty("minSpace", String.valueOf(minSpaceField.getText()));
         configProperties.setProperty("masterIP", "127.0.0.1");
-        configProperties.setProperty("preferredInterface", String.valueOf(ipJListField.getSelectedValue()).substring(0, String.valueOf(ipJListField.getSelectedValue()).indexOf(" (")));
+        //configProperties.setProperty("preferredInterface", String.valueOf(ipJListField.getSelectedValue()).substring(0, String.valueOf(ipJListField.getSelectedValue()).indexOf(" (")));
         configProperties.setProperty("portNumber", String.valueOf(serverPortField.getText()));
         configProperties.setProperty("repository", String.valueOf(repoPathField.getText()));
         configProperties.setProperty("serverThreads", String.valueOf(serverThreadsField.getText()));
@@ -730,6 +898,16 @@ public class ServerModeConfiguration extends JFrame {
     private JSlider spaceSldr;
     private JLabel freeSpaceLbl;
     private JButton browseBtn;
+    private JPanel userAccounts;
+    private JTextArea textArea1;
+    private JLabel usernameLbl;
+    private JTextField usernameValueField;
+    private JPasswordField passwordValueField;
+    private JLabel passwordLbl;
+    private JButton submitBtn;
+    private JButton removeUserBtn;
+    private JScrollPane scrollPane2;
+    private JList userAccountDataList;
     private JPanel buttonBar;
     private JButton importConfigBtn;
     private JButton backupConfigBtn;

@@ -25,11 +25,13 @@ public class NewDirectoryWindow extends JFrame {
     private JSONObject jsonObj;
     private JFrame caller;
     private static JFrame newDirectoryWindow;
-    private NewDirectoryWindow(String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
+    private String userAccount;
+    private NewDirectoryWindow(String serverAddress, int port, JSONObject jsonObj, JFrame sender, String userAccount) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
         this.caller = sender;
+        this.userAccount = userAccount;
         initComponents();
         okButton.setEnabled(false);
         frameListeners();
@@ -182,7 +184,7 @@ public class NewDirectoryWindow extends JFrame {
                 }
                 dispose();
                 caller.dispose();
-                ClientBrowser.run(serverAddress, port, newDirectoryWindow);
+                ClientBrowser.run(serverAddress, port, newDirectoryWindow, userAccount);
             }
         });
     }
@@ -207,8 +209,8 @@ public class NewDirectoryWindow extends JFrame {
         return branch;
     }
 
-    public static void run(String serverAddress, int port, JSONObject jsonObj, JFrame sender){
-        JFrame newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, jsonObj, sender);
+    public static void run(String serverAddress, int port, JSONObject jsonObj, JFrame sender, String userAccount){
+        JFrame newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, jsonObj, sender, userAccount);
         CenterWindow.centerOnWindow(sender, newDirectoryWindow);
         newDirectoryWindow.setVisible(true);
 

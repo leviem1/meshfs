@@ -30,10 +30,12 @@ public class ClientBrowser extends JFrame {
     private DefaultMutableTreeNode tree;
     private JSONObject jsonObj;
     private static JFrame clientBrowser;
+    private String userAccount;
 
-    private ClientBrowser(String serverAddress, int port) {
+    private ClientBrowser(String serverAddress, int port, String userAccount) {
         this.serverAddress = serverAddress;
         this.port = port;
+        this.userAccount = userAccount;
         initComponents();
         browserBtns(false);
         frameListeners();
@@ -442,7 +444,7 @@ public class ClientBrowser extends JFrame {
         });
         moveBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, jsonObj, clientBrowser);
+                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, jsonObj, clientBrowser, userAccount);
             }
 
         });
@@ -454,14 +456,14 @@ public class ClientBrowser extends JFrame {
         newDirBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                NewDirectoryWindow.run(serverAddress, port, jsonObj, clientBrowser);
+                NewDirectoryWindow.run(serverAddress, port, jsonObj, clientBrowser, userAccount);
             }
         });
         renameBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                RenameFileWindow.run(serverAddress, port, clientBrowser, jsonPath, node.toString());
+                RenameFileWindow.run(serverAddress, port, clientBrowser, jsonPath, node.toString(), userAccount);
             }
         });
     }
@@ -518,12 +520,12 @@ public class ClientBrowser extends JFrame {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        ClientBrowser.run(serverAddress, port, this);
+        ClientBrowser.run(serverAddress, port, this, userAccount);
         dispose();
     }
 
-    public static void run(String serverAddress, int port, JFrame sender) {
-        clientBrowser = new ClientBrowser(serverAddress, port);
+    public static void run(String serverAddress, int port, JFrame sender, String userAccount) {
+        clientBrowser = new ClientBrowser(serverAddress, port, userAccount);
         CenterWindow.centerOnScreen(clientBrowser);
         clientBrowser.setVisible(true);
     }

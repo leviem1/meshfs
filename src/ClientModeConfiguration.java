@@ -1,8 +1,13 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.io.*;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -20,6 +25,7 @@ import javax.swing.event.DocumentListener;
 public class ClientModeConfiguration extends JFrame{
 
     private static JFrame clientModeConfiguration;
+    private String usernameFinal = "";
 
     private ClientModeConfiguration() {
         initComponents();
@@ -86,7 +92,7 @@ public class ClientModeConfiguration extends JFrame{
                 passwordLbl.setFont(new Font("Arial", passwordLbl.getFont().getStyle(), passwordLbl.getFont().getSize() + 1));
 
                 //---- bindAnonLbl ----
-                bindAnonLbl.setText("Bind Anonymously:");
+                bindAnonLbl.setText("Bind as Guest:");
                 bindAnonLbl.setFont(new Font("Arial", bindAnonLbl.getFont().getStyle(), bindAnonLbl.getFont().getSize() + 1));
 
                 //---- serverAddressField ----
@@ -113,7 +119,7 @@ public class ClientModeConfiguration extends JFrame{
                                     .addComponent(bindAnonLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(bindAnonymouslyCheckBox)
-                                    .addGap(0, 229, Short.MAX_VALUE))
+                                    .addGap(0, 221, Short.MAX_VALUE))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addGroup(contentPanelLayout.createParallelGroup()
                                         .addGroup(contentPanelLayout.createSequentialGroup()
@@ -133,7 +139,7 @@ public class ClientModeConfiguration extends JFrame{
                                                 .addComponent(usernameLbl)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE))))
-                                    .addContainerGap(64, Short.MAX_VALUE))))
+                                    .addContainerGap(56, Short.MAX_VALUE))))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -308,6 +314,8 @@ public class ClientModeConfiguration extends JFrame{
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     private void onOk(){
+        String password = String.valueOf(passwordField.getPassword());
+        String username = usernameField.getText();
         if(!(FileClient.ping(serverAddressField.getText(), Integer.parseInt(serverPortField.getText())))){
             JOptionPane.showMessageDialog(null, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setText("");
@@ -318,11 +326,21 @@ public class ClientModeConfiguration extends JFrame{
             return;
         }
         try{
-            FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", ".catalog.json");
+            if(!(bindAnonymouslyCheckBox.isSelected())){
+                connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+                if(!(usernameFinal.equals(""))){
+                    FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", ".catalog.json");
+                    ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration, usernameFinal);
+                    dispose();
+                }
+            }else{
+                usernameFinal = "guest";
+                FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", ".catalog.json");
+                ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration, usernameFinal);
+                dispose();
+            }
         }catch(IOException ioe){
         }
-        ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration);
-        dispose();
     }
 
     private void bindAnonymously(String mode){
@@ -337,6 +355,43 @@ public class ClientModeConfiguration extends JFrame{
             passwordField.setEnabled(true);
         }
 
+    }
+
+    private void connectAsUser(String username, String password){
+        try {
+            FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".auth", ".auth");
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(".auth"));
+            HashMap<String, String> credentials = (HashMap<String, String>)ois.readObject();
+            for (HashMap.Entry<String,String> entry : credentials.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                if(key.equals(username)){
+                    for(int i = 0; i < username.length()-1; i=i+2){
+                        try{
+                            password += username.charAt(i);
+                        }catch(IndexOutOfBoundsException ioobe){
+                        }
+                    }
+                    MessageDigest messageDigest = null;
+                    try {
+                        messageDigest = MessageDigest.getInstance("MD5");
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+                    messageDigest.update(password.getBytes(),0, password.length());
+                    String enc = new BigInteger(1,messageDigest.digest()).toString(128);
+                    if(!(value.equals(enc))){
+                        return;
+                    }
+                    else if(value.equals(enc)){
+                        usernameFinal = username;
+                        return;
+                    }
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean checkFields(JTextField field) {

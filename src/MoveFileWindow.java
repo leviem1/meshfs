@@ -28,14 +28,16 @@ public class MoveFileWindow extends JFrame {
     private JSONObject jsonObj;
     private JFrame sender;
     private static JFrame moveFileWindow;
+    private String userAccount;
 
-    private MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
+    private MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, JSONObject jsonObj, JFrame sender, String userAccount) {
         this.fileName = fileName;
         this.currentJsonPath = currentJsonPath;
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
         this.sender = sender;
+        this.userAccount = userAccount;
         initComponents();
         frameListeners();
         this.setTitle(fileName + " - Move");
@@ -156,7 +158,7 @@ public class MoveFileWindow extends JFrame {
                 }
                 dispose();
                 sender.dispose();
-                ClientBrowser.run(serverAddress, port, moveFileWindow);
+                ClientBrowser.run(serverAddress, port, moveFileWindow, userAccount);
             }
         });
     }
@@ -181,8 +183,8 @@ public class MoveFileWindow extends JFrame {
         return branch;
     }
 
-    public static void run(String fileName, String filePath, String serverAddress, int port, JSONObject jsonObj, JFrame sender) {
-        JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, jsonObj, sender);
+    public static void run(String fileName, String filePath, String serverAddress, int port, JSONObject jsonObj, JFrame sender, String userAccount) {
+        JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, jsonObj, sender, userAccount);
         CenterWindow.centerOnWindow(sender, moveFileWindow);
         moveFileWindow.setVisible(true);
     }

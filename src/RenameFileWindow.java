@@ -23,11 +23,13 @@ public class RenameFileWindow extends JFrame {
     private JFrame caller;
     private String newName;
     private static JFrame renameFileWindow;
-    private RenameFileWindow(String serverAddress, int port, String jsonObj, JFrame sender, String currentName) {
+    private String userAccount;
+    private RenameFileWindow(String serverAddress, int port, String jsonObj, JFrame sender, String currentName, String userAccount) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
         this.caller = sender;
+        this.userAccount = userAccount;
         initComponents();
         frameListeners();
         currentNameValue.setText(currentName);
@@ -166,13 +168,13 @@ public class RenameFileWindow extends JFrame {
                 }
                 dispose();
                 caller.dispose();
-                ClientBrowser.run(serverAddress, port, renameFileWindow);
+                ClientBrowser.run(serverAddress, port, renameFileWindow, userAccount);
             }
         });
     }
 
-    public static void run(String serverAddress, int port, JFrame sender, String jsonObj, String currentName){
-        JFrame renameFileWindow = new RenameFileWindow(serverAddress, port, jsonObj, sender, currentName);
+    public static void run(String serverAddress, int port, JFrame sender, String jsonObj, String currentName, String userAccount){
+        JFrame renameFileWindow = new RenameFileWindow(serverAddress, port, jsonObj, sender, currentName, userAccount);
         CenterWindow.centerOnWindow(sender, renameFileWindow);
         renameFileWindow.setVisible(true);
 
