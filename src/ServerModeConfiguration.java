@@ -734,8 +734,8 @@ public class ServerModeConfiguration extends JFrame {
 
     private ArrayList<String> ipJList(){
         ArrayList<String> x = new ArrayList<>();
-        for(int i = 0; i < Reporting.getIpAddress().size(); i++){
-            x.add(Reporting.getIpAddress().get(i).get(0).toString() + " (" + Reporting.getIpAddress().get(i).get(1).toString() + ")");
+        for(String ip : Reporting.getIpAddress()){
+            x.add(ip);
         }
         return x;
     }

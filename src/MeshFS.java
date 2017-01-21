@@ -13,7 +13,6 @@ import java.util.*;
 import java.util.List;
 
 public class MeshFS {
-
     public static Properties properties;
     public static FileServer fileServer;
     public static boolean nogui = false;
@@ -40,12 +39,12 @@ public class MeshFS {
 
         properties = ConfigParser.loadProperties();
         new CliParser(args, properties);
-        List<List> possibleIP = Reporting.getIpAddress();
+        List<String> possibleIP = Reporting.getIpAddress();
         if (properties.getProperty("masterIP").equals("127.0.0.1")) {
             isMaster = true;
         } else {
-            for (List iFace : possibleIP) {
-                if (iFace.get(1).equals(properties.getProperty("masterIP"))) {
+            for (String iFace : possibleIP) {
+                if (iFace.equals(properties.getProperty("masterIP"))) {
                     isMaster = true;
                     break;
                 } else {
@@ -54,6 +53,7 @@ public class MeshFS {
                 }
             }
         }
+
          if (nogui) {
             TimerTask timerTask = new TimerTask() {
                 @Override
@@ -95,8 +95,8 @@ public class MeshFS {
                 fileServer.startServer(Integer.valueOf(properties.getProperty("portNumber")), Integer.valueOf(properties.getProperty("serverThreads")), Integer.valueOf(properties.getProperty("timeout")) * 1000);
             } catch (IOException e) {
                 boolean serverStarted = false;
-                for (List iFace : possibleIP) {
-                    if (FileClient.ping(iFace.get(1).toString(), Integer.parseInt(properties.getProperty("portNumber")))) {
+                for (String iFace : possibleIP) {
+                    if (FileClient.ping(iFace, Integer.parseInt(properties.getProperty("portNumber")))) {
                         serverStarted = true;
                         break;
                     }

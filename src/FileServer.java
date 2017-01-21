@@ -264,7 +264,7 @@ class ServerInit implements Runnable {
     private void badRequest(Socket client, String request) {
         try {
             PrintWriter out = new PrintWriter(client.getOutputStream());
-            out.println("202\n Bad request:\n\n" + request);
+            out.println("202\nBad request:\n\n" + request);
             out.flush();
         } catch (IOException ioe) {
             ioe.printStackTrace();

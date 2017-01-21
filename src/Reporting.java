@@ -27,36 +27,26 @@ public class Reporting {
         return file.getUsableSpace();
     }
 
-    public static List<List> getIpAddress() {
+    public static List<String> getIpAddress() {
         List<String> ip = new ArrayList<>();
-        List<List> ipRefined = new ArrayList<>();
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 NetworkInterface iface = interfaces.nextElement();
                 if (iface.isLoopback() || !iface.isUp())
                     continue;
-                Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while(addresses.hasMoreElements()) {
-                    InetAddress nextElement;
-                    if ((nextElement = addresses.nextElement()) instanceof Inet4Address) ip.add(nextElement.getHostAddress());
+                List<InterfaceAddress> addresses = iface.getInterfaceAddresses();
+                for (InterfaceAddress currIface : addresses) {
+                    if ((currIface.getAddress()) instanceof Inet4Address) {
+                        ip.add(currIface.toString().substring(1, (currIface.toString().substring(1).indexOf("/")) + 1));
+                    }
                 }
             }
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
-        for(int x = 0; x < ip.size(); x++){
-            try {
-                if (ip.get(x + 1).contains(".")) {
-                    List<String> tempList = new ArrayList<>();
-                    tempList.add(ip.get(x).substring(ip.get(x).indexOf("%") + 1));
-                    tempList.add(ip.get(x + 1));
-                    ipRefined.add(tempList);
-                }
-            } catch (IndexOutOfBoundsException ae) {
-            }
-        }
-        return ipRefined;
+
+        return ip;
     }
 
     public static long getUptime() {
