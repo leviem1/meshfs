@@ -55,4 +55,8 @@ public class FileUtils {
 
         fos.close();
     }
+
+    static boolean removeFile(String path) {
+        return (new File(path)).delete();
+    }
 }
