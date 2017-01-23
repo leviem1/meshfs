@@ -2,22 +2,15 @@
  * Created by Aaron Duran on 10/13/16.
  */
 import org.json.simple.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class Distributor {
 
-    private int numOfStripes;
-    private int numOfWholeCopies;
-    private int numOfStripedCopies;
-    private long minFreeSpace = 0L; // 5GB is 5368709120L
+    private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
 
-    Distributor(int numOfStripes, int numOfWholeCopies, int numOfStripedCopies){
-        this.numOfStripes = numOfStripes;
-        this.numOfWholeCopies = numOfWholeCopies;
-        this.numOfStripedCopies = numOfStripedCopies;
-    }
-
-    private LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
         sortedMap.put("temp", 99999999999990L);
         for (String key : storageMap.keySet()){
@@ -47,171 +40,180 @@ public class Distributor {
         return sortedMap;
     }
 
-    public void distributor(String manifestFileLocation, String filePath, String filePathInCatalog, String JSONFilePath, String DestinationRepoLocation){
-         try {
-             String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-             DestinationRepoLocation += fileName;
-             //long sizeOfFile = FileUtils.getSize(filePath);
-             long sizeOfFile = 5000000L;
-             long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
+    public static void distributor(String uploadFilePath, String filePathInCatalog, String DestinationRepoLocation){
+        int numOfStripes = Integer.valueOf(MeshFS.properties.get("numStripes").toString());
+        int numOfStripedCopies = Integer.valueOf(MeshFS.properties.get("numStripeCopy").toString());
+        int numOfWholeCopies = Integer.valueOf(MeshFS.properties.get("numWholeCopy").toString());
+        long minFreeSpace = Integer.valueOf(MeshFS.properties.get("minSpace").toString());
+        String manifestFileLocation = MeshFS.properties.get("repository").toString()+".manifest.json";
+        JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
+        String catalogFileLocation = MeshFS.properties.get("repository").toString()+".catalog.json";
+        String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
+        DestinationRepoLocation += (File.separator + fileName);
+        long sizeOfFile = FileUtils.getSize(uploadFilePath);
+        //long sizeOfFile = 5000000L;
+        long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
+        LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFile);
+        compStorageMap.put("0.0.0.0",0L);
+        LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap); //sort the compStorageMap by descending available storage
+        for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){ // account for the desired amount of free space
+         String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
+         sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(String.valueOf(macAddress)) - minFreeSpace);
+        }
+        /* //uncomment me for dynamic resigning of numStripes by number of computers that are on
+        int numOfComputersUsed = sortedCompStorageMap.size();
+        if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
+         numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
+        }
+        */
+        //create a unique filename for the uploaded file
+        List<String> computersForWholes = new ArrayList<>();
+        JSONObject jsonObj = JSONManipulator.getJSONObject(catalogFileLocation);
+        String currentName = jsonObj.get("currentName").toString();
+        String newName = incrementName(currentName);
 
-             LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFileLocation);
-             compStorageMap.put("0.0.0.0",0L);
-             LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap); //sort the compStorageMap by descending available storage
-             for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){ // account for the desired amount of free space
-                 String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
-                 sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(String.valueOf(macAddress)) - minFreeSpace);
-             }
-             /* //uncomment me for dynamic resigning of numStripes by number of computers that are on
-             int numOfComputersUsed = sortedCompStorageMap.size();
-             if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
-                 numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
-             }
-             */
-             //create a unique filename for the uploaded file
-             List<String> computersForWholes = new ArrayList<>();
-             JSONObject jsonObj = JSONManipulator.getJSONObject(JSONFilePath);
-             String currentName = jsonObj.get("currentName").toString();
-             String newName = incrementName(currentName);
+        //determine which computers can hold the full file
+        int stopOfWholes = (-1);
+        for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
+            String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
+            if (sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
+                computersForWholes.add(macAddress);
+            }
+            else {
+                break;
+            }
+            stopOfWholes = computerNumW;
+        }
 
-             //determine which computers can hold the full file
-             int stopOfWholes = (-1);
-             for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
-                 String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
-                 if (sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
-                     computersForWholes.add(macAddress);
-                 }
-                 else {
-                     break;
-                 }
-                 stopOfWholes = computerNumW;
+        int lastResortComp = 0;
+        int lapNum = 0;
+        List<String> computersForStripes = new ArrayList<>();
+        for (int computerNumS = stopOfWholes+1; computerNumS < ((numOfStripes * numOfStripedCopies) + stopOfWholes+1); computerNumS++) {
+         String macAddress;
+         try{
+             macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
+         }
+         catch (Exception e){
+             macAddress = "0.0.0.0";
+         }
+         if ((sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe) {
+             computersForStripes.add(macAddress);
+         }
+         else if (computerNumS != 0){
+             macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
+             long availableStorage = (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum));
+             if (lastResortComp <= stopOfWholes){
+                 availableStorage -= sizeOfFile;
              }
 
-             int lastResortComp = 0;
-             int lapNum = 0;
-             List<String> computersForStripes = new ArrayList<>();
-             for (int computerNumS = stopOfWholes+1; computerNumS < ((numOfStripes * numOfStripedCopies) + stopOfWholes+1); computerNumS++) {
-                 String macAddress;
-                 try{
-                     macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
-                 }
-                 catch (Exception e){
-                     macAddress = "0.0.0.0";
-                 }
-                 if ((sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe) {
-                     computersForStripes.add(macAddress);
-                 }
-                 else if (computerNumS != 0){
+             lastResortComp++;
+
+             if (availableStorage >= sizeOfStripe) {
+                 computersForStripes.add(macAddress);
+             }
+             else {
+                 lapNum++;
+                 lastResortComp = 0;
+
+                 while (lastResortComp < sortedCompStorageMap.size()){
                      macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                     long availableStorage = (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum));
+                     availableStorage = (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum));
                      if (lastResortComp <= stopOfWholes){
                          availableStorage -= sizeOfFile;
                      }
-
                      lastResortComp++;
-
                      if (availableStorage >= sizeOfStripe) {
                          computersForStripes.add(macAddress);
+                         break;
                      }
-                     else {
-                         lapNum++;
-                         lastResortComp = 0;
+                 }
+                 if (lastResortComp >= sortedCompStorageMap.size()){
+                     break;
+                 }
+             }
+         }
+         else{
+             System.out.println("the is no storage space that is available for this file.");
+             break;
+         }
+        }
 
-                         while (lastResortComp < sortedCompStorageMap.size()){
-                             macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                             availableStorage = (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum));
-                             if (lastResortComp <= stopOfWholes){
-                                 availableStorage -= sizeOfFile;
+        List<List<String>> stripes = new ArrayList<>();
+        stripes.add(computersForWholes);
+
+        boolean allowStripes = false;
+        for (String computer : computersForStripes){
+        if (!computer.equals(computersForStripes.get(0))){
+            allowStripes = true;
+            break;
+        }
+        }
+
+        for (String item : computersForWholes) {
+         String computerToReceive = item;
+
+            try {
+                FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_w", 0L, sizeOfFile);
+                FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_w");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        if (allowStripes){
+         for (int copy = 0; copy < numOfStripes; copy++) {
+             stripes.add(new ArrayList<>());
+         }
+         for (int copy = 0; copy < numOfStripedCopies; copy++) {
+             for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
+                 try{
+                     int test = 0;
+
+                     while (true) {
+                         test++;
+                         if (test >= (computersForStripes.size() - (copy * numOfStripes) + currentStripe)){
+                             break;
+                         }
+
+                         String computerToReceive = computersForStripes.get((copy * numOfStripes) + currentStripe);
+
+                         if (stripes.get(currentStripe + 1).size() > 0){
+                             boolean isNotBroken = true;
+                             for (String tempMac : stripes.get(currentStripe + 1)) {
+                                 if (tempMac.equals(computerToReceive)) {
+                                     computersForStripes.add(tempMac);
+                                     computersForStripes.remove((copy * numOfStripes) + currentStripe);
+                                     isNotBroken = false;
+                                     break;
+                                 }
                              }
-
-                             if (availableStorage >= sizeOfStripe) {
-                                 computersForStripes.add(macAddress);
+                             if (isNotBroken){
+                                 stripes.get(currentStripe + 1).add(computerToReceive);
+                                 long startByte = (sizeOfStripe * currentStripe);
+                                 FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
+                                 FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                  break;
                              }
-                             lastResortComp++;
                          }
-                         if (lastResortComp >= sortedCompStorageMap.size()){
+                         else {
+                             stripes.get(currentStripe + 1).add(computerToReceive);
+                             long startByte = (sizeOfStripe * currentStripe);
+                             long stopByte = (startByte + (sizeOfStripe));
+                             FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
+                             FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                              break;
                          }
                      }
                  }
-                 else{
-                     System.out.println("the is no storage space that is available for this file.");
-                     break;
+                 catch (Exception e) {
+                     System.out.println("You are out of Storage!");
                  }
              }
-
-             List<List<String>> stripes = new ArrayList<>();
-             stripes.add(computersForWholes);
-
-             boolean allowStripes = false;
-             for (String computer : computersForStripes){
-                if (!computer.equals(computersForStripes.get(0))){
-                    allowStripes = true;
-                    break;
-                }
-             }
-
-             for (String item : computersForWholes) {
-
-                 String computerToReceive = item;
-                 //FileUtils.writeStripe(computerToReceive, filePath, DestinationRepoLocation, newName + "_w", 0L, sizeOfFile);
-             }
-
-             if (allowStripes){
-                 for (int copy = 0; copy < numOfStripes; copy++) {
-                     stripes.add(new ArrayList<>());
-                 }
-                 for (int copy = 0; copy < numOfStripedCopies; copy++) {
-                     for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
-                         try{
-                             int test = 0;
-
-                             while (true) {
-                                 test++;
-                                 if (test >= (computersForStripes.size() - (copy * numOfStripes) + currentStripe)){
-                                     break;
-                                 }
-
-                                 String computerToReceive = computersForStripes.get((copy * numOfStripes) + currentStripe);
-
-                                 if (stripes.get(currentStripe + 1).size() > 0){
-                                     boolean isNotBroken = true;
-                                     for (String tempMac : stripes.get(currentStripe + 1)) {
-                                         if (tempMac.equals(computerToReceive)) {
-                                             computersForStripes.add(tempMac);
-                                             computersForStripes.remove((copy * numOfStripes) + currentStripe);
-                                             isNotBroken = false;
-                                             break;
-                                         }
-                                     }
-                                     if (isNotBroken){
-                                         stripes.get(currentStripe + 1).add(computerToReceive);
-                                         long startByte = (sizeOfStripe * currentStripe);
-                                         //FileReader.writeStripe(computerToReceive, filePath, DestinationRepoLocation, newName + "_s" + currentStripe, startByte, sizeOfStripe);
-                                         break;
-                                     }
-                                 }
-                                 else {
-                                     stripes.get(currentStripe + 1).add(computerToReceive);
-                                     long startByte = (sizeOfStripe * currentStripe);
-                                     long stopByte = (startByte + (sizeOfStripe));
-                                     //FileReader.writeStripe(computerToReceive, filePath, DestinationRepoLocation, newName + "_s" + currentStripe, startByte, stopByte);
-                                     break;
-                                 }
-                             }
-                         }
-                         catch (Exception e) {
-                             System.out.println("You are out of Storage!");
-                         }
-                     }
-                 }
-             }
-             JSONManipulator.addToIndex(stripes,filePathInCatalog, fileName, JSONFilePath, newName);
          }
-         catch (Exception e) {
-             e.printStackTrace();
-         }
+        }
+        JSONManipulator.addToIndex(stripes,filePathInCatalog, fileName, catalogFileLocation, newName);
+
     }
 
     private static String incrementName(String name){

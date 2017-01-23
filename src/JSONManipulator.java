@@ -43,8 +43,18 @@ public class JSONManipulator {
     public static Map<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
         String[] Tree = folderLocation.split("/");
         JSONObject folderToRead = jsonObject;
+        JSONObject folderToReadNew;
         for (String folder : Tree) {
-            folderToRead = (JSONObject) folderToRead.get(folder);
+            folderToReadNew = (JSONObject) folderToRead.get(folder);
+            if (folderToReadNew == null){
+                JSONObject folderCreator = new JSONObject();
+                folderCreator.put("type", "directory");
+                folderToRead.put(folder, folderCreator);
+                folderToRead = (JSONObject) folderToRead.get(folder);
+            }
+            else{
+                folderToRead = folderToReadNew;
+            }
         }
         Map<String,String> contents = new HashMap<>();
         for (Object key : folderToRead.keySet()) {
@@ -281,9 +291,8 @@ public class JSONManipulator {
         }
     }
 
-    public static LinkedHashMap<String, Long> createStorageMap(String manifestFileLocation){
+    public static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile){
         LinkedHashMap<String,Long> storageMap = new LinkedHashMap();
-        JSONObject manifestFile = getJSONObject(manifestFileLocation);
         for (Object MACAddress: manifestFile.keySet()){
             storageMap.put(MACAddress.toString(),Long.valueOf((((JSONObject)manifestFile.get(MACAddress)).get("FreeSpace")).toString()));
         }
