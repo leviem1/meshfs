@@ -54,8 +54,8 @@ public class ClientBrowser extends JFrame {
             e1.printStackTrace();
         }
         jsonObj = JSONManipulator.getJSONObject(".catalog.json");
-        tree = new DefaultMutableTreeNode("root");
-        tree = (readFolder("root",jsonObj,tree));
+        tree = new DefaultMutableTreeNode(userAccount);
+        tree = (readFolder(userAccount, jsonObj, tree));
         if (isLoaded) {
             dialogPane.repaint();
             dialogPane.revalidate();
@@ -282,7 +282,7 @@ public class ClientBrowser extends JFrame {
                     fileObj.put("fileName", fileChooser.getSelectedFile().getName());
                     fileObj.put("owner", userAccount);
                     try {
-                        JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
+                        JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.putItemInFolder(jsonObj, userAccount, fileChooser.getSelectedFile().getName(), fileObj));
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -312,11 +312,11 @@ public class ClientBrowser extends JFrame {
                     if(node.toString().equals("(no files)")){
                         browserBtns(false);
                         tree1.setSelectionPath(null);
-                    } else if (node.toString().equals("root")) {
+                    } else if (node.toString().equals(userAccount)) {
                         browserBtns(false);
                     } else {
                         if (node.getChildCount() != 0) {
-                            if (!(node.toString().equals("root"))) {
+                            if (!(node.toString().equals(userAccount))) {
                                 browserBtns(false);
                                 removeBtn.setEnabled(true);
                                 renameBtn.setEnabled(true);

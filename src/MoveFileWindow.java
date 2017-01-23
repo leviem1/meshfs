@@ -50,8 +50,8 @@ public class MoveFileWindow extends JFrame {
 
     private void initComponents() {
         JSONObject jsonObj = JSONManipulator.getJSONObject(".catalog.json");
-        DefaultMutableTreeNode tree = new DefaultMutableTreeNode("root");
-        tree = (readFolder("root",jsonObj,tree));
+        DefaultMutableTreeNode tree = new DefaultMutableTreeNode(userAccount);
+        tree = (readFolder(userAccount, jsonObj, tree));
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
@@ -131,7 +131,7 @@ public class MoveFileWindow extends JFrame {
                 try{
                     if(node.getChildCount() == 0){
 
-                        if(!(node.toString().equals("root"))){
+                        if(!(node.toString().equals(userAccount))){
                             tree1.setSelectionPath(null);
                         }
                     }
