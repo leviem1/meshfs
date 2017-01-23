@@ -888,7 +888,7 @@ public class ServerModeConfiguration extends JFrame {
         configProperties.setProperty("numStripes", String.valueOf(numStripesField.getText()));
         configProperties.setProperty("numStripeCopy", String.valueOf(numStripeCopiesField.getText()));
         configProperties.setProperty("numWholeCopy", String.valueOf(numWholeField.getText()));
-        configProperties.setProperty("minSpace", String.valueOf(minSpaceField.getText()));
+        configProperties.setProperty("minSpace", String.valueOf(Integer.valueOf(minSpaceField.getText()) * 1073741824));
         configProperties.setProperty("masterIP", "127.0.0.1");
         //configProperties.setProperty("preferredInterface", String.valueOf(ipJListField.getSelectedValue()).substring(0, String.valueOf(ipJListField.getSelectedValue()).indexOf(" (")));
         configProperties.setProperty("portNumber", String.valueOf(serverPortField.getText()));
