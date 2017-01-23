@@ -47,16 +47,15 @@ public class Distributor {
         return sortedMap;
     }
 
-    public void distributor(LinkedHashMap<String, Long> compStorageMap, String filePath, String filePathInCatalog, String JSONFilePath, String DestinationRepoLocation){
+    public void distributor(String manifestFileLocation, String filePath, String filePathInCatalog, String JSONFilePath, String DestinationRepoLocation){
          try {
              String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
              DestinationRepoLocation += fileName;
-             //FileReader reader = new FileReader(filePath);
-             //long sizeOfFile = reader.getSize();
+             //long sizeOfFile = FileUtils.getSize(filePath);
              long sizeOfFile = 5000000L;
-             //reader.closeFile();
              long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
 
+             LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFileLocation);
              compStorageMap.put("0.0.0.0",0L);
              LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap); //sort the compStorageMap by descending available storage
              for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){ // account for the desired amount of free space
