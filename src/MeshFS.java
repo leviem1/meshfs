@@ -38,7 +38,7 @@ public class MeshFS {
         properties = ConfigParser.loadProperties();
         new CliParser(args, properties);
 
-        List<String> possibleIP = Reporting.getIpAddress();
+        List<String> possibleIP = Reporting.getIpAddresses();
         if (properties.getProperty("masterIP").equals("127.0.0.1")) {
             isMaster = true;
         } else {

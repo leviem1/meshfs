@@ -27,7 +27,7 @@ public class Reporting {
         return file.getUsableSpace();
     }
 
-    public static List<String> getIpAddress() {
+    public static List<String> getIpAddresses() {
         List<String> ip = new ArrayList<>();
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -91,7 +91,7 @@ public class Reporting {
     }
 
     public static String generate() {
-        return getMacAddress() + "|IP:" + getIpAddress() + ";OS:" + getSystemOS() + ";JavaVersion:" + getJavaVersion() + ";FreeSpace:" + getSystemStorage() + ";Uptime:" + getUptime() + ";Username:" + getUserName() + ";RepoContents:" + getRepositoryContents();
+        return getMacAddress() + "|IP:" + getIpAddresses().get(0) + ";OS:" + getSystemOS() + ";JavaVersion:" + getJavaVersion() + ";FreeSpace:" + getSystemStorage() + ";Uptime:" + getUptime() + ";Username:" + getUserName() + ";RepoContents:" + getRepositoryContents();
     }
 
     public static JSONArray splitter(String report) {

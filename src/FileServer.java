@@ -105,7 +105,11 @@ class ServerInit implements Runnable {
                     sendFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("102")) {     //102:Post file
-                    receiveFile(requestParts[1], out);
+                    if (requestParts.length == 3) {
+                        receiveFile(requestParts[1], requestParts[2], out);
+                    } else {
+                        receiveFile(requestParts[1], out);
+                    }
 
                 } else if (requestParts[0].equals("103")) {     //103:Move file (virtual only)
                     moveFile(requestParts[1], requestParts[2], out);
@@ -200,6 +204,7 @@ class ServerInit implements Runnable {
         }
         JSONArray reportArray = Reporting.splitter(reportFull);
         manifest.put(reportArray.get(0),reportArray.get(1));
+        JSONManipulator.writeJSONObject("manifest.json", manifest);
     }
 
     private void sendFile(String filename, Socket client) throws IOException {
@@ -231,6 +236,25 @@ class ServerInit implements Runnable {
         DataInputStream dis = new DataInputStream(client.getInputStream());
         FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
+        while ((br = dis.read(data, 0, data.length)) != -1) {
+            fos.write(data, 0, br);
+            fos.flush();
+        }
+        out.close();
+        fos.close();
+        dis.close();
+    }
+
+    private void receiveFile(String filename, String userAccount, Socket client) throws IOException {
+        int br;
+        byte[] data = new byte[4096];
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+        out.println("201");
+
+        DataInputStream dis = new DataInputStream(client.getInputStream());
+        FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
+
         while ((br = dis.read(data, 0, data.length)) != -1){
             fos.write(data, 0, br);
             fos.flush();
@@ -241,8 +265,7 @@ class ServerInit implements Runnable {
 
         Thread distributor = new Thread() {
             public void run() {
-        //        Distributor distributorObj = new Distributor(Integer.parseInt(MeshFS.properties.getProperty("numStripes")), Integer.parseInt(MeshFS.properties.getProperty("numWholeCopy")), Integer.parseInt(MeshFS.properties.getProperty("numStripeCopy")));
-                //Run Distributor Code
+                Distributor.distributor(filename, userAccount);
             }
         };
         distributor.setDaemon(true);

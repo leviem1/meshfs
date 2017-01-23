@@ -287,12 +287,7 @@ public class ClientBrowser extends JFrame {
                         e1.printStackTrace();
                     }
                     try {
-                        FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath());
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    try {
-                        FileClient.sendFile(serverAddress, port, ".catalog.json");
+                        FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath(), userAccount);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }

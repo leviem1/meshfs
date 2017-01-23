@@ -39,17 +39,17 @@ public class Distributor {
         return sortedMap;
     }
 
-    public static void distributor(String uploadFilePath, String filePathInCatalog, String DestinationRepoLocation){
+    public static void distributor(String uploadFilePath, String filePathInCatalog){
         int numOfStripes = Integer.valueOf(MeshFS.properties.get("numStripes").toString());
         int numOfStripedCopies = Integer.valueOf(MeshFS.properties.get("numStripeCopy").toString());
         int numOfWholeCopies = Integer.valueOf(MeshFS.properties.get("numWholeCopy").toString());
         long minFreeSpace = Integer.valueOf(MeshFS.properties.get("minSpace").toString());
-        String manifestFileLocation = MeshFS.properties.get("repository").toString()+".manifest.json";
+        String manifestFileLocation = "manifest.json";
+        String DestinationRepoLocation = MeshFS.properties.get("repository").toString();
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.get("repository").toString()+".catalog.json";
         try {
              String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
-             DestinationRepoLocation += (File.separator + fileName);
              long sizeOfFile = FileUtils.getSize(uploadFilePath);
              //long sizeOfFile = 5000000L;
              long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);

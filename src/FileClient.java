@@ -108,13 +108,15 @@ public final class FileClient {
             }
             reportFull = reportFull.trim();
             client.close();
-            
+
             JSONObject manifest = new JSONObject();
             if (new File("manifest.json").exists()){
                 manifest = JSONManipulator.getJSONObject("manifest.json");
             }
             JSONArray reportArray = Reporting.splitter(reportFull);
-            manifest.put(reportArray.get(0),reportArray.get(1));        }
+            manifest.put(reportArray.get(0),reportArray.get(1));
+            JSONManipulator.writeJSONObject("manifest.json", manifest);
+        }
     }
 
     public static void duplicateFile(String serverAddress, int port, String currFile) throws IOException {
@@ -227,6 +229,36 @@ public final class FileClient {
 
         try {
             out.println("102|" + (new File(filepath)).getName() + "\n");
+
+            if (input.readLine().trim().equals("201")) {
+                int br;
+                byte[] data = new byte[4096];
+
+                FileInputStream fis = new FileInputStream(filepath);
+
+                while ((br = fis.read(data, 0, data.length)) != -1) {
+                    dos.write(data, 0, br);
+                    dos.flush();
+                }
+
+                fis.close();
+                dos.close();
+            }
+            client.close();
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+    }
+
+    public static void sendFile(String serverAddress, int port, String filepath, String userAccount) throws IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+        try {
+            out.println("102|" + (new File(filepath)).getName() + "|" + userAccount + "\n");
 
             if (input.readLine().trim().equals("201")) {
                 int br;
