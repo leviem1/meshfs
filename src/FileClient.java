@@ -2,6 +2,9 @@
  * Created by Levi Muniz on 12/6/16.
  */
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -105,8 +108,13 @@ public final class FileClient {
             }
             reportFull = reportFull.trim();
             client.close();
-            JSONManipulator.writeJSONObject("manifest.json", Reporting.splitter(reportFull));
-        }
+            
+            JSONObject manifest = new JSONObject();
+            if (new File("manifest.json").exists()){
+                manifest = JSONManipulator.getJSONObject("manifest.json");
+            }
+            JSONArray reportArray = Reporting.splitter(reportFull);
+            manifest.put(reportArray.get(0),reportArray.get(1));        }
     }
 
     public static void duplicateFile(String serverAddress, int port, String currFile) throws IOException {
