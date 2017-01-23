@@ -94,9 +94,9 @@ public class Reporting {
         return getMacAddress() + "|IP:" + getIpAddress() + ";OS:" + getSystemOS() + ";JavaVersion:" + getJavaVersion() + ";FreeSpace:" + getSystemStorage() + ";Uptime:" + getUptime() + ";Username:" + getUserName() + ";RepoContents:" + getRepositoryContents();
     }
 
-    public static JSONObject splitter(String report) {
+    public static JSONArray splitter(String report) {
         JSONObject jsonObject = new JSONObject();
-        JSONObject mainObj = new JSONObject();
+        JSONArray mainArray = new JSONArray();
         String[] reportArray = report.split("\\|");
         String[] reportObjects = reportArray[1].split(";");
 
@@ -114,7 +114,8 @@ public class Reporting {
                 jsonObject.put(reportSetData[0],reportSetData[1]);
             }
         }
-        mainObj.put(reportArray[0], jsonObject);
-        return mainObj;
+        mainArray.add(reportArray[0]);
+        mainArray.add(jsonObject);
+        return mainArray;
     }
 }

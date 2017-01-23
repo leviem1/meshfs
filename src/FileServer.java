@@ -2,6 +2,7 @@
  * Created by Levi Muniz on 10/16/16.
  */
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.*;
@@ -192,7 +193,13 @@ class ServerInit implements Runnable {
             reportFull = reportFull + reportPart + "\n";
         }
         reportFull = reportFull.trim();
-        JSONManipulator.writeJSONObject("manifest.json", Reporting.splitter(reportFull));
+
+        JSONObject manifest = new JSONObject();
+        if (new File("manifest.json").exists()){
+            manifest = JSONManipulator.getJSONObject("manifest.json");
+        }
+        JSONArray reportArray = Reporting.splitter(reportFull);
+        manifest.put(reportArray.get(0),reportArray.get(1));
     }
 
     private void sendFile(String filename, Socket client) throws IOException {
