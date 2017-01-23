@@ -2,22 +2,14 @@
  * Created by Aaron Duran on 10/13/16.
  */
 import org.json.simple.JSONObject;
+
+import java.io.File;
 import java.util.*;
 
 public class Distributor {
 
-    private int numOfStripes;
-    private int numOfWholeCopies;
-    private int numOfStripedCopies;
-    private long minFreeSpace = 0L; // 5GB is 5368709120L
+    private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
 
-    Distributor(int numOfStripes, int numOfWholeCopies, int numOfStripedCopies){
-        this.numOfStripes = numOfStripes;
-        this.numOfWholeCopies = numOfWholeCopies;
-        this.numOfStripedCopies = numOfStripedCopies;
-    }
-
-    private LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
         sortedMap.put("temp", 99999999999990L);
         for (String key : storageMap.keySet()){
@@ -47,15 +39,22 @@ public class Distributor {
         return sortedMap;
     }
 
-    public void distributor(String manifestFileLocation, String filePath, String filePathInCatalog, String JSONFilePath, String DestinationRepoLocation){
-         try {
-             String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-             DestinationRepoLocation += fileName;
-             //long sizeOfFile = FileUtils.getSize(filePath);
-             long sizeOfFile = 5000000L;
+    public static void distributor(String uploadFilePath, String filePathInCatalog, String DestinationRepoLocation){
+        int numOfStripes = Integer.valueOf(MeshFS.properties.get("numStripes").toString());
+        int numOfStripedCopies = Integer.valueOf(MeshFS.properties.get("numStripeCopy").toString());
+        int numOfWholeCopies = Integer.valueOf(MeshFS.properties.get("numWholeCopy").toString());
+        long minFreeSpace = Integer.valueOf(MeshFS.properties.get("minSpace").toString());
+        String manifestFileLocation = MeshFS.properties.get("repository").toString()+".manifest.json";
+        JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
+        String catalogFileLocation = MeshFS.properties.get("repository").toString()+".catalog.json";
+        try {
+             String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
+             DestinationRepoLocation += (File.separator + fileName);
+             long sizeOfFile = FileUtils.getSize(uploadFilePath);
+             //long sizeOfFile = 5000000L;
              long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
 
-             LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFileLocation);
+             LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFile);
              compStorageMap.put("0.0.0.0",0L);
              LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap); //sort the compStorageMap by descending available storage
              for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){ // account for the desired amount of free space
@@ -70,7 +69,7 @@ public class Distributor {
              */
              //create a unique filename for the uploaded file
              List<String> computersForWholes = new ArrayList<>();
-             JSONObject jsonObj = JSONManipulator.getJSONObject(JSONFilePath);
+             JSONObject jsonObj = JSONManipulator.getJSONObject(catalogFileLocation);
              String currentName = jsonObj.get("currentName").toString();
              String newName = incrementName(currentName);
 
@@ -123,12 +122,11 @@ public class Distributor {
                              if (lastResortComp <= stopOfWholes){
                                  availableStorage -= sizeOfFile;
                              }
-
+                             lastResortComp++;
                              if (availableStorage >= sizeOfStripe) {
                                  computersForStripes.add(macAddress);
                                  break;
                              }
-                             lastResortComp++;
                          }
                          if (lastResortComp >= sortedCompStorageMap.size()){
                              break;
@@ -153,9 +151,9 @@ public class Distributor {
              }
 
              for (String item : computersForWholes) {
-
                  String computerToReceive = item;
-                 //FileUtils.writeStripe(computerToReceive, filePath, DestinationRepoLocation, newName + "_w", 0L, sizeOfFile);
+                 FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_w", 0L, sizeOfFile);
+                 FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_w");
              }
 
              if (allowStripes){
@@ -188,7 +186,8 @@ public class Distributor {
                                      if (isNotBroken){
                                          stripes.get(currentStripe + 1).add(computerToReceive);
                                          long startByte = (sizeOfStripe * currentStripe);
-                                         //FileReader.writeStripe(computerToReceive, filePath, DestinationRepoLocation, newName + "_s" + currentStripe, startByte, sizeOfStripe);
+                                         FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
+                                         FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                          break;
                                      }
                                  }
@@ -196,7 +195,8 @@ public class Distributor {
                                      stripes.get(currentStripe + 1).add(computerToReceive);
                                      long startByte = (sizeOfStripe * currentStripe);
                                      long stopByte = (startByte + (sizeOfStripe));
-                                     //FileReader.writeStripe(computerToReceive, filePath, DestinationRepoLocation, newName + "_s" + currentStripe, startByte, stopByte);
+                                     FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
+                                     FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                      break;
                                  }
                              }
@@ -207,7 +207,7 @@ public class Distributor {
                      }
                  }
              }
-             JSONManipulator.addToIndex(stripes,filePathInCatalog, fileName, JSONFilePath, newName);
+             JSONManipulator.addToIndex(stripes,filePathInCatalog, fileName, catalogFileLocation, newName);
          }
          catch (Exception e) {
              e.printStackTrace();

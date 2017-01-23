@@ -281,9 +281,8 @@ public class JSONManipulator {
         }
     }
 
-    public static LinkedHashMap<String, Long> createStorageMap(String manifestFileLocation){
+    public static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile){
         LinkedHashMap<String,Long> storageMap = new LinkedHashMap();
-        JSONObject manifestFile = getJSONObject(manifestFileLocation);
         for (Object MACAddress: manifestFile.keySet()){
             storageMap.put(MACAddress.toString(),Long.valueOf((((JSONObject)manifestFile.get(MACAddress)).get("FreeSpace")).toString()));
         }
