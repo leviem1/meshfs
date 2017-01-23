@@ -164,7 +164,7 @@ public class MoveFileWindow extends JFrame {
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
-        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation);
+        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation, userAccount);
         if (!(folderContents.values().contains("directory"))){
             DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no folders)");
             branch.add(leaf);

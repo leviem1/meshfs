@@ -10,8 +10,8 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1::::262:x, seq {par l {seq {comp fileNameLbl:::p::p, space :::p, comp fileNameValue:::p::p}, seq l {comp fileSizeLbl:::p::p, space :::p, comp fileSizeValue:::p::p}, seq l {comp label5:::p::p, space :::p, comp label10:::p::p}, comp label6::l:p::p, seq l {comp creationDateLbl:::p::p, space :::p, comp creationDateValue:::p::p}}, space :0:136:x}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp fileNameLbl::b:p::p, comp fileNameValue::b:p::p}, space s:::p, par b {comp fileSizeLbl::b:p::p, comp fileSizeValue::b:p::p}, space s:::p, par b {comp creationDateLbl::b:p::p, comp creationDateValue::b:p::p}, space s:::p, par b {comp label5::b:p::p, comp label10::b:p::p}, space s:::p, comp label6:::p::p, space :::p, comp scrollPane1:::p:108:p, space :::x}}"
+					"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1::::262:x, seq {par l {seq {comp fileNameLbl:::p::p, space :::p, comp fileNameValue:::p::p}, seq l {comp fileSizeLbl:::p::p, space :::p, comp fileSizeValue:::p::p}, seq l {comp ownerLbl:::p::p, space :::p, comp ownerValue:::p::p}, comp label6::l:p::p, seq l {comp creationDateLbl:::p::p, space :::p, comp creationDateValue:::p::p}}, space :0:132:x}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp fileNameLbl::b:p::p, comp fileNameValue::b:p::p}, space s:::p, par b {comp fileSizeLbl::b:p::p, comp fileSizeValue::b:p::p}, space s:::p, par b {comp creationDateLbl::b:p::p, comp creationDateValue::b:p::p}, space s:::p, par b {comp ownerLbl::b:p::p, comp ownerValue::b:p::p}, space s:::p, comp label6:::p::p, space :::p, comp scrollPane1:::p:108:p, space :::x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -30,7 +30,7 @@ new FormModel {
 						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label5"
+						name: "ownerLbl"
 						"text": "Added By:"
 						"font": #SwingDerivedFont0
 					} )
@@ -70,7 +70,7 @@ new FormModel {
 						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label10"
+						name: "ownerValue"
 						"text": "guest"
 						"font": #SwingDerivedFont0
 					} )

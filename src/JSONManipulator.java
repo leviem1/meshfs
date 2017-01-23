@@ -40,7 +40,7 @@ public class JSONManipulator {
         return jsonArray;
     }
 
-    public static Map<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation){
+    public static Map<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
         String[] Tree = folderLocation.split("/");
         JSONObject folderToRead = jsonObject;
         for (String folder : Tree) {
@@ -50,8 +50,10 @@ public class JSONManipulator {
         for (Object key : folderToRead.keySet()) {
             String keyStr = key.toString();
             try{
-                String type = (((JSONObject) folderToRead.get(keyStr)).get("type")).toString();
-                contents.put(keyStr,type);
+                if ((((JSONObject) folderToRead.get(keyStr)).get("owner")).toString().equals(userAccount)) {
+                    String type = (((JSONObject) folderToRead.get(keyStr)).get("type")).toString();
+                    contents.put(keyStr, type);
+                }
             }
             catch (Exception e){}
         }
@@ -122,9 +124,10 @@ public class JSONManipulator {
         return jsonObject;
     }
 
-    public static JSONObject addFolder(JSONObject jsonObject, String jsonPath, String directoryName){
+    public static JSONObject addFolder(JSONObject jsonObject, String jsonPath, String directoryName, String userAccount){
         JSONObject type = new JSONObject();
         type.put("type", "directory");
+        type.put("owner", userAccount);
         jsonObject = putItemInFolder(jsonObject, jsonPath, directoryName, type);
         return jsonObject;
     }

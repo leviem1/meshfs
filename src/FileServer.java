@@ -116,7 +116,7 @@ class ServerInit implements Runnable {
                     deleteFile(requestParts[1], out);
 
                 } else if (requestParts[0].equals("106")) {     //106:Make directory (virtual)
-                    createDirectory(requestParts[1], requestParts[2], out);
+                    createDirectory(requestParts[1], requestParts[2], out, requestParts[3]);
 
                 } else if (requestParts[0].equals("107")) {     //107:Get report
                     sendReport(out);
@@ -243,12 +243,12 @@ class ServerInit implements Runnable {
 
     }
 
-    private void createDirectory(String directoryPath, String directoryName, Socket client) throws IOException {
+    private void createDirectory(String directoryPath, String directoryName, Socket client, String userAccount) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
         JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
-        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.addFolder(jsonObj, directoryPath, directoryName));
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.addFolder(jsonObj, directoryPath, directoryName, userAccount));
 
     }
 

@@ -178,7 +178,7 @@ public class NewDirectoryWindow extends JFrame {
                     }
                 }
                 try {
-                    FileClient.addFolder(serverAddress, port, newFolderPath, directoryName);
+                    FileClient.addFolder(serverAddress, port, newFolderPath, directoryName, userAccount);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -190,7 +190,7 @@ public class NewDirectoryWindow extends JFrame {
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
-        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation);
+        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation, userAccount);
         if (!(folderContents.values().contains("directory"))){
             DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no folders)");
             branch.add(leaf);

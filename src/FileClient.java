@@ -214,7 +214,7 @@ public final class FileClient {
         }
     }
 
-    public static void addFolder(String serverAddress, int port, String directoryPath, String directoryName) throws IOException {
+    public static void addFolder(String serverAddress, int port, String directoryPath, String directoryName, String userAccount) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         try{
@@ -230,7 +230,7 @@ public final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("106|" + directoryPath + "|" + directoryName + "\n");
+            out.println("106|" + directoryPath + "|" + directoryName + "|" + userAccount + "\n");
             if ((response = input.readLine().trim()).equals("201")) {
             } else {
                 System.err.println(response);

@@ -14,13 +14,14 @@ import javax.swing.border.*;
  * @author Mark Hedrick
  */
 public class ClientBrowserFileProperties extends JFrame {
-    private ClientBrowserFileProperties(String fileName, String fileSize, String creationDate) {
+    private ClientBrowserFileProperties(String fileName, String fileSize, String creationDate, String owner) {
         initComponents(fileName, fileSize, creationDate);
         frameListeners();
         fileNameValue.setText(fileName);
         fileNameValue.setToolTipText(fileName);
         fileSizeValue.setText(fileSize);
         creationDateValue.setText(creationDate);
+        ownerValue.setText(owner);
         this.setTitle(fileName + " - Properties");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -39,14 +40,14 @@ public class ClientBrowserFileProperties extends JFrame {
         fileNameLbl = new JLabel();
         fileSizeLbl = new JLabel();
         creationDateLbl = new JLabel();
-        label5 = new JLabel();
+        ownerLbl = new JLabel();
         label6 = new JLabel();
         scrollPane1 = new JScrollPane();
         list1 = new JList();
         fileNameValue = new JLabel(fileName);
         fileSizeValue = new JLabel(fileSize);
         creationDateValue = new JLabel(creationDate);
-        label10 = new JLabel();
+        ownerValue = new JLabel();
         buttonBar = new JPanel();
         okButton = new JButton();
         titleLbl = new JLabel();
@@ -76,9 +77,9 @@ public class ClientBrowserFileProperties extends JFrame {
                 creationDateLbl.setText("Creation Date:");
                 creationDateLbl.setFont(new Font("Arial", creationDateLbl.getFont().getStyle(), creationDateLbl.getFont().getSize() + 1));
 
-                //---- label5 ----
-                label5.setText("Added By:");
-                label5.setFont(new Font("Arial", label5.getFont().getStyle(), label5.getFont().getSize() + 1));
+                //---- ownerLbl ----
+                ownerLbl.setText("Added By:");
+                ownerLbl.setFont(new Font("Arial", ownerLbl.getFont().getStyle(), ownerLbl.getFont().getSize() + 1));
 
                 //---- label6 ----
                 label6.setText("Access Permissions:");
@@ -101,9 +102,9 @@ public class ClientBrowserFileProperties extends JFrame {
                 creationDateValue.setText("null");
                 creationDateValue.setFont(new Font("Arial", creationDateValue.getFont().getStyle(), creationDateValue.getFont().getSize() + 1));
 
-                //---- label10 ----
-                label10.setText("guest");
-                label10.setFont(new Font("Arial", label10.getFont().getStyle(), label10.getFont().getSize() + 1));
+                //---- ownerValue ----
+                ownerValue.setText("guest");
+                ownerValue.setFont(new Font("Arial", ownerValue.getFont().getStyle(), ownerValue.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -124,15 +125,15 @@ public class ClientBrowserFileProperties extends JFrame {
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(fileSizeValue))
                                         .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(label5)
+                                            .addComponent(ownerLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(label10))
+                                            .addComponent(ownerValue))
                                         .addComponent(label6)
                                         .addGroup(contentPanelLayout.createSequentialGroup()
                                             .addComponent(creationDateLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(creationDateValue)))
-                                    .addGap(0, 136, Short.MAX_VALUE)))
+                                    .addGap(0, 132, Short.MAX_VALUE)))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
@@ -152,8 +153,8 @@ public class ClientBrowserFileProperties extends JFrame {
                                 .addComponent(creationDateValue))
                             .addGap(18, 18, 18)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(label5)
-                                .addComponent(label10))
+                                .addComponent(ownerLbl)
+                                .addComponent(ownerValue))
                             .addGap(18, 18, 18)
                             .addComponent(label6)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
@@ -199,8 +200,8 @@ public class ClientBrowserFileProperties extends JFrame {
         });
     }
 
-    public static void run(String fileName, String fileSize, String creationDate, JFrame sender) {
-        JFrame clientBrowserFileProperties = new ClientBrowserFileProperties(fileName, fileSize, creationDate);
+    public static void run(String fileName, String fileSize, String creationDate, String owner, JFrame sender) {
+        JFrame clientBrowserFileProperties = new ClientBrowserFileProperties(fileName, fileSize, creationDate, owner);
         CenterWindow.centerOnWindow(sender, clientBrowserFileProperties);
         clientBrowserFileProperties.setVisible(true);
     }
@@ -212,14 +213,14 @@ public class ClientBrowserFileProperties extends JFrame {
     private JLabel fileNameLbl;
     private JLabel fileSizeLbl;
     private JLabel creationDateLbl;
-    private JLabel label5;
+    private JLabel ownerLbl;
     private JLabel label6;
     private JScrollPane scrollPane1;
     private JList list1;
     private JLabel fileNameValue;
     private JLabel fileSizeValue;
     private JLabel creationDateValue;
-    private JLabel label10;
+    private JLabel ownerValue;
     private JPanel buttonBar;
     private JButton okButton;
     private JLabel titleLbl;

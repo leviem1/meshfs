@@ -17,6 +17,7 @@ import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import static java.lang.String.valueOf;
 import static java.lang.Math.toIntExact;
@@ -31,6 +32,8 @@ public class ServerModeConfiguration extends JFrame {
         model = new DefaultListModel();
         initComponents();
         frameListeners();
+        submitBtn.setEnabled(false);
+        removeUserBtn.setEnabled(false);
         ipJListField.setSelectedIndex(0);
         freeSpaceLbl.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
         spaceSldr.setMaximum(toIntExact(Reporting.getSystemStorage()/1073741824)-10);
@@ -319,7 +322,7 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(freeSpaceLbl)
-                                .addContainerGap(119, Short.MAX_VALUE))
+                                .addContainerGap(115, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Storage", storageTab);
@@ -365,26 +368,24 @@ public class ServerModeConfiguration extends JFrame {
                                         .addGap(0, 0, Short.MAX_VALUE)
                                         .addComponent(removeUserBtn))
                                     .addGroup(userAccountsLayout.createSequentialGroup()
+                                        .addGap(238, 238, 238)
+                                        .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 214, Short.MAX_VALUE))
+                                    .addGroup(userAccountsLayout.createSequentialGroup()
+                                        .addContainerGap()
                                         .addGroup(userAccountsLayout.createParallelGroup()
                                             .addGroup(userAccountsLayout.createSequentialGroup()
-                                                .addGap(238, 238, 238)
-                                                .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(userAccountsLayout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(userAccountsLayout.createParallelGroup()
-                                                    .addGroup(userAccountsLayout.createSequentialGroup()
-                                                        .addComponent(usernameLbl)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(usernameValueField, GroupLayout.PREFERRED_SIZE, 143, GroupLayout.PREFERRED_SIZE))
-                                                    .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                                        .addComponent(submitBtn)
-                                                        .addGroup(userAccountsLayout.createSequentialGroup()
-                                                            .addComponent(passwordLbl)
-                                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                            .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE))))
+                                                .addComponent(usernameLbl)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 226, GroupLayout.PREFERRED_SIZE)))
-                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                                .addComponent(usernameValueField, GroupLayout.PREFERRED_SIZE, 143, GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                .addComponent(submitBtn)
+                                                .addGroup(userAccountsLayout.createSequentialGroup()
+                                                    .addComponent(passwordLbl)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE))))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)))
                                 .addContainerGap())
                     );
                     userAccountsLayout.setVerticalGroup(
@@ -730,6 +731,36 @@ public class ServerModeConfiguration extends JFrame {
                 }
             }
         });
+        passwordValueField.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (!(String.valueOf(passwordValueField.getPassword())).isEmpty()) {
+                    submitBtn.setEnabled(true);
+                    userAccounts.getRootPane().setDefaultButton(submitBtn);
+                }else {
+                    submitBtn.setEnabled(false);
+                    userAccounts.getRootPane().setDefaultButton(submitBtn);
+                }
+
+            }
+        });
+        userAccountDataList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                if(userAccountDataList.isSelectionEmpty()){
+                    removeUserBtn.setEnabled(false);
+                }else{
+                    removeUserBtn.setEnabled(true);
+                }
+            }
+        });
     }
 
     private ArrayList<String> ipJList(){
@@ -757,6 +788,8 @@ public class ServerModeConfiguration extends JFrame {
         for (int i = 0; i < userAccountDataList.getModel().getSize(); i++) {
             String user = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>"));
             String pass = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
+            String passOrig = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
+
             for(int x = 0; x < user.length()-1; x=x+2){
                 try{
                     pass += user.charAt(x);
@@ -770,9 +803,11 @@ public class ServerModeConfiguration extends JFrame {
                 e.printStackTrace();
             }
             messageDigest.update(pass.getBytes(),0, pass.length());
-            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + pass + "</i><br>";
+            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
             accounts.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
-            System.out.println("Creating user: " + user + " with password: " + pass + " encrypted pass: " + new BigInteger(1,messageDigest.digest()).toString(256));
+        }
+        if(out.equals("")){
+            out = "(none)";
         }
         ServerConfigConfirmation.run(this, "<html><center><b>Interface:</b> " + MeshFS.properties.getProperty("preferredInterface") + "<br><br><b>Timeout:</b> " + MeshFS.properties.getProperty("timeout") + "s<br><br><b>Port:</b> " + MeshFS.properties.getProperty("portNumber") + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + MeshFS.properties.getProperty("numWholeCopy") + "/" + MeshFS.properties.getProperty("numStripes") + "/" + MeshFS.properties.getProperty("numStripeCopy") + "<br><br><b>Repository:</b> " + MeshFS.properties.getProperty("repository") + "<br><br><b>Minimum Space:</b> " + MeshFS.properties.getProperty("minSpace") + "<br><br><b>Server Threads:</b> " + MeshFS.properties.getProperty("serverThreads") + "<br><br><b>Accounts:</b><br>" + out + "</center></html>", accounts);
         dispose();

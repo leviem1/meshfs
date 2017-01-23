@@ -280,6 +280,7 @@ public class ClientBrowser extends JFrame {
                     fileObj.put("fileSizeActual", size);
                     fileObj.put("creationDate", creationDate);
                     fileObj.put("fileName", fileChooser.getSelectedFile().getName());
+                    fileObj.put("owner", userAccount);
                     try {
                         JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.putItemInFolder(jsonObj, "root", fileChooser.getSelectedFile().getName(), fileObj));
                     } catch (IOException e1) {
@@ -311,17 +312,18 @@ public class ClientBrowser extends JFrame {
                     if(node.toString().equals("(no files)")){
                         browserBtns(false);
                         tree1.setSelectionPath(null);
-                    }else{
-                        if(node.getChildCount() != 0){
-                            if(!(node.toString().equals("root"))){
+                    } else if (node.toString().equals("root")) {
+                        browserBtns(false);
+                    } else {
+                        if (node.getChildCount() != 0) {
+                            if (!(node.toString().equals("root"))) {
                                 browserBtns(false);
                                 removeBtn.setEnabled(true);
                                 renameBtn.setEnabled(true);
                                 duplicateBtn.setEnabled(true);
                                 moveBtn.setEnabled(true);
                             }
-                        }
-                        else{
+                        } else {
                             browserBtns(true);
                             removeBtn.setEnabled(true);
                             renameBtn.setEnabled(true);
@@ -415,8 +417,9 @@ public class ClientBrowser extends JFrame {
                 JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
                 Object fileSize = fileProperties.get("fileSize");
                 Object creationDate = fileProperties.get("creationDate");
+                Object owner = fileProperties.get("owner");
 
-                ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString(), clientBrowser);
+                ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString(), owner.toString(), clientBrowser);
             }
         });
         removeBtn.addActionListener(new ActionListener() {
@@ -469,7 +472,7 @@ public class ClientBrowser extends JFrame {
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
-        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation);
+        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation, userAccount);
         if (folderContents.keySet().isEmpty()){
             DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
             branch.add(leaf);
