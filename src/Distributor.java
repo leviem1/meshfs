@@ -53,13 +53,13 @@ public class Distributor {
              DestinationRepoLocation += fileName;
              //FileReader reader = new FileReader(filePath);
              //long sizeOfFile = reader.getSize();
-             long sizeOfFile = 5000000000L;
+             long sizeOfFile = 5000000L;
              //reader.closeFile();
              long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
 
              compStorageMap.put("0.0.0.0",0L);
-             LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap);
-             for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){
+             LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap); //sort the compStorageMap by descending available storage
+             for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){ // account for the desired amount of free space
                  String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
                  sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(String.valueOf(macAddress)) - minFreeSpace);
              }
@@ -69,12 +69,14 @@ public class Distributor {
                  numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
              }
              */
-             int stopOfWholes = (-1);
-
+             //create a unique filename for the uploaded file
              List<String> computersForWholes = new ArrayList<>();
              JSONObject jsonObj = JSONManipulator.getJSONObject(JSONFilePath);
              String currentName = jsonObj.get("currentName").toString();
              String newName = incrementName(currentName);
+
+             //determine which computers can hold the full file
+             int stopOfWholes = (-1);
              for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
                  String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
                  if (sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
@@ -206,7 +208,6 @@ public class Distributor {
                      }
                  }
              }
-
              JSONManipulator.addToIndex(stripes,filePathInCatalog, fileName, JSONFilePath, newName);
          }
          catch (Exception e) {
