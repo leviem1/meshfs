@@ -81,10 +81,7 @@ public class MeshFS {
 
             if(!catalog.exists()){
                 JSONObject newCatalog = new JSONObject();
-                JSONObject root = new JSONObject();
-                root.put("type", "directory");
                 newCatalog.put("currentName", "0000000000000000");
-                newCatalog.put("root", root);
                 try {
                     JSONManipulator.writeJSONObject(properties.getProperty("repository")+".catalog.json", newCatalog);
                 } catch (IOException e) {
