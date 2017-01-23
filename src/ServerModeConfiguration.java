@@ -699,11 +699,14 @@ public class ServerModeConfiguration extends JFrame {
         });
         submitBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int pos = userAccountDataList.getModel().getSize();
+
                 String password = String.valueOf(passwordValueField.getPassword());
                 String value = "<html>Username: " + usernameValueField.getText() + "<br>Password: " + password + "</html>";
+                System.out.println(userAccountDataList.getModel().getSize());
+                int pos = userAccountDataList.getModel().getSize();
                 if(userAccountDataList.getModel().getSize() > 0) {
                     for (int i = 0; i < userAccountDataList.getModel().getSize(); i++) {
+
                         if (userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>")).equals(usernameValueField.getText())) {
                             usernameValueField.setText("");
                             passwordValueField.setText("");
@@ -729,6 +732,11 @@ public class ServerModeConfiguration extends JFrame {
                 if(index > -1){
                     userAccountDataList.remove(index);
                 }
+                DefaultListModel modelNew = new DefaultListModel();
+                for(int x = 0; x < userAccountDataList.getModel().getSize() - 1; x ++){
+                    modelNew.addElement(model.getElementAt(x));
+                }
+                userAccountDataList.setModel(modelNew);
             }
         });
         passwordValueField.getDocument().addDocumentListener(new DocumentListener() {
