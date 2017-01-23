@@ -48,6 +48,8 @@ public class ConfigParser {
             prop.setProperty("repository", prop.getProperty("repository") + File.separator);
             write(prop);
         }
+
+        if (prop.getProperty("timeout") == null) prop.setProperty("timeout", "5");
         return prop;
     }
 

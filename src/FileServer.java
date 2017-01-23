@@ -234,7 +234,7 @@ class ServerInit implements Runnable {
 
         Thread distributor = new Thread() {
             public void run() {
-                Distributor distributorObj = new Distributor(Integer.parseInt(MeshFS.properties.getProperty("numStripes")), Integer.parseInt(MeshFS.properties.getProperty("numWholeCopy")), Integer.parseInt(MeshFS.properties.getProperty("numStripeCopy")));
+        //        Distributor distributorObj = new Distributor(Integer.parseInt(MeshFS.properties.getProperty("numStripes")), Integer.parseInt(MeshFS.properties.getProperty("numWholeCopy")), Integer.parseInt(MeshFS.properties.getProperty("numStripeCopy")));
                 //Run Distributor Code
             }
         };

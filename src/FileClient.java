@@ -73,6 +73,7 @@ public final class FileClient {
             if (input.readLine().trim().equals("201")) {
                 out.println(Reporting.generate() + "\n");
             }
+            client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
@@ -103,6 +104,7 @@ public final class FileClient {
                 reportFull = reportFull + reportPart + "\n";
             }
             reportFull = reportFull.trim();
+            client.close();
             JSONManipulator.writeJSONObject("manifest.json", Reporting.splitter(reportFull));
         }
     }
@@ -110,15 +112,7 @@ public final class FileClient {
     public static void duplicateFile(String serverAddress, int port, String currFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
-        try{
-            if(MeshFS.properties.getProperty("timeout") != null){
-                timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
-            }
-            else{
-                timeout = 5;
-            }
-        }catch(NullPointerException npe){}
-        client.setSoTimeout(timeout * 1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
@@ -130,6 +124,7 @@ public final class FileClient {
                 System.err.println(response);
             }
 
+            client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
@@ -138,15 +133,7 @@ public final class FileClient {
     public static void renameFile(String serverAddress, int port, String jsonObj, String newName) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
-        try{
-            if(MeshFS.properties.getProperty("timeout") != null){
-                timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
-            }
-            else{
-                timeout = 5;
-            }
-        }catch(NullPointerException npe){}
-        client.setSoTimeout(timeout * 1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
@@ -156,6 +143,8 @@ public final class FileClient {
             } else {
                 System.err.println(response);
             }
+
+            client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
@@ -164,15 +153,7 @@ public final class FileClient {
     public static void moveFile(String serverAddress, int port, String currFile, String destFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
-        try{
-            if(MeshFS.properties.getProperty("timeout") != null){
-                timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
-            }
-            else{
-                timeout = 5;
-            }
-        }catch(NullPointerException npe){}
-        client.setSoTimeout(timeout * 1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
@@ -184,6 +165,7 @@ public final class FileClient {
                 System.err.println(response);
             }
 
+            client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
@@ -192,15 +174,7 @@ public final class FileClient {
     public static void deleteFile(String serverAddress, int port, String currFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
-        try{
-            if(MeshFS.properties.getProperty("timeout") != null){
-                timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
-            }
-            else{
-                timeout = 5;
-            }
-        }catch(NullPointerException npe){}
-        client.setSoTimeout(timeout * 1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try {
@@ -209,6 +183,8 @@ public final class FileClient {
             } else {
                 System.err.println(response);
             }
+
+            client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
@@ -217,15 +193,7 @@ public final class FileClient {
     public static void addFolder(String serverAddress, int port, String directoryPath, String directoryName, String userAccount) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
-        try{
-            if(MeshFS.properties.getProperty("timeout") != null){
-                timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
-            }
-            else{
-                timeout = 5;
-            }
-        }catch(NullPointerException npe){}
-        client.setSoTimeout(timeout * 1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
@@ -235,6 +203,8 @@ public final class FileClient {
             } else {
                 System.err.println(response);
             }
+
+            client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
@@ -242,15 +212,7 @@ public final class FileClient {
 
     public static void sendFile(String serverAddress, int port, String filepath) throws IOException {
         Socket client = new Socket(serverAddress, port);
-        try{
-            if(MeshFS.properties.getProperty("timeout") != null){
-                timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
-            }
-            else{
-                timeout = 5;
-            }
-        }catch(NullPointerException npe){}
-        client.setSoTimeout(timeout * 1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -272,6 +234,7 @@ public final class FileClient {
                 fis.close();
                 dos.close();
             }
+            client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
@@ -280,15 +243,7 @@ public final class FileClient {
     @SuppressWarnings( "deprecation" )
     public static void receiveFile(String serverAddress, int port, String fileName) throws IOException {
         Socket client = new Socket(serverAddress, port);
-        try{
-            if(MeshFS.properties.getProperty("timeout") != null){
-                timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
-            }
-            else{
-                timeout = 5;
-            }
-        }catch(NullPointerException npe){}
-        client.setSoTimeout(timeout * 1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         DataInputStream dis = new DataInputStream(client.getInputStream());
 
@@ -308,7 +263,7 @@ public final class FileClient {
                 fos.close();
                 dis.close();
             }
-
+            client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
@@ -317,15 +272,7 @@ public final class FileClient {
     @SuppressWarnings( "deprecation" )
     public static void receiveFile(String serverAddress, int port, String fileName, String fileOut) throws IOException {
         Socket client = new Socket(serverAddress, port);
-        try{
-            if(MeshFS.properties.getProperty("timeout") != null){
-                timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
-            }
-            else{
-                timeout = 5;
-            }
-        }catch(NullPointerException npe){}
-        client.setSoTimeout(timeout * 1000);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         DataInputStream dis = new DataInputStream(client.getInputStream());
 
@@ -346,6 +293,8 @@ public final class FileClient {
                 fos.close();
                 dis.close();
             }
+
+            client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
