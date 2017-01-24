@@ -160,7 +160,7 @@ public class JSONManipulator {
         return jsonObject;
     }
 
-    public static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String userAccount) {
+    public static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String userAccount, long fileSize) {
 
         JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
         jsonFile.replace("currentName", alphanumericName);
@@ -184,10 +184,15 @@ public class JSONManipulator {
             ipArray.clear();
 
         }
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
+        String creationDate = df.format(new Date());
 
         objChild.put("owner", userAccount);
         objChild.put("type", "file");
         objChild.put("fileName", alphanumericName);
+        objChild.put("fileSizeActual", Math.toIntExact(fileSize));
+        objChild.put("fileSize", Math.toIntExact(fileSize));
+        objChild.put("creationDate", creationDate);
 
         jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName,objChild);
 
@@ -225,12 +230,11 @@ public class JSONManipulator {
         }
     }
 
-    public static boolean pullFile(String itemLocation) throws IOException {
+    public static void pullFile(String itemLocation, String outFileDir, String outFile, String serverAddress, int portNumber) throws IOException {
         int port = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
-        String repo = MeshFS.properties.getProperty("repository");
-        String catalogFileLocation = repo + ".catolog.json";
+        String catalogFileLocation = ".catalog.json";
         String manifestFileLocation = "manifest.json";
-        String itemName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
+        FileClient.receiveFile(serverAddress, portNumber, "manifest.json", "manifest.json");
         String[] folders = itemLocation.split("/");
         JSONObject itemToRead = JSONManipulator.getJSONObject(catalogFileLocation);
         for (String folder : folders) {
@@ -238,10 +242,10 @@ public class JSONManipulator {
         }
         if (!itemToRead.get("type").toString().equals("file")){
             System.out.println("Select a file, not a folder!");
-            return false;
+            return;
         }
         String fileName = itemToRead.get("fileName").toString();
-
+        System.out.println(manifestFileLocation);
         JSONObject compInfoFile = getJSONObject(manifestFileLocation);
         List<String> stripeNames = new ArrayList<>();
         boolean wholeNecessary = false;
@@ -254,7 +258,8 @@ public class JSONManipulator {
                     if (compInfoFile.containsKey(MACAddress)) {
                         if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameWNum)){
                             String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
-                            FileClient.receiveFile(IPAddress, port, fileNameWNum, repo + fileNameWNum);
+                            System.out.println("We Got this Far!");
+                            FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + fileNameWNum);
                             stripeNames.add(fileNameWNum);
                             cantContinue = false;
                             break;
@@ -267,28 +272,32 @@ public class JSONManipulator {
                 }
             }
         }
+        System.out.println("We got thus far");
+        System.out.println(wholeNecessary);
         if (wholeNecessary){
+            System.out.println("We got thus far2");
             String fileNameW = fileName +"_w";
             JSONArray compsWithWhole = (JSONArray) itemToRead.get("whole");
+            System.out.println("We got thus far44");
             for (Object MACAddress : compsWithWhole) {
                 if (compInfoFile.containsKey(MACAddress)) {
+                    System.out.println("We got thus far3");
                     if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
                         String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
-                        FileClient.receiveFile(IPAddress, port,fileNameW, repo + itemName);
-                        return true;
+                        FileClient.receiveFile(IPAddress, port,fileNameW, outFileDir + File.separator + outFile);
                     }
                 }
             }
             System.out.println("File is unrecoverable!");
-            return false;
+            return;
         }
+
         else {
-            FileUtils.combineStripes(stripeNames,repo + itemName);
+            System.out.println("else");
+            FileUtils.combineStripes(stripeNames,outFileDir + outFile);
             for (String filePath:stripeNames){
                 Files.deleteIfExists(Paths.get(filePath));
             }
-
-            return true;
         }
     }
 

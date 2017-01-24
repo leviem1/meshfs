@@ -19,8 +19,16 @@ import javax.swing.border.*;
 
 public class ServerConfigConfirmation extends JFrame {
     private HashMap accountDetails;
-    private ServerConfigConfirmation(String content, HashMap accountDetails) {
+    private Properties properties;
+    private ServerConfigConfirmation(String content, HashMap accountDetails, Properties properties) {
+        this.properties = properties;
         this.accountDetails = accountDetails;
+        try{
+            ServerModeConfiguration.writeConfig(properties);
+            JOptionPane.showMessageDialog(null, "Configuration was saved!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Error when saving configuration!", "MeshFS - Success", JOptionPane.ERROR_MESSAGE);
+        }
         initComponents();
         frameListeners();
         configValues.setContentType("text/html");
@@ -160,8 +168,8 @@ public class ServerConfigConfirmation extends JFrame {
         }
     }
 
-    public static void run(JFrame sender, String content, HashMap accountDetails) {
-        JFrame serverConfigConfirmation = new ServerConfigConfirmation(content, accountDetails);
+    public static void run(JFrame sender, String content, HashMap accountDetails, Properties properties) {
+        JFrame serverConfigConfirmation = new ServerConfigConfirmation(content, accountDetails, properties);
         CenterWindow.centerOnWindow(sender, serverConfigConfirmation);
         serverConfigConfirmation.setVisible(true);
     }

@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 import java.io.File;
 import java.util.*;
 
-public class Distributor {
+public class DISTAL {
 
     private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
 
@@ -52,7 +52,7 @@ public class Distributor {
         int numOfWholeCopies = Integer.valueOf(MeshFS.properties.get("numWholeCopy").toString());
         long minFreeSpace = Integer.valueOf(MeshFS.properties.get("minSpace").toString());
         uploadFilePath = MeshFS.properties.get("repository").toString() + uploadFilePath;
-        String manifestFileLocation = "manifest.json";
+        String manifestFileLocation = MeshFS.properties.get("repository")+"manifest.json";
         String DestinationRepoLocation = MeshFS.properties.get("repository").toString();
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.get("repository").toString()+".catalog.json";
@@ -228,7 +228,7 @@ public class Distributor {
                  }
              }
              FileUtils.removeFile(uploadFilePath);
-             JSONManipulator.addToIndex(stripes,filePathInCatalog, fileName, catalogFileLocation, newName, userAccount);
+             JSONManipulator.addToIndex(stripes, filePathInCatalog, fileName, catalogFileLocation, newName, userAccount, sizeOfFile);
          }
          catch (Exception e) {
              e.printStackTrace();

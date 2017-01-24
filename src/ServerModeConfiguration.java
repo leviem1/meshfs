@@ -31,10 +31,11 @@ public class ServerModeConfiguration extends JFrame {
     private ServerModeConfiguration() {
         model = new DefaultListModel();
         initComponents();
-        frameListeners();
         submitBtn.setEnabled(false);
         removeUserBtn.setEnabled(false);
-        ipJListField.setSelectedIndex(0);
+        backupConfigBtn.setEnabled(false);
+        okButton.setEnabled(false);
+        frameListeners();
         freeSpaceLbl.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
         spaceSldr.setMaximum(toIntExact(Reporting.getSystemStorage()/1073741824)-10);
         spaceSldr.setMinimum(0);
@@ -57,21 +58,20 @@ public class ServerModeConfiguration extends JFrame {
         dialogPane = new JPanel();
         serverSettingPane = new JTabbedPane();
         networkTab = new JPanel();
+        serverNetworkInterfaceLbl = new JLabel();
+        masterServerField = new JTextField();
         serverPortLbl = new JLabel();
         serverPortField = new JFormattedTextField(numberFormat);
         serverThreadsLbl = new JLabel();
         serverThreadsField = new JFormattedTextField(numberFormat);
         serverTimeoutLbl = new JLabel();
         serverTimeoutField = new JFormattedTextField(numberFormat);
-        stripesLbl = new JLabel();
         numStripesField = new JFormattedTextField(numberFormat);
-        stripedCopiesLbl = new JLabel();
+        stripesLbl = new JLabel();
         numStripeCopiesField = new JFormattedTextField(numberFormat);
-        wholeCopiesLbl = new JLabel();
+        stripedCopiesLbl = new JLabel();
         numWholeField = new JFormattedTextField(numberFormat);
-        serverNetworkInterfaceLbl = new JLabel();
-        scrollPane1 = new JScrollPane();
-        ipJListField = new JList(ipJList().toArray());
+        wholeCopiesLbl = new JLabel();
         storageTab = new JPanel();
         repositoryLbl = new JLabel();
         repoPathField = new JTextField(System.getProperty("user.dir")+ File.separator + "repo");
@@ -88,9 +88,9 @@ public class ServerModeConfiguration extends JFrame {
         passwordValueField = new JPasswordField();
         passwordLbl = new JLabel();
         submitBtn = new JButton();
-        removeUserBtn = new JButton();
         scrollPane2 = new JScrollPane();
         userAccountDataList = new JList(model);
+        removeUserBtn = new JButton();
         buttonBar = new JPanel();
         importConfigBtn = new JButton();
         backupConfigBtn = new JButton();
@@ -116,6 +116,13 @@ public class ServerModeConfiguration extends JFrame {
                 {
                     networkTab.setBackground(new Color(229, 229, 229));
 
+                    //---- serverNetworkInterfaceLbl ----
+                    serverNetworkInterfaceLbl.setText("Master Server:");
+                    serverNetworkInterfaceLbl.setFont(new Font("Arial", serverNetworkInterfaceLbl.getFont().getStyle(), serverNetworkInterfaceLbl.getFont().getSize() + 1));
+
+                    //---- masterServerField ----
+                    masterServerField.setText("127.0.0.1");
+
                     //---- serverPortLbl ----
                     serverPortLbl.setText("Network Port:");
                     serverPortLbl.setFont(new Font("Arial", serverPortLbl.getFont().getStyle(), serverPortLbl.getFont().getSize() + 1));
@@ -140,38 +147,29 @@ public class ServerModeConfiguration extends JFrame {
                     serverTimeoutField.setText("90");
                     serverTimeoutField.setFont(new Font("Arial", serverTimeoutField.getFont().getStyle(), serverTimeoutField.getFont().getSize() + 1));
 
-                    //---- stripesLbl ----
-                    stripesLbl.setText("Stripes:");
-                    stripesLbl.setFont(new Font("Arial", stripesLbl.getFont().getStyle(), stripesLbl.getFont().getSize() + 1));
-
                     //---- numStripesField ----
                     numStripesField.setText("3");
                     numStripesField.setFont(new Font("Arial", numStripesField.getFont().getStyle(), numStripesField.getFont().getSize() + 1));
 
-                    //---- stripedCopiesLbl ----
-                    stripedCopiesLbl.setText("Striped Copies:");
-                    stripedCopiesLbl.setFont(new Font("Arial", stripedCopiesLbl.getFont().getStyle(), stripedCopiesLbl.getFont().getSize() + 1));
+                    //---- stripesLbl ----
+                    stripesLbl.setText("Stripes:");
+                    stripesLbl.setFont(new Font("Arial", stripesLbl.getFont().getStyle(), stripesLbl.getFont().getSize() + 1));
 
                     //---- numStripeCopiesField ----
                     numStripeCopiesField.setText("2");
                     numStripeCopiesField.setFont(new Font("Arial", numStripeCopiesField.getFont().getStyle(), numStripeCopiesField.getFont().getSize() + 1));
 
-                    //---- wholeCopiesLbl ----
-                    wholeCopiesLbl.setText("Whole Copies:");
-                    wholeCopiesLbl.setFont(new Font("Arial", wholeCopiesLbl.getFont().getStyle(), wholeCopiesLbl.getFont().getSize() + 1));
+                    //---- stripedCopiesLbl ----
+                    stripedCopiesLbl.setText("Striped Copies:");
+                    stripedCopiesLbl.setFont(new Font("Arial", stripedCopiesLbl.getFont().getStyle(), stripedCopiesLbl.getFont().getSize() + 1));
 
                     //---- numWholeField ----
                     numWholeField.setText("2");
                     numWholeField.setFont(new Font("Arial", numWholeField.getFont().getStyle(), numWholeField.getFont().getSize() + 1));
 
-                    //---- serverNetworkInterfaceLbl ----
-                    serverNetworkInterfaceLbl.setText("Network Interface:");
-                    serverNetworkInterfaceLbl.setFont(new Font("Arial", serverNetworkInterfaceLbl.getFont().getStyle(), serverNetworkInterfaceLbl.getFont().getSize() + 1));
-
-                    //======== scrollPane1 ========
-                    {
-                        scrollPane1.setViewportView(ipJListField);
-                    }
+                    //---- wholeCopiesLbl ----
+                    wholeCopiesLbl.setText("Whole Copies:");
+                    wholeCopiesLbl.setFont(new Font("Arial", wholeCopiesLbl.getFont().getStyle(), wholeCopiesLbl.getFont().getSize() + 1));
 
                     GroupLayout networkTabLayout = new GroupLayout(networkTab);
                     networkTab.setLayout(networkTabLayout);
@@ -179,71 +177,64 @@ public class ServerModeConfiguration extends JFrame {
                         networkTabLayout.createParallelGroup()
                             .addGroup(networkTabLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                .addGroup(networkTabLayout.createParallelGroup()
                                     .addGroup(networkTabLayout.createSequentialGroup()
-                                        .addComponent(serverPortLbl)
+                                        .addComponent(serverNetworkInterfaceLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(stripedCopiesLbl)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(numStripeCopiesField, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(masterServerField, GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE))
                                     .addGroup(networkTabLayout.createSequentialGroup()
-                                        .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                            .addGroup(GroupLayout.Alignment.LEADING, networkTabLayout.createSequentialGroup()
-                                                .addComponent(stripesLbl)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(numStripesField, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                                .addGroup(GroupLayout.Alignment.LEADING, networkTabLayout.createSequentialGroup()
-                                                    .addComponent(serverTimeoutLbl)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(GroupLayout.Alignment.LEADING, networkTabLayout.createSequentialGroup()
-                                                    .addComponent(serverThreadsLbl)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))))
                                         .addGroup(networkTabLayout.createParallelGroup()
                                             .addGroup(networkTabLayout.createSequentialGroup()
-                                                .addGap(18, 18, 18)
-                                                .addGroup(networkTabLayout.createParallelGroup()
-                                                    .addGroup(networkTabLayout.createSequentialGroup()
-                                                        .addComponent(wholeCopiesLbl)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, 140, GroupLayout.PREFERRED_SIZE))
-                                                    .addComponent(serverNetworkInterfaceLbl)))
+                                                .addComponent(serverPortLbl)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                                                .addComponent(stripesLbl))
                                             .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
-                                                .addGap(94, 94, 94)
-                                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 155, GroupLayout.PREFERRED_SIZE)))))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addComponent(serverThreadsLbl)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                                                .addComponent(stripedCopiesLbl))
+                                            .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
+                                                .addComponent(serverTimeoutLbl)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addComponent(wholeCopiesLbl)))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(numWholeField, GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
+                                            .addComponent(numStripeCopiesField, GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
+                                            .addComponent(numStripesField, GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))))
+                                .addContainerGap())
                     );
                     networkTabLayout.setVerticalGroup(
                         networkTabLayout.createParallelGroup()
                             .addGroup(networkTabLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(serverNetworkInterfaceLbl)
+                                    .addComponent(masterServerField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverPortLbl)
                                     .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(stripedCopiesLbl)
-                                    .addComponent(numStripeCopiesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(numStripesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(stripesLbl))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverThreadsLbl)
                                     .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(wholeCopiesLbl)
-                                    .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(numStripeCopiesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(stripedCopiesLbl))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverTimeoutLbl)
                                     .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(serverNetworkInterfaceLbl))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(networkTabLayout.createParallelGroup()
-                                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(numStripesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(stripesLbl)))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(wholeCopiesLbl))
+                                .addContainerGap(25, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Network", networkTab);
@@ -287,22 +278,22 @@ public class ServerModeConfiguration extends JFrame {
                                 .addContainerGap()
                                 .addGroup(storageTabLayout.createParallelGroup()
                                     .addGroup(storageTabLayout.createSequentialGroup()
-                                        .addComponent(repositoryLbl)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(browseBtn))
-                                    .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(minFreeSpaceLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(minSpaceField, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(label1)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(spaceSldr, GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))
+                                        .addComponent(spaceSldr, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE))
                                     .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(freeSpaceLbl, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 95, Short.MAX_VALUE)))
+                                        .addGap(0, 69, Short.MAX_VALUE))
+                                    .addGroup(storageTabLayout.createSequentialGroup()
+                                        .addComponent(repositoryLbl)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(browseBtn)))
                                 .addContainerGap())
                     );
                     storageTabLayout.setVerticalGroup(
@@ -311,8 +302,8 @@ public class ServerModeConfiguration extends JFrame {
                                 .addContainerGap()
                                 .addGroup(storageTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(repositoryLbl)
-                                    .addComponent(repoPathField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(browseBtn))
+                                    .addComponent(browseBtn)
+                                    .addComponent(repoPathField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(storageTabLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                                     .addGroup(storageTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -322,7 +313,7 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(freeSpaceLbl)
-                                .addContainerGap(115, Short.MAX_VALUE))
+                                .addContainerGap(57, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Storage", storageTab);
@@ -349,14 +340,14 @@ public class ServerModeConfiguration extends JFrame {
                     submitBtn.setText("Submit");
                     submitBtn.setFont(new Font("Arial", submitBtn.getFont().getStyle(), submitBtn.getFont().getSize() + 1));
 
-                    //---- removeUserBtn ----
-                    removeUserBtn.setText("Remove User");
-                    removeUserBtn.setFont(new Font("Arial", removeUserBtn.getFont().getStyle(), removeUserBtn.getFont().getSize() + 1));
-
                     //======== scrollPane2 ========
                     {
                         scrollPane2.setViewportView(userAccountDataList);
                     }
+
+                    //---- removeUserBtn ----
+                    removeUserBtn.setText("Remove User");
+                    removeUserBtn.setFont(new Font("Arial", removeUserBtn.getFont().getStyle(), removeUserBtn.getFont().getSize() + 1));
 
                     GroupLayout userAccountsLayout = new GroupLayout(userAccounts);
                     userAccounts.setLayout(userAccountsLayout);
@@ -364,13 +355,10 @@ public class ServerModeConfiguration extends JFrame {
                         userAccountsLayout.createParallelGroup()
                             .addGroup(userAccountsLayout.createSequentialGroup()
                                 .addGroup(userAccountsLayout.createParallelGroup()
-                                    .addGroup(GroupLayout.Alignment.TRAILING, userAccountsLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(removeUserBtn))
                                     .addGroup(userAccountsLayout.createSequentialGroup()
                                         .addGap(238, 238, 238)
                                         .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 214, Short.MAX_VALUE))
+                                        .addGap(0, 0, Short.MAX_VALUE))
                                     .addGroup(userAccountsLayout.createSequentialGroup()
                                         .addContainerGap()
                                         .addGroup(userAccountsLayout.createParallelGroup()
@@ -385,7 +373,11 @@ public class ServerModeConfiguration extends JFrame {
                                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                     .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE))))
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)))
+                                        .addGroup(userAccountsLayout.createParallelGroup()
+                                            .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                                            .addGroup(GroupLayout.Alignment.TRAILING, userAccountsLayout.createSequentialGroup()
+                                                .addGap(0, 78, Short.MAX_VALUE)
+                                                .addComponent(removeUserBtn)))))
                                 .addContainerGap())
                     );
                     userAccountsLayout.setVerticalGroup(
@@ -400,15 +392,13 @@ public class ServerModeConfiguration extends JFrame {
                                         .addGap(18, 18, 18)
                                         .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                             .addComponent(passwordLbl)
-                                            .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addGap(18, 18, 18)
-                                        .addComponent(submitBtn)
-                                        .addGap(58, 58, 58))
-                                    .addGroup(GroupLayout.Alignment.TRAILING, userAccountsLayout.createSequentialGroup()
-                                        .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 172, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)))
-                                .addComponent(removeUserBtn)
+                                            .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(userAccountsLayout.createParallelGroup()
+                                    .addComponent(submitBtn)
+                                    .addComponent(removeUserBtn))
+                                .addGap(98, 98, 98)
                                 .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
@@ -461,7 +451,7 @@ public class ServerModeConfiguration extends JFrame {
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(505, 380);
+        setSize(460, 300);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -495,14 +485,26 @@ public class ServerModeConfiguration extends JFrame {
                 backupConfig();
             }
         });
-        ipJListField.addMouseMotionListener(new MouseMotionAdapter() {
-            public void mouseMoved(MouseEvent e) {
-                JList l = (JList)e.getSource();
-                ListModel m = l.getModel();
-                int index = l.locationToIndex(e.getPoint());
-                if( index>-1 ) {
-                    l.setToolTipText(m.getElementAt(index).toString());
+        masterServerField.getDocument().addDocumentListener(new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+            public void changed() {
+                if (masterServerField.getText().isEmpty()) {
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                }else {
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
                 }
+
             }
         });
         spaceSldr.addChangeListener(new ChangeListener() {
@@ -786,8 +788,6 @@ public class ServerModeConfiguration extends JFrame {
             if (!repoDirectory.exists()) {
                 repoDirectory.mkdirs();
             }
-            writeConfig();
-            JOptionPane.showMessageDialog(null, "Configuration was saved!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
         }catch (Exception z) {
             JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
             z.printStackTrace();
@@ -817,7 +817,7 @@ public class ServerModeConfiguration extends JFrame {
         if(out.equals("")){
             out = "(none)";
         }
-        ServerConfigConfirmation.run(this, "<html><center><b>Interface:</b> " + MeshFS.properties.getProperty("preferredInterface") + "<br><br><b>Timeout:</b> " + MeshFS.properties.getProperty("timeout") + "s<br><br><b>Port:</b> " + MeshFS.properties.getProperty("portNumber") + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + MeshFS.properties.getProperty("numWholeCopy") + "/" + MeshFS.properties.getProperty("numStripes") + "/" + MeshFS.properties.getProperty("numStripeCopy") + "<br><br><b>Repository:</b> " + MeshFS.properties.getProperty("repository") + "<br><br><b>Minimum Space:</b> " + MeshFS.properties.getProperty("minSpace") + "<br><br><b>Server Threads:</b> " + MeshFS.properties.getProperty("serverThreads") + "<br><br><b>Accounts:</b><br>" + out + "</center></html>", accounts);
+        ServerConfigConfirmation.run(this, "<html><center><b>Master IP:</b> " + masterServerField.getText() + "<br><br><b>Timeout:</b> " + String.valueOf(serverTimeoutField.getText()) + "s<br><br><b>Port:</b> " + String.valueOf(serverPortField.getText()) + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + String.valueOf(numWholeField.getText()) + "/" + String.valueOf(numStripesField.getText()) + "/" + String.valueOf(numStripeCopiesField.getText()) + "<br><br><b>Repository:</b> " + String.valueOf(repoPathField.getText()) + "<br><br><b>Minimum Space:</b> " + String.valueOf(Integer.valueOf(minSpaceField.getText())) + " GB<br><br><b>Server Threads:</b> " + String.valueOf(serverThreadsField.getText()) + "<br><br><b>Accounts:</b><br>" + out + "</center></html>", accounts, getConfigProperties());
         dispose();
     }
 
@@ -869,6 +869,7 @@ public class ServerModeConfiguration extends JFrame {
     }
 
     private void resetConfig(){
+        masterServerField.setText(MeshFS.properties.getProperty("masterIP"));
         serverPortField.setText(MeshFS.properties.getProperty("portNumber"));
         numStripesField.setText(MeshFS.properties.getProperty("numStripes"));
         numStripeCopiesField.setText(MeshFS.properties.getProperty("numStripeCopy"));
@@ -879,8 +880,8 @@ public class ServerModeConfiguration extends JFrame {
         serverTimeoutField.setText(MeshFS.properties.getProperty("timeout"));
     }
 
-    public void writeConfig(){
-        ConfigParser.write(getConfigProperties());
+    public static void writeConfig(Properties properties){
+        ConfigParser.write(properties);
     }
 
     public Properties getConfigProperties(){
@@ -889,8 +890,7 @@ public class ServerModeConfiguration extends JFrame {
         configProperties.setProperty("numStripeCopy", String.valueOf(numStripeCopiesField.getText()));
         configProperties.setProperty("numWholeCopy", String.valueOf(numWholeField.getText()));
         configProperties.setProperty("minSpace", String.valueOf(Integer.valueOf(minSpaceField.getText()) * 1073741824));
-        configProperties.setProperty("masterIP", "127.0.0.1");
-        //configProperties.setProperty("preferredInterface", String.valueOf(ipJListField.getSelectedValue()).substring(0, String.valueOf(ipJListField.getSelectedValue()).indexOf(" (")));
+        configProperties.setProperty("masterIP", masterServerField.getText());
         configProperties.setProperty("portNumber", String.valueOf(serverPortField.getText()));
         configProperties.setProperty("repository", String.valueOf(repoPathField.getText()));
         configProperties.setProperty("serverThreads", String.valueOf(serverThreadsField.getText()));
@@ -899,6 +899,14 @@ public class ServerModeConfiguration extends JFrame {
     }
 
     public boolean checkFields(JFormattedTextField field) {
+        if (field.getText().isEmpty() == true){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public boolean checkFields(JTextField field) {
         if (field.getText().isEmpty() == true){
             return false;
         }else{
@@ -917,21 +925,20 @@ public class ServerModeConfiguration extends JFrame {
     private JPanel dialogPane;
     private JTabbedPane serverSettingPane;
     private JPanel networkTab;
+    private JLabel serverNetworkInterfaceLbl;
+    private JTextField masterServerField;
     private JLabel serverPortLbl;
     private JFormattedTextField serverPortField;
     private JLabel serverThreadsLbl;
     private JFormattedTextField serverThreadsField;
     private JLabel serverTimeoutLbl;
     private JFormattedTextField serverTimeoutField;
-    private JLabel stripesLbl;
     private JFormattedTextField numStripesField;
-    private JLabel stripedCopiesLbl;
+    private JLabel stripesLbl;
     private JFormattedTextField numStripeCopiesField;
-    private JLabel wholeCopiesLbl;
+    private JLabel stripedCopiesLbl;
     private JFormattedTextField numWholeField;
-    private JLabel serverNetworkInterfaceLbl;
-    private JScrollPane scrollPane1;
-    private JList ipJListField;
+    private JLabel wholeCopiesLbl;
     private JPanel storageTab;
     private JLabel repositoryLbl;
     private JTextField repoPathField;
@@ -948,9 +955,9 @@ public class ServerModeConfiguration extends JFrame {
     private JPasswordField passwordValueField;
     private JLabel passwordLbl;
     private JButton submitBtn;
-    private JButton removeUserBtn;
     private JScrollPane scrollPane2;
     private JList userAccountDataList;
+    private JButton removeUserBtn;
     private JPanel buttonBar;
     private JButton importConfigBtn;
     private JButton backupConfigBtn;

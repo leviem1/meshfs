@@ -10,9 +10,12 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 /*
  * Created by JFormDesigner on Sun Nov 06 18:04:04 MST 2016
  */
@@ -259,33 +262,7 @@ public class ClientBrowser extends JFrame {
                     String pathToFile = fileChooser.getSelectedFile().getPath();
                     File file = new File(pathToFile);
                     int size = Math.toIntExact(file.length());
-                    String fileSize = "";
-                    if((int)(Math.log10(size)+1) >= 2 && (int)(Math.log10(size)+1) < 5){
-                        fileSize = size + " B";
-                    }
-                    else if((int)(Math.log10(size)+1) >= 5 && (int)(Math.log10(size)+1) <= 7){
-                        fileSize = size/1000 + " KB";
-                    }
-                    else if((int)(Math.log10(size)+1) > 7 && (int)(Math.log10(size)+1) <= 9){
-                        fileSize = size/1000000 + " MB";
-                    }
-                    else if((int)(Math.log10(size)+1) > 9 && (int)(Math.log10(size)+1) <= 11){
-                        fileSize = size/1000000000 + " GB";
-                    }
-                    DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
-                    String creationDate = df.format(new Date());
-                    JSONObject fileObj = new JSONObject();
-                    fileObj.put("type", "file");
-                    fileObj.put("fileSize", fileSize);
-                    fileObj.put("fileSizeActual", size);
-                    fileObj.put("creationDate", creationDate);
-                    fileObj.put("fileName", fileChooser.getSelectedFile().getName());
-                    fileObj.put("owner", userAccount);
-                    try {
-                        JSONManipulator.writeJSONObject(".catalog.json", JSONManipulator.putItemInFolder(jsonObj, userAccount, fileChooser.getSelectedFile().getName(), fileObj));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
+
                     try {
                         FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath(), userAccount);
                     } catch (IOException e1) {
@@ -330,13 +307,30 @@ public class ClientBrowser extends JFrame {
                 }
             }
         });
+        tree1.addTreeExpansionListener(new TreeExpansionListener() {
+
+            public void treeExpanded(TreeExpansionEvent event) {
+                TreePath path = event.getPath();
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+                String data = node.getUserObject().toString();
+                System.out.println("Expanded: " + data);
+            }
+
+            public void treeCollapsed(TreeExpansionEvent event) {
+                TreePath path = event.getPath();
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+                String data = node.getUserObject().toString();
+                System.out.println("Collapsed: " + data);
+            }
+        });
         downloadBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+                System.out.println(jsonPath);
                 JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
                 int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
-                File localFile  = new File(System.getProperty("user.home") + "/Downloads/" + node.toString());
+                File localFile  = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
                 if((localFile.exists())){
                     JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                     return;
@@ -486,19 +480,15 @@ public class ClientBrowser extends JFrame {
         return branch;
     }
 
-    public void downloadFile(String node){
-        try{
-            FileClient.receiveFile(serverAddress, port, node.toString());
-        }catch(IOException ioe){
-            ioe.printStackTrace();
-        }
-    }
-
     private void downloadFile(String node, String path){
-        try{
-            FileClient.receiveFile(serverAddress, port, node.toString(), path);
-        }catch(IOException ioe){
-            ioe.printStackTrace();
+        System.out.println(path);
+        //FileClient.receiveFile(serverAddress, port, node.toString(), path);
+        String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
+        System.out.println(outFileDir);
+        try {
+            JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), outFileDir, node, serverAddress, port);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

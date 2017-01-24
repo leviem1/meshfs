@@ -14,15 +14,24 @@ new FormModel {
 					name: "serverSettingPane"
 					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 0, false )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, par l:::p {seq l {comp serverPortLbl:::p::p, space :::p, comp serverPortField:::p:100:p, space s:::p, comp stripedCopiesLbl:::p::p, space :::p, comp numStripeCopiesField:::p:134:p}, seq l {par t {seq l {comp stripesLbl:::p::p, space :::p, comp numStripesField:::p:134:p}, par t:::p {seq l {comp serverTimeoutLbl:::p::p, space :::p, comp serverTimeoutField:::p:88:p}, seq l {comp serverThreadsLbl:::p::p, space :::p, comp serverThreadsField:::p:76:p}}}, par l {seq l {space s:::p, par l {seq l {comp wholeCopiesLbl:::p::p, space :::p, comp numWholeField:::p:140:p}, comp serverNetworkInterfaceLbl:::p::p}}, seq t {space :p:94:p, comp scrollPane1:::p:155:p}}}}, space :::x}}"
-						"$verticalGroup": "par l {seq l {space :::p, par b {comp serverPortLbl::b:p::p, comp serverPortField::b:p::p, comp stripedCopiesLbl::b:p::p, comp numStripeCopiesField::b:p::p}, space u:::p, par b {comp serverThreadsLbl::b:p::p, comp serverThreadsField::b:p::p, comp wholeCopiesLbl::b:p::p, comp numWholeField::b:p::p}, space u:::p, par b {comp serverTimeoutLbl::b:p::p, comp serverTimeoutField::b:p::p, comp serverNetworkInterfaceLbl::b:p::p}, space u:::p, par l {comp scrollPane1:::p:65:p, par b:l {comp numStripesField::b:p::p, comp stripesLbl::b:p::p}}, space :::x}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp serverNetworkInterfaceLbl:::p::p, space :::p, comp masterServerField::::320:x}, seq {par l {seq {comp serverPortLbl:::p::p, space :::p, comp serverPortField:::p:100:p, space ::79:x, comp stripesLbl:::p::p}, seq t {comp serverThreadsLbl:::p::p, space :::p, comp serverThreadsField:::p:73:p, space ::30:x, comp stripedCopiesLbl:::p::p}, seq t {comp serverTimeoutLbl:::p::p, space :::p, comp serverTimeoutField:::p:88:p, space :::x, comp wholeCopiesLbl:::p::p}}, space :::p, par l:::p {comp numWholeField::::95:x, comp numStripeCopiesField::::95:x, comp numStripesField::::95:x}}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp serverNetworkInterfaceLbl::b:p::p, comp masterServerField::b:p::p}, space u:::p, par b {comp serverPortLbl::b:p::p, comp serverPortField::b:p::p, comp numStripesField::b:p::p, comp stripesLbl::b:p::p}, space :::p, par b {comp serverThreadsLbl::b:p::p, comp serverThreadsField::b:p::p, comp numStripeCopiesField::b:p::p, comp stripedCopiesLbl::b:p::p}, space :::p, par b {comp serverTimeoutLbl::b:p::p, comp serverTimeoutField::b:p::p, comp numWholeField::b:p::p, comp wholeCopiesLbl::b:p::p}, space ::25:x}}"
 					} ) {
 						name: "networkTab"
 						"background": new java.awt.Color( 229, 229, 229, 255 )
 						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "serverNetworkInterfaceLbl"
+							"text": "Master Server:"
+							"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "masterServerField"
+							"text": "127.0.0.1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "serverPortLbl"
 							"text": "Network Port:"
-							"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 							name: "serverPortField"
@@ -58,11 +67,6 @@ new FormModel {
 								"JavaCodeGenerator.customCreateCode": "new JFormattedTextField(numberFormat);"
 							}
 						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "stripesLbl"
-							"text": "Stripes:"
-							"font": #SwingDerivedFont0
-						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
 							name: "numStripesField"
 							"text": "3"
@@ -72,8 +76,8 @@ new FormModel {
 							}
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "stripedCopiesLbl"
-							"text": "Striped Copies:"
+							name: "stripesLbl"
+							"text": "Stripes:"
 							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
@@ -85,8 +89,8 @@ new FormModel {
 							}
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "wholeCopiesLbl"
-							"text": "Whole Copies:"
+							name: "stripedCopiesLbl"
+							"text": "Striped Copies:"
 							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JFormattedTextField" ) {
@@ -98,25 +102,16 @@ new FormModel {
 							}
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "serverNetworkInterfaceLbl"
-							"text": "Network Interface:"
+							name: "wholeCopiesLbl"
+							"text": "Whole Copies:"
 							"font": #SwingDerivedFont0
-						} )
-						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-							name: "scrollPane1"
-							add( new FormComponent( "javax.swing.JList" ) {
-								name: "ipJListField"
-								auxiliary() {
-									"JavaCodeGenerator.customCreateCode": "new JList(ipJList().toArray());"
-								}
-							} )
 						} )
 					}, new FormLayoutConstraints( null ) {
 						"title": "Network"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp repositoryLbl:::p::p, space :::p, comp repoPathField::::273:x, space :::p, comp browseBtn:::p::p}, seq l {comp minFreeSpaceLbl:::p::p, space u:::p, comp minSpaceField:::p:121:p, space :::p, comp label1:::p::p, space :::p, comp spaceSldr::::172:x}, seq l {comp freeSpaceLbl:::p:351:p, space :0:95:x}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, par b {comp repositoryLbl::b:p::p, comp repoPathField::b:p::p, comp browseBtn::b:p::p}, space u:::p, par t {par b {comp minFreeSpaceLbl::b:p::p, comp minSpaceField::b:p::p, comp label1::b:p::p}, comp spaceSldr:::p::p}, space :::p, comp freeSpaceLbl:::p::p, space ::115:x}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp minFreeSpaceLbl:::p::p, space u:::p, comp minSpaceField:::p:121:p, space :::p, comp label1:::p::p, space :::p, comp spaceSldr::::0:x}, seq {comp freeSpaceLbl:::p:351:p, space :0:69:x}, seq l {comp repositoryLbl:::p::p, space :::p, comp repoPathField::::247:x, space :::p, comp browseBtn:::p::p}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp repositoryLbl::b:p::p, comp browseBtn::b:p::p, comp repoPathField::b:p::p}, space u:::p, par t {par b {comp minFreeSpaceLbl::b:p::p, comp minSpaceField::b:p::p, comp label1::b:p::p}, comp spaceSldr:::p::p}, space :::p, comp freeSpaceLbl:::p::p, space ::57:x}}"
 					} ) {
 						name: "storageTab"
 						"background": new java.awt.Color( 229, 229, 229, 255 )
@@ -167,8 +162,8 @@ new FormModel {
 						"title": "Storage"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {par l {seq t {space :0:0:x, comp removeUserBtn:::p::p}, seq {space :p:238:p, comp textArea1:::p::p, space :0:214:x}, seq l {space :::p, par l {seq l {comp usernameLbl:::p::p, space :::p, comp usernameValueField:::p:143:p}, par t:l {comp submitBtn:::p::p, seq {comp passwordLbl:::p::p, space :::p, comp passwordValueField:::p:147:p}}}, space :::p, comp scrollPane2::::221:x}}, space :::p}}"
-						"$verticalGroup": "par l {seq {space :::p, par l {seq {par b {comp usernameLbl::b:p::p, comp usernameValueField::b:p::p}, space s:::p, par b {comp passwordLbl::b:p::p, comp passwordValueField::b:p::p}, space s:::p, comp submitBtn:::p::p, space :p:58:p}, seq t {comp scrollPane2:::p:172:p, space :::p}}, comp removeUserBtn:::p::p, space :::p, comp textArea1:::p::p, space :::x}}"
+						"$horizontalGroup": "par l {seq {par l {seq {space :p:238:p, comp textArea1:::p::p, space :0:0:x}, seq l {space :::p, par l {seq l {comp usernameLbl:::p::p, space :::p, comp usernameValueField:::p:143:p}, par t:l {comp submitBtn:::p::p, seq {comp passwordLbl:::p::p, space :::p, comp passwordValueField:::p:147:p}}}, space :::p, par l {comp scrollPane2::::195:x, seq t {space :0:78:x, comp removeUserBtn:::p::p}}}}, space :::p}}"
+						"$verticalGroup": "par l {seq {space :::p, par l {seq {par b {comp usernameLbl::b:p::p, comp usernameValueField::b:p::p}, space s:::p, par b {comp passwordLbl::b:p::p, comp passwordValueField::b:p::p}}, comp scrollPane2::l:p:83:p}, space :::p, par l {comp submitBtn:::p::p, comp removeUserBtn:::p::p}, space :p:98:p, comp textArea1:::p::p, space :::x}}"
 					} ) {
 						name: "userAccounts"
 						"background": new java.awt.Color( 229, 229, 229, 255 )
@@ -198,11 +193,6 @@ new FormModel {
 							"text": "Submit"
 							"font": #SwingDerivedFont1
 						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "removeUserBtn"
-							"text": "Remove User"
-							"font": #SwingDerivedFont1
-						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane2"
 							add( new FormComponent( "javax.swing.JList" ) {
@@ -211,6 +201,11 @@ new FormModel {
 									"JavaCodeGenerator.customCreateCode": "new JList(model);"
 								}
 							} )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "removeUserBtn"
+							"text": "Remove User"
+							"font": #SwingDerivedFont1
 						} )
 					}, new FormLayoutConstraints( null ) {
 						"title": "User Accounts"
@@ -268,7 +263,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 505, 380 )
+			"size": new java.awt.Dimension( 460, 300 )
 		} )
 	}
 }
