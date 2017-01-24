@@ -40,10 +40,18 @@ public class Distributor {
     }
 
     public static void distributor(String uploadFilePath, String filePathInCatalog){
+        String userAccount;
+        try {
+            userAccount = filePathInCatalog.substring(0,filePathInCatalog.indexOf("/"));
+        }
+        catch (Exception e){
+            userAccount = filePathInCatalog;
+        }
         int numOfStripes = Integer.valueOf(MeshFS.properties.get("numStripes").toString());
         int numOfStripedCopies = Integer.valueOf(MeshFS.properties.get("numStripeCopy").toString());
         int numOfWholeCopies = Integer.valueOf(MeshFS.properties.get("numWholeCopy").toString());
         long minFreeSpace = Integer.valueOf(MeshFS.properties.get("minSpace").toString());
+        uploadFilePath = MeshFS.properties.get("repository").toString() + uploadFilePath;
         String manifestFileLocation = "manifest.json";
         String DestinationRepoLocation = MeshFS.properties.get("repository").toString();
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
@@ -150,10 +158,10 @@ public class Distributor {
                 }
              }
 
-             for (String item : computersForWholes) {
-                 String computerToReceive = item;
+             for (String computerToReceive : computersForWholes) {
                  FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_w", 0L, sizeOfFile);
                  FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_w");
+                 FileUtils.removeFile(DestinationRepoLocation + File.separator + newName + "_w");
              }
 
              if (allowStripes){
@@ -186,28 +194,42 @@ public class Distributor {
                                      if (isNotBroken){
                                          stripes.get(currentStripe + 1).add(computerToReceive);
                                          long startByte = (sizeOfStripe * currentStripe);
-                                         FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
+                                         if (currentStripe == numOfStripes-1){
+                                             FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe - ((sizeOfStripe * numOfStripes) - sizeOfFile ));
+                                         }
+                                         else {
+                                             FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
+                                         }
                                          FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
+                                         FileUtils.removeFile(DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                          break;
+
                                      }
                                  }
                                  else {
                                      stripes.get(currentStripe + 1).add(computerToReceive);
                                      long startByte = (sizeOfStripe * currentStripe);
-                                     long stopByte = (startByte + (sizeOfStripe));
-                                     FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
+                                     if (currentStripe == numOfStripes-1){
+                                         FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe - ((sizeOfStripe * numOfStripes) - sizeOfFile ));
+                                     }
+                                     else {
+                                         FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
+                                     }
                                      FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
+                                     FileUtils.removeFile(DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                      break;
                                  }
                              }
                          }
                          catch (Exception e) {
+                             e.printStackTrace();
                              System.out.println("You are out of Storage!");
                          }
                      }
                  }
              }
-             JSONManipulator.addToIndex(stripes,filePathInCatalog, fileName, catalogFileLocation, newName);
+             FileUtils.removeFile(uploadFilePath);
+             JSONManipulator.addToIndex(stripes,filePathInCatalog, fileName, catalogFileLocation, newName, userAccount);
          }
          catch (Exception e) {
              e.printStackTrace();

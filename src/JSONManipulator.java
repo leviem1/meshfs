@@ -158,11 +158,7 @@ public class JSONManipulator {
         return jsonObject;
     }
 
-    public static void addToIndex(List<List<String>> stripes, String itemFilePath, String fileName, String JSONFilePath, String alphanumericName) {
-        addToIndex(stripes,itemFilePath, fileName, JSONFilePath, alphanumericName, "all");
-    }
-
-    public static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String group) {
+    public static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String userAccount) {
 
         JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
         jsonFile.replace("currentName", alphanumericName);
@@ -187,7 +183,7 @@ public class JSONManipulator {
 
         }
 
-        objChild.put("group", group);
+        objChild.put("owner", userAccount);
         objChild.put("type", "file");
         objChild.put("fileName", alphanumericName);
 
