@@ -1,5 +1,7 @@
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
+
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -223,12 +225,14 @@ public class JSONManipulator {
         }
     }
 
-    public static boolean pullFile(String JSONFileLocation, String itemLocation, String compInfoJSONFileLocation) throws IOException {
+    public static boolean pullFile(String itemLocation) throws IOException {
         int port = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
         String repo = MeshFS.properties.getProperty("repository");
+        String catalogFileLocation = repo + ".catolog.json";
+        String manifestFileLocation = "manifest.json";
         String itemName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         String[] folders = itemLocation.split("/");
-        JSONObject itemToRead = JSONManipulator.getJSONObject(JSONFileLocation);
+        JSONObject itemToRead = JSONManipulator.getJSONObject(catalogFileLocation);
         for (String folder : folders) {
             itemToRead = (JSONObject) itemToRead.get(folder);
         }
@@ -238,7 +242,7 @@ public class JSONManipulator {
         }
         String fileName = itemToRead.get("fileName").toString();
 
-        JSONObject compInfoFile = getJSONObject(compInfoJSONFileLocation);
+        JSONObject compInfoFile = getJSONObject(manifestFileLocation);
         List<String> stripeNames = new ArrayList<>();
         boolean wholeNecessary = false;
         for (Object stripe: itemToRead.keySet() ) {

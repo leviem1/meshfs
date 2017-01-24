@@ -203,7 +203,6 @@ public class Distributor {
                                          FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                          FileUtils.removeFile(DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                          break;
-
                                      }
                                  }
                                  else {
