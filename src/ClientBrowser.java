@@ -16,6 +16,7 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 /*
  * Created by JFormDesigner on Sun Nov 06 18:04:04 MST 2016
  */
@@ -44,9 +45,21 @@ public class ClientBrowser extends JFrame {
         frameListeners();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         if(Reporting.getSystemOS().contains("Windows")){
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
+        TimerTask catalogCheck = new TimerTask() {
+            @Override
+            public void run() {
+                if(checkCatalog()){
+                    refreshWindow();
+                    this.cancel();
+                }
+            }
+        };
+        java.util.Timer timer = new java.util.Timer();
+        timer.scheduleAtFixedRate(catalogCheck, 3000, 3000);
     }
 
     private void initComponents() {
@@ -339,7 +352,7 @@ public class ClientBrowser extends JFrame {
                 progressBar.setMaximum(fileSizeActual);
                 Thread download = new Thread() {
                     public void run() {
-                        downloadFile(node.toString(), System.getProperty("user.home") + "/Downloads/" + node.toString());
+                        downloadFile(node.toString(), System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
                         sizeLbl.setText("done");
                         JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -348,7 +361,7 @@ public class ClientBrowser extends JFrame {
                 TimerTask timerTask = new TimerTask() {
                     @Override
                     public void run() {
-                        File outputFile = new File(System.getProperty("user.home") + "/Downloads/" + node.toString());
+                        File outputFile = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
                         progressBar.setValue(Math.toIntExact(outputFile.length()));
                         sizeLbl.setText(outputFile.length() + "/" + fileSizeActual);
                         if(progressBar.getValue() == progressBar.getMaximum()){
@@ -378,6 +391,7 @@ public class ClientBrowser extends JFrame {
                 progressBar.setMaximum(fileSizeActual);
                 Thread download = new Thread() {
                     public void run() {
+                        System.out.println(fileChooser.getSelectedFile().toString());
                         downloadFile(node.toString(), fileChooser.getSelectedFile().toString());
                         sizeLbl.setText("done");
                         JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
@@ -481,12 +495,12 @@ public class ClientBrowser extends JFrame {
     }
 
     private void downloadFile(String node, String path){
-        System.out.println(path);
-        //FileClient.receiveFile(serverAddress, port, node.toString(), path);
-        String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
-        System.out.println(outFileDir);
+        System.out.println("node: " + node);
+        System.out.println("path: " + path);
+
+
         try {
-            JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), outFileDir, node, serverAddress, port);
+            JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, node, serverAddress, port);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -516,6 +530,30 @@ public class ClientBrowser extends JFrame {
         clientBrowser = new ClientBrowser(serverAddress, port, userAccount);
         CenterWindow.centerOnScreen(clientBrowser);
         clientBrowser.setVisible(true);
+    }
+
+    private boolean checkCatalog(){
+        try {
+            File tempCatalog = File.createTempFile(".catalog", ".json");
+            File localCatalogFile = new File(".catalog.json");
+            FileClient.receiveFile(serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath());
+            JSONObject latestCatalog = JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
+            JSONObject localCatalog = JSONManipulator.getJSONObject(localCatalogFile.getAbsolutePath());
+            if(localCatalog.equals(latestCatalog)){
+                System.out.println("The loaded catalog is the same as the most recent catalog");
+                tempCatalog.delete();
+                return false;
+            }else{
+                System.out.println("I needs to update catalogs!");
+                //jsonObj = latestCatalog;
+                FileClient.receiveFile(serverAddress, port, ".catalog.json");
+                tempCatalog.delete();
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables

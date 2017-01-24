@@ -889,7 +889,8 @@ public class ServerModeConfiguration extends JFrame {
         configProperties.setProperty("numStripes", String.valueOf(numStripesField.getText()));
         configProperties.setProperty("numStripeCopy", String.valueOf(numStripeCopiesField.getText()));
         configProperties.setProperty("numWholeCopy", String.valueOf(numWholeField.getText()));
-        configProperties.setProperty("minSpace", String.valueOf(Integer.valueOf(minSpaceField.getText()) * 1073741824));
+        System.out.println(String.valueOf(Integer.valueOf(minSpaceField.getText()) * 1073741824)+"L");
+        configProperties.setProperty("minSpace", String.valueOf(Integer.valueOf(minSpaceField.getText()) * 1073741824)+"L");
         configProperties.setProperty("masterIP", masterServerField.getText());
         configProperties.setProperty("portNumber", String.valueOf(serverPortField.getText()));
         configProperties.setProperty("repository", String.valueOf(repoPathField.getText()));
