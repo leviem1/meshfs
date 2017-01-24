@@ -339,7 +339,7 @@ public class ClientBrowser extends JFrame {
                 progressBar.setMaximum(fileSizeActual);
                 Thread download = new Thread() {
                     public void run() {
-                        downloadFile(fileProperties.get("fileName").toString(), System.getProperty("user.home") + "/Downloads/" + node.toString());
+                        downloadFile(node.toString(), System.getProperty("user.home") + "/Downloads/" + node.toString());
                         sizeLbl.setText("done");
                         JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                     }

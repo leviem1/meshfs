@@ -87,7 +87,12 @@ public class Reporting {
     }
 
     public static String getRepositoryContents() {
-        return Arrays.toString(new File(MeshFS.properties.getProperty("repository")).listFiles());
+        File[] repoContents = new File(MeshFS.properties.getProperty("repository")).listFiles();
+        List<String> contents = new ArrayList<>();
+        for (File file : repoContents){
+            contents.add(file.getName().toString());
+        }
+        return contents.toString();
     }
 
     public static String generate() {
@@ -99,18 +104,21 @@ public class Reporting {
         JSONArray mainArray = new JSONArray();
         String[] reportArray = report.split("\\|");
         String[] reportObjects = reportArray[1].split(";");
+        System.out.println(report);
 
         for (String reportSet : reportObjects) {
-            String[] reportSetData = reportSet.split(":");
-            if (reportSetData[0].equals("RepoContents")){
+            String key = reportSet.substring(0,reportSet.indexOf(":"));
+            String value = reportSet.substring(reportSet.indexOf(":")+1);
+            if (key.equals("RepoContents")){
                 JSONArray Contents = new JSONArray();
-                String[] files = reportSetData[1].substring(0,reportSetData[1].length() -1).split(",");
+                String[] files = value.substring(1,value.length() -1).split(", ");
                 for (String file : files){
-                    Contents.add(file.substring(file.lastIndexOf("/")+1));
+                    Contents.add(file);
                 }
-                jsonObject.put(reportSetData[0],Contents);
+                jsonObject.put(key,Contents);
             }
             else{
+                String[] reportSetData = reportSet.split(":");
                 jsonObject.put(reportSetData[0],reportSetData[1]);
             }
         }

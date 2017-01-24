@@ -179,7 +179,7 @@ public class JSONManipulator {
                 objChild.put("whole", ipArray.clone());
             }
             else{
-                objChild.put("stripe" + String.valueOf(stripe), ipArray.clone());
+                objChild.put("stripe" + "_" + String.valueOf(stripe-1), ipArray.clone());
             }
             ipArray.clear();
 
@@ -231,6 +231,10 @@ public class JSONManipulator {
     }
 
     public static void pullFile(String itemLocation, String outFileDir, String outFile, String serverAddress, int portNumber) throws IOException {
+        System.out.println(outFile);
+        System.out.println(outFileDir);
+
+        System.out.println("starting Download");
         int port = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
         String catalogFileLocation = ".catalog.json";
         String manifestFileLocation = "manifest.json";
@@ -247,20 +251,26 @@ public class JSONManipulator {
         String fileName = itemToRead.get("fileName").toString();
         System.out.println(manifestFileLocation);
         JSONObject compInfoFile = getJSONObject(manifestFileLocation);
+        System.out.println(compInfoFile);
         List<String> stripeNames = new ArrayList<>();
         boolean wholeNecessary = false;
         for (Object stripe: itemToRead.keySet() ) {
             if (stripe.toString().contains("stripe")) {
-                String fileNameWNum = fileName + stripe.toString().substring(stripe.toString().lastIndexOf("_"));
+                System.out.println("stripe: " + stripe.toString());
+                String fileNameWNum = fileName + "_s" + stripe.toString().substring(stripe.toString().lastIndexOf("_")+1);
                 JSONArray compsWithStripe = (JSONArray) itemToRead.get(stripe);
                 boolean cantContinue = true;
                 for (Object MACAddress : compsWithStripe) {
+                    System.out.println("MACAddress: " + MACAddress);
                     if (compInfoFile.containsKey(MACAddress)) {
+                        System.out.println("we made it past the if");
+                        System.out.println(((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))));
+                        System.out.println(fileNameWNum);
                         if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameWNum)){
                             String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
                             System.out.println("We Got this Far!");
                             FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + fileNameWNum);
-                            stripeNames.add(fileNameWNum);
+                            stripeNames.add(outFileDir + File.separator + fileNameWNum);
                             cantContinue = false;
                             break;
                         }
@@ -279,22 +289,28 @@ public class JSONManipulator {
             String fileNameW = fileName +"_w";
             JSONArray compsWithWhole = (JSONArray) itemToRead.get("whole");
             System.out.println("We got thus far44");
+            boolean cantContinue = true;
             for (Object MACAddress : compsWithWhole) {
                 if (compInfoFile.containsKey(MACAddress)) {
                     System.out.println("We got thus far3");
                     if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
                         String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
                         FileClient.receiveFile(IPAddress, port,fileNameW, outFileDir + File.separator + outFile);
+                        cantContinue = false;
+                        break;
                     }
                 }
             }
-            System.out.println("File is unrecoverable!");
-            return;
+            if (cantContinue){
+                System.out.println("File is unrecoverable!");
+                return;
+            }
+
         }
 
         else {
             System.out.println("else");
-            FileUtils.combineStripes(stripeNames,outFileDir + outFile);
+            FileUtils.combineStripes(stripeNames,outFileDir  + File.separator + outFile);
             for (String filePath:stripeNames){
                 Files.deleteIfExists(Paths.get(filePath));
             }
