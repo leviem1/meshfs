@@ -90,7 +90,7 @@ public class Reporting {
         File[] repoContents = new File(MeshFS.properties.getProperty("repository")).listFiles();
         List<String> contents = new ArrayList<>();
         for (File file : repoContents){
-            contents.add(file.getName().toString());
+            contents.add(file.getName());
         }
         return contents.toString();
     }

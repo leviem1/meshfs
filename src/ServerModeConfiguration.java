@@ -890,7 +890,7 @@ public class ServerModeConfiguration extends JFrame {
         configProperties.setProperty("numStripeCopy", String.valueOf(numStripeCopiesField.getText()));
         configProperties.setProperty("numWholeCopy", String.valueOf(numWholeField.getText()));
         System.out.println(String.valueOf(Integer.valueOf(minSpaceField.getText()) * 1073741824)+"L");
-        configProperties.setProperty("minSpace", String.valueOf(Integer.valueOf(minSpaceField.getText()) * 1073741824)+"L");
+        configProperties.setProperty("minSpace", minSpaceField.getText());
         configProperties.setProperty("masterIP", masterServerField.getText());
         configProperties.setProperty("portNumber", String.valueOf(serverPortField.getText()));
         configProperties.setProperty("repository", String.valueOf(repoPathField.getText()));
@@ -900,19 +900,11 @@ public class ServerModeConfiguration extends JFrame {
     }
 
     public boolean checkFields(JFormattedTextField field) {
-        if (field.getText().isEmpty() == true){
-            return false;
-        }else{
-            return true;
-        }
+        return !field.getText().isEmpty();
     }
 
     public boolean checkFields(JTextField field) {
-        if (field.getText().isEmpty() == true){
-            return false;
-        }else{
-            return true;
-        }
+        return !field.getText().isEmpty();
     }
 
     public static void run(JFrame sender) {

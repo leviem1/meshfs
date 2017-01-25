@@ -47,12 +47,12 @@ public class DISTAL {
         catch (Exception e){
             userAccount = filePathInCatalog;
         }
-        int numOfStripes = Integer.valueOf(MeshFS.properties.get("numStripes").toString());
-        int numOfStripedCopies = Integer.valueOf(MeshFS.properties.get("numStripeCopy").toString());
-        int numOfWholeCopies = Integer.valueOf(MeshFS.properties.get("numWholeCopy").toString());
-        long minFreeSpace = Integer.valueOf(MeshFS.properties.get("minSpace").toString());
-        uploadFilePath = MeshFS.properties.get("repository").toString() + uploadFilePath;
-        String manifestFileLocation = MeshFS.properties.get("repository")+".manifest.json";
+        int numOfStripes = Integer.valueOf(MeshFS.properties.getProperty("numStripes"));
+        int numOfStripedCopies = Integer.valueOf(MeshFS.properties.getProperty("numStripeCopy"));
+        int numOfWholeCopies = Integer.valueOf(MeshFS.properties.getProperty("numWholeCopy"));
+        long minFreeSpace = Integer.valueOf(MeshFS.properties.getProperty("minSpace")) * 1073741824;
+        uploadFilePath = MeshFS.properties.getProperty("repository") + uploadFilePath;
+        String manifestFileLocation = MeshFS.properties.getProperty("repository")+".manifest.json";
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.get("repository").toString()+".catalog.json";
         try {
