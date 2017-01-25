@@ -53,7 +53,6 @@ public class DISTAL {
         long minFreeSpace = Integer.valueOf(MeshFS.properties.get("minSpace").toString());
         uploadFilePath = MeshFS.properties.get("repository").toString() + uploadFilePath;
         String manifestFileLocation = MeshFS.properties.get("repository")+"manifest.json";
-        String DestinationRepoLocation = MeshFS.properties.get("repository").toString();
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.get("repository").toString()+".catalog.json";
         try {
@@ -95,7 +94,7 @@ public class DISTAL {
              }
 
              int lastResortComp = 0;
-             int lapNum = 0;
+             int lapNum = 1;
              List<String> computersForStripes = new ArrayList<>();
              for (int computerNumS = stopOfWholes+1; computerNumS < ((numOfStripes * numOfStripedCopies) + stopOfWholes+1); computerNumS++) {
                  String macAddress;
@@ -103,21 +102,28 @@ public class DISTAL {
                      macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
                  }
                  catch (Exception e){
-                     e.printStackTrace();
                      macAddress = "none";
                  }
-                 if ((sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe && macAddress.equals("none")) {
+                 if ((!macAddress.equals("none") && (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe)) {
                      computersForStripes.add(macAddress);
                  }
                  else if (computerNumS != 0){
                      System.out.println("happy world");
-                     String macAddressNew = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                     long availableStorage = (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
-                     if (lastResortComp <= stopOfWholes){
-                         availableStorage -= sizeOfFile;
+                     String macAddressNew;
+                     long availableStorage;
+                     try {
+                         macAddressNew = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
+                         availableStorage = (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
+                         if (lastResortComp <= stopOfWholes){
+                             availableStorage -= sizeOfFile;
+                         }
+                         lastResortComp++;
+                     }
+                     catch (Exception e){
+                         availableStorage = 0L;
+                         macAddressNew = "none";
                      }
 
-                     lastResortComp++;
 
                      if (availableStorage >= sizeOfStripe) {
                          computersForStripes.add(macAddressNew);
@@ -162,12 +168,6 @@ public class DISTAL {
                 }
              }
 
-             for (String computerToReceive : computersForWholes) {
-                 FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_w", 0L, sizeOfFile);
-                 FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_w");
-                 FileUtils.removeFile(DestinationRepoLocation + File.separator + newName + "_w");
-             }
-
              if (allowStripes){
                  System.out.println("compsForStripes: " + computersForStripes);
                  for (int copy = 0; copy < numOfStripes; copy++) {
@@ -201,35 +201,13 @@ public class DISTAL {
                                      }
                                      if (isNotBroken){
                                          stripes.get(currentStripe + 1).add(computerToReceive);
-                                         long startByte = (sizeOfStripe * currentStripe);
-                                         if (currentStripe == numOfStripes-1){
-                                             FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe - ((sizeOfStripe * numOfStripes) - sizeOfFile ));
-                                         }
-                                         else {
-                                             FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
-                                         }
-                                         FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
-                                         FileUtils.removeFile(DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                          break;
                                      }
                                  }
                                  else {
                                      stripes.get(currentStripe + 1).add(computerToReceive);
-                                     long startByte = (sizeOfStripe * currentStripe);
-                                     if (currentStripe == numOfStripes-1){
-                                         System.out.println("writing last stripe");
-                                         FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe - ((sizeOfStripe * numOfStripes) - sizeOfFile ));
-                                     }
-                                     else {
-                                         System.out.println("writing stripe");
-                                         FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
-                                     }
-                                     System.out.println("sendFilePath" + (DestinationRepoLocation + File.separator + newName + "_s" + currentStripe));
-                                     FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
-                                     FileUtils.removeFile(DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                      break;
-                                 }
-                             }
+                                 }}
                          }
                          catch (Exception e) {
                              e.printStackTrace();
@@ -238,8 +216,8 @@ public class DISTAL {
                      }
                  }
              }
-             FileUtils.removeFile(uploadFilePath);
              JSONManipulator.addToIndex(stripes, filePathInCatalog, fileName, catalogFileLocation, newName, userAccount, sizeOfFile);
+             sendFiles(stripes,uploadFilePath,sizeOfFile,newName);
          }
          catch (Exception e) {
              e.printStackTrace();
@@ -267,5 +245,38 @@ public class DISTAL {
             newName += toAdd.charAt(reverseIndex);
         }
         return newName;
+    }
+
+    private static void sendFiles (List<List<String>> stripes, String sourceFile, long fileSize, String outName){
+        long sizeOfStripe = ((fileSize / (stripes.size() -1) + 1));
+        JSONObject manifestFile = JSONManipulator.getJSONObject(MeshFS.properties.get("repository")+"manifest.json");
+        try {
+            for (int stripe = -1; stripe < (stripes.size()-1); stripe++){
+                if (stripe == -1){
+                    FileUtils.writeStripe(sourceFile, MeshFS.properties.get("repository").toString() + File.separator + outName + "_w", 0L, fileSize);
+                    for (String computerToReceive : stripes.get(stripe+1)) {
+                        FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), MeshFS.properties.get("repository").toString() + File.separator + outName + "_w");
+                    }
+                    FileUtils.removeFile(MeshFS.properties.get("repository").toString() + File.separator + outName + "_w");
+                }
+                else if (stripe == stripes.size()-2) {
+                    FileUtils.writeStripe(sourceFile, MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe - ((sizeOfStripe * stripes.size() - 1) - fileSize));
+                    for (String computerToReceive : stripes.get(stripe+1)){
+                        FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe);
+                    }
+                    FileUtils.removeFile(MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe);
+                }
+                else {
+                    FileUtils.writeStripe(sourceFile, MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe);
+                    for (String computerToReceive : stripes.get(stripe+1)){
+                        FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe);
+                    }
+                    FileUtils.removeFile(MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe);
+                }
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        FileUtils.removeFile(sourceFile);
     }
 }
