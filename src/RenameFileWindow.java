@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Map;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -161,6 +162,18 @@ public class RenameFileWindow extends JFrame {
                     if (newNameValueField.getText().isEmpty()){
                         okButton.setEnabled(false);
                     }else{
+                        String newJsonPath = jsonObj.substring(0, jsonObj.lastIndexOf("/"));
+                        JSONObject catalogJson = JSONManipulator.getJSONObject(".catalog.json");
+                        Map<String, String> folderMap = JSONManipulator.getMapOfFolderContents(catalogJson,newJsonPath, userAccount);
+                        for (Map.Entry<String, String> entry : folderMap.entrySet())
+                        {
+                            if(entry.getValue().equals("file")){
+                                if(entry.getKey().equals(newNameValueField.getText())){
+                                    okButton.setEnabled(false);
+                                    return;
+                                }
+                            }
+                        }
                         okButton.setEnabled(true);
                         buttonBar.getRootPane().setDefaultButton(okButton);
                     }
