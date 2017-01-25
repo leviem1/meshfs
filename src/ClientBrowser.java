@@ -46,6 +46,7 @@ public class ClientBrowser extends JFrame {
             public void run() {
                 if(checkCatalog()){
                     refreshWindow();
+                    dispose();
                     this.cancel();
                 }
             }
@@ -485,6 +486,7 @@ public class ClientBrowser extends JFrame {
 
     private boolean checkCatalog(){
         try {
+            System.out.println("Checking1");
             File tempCatalog = File.createTempFile(".catalog", ".json");
             tempCatalog.deleteOnExit();
             File localCatalogFile = new File(".catalog.json");
@@ -492,10 +494,15 @@ public class ClientBrowser extends JFrame {
             JSONObject latestCatalog = JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
             JSONObject localCatalog = JSONManipulator.getJSONObject(localCatalogFile.getAbsolutePath());
             if(localCatalog.equals(latestCatalog)){
+                System.out.println("Latest");
                 tempCatalog.delete();
                 return false;
             }else{
-                FileClient.receiveFile(serverAddress, port, ".catalog.json");
+                System.out.println("Not updated");
+                System.out.println(serverAddress);
+                System.out.println(port);
+
+                FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
                 tempCatalog.delete();
                 return true;
             }
