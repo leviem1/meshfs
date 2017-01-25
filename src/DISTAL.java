@@ -63,18 +63,18 @@ public class DISTAL {
              long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
 
              LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFile);
-             compStorageMap.put("0.0.0.0",0L);
              LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap); //sort the compStorageMap by descending available storage
+             System.out.println("sortedMap: " + sortedCompStorageMap);
              for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){ // account for the desired amount of free space
                  String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
                  sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(String.valueOf(macAddress)) - minFreeSpace);
              }
-             /* //uncomment me for dynamic resigning of numStripes by number of computers that are on
+             /*//uncomment me for dynamic resigning of numStripes by number of computers that are on
              int numOfComputersUsed = sortedCompStorageMap.size();
              if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
                  numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
              }
-             */
+             //*/
              //create a unique filename for the uploaded file
              List<String> computersForWholes = new ArrayList<>();
              JSONObject jsonObj = JSONManipulator.getJSONObject(catalogFileLocation);
@@ -103,14 +103,16 @@ public class DISTAL {
                      macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
                  }
                  catch (Exception e){
-                     macAddress = "0.0.0.0";
+                     e.printStackTrace();
+                     macAddress = "none";
                  }
-                 if ((sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe) {
+                 if ((sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe && macAddress.equals("none")) {
                      computersForStripes.add(macAddress);
                  }
                  else if (computerNumS != 0){
-                     macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                     long availableStorage = (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum));
+                     System.out.println("happy world");
+                     String macAddressNew = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
+                     long availableStorage = (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
                      if (lastResortComp <= stopOfWholes){
                          availableStorage -= sizeOfFile;
                      }
@@ -118,25 +120,27 @@ public class DISTAL {
                      lastResortComp++;
 
                      if (availableStorage >= sizeOfStripe) {
-                         computersForStripes.add(macAddress);
+                         computersForStripes.add(macAddressNew);
                      }
                      else {
+                         System.out.println("newLap");
                          lapNum++;
                          lastResortComp = 0;
 
                          while (lastResortComp < sortedCompStorageMap.size()){
-                             macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                             availableStorage = (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum));
+                             macAddressNew = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
+                             availableStorage = (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
                              if (lastResortComp <= stopOfWholes){
                                  availableStorage -= sizeOfFile;
                              }
                              lastResortComp++;
                              if (availableStorage >= sizeOfStripe) {
-                                 computersForStripes.add(macAddress);
+                                 computersForStripes.add(macAddressNew);
                                  break;
                              }
                          }
                          if (lastResortComp >= sortedCompStorageMap.size()){
+                             System.out.println("you should not se this");
                              break;
                          }
                      }
@@ -165,11 +169,14 @@ public class DISTAL {
              }
 
              if (allowStripes){
+                 System.out.println("compsForStripes: " + computersForStripes);
                  for (int copy = 0; copy < numOfStripes; copy++) {
                      stripes.add(new ArrayList<>());
                  }
                  for (int copy = 0; copy < numOfStripedCopies; copy++) {
+                     System.out.println("currentCopy" + copy);
                      for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
+                         System.out.println("currentStripe" + currentStripe);
                          try{
                              int test = 0;
 
@@ -185,6 +192,7 @@ public class DISTAL {
                                      boolean isNotBroken = true;
                                      for (String tempMac : stripes.get(currentStripe + 1)) {
                                          if (tempMac.equals(computerToReceive)) {
+                                             System.out.println("reorganizing");
                                              computersForStripes.add(tempMac);
                                              computersForStripes.remove((copy * numOfStripes) + currentStripe);
                                              isNotBroken = false;
@@ -209,11 +217,14 @@ public class DISTAL {
                                      stripes.get(currentStripe + 1).add(computerToReceive);
                                      long startByte = (sizeOfStripe * currentStripe);
                                      if (currentStripe == numOfStripes-1){
+                                         System.out.println("writing last stripe");
                                          FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe - ((sizeOfStripe * numOfStripes) - sizeOfFile ));
                                      }
                                      else {
+                                         System.out.println("writing stripe");
                                          FileUtils.writeStripe(uploadFilePath, DestinationRepoLocation + File.separator + newName + "_s" + currentStripe, startByte, sizeOfStripe);
                                      }
+                                     System.out.println("sendFilePath" + (DestinationRepoLocation + File.separator + newName + "_s" + currentStripe));
                                      FileClient.sendFile((((JSONObject)manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                      FileUtils.removeFile(DestinationRepoLocation + File.separator + newName + "_s" + currentStripe);
                                      break;
