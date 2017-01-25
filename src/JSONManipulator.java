@@ -126,7 +126,7 @@ public class JSONManipulator {
     public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate, String newName){
         JSONObject itemContents = getItemContents(jsonObject,itemLocation);
 
-        DateFormat df = new SimpleDateFormat("h:mm a");
+        DateFormat df = new SimpleDateFormat("h:mm:ss a");
         Date dateObj = new Date();
         if(showDate){
             jsonObject = putItemInFolder(jsonObject, destinationLocation, newName+" ("+ df.format(dateObj)+")", itemContents);

@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,15 +16,36 @@ import javax.swing.border.*;
  * @author Mark Hedrick
  */
 public class ClientBrowserFileProperties extends JFrame {
-    private ClientBrowserFileProperties(String fileName, String fileSize, String creationDate, String owner) {
+    private DefaultListModel model;
+
+    private ClientBrowserFileProperties(String fileName, String fileSize, String creationDate, String owner, JSONObject itemContents) {
+        model = new DefaultListModel();
         initComponents(fileName, fileSize, creationDate);
         frameListeners();
-        fileNameValue.setText(fileName);
         fileNameValue.setToolTipText(fileName);
+        String fileNameLbl = fileName;
+        if(fileName.length() > 25){
+            fileNameLbl = fileName.substring(0, 22) + "...";
+        }
+        else if(fileName.length() > 13){
+            fileName = fileName.substring(0, 10) + "...";
+        }
+
+        fileNameValue.setText(fileNameLbl);
         fileSizeValue.setText(fileSize);
         creationDateValue.setText(creationDate);
         ownerValue.setText(owner);
-        this.setTitle(fileName + " - Properties");
+        System.out.println(itemContents);
+        int pos = locationList.getModel().getSize();
+        for (Object key : itemContents.keySet()) {
+            String keyStr = key.toString();
+            Object keyValue = itemContents.get(keyStr);
+            if(keyStr.contains("stripe_") || keyStr.contains("whole")){
+                model.add(pos, keyStr + ": " + keyValue);
+            }
+        }
+
+        this.setTitle("Properties - " + fileName);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         if(Reporting.getSystemOS().contains("Windows")){
@@ -41,9 +64,9 @@ public class ClientBrowserFileProperties extends JFrame {
         fileSizeLbl = new JLabel();
         creationDateLbl = new JLabel();
         ownerLbl = new JLabel();
-        label6 = new JLabel();
+        locationLbl = new JLabel();
         scrollPane1 = new JScrollPane();
-        list1 = new JList();
+        locationList = new JList(model);
         fileNameValue = new JLabel(fileName);
         fileSizeValue = new JLabel(fileSize);
         creationDateValue = new JLabel(creationDate);
@@ -81,13 +104,13 @@ public class ClientBrowserFileProperties extends JFrame {
                 ownerLbl.setText("Added By:");
                 ownerLbl.setFont(new Font("Arial", ownerLbl.getFont().getStyle(), ownerLbl.getFont().getSize() + 1));
 
-                //---- label6 ----
-                label6.setText("Access Permissions:");
-                label6.setFont(new Font("Arial", label6.getFont().getStyle(), label6.getFont().getSize() + 1));
+                //---- locationLbl ----
+                locationLbl.setText("Located On:");
+                locationLbl.setFont(new Font("Arial", locationLbl.getFont().getStyle(), locationLbl.getFont().getSize() + 1));
 
                 //======== scrollPane1 ========
                 {
-                    scrollPane1.setViewportView(list1);
+                    scrollPane1.setViewportView(locationList);
                 }
 
                 //---- fileNameValue ----
@@ -113,7 +136,7 @@ public class ClientBrowserFileProperties extends JFrame {
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addGroup(contentPanelLayout.createParallelGroup()
                                         .addGroup(contentPanelLayout.createSequentialGroup()
@@ -128,13 +151,12 @@ public class ClientBrowserFileProperties extends JFrame {
                                             .addComponent(ownerLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(ownerValue))
-                                        .addComponent(label6)
+                                        .addComponent(locationLbl)
                                         .addGroup(contentPanelLayout.createSequentialGroup()
                                             .addComponent(creationDateLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(creationDateValue)))
-                                    .addGap(0, 132, Short.MAX_VALUE)))
-                            .addContainerGap())
+                                    .addContainerGap(148, Short.MAX_VALUE))))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -156,9 +178,9 @@ public class ClientBrowserFileProperties extends JFrame {
                                 .addComponent(ownerLbl)
                                 .addComponent(ownerValue))
                             .addGap(18, 18, 18)
-                            .addComponent(label6)
+                            .addComponent(locationLbl)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
@@ -200,8 +222,8 @@ public class ClientBrowserFileProperties extends JFrame {
         });
     }
 
-    public static void run(String fileName, String fileSize, String creationDate, String owner, JFrame sender) {
-        JFrame clientBrowserFileProperties = new ClientBrowserFileProperties(fileName, fileSize, creationDate, owner);
+    public static void run(String fileName, String fileSize, String creationDate, String owner, JFrame sender, JSONObject itemContents) {
+        JFrame clientBrowserFileProperties = new ClientBrowserFileProperties(fileName, fileSize, creationDate, owner, itemContents);
         CenterWindow.centerOnWindow(sender, clientBrowserFileProperties);
         clientBrowserFileProperties.setVisible(true);
     }
@@ -214,9 +236,9 @@ public class ClientBrowserFileProperties extends JFrame {
     private JLabel fileSizeLbl;
     private JLabel creationDateLbl;
     private JLabel ownerLbl;
-    private JLabel label6;
+    private JLabel locationLbl;
     private JScrollPane scrollPane1;
-    private JList list1;
+    private JList locationList;
     private JLabel fileNameValue;
     private JLabel fileSizeValue;
     private JLabel creationDateValue;

@@ -1,22 +1,13 @@
 import org.json.simple.JSONObject;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.awt.event.*;
+import java.io.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
+import javax.swing.event.*;
+import javax.swing.tree.*;
 /*
  * Created by JFormDesigner on Sun Nov 06 18:04:04 MST 2016
  */
@@ -43,6 +34,7 @@ public class ClientBrowser extends JFrame {
         initComponents();
         browserBtns(false);
         frameListeners();
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -94,8 +86,7 @@ public class ClientBrowser extends JFrame {
         removeBtn = new JButton();
         buttonBar = new JPanel();
         refreshBtn = new JButton();
-        progressBar = new JProgressBar();
-        sizeLbl = new JLabel();
+        logoutBtn = new JButton();
         quitBtn = new JButton();
 
         //======== this ========
@@ -238,10 +229,11 @@ public class ClientBrowser extends JFrame {
                 buttonBar.add(refreshBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
-                buttonBar.add(progressBar, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
-                buttonBar.add(sizeLbl, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+
+                //---- logoutBtn ----
+                logoutBtn.setText("Logout");
+                logoutBtn.setFont(new Font("Arial", logoutBtn.getFont().getStyle(), logoutBtn.getFont().getSize() + 1));
+                buttonBar.add(logoutBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
@@ -320,27 +312,10 @@ public class ClientBrowser extends JFrame {
                 }
             }
         });
-        tree1.addTreeExpansionListener(new TreeExpansionListener() {
-
-            public void treeExpanded(TreeExpansionEvent event) {
-                TreePath path = event.getPath();
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-                String data = node.getUserObject().toString();
-                System.out.println("Expanded: " + data);
-            }
-
-            public void treeCollapsed(TreeExpansionEvent event) {
-                TreePath path = event.getPath();
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
-                String data = node.getUserObject().toString();
-                System.out.println("Collapsed: " + data);
-            }
-        });
         downloadBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                System.out.println(jsonPath);
                 JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
                 int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
                 File localFile  = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
@@ -348,29 +323,13 @@ public class ClientBrowser extends JFrame {
                     JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                progressBar.setMinimum(0);
-                progressBar.setMaximum(fileSizeActual);
                 Thread download = new Thread() {
                     public void run() {
                         downloadFile(node.toString(), System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
-                        sizeLbl.setText("done");
                         JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                     }
                 };
                 download.start();
-                TimerTask timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        File outputFile = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
-                        progressBar.setValue(Math.toIntExact(outputFile.length()));
-                        sizeLbl.setText(outputFile.length() + "/" + fileSizeActual);
-                        if(progressBar.getValue() == progressBar.getMaximum()){
-                            cancel();
-                        }
-                    }
-                };
-                java.util.Timer timer = new java.util.Timer();
-                timer.scheduleAtFixedRate(timerTask, 0, 10);
             }
         });
         downloadAsBtn.addActionListener(new ActionListener() {
@@ -387,30 +346,14 @@ public class ClientBrowser extends JFrame {
                     JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                progressBar.setMinimum(0);
-                progressBar.setMaximum(fileSizeActual);
                 Thread download = new Thread() {
                     public void run() {
-                        System.out.println(fileChooser.getSelectedFile().toString());
                         downloadFile(node.toString(), fileChooser.getSelectedFile().toString());
-                        sizeLbl.setText("done");
                         JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                     }
                 };
 
                 download.start();
-                TimerTask timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        File outputFile = new File(fileChooser.getSelectedFile().toString());
-                        progressBar.setValue(Math.toIntExact(outputFile.length()));
-                        if(progressBar.getValue() == progressBar.getMaximum()){
-                            cancel();
-                        }
-                    }
-                };
-                java.util.Timer timer = new java.util.Timer();
-                timer.scheduleAtFixedRate(timerTask, 0, 10);
             }
         });
         propertiesBtn.addActionListener(new ActionListener() {
@@ -422,7 +365,7 @@ public class ClientBrowser extends JFrame {
                 Object creationDate = fileProperties.get("creationDate");
                 Object owner = fileProperties.get("owner");
 
-                ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString(), owner.toString(), clientBrowser);
+                ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString(), owner.toString(), clientBrowser, fileProperties);
             }
         });
         removeBtn.addActionListener(new ActionListener() {
@@ -472,6 +415,12 @@ public class ClientBrowser extends JFrame {
                 RenameFileWindow.run(serverAddress, port, clientBrowser, jsonPath, node.toString(), userAccount);
             }
         });
+        logoutBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ClientModeConfiguration.run(clientBrowser, serverAddress);
+                dispose();
+            }
+        });
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
@@ -495,11 +444,7 @@ public class ClientBrowser extends JFrame {
     }
 
     private void downloadFile(String node, String path){
-        System.out.println("node: " + node);
-        System.out.println("path: " + path);
-
-
-        try {
+         try {
             JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, node, serverAddress, port);
         } catch (IOException e) {
             e.printStackTrace();
@@ -535,17 +480,15 @@ public class ClientBrowser extends JFrame {
     private boolean checkCatalog(){
         try {
             File tempCatalog = File.createTempFile(".catalog", ".json");
+            tempCatalog.deleteOnExit();
             File localCatalogFile = new File(".catalog.json");
             FileClient.receiveFile(serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath());
             JSONObject latestCatalog = JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
             JSONObject localCatalog = JSONManipulator.getJSONObject(localCatalogFile.getAbsolutePath());
             if(localCatalog.equals(latestCatalog)){
-                System.out.println("The loaded catalog is the same as the most recent catalog");
                 tempCatalog.delete();
                 return false;
             }else{
-                System.out.println("I needs to update catalogs!");
-                //jsonObj = latestCatalog;
                 FileClient.receiveFile(serverAddress, port, ".catalog.json");
                 tempCatalog.delete();
                 return true;
@@ -574,8 +517,7 @@ public class ClientBrowser extends JFrame {
     private JButton removeBtn;
     private JPanel buttonBar;
     private JButton refreshBtn;
-    private JProgressBar progressBar;
-    private JLabel sizeLbl;
+    private JButton logoutBtn;
     private JButton quitBtn;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

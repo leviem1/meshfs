@@ -40,7 +40,10 @@ public class MoveFileWindow extends JFrame {
         this.userAccount = userAccount;
         initComponents();
         frameListeners();
-        this.setTitle(fileName + " - Move");
+        if(fileName.length() > 35){
+            fileName = fileName.substring(0, 30) + "...";
+        }
+        this.setTitle("Move - " + fileName);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         if(Reporting.getSystemOS().contains("Windows")){

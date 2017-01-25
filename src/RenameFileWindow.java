@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,15 +26,23 @@ public class RenameFileWindow extends JFrame {
     private String newName;
     private static JFrame renameFileWindow;
     private String userAccount;
+    private String originalName;
     private RenameFileWindow(String serverAddress, int port, String jsonObj, JFrame sender, String currentName, String userAccount) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
         this.caller = sender;
         this.userAccount = userAccount;
+        this.originalName = currentName;
+
         initComponents();
         frameListeners();
-        currentNameValue.setText(currentName);
+        String currentNameTruncated = currentName;
+        if(currentName.length() > 10){
+            currentNameTruncated = currentName.substring(0, 7) + "...";
+        }
+        currentNameValue.setText(currentNameTruncated);
+        currentNameValue.setToolTipText(currentName);
         okButton.setEnabled(false);
         if(Reporting.getSystemOS().contains("Windows")){
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
@@ -147,7 +157,7 @@ public class RenameFileWindow extends JFrame {
             }
             public void changed() {
 
-                if(!(currentNameValue.getText().equals(newNameValueField.getText()))){
+                if(!(originalName.equals(newNameValueField.getText()))){
                     if (newNameValueField.getText().isEmpty()){
                         okButton.setEnabled(false);
                     }else{

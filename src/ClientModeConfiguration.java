@@ -1,3 +1,5 @@
+import sun.java2d.BackBufferCapsProvider;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,10 +29,15 @@ public class ClientModeConfiguration extends JFrame{
     private static JFrame clientModeConfiguration;
     private String usernameFinal = "";
 
-    private ClientModeConfiguration() {
+    private ClientModeConfiguration(String serverAddress) {
         initComponents();
         frameListeners();
-        okButton.setEnabled(false);
+        serverAddressField.setText(serverAddress);
+        if(serverAddress.equals("")) {
+            okButton.setEnabled(false);
+        }else{
+            okButton.setEnabled(true);
+        }
         bindAnonymouslyCheckBox.setSelected(true);
         usernameField.setEnabled(false);
         passwordField.setEnabled(false);
@@ -50,15 +57,16 @@ public class ClientModeConfiguration extends JFrame{
         contentPanel = new JPanel();
         serverAddressLbl = new JLabel();
         serverPortLbl = new JLabel();
-        usernameLbl = new JLabel();
         passwordLbl = new JLabel();
-        bindAnonLbl = new JLabel();
-        bindAnonymouslyCheckBox = new JCheckBox();
         serverAddressField = new JTextField();
         serverPortField = new JFormattedTextField(numberFormat);
-        usernameField = new JTextField();
         passwordField = new JPasswordField();
+        usernameLbl = new JLabel();
+        usernameField = new JTextField();
+        bindAnonymouslyCheckBox = new JCheckBox();
+        bindAnonLbl = new JLabel();
         buttonBar = new JPanel();
+        backBtn = new JButton();
         okButton = new JButton();
         titleLbl = new JLabel();
 
@@ -76,24 +84,16 @@ public class ClientModeConfiguration extends JFrame{
             {
 
                 //---- serverAddressLbl ----
-                serverAddressLbl.setText("Server Address:");
+                serverAddressLbl.setText("Master Address:");
                 serverAddressLbl.setFont(new Font("Arial", serverAddressLbl.getFont().getStyle(), serverAddressLbl.getFont().getSize() + 1));
 
                 //---- serverPortLbl ----
                 serverPortLbl.setText("Server Port:");
                 serverPortLbl.setFont(new Font("Arial", serverPortLbl.getFont().getStyle(), serverPortLbl.getFont().getSize() + 1));
 
-                //---- usernameLbl ----
-                usernameLbl.setText("Username:");
-                usernameLbl.setFont(new Font("Arial", usernameLbl.getFont().getStyle(), usernameLbl.getFont().getSize() + 1));
-
                 //---- passwordLbl ----
                 passwordLbl.setText("Password:");
                 passwordLbl.setFont(new Font("Arial", passwordLbl.getFont().getStyle(), passwordLbl.getFont().getSize() + 1));
-
-                //---- bindAnonLbl ----
-                bindAnonLbl.setText("Bind as Guest:");
-                bindAnonLbl.setFont(new Font("Arial", bindAnonLbl.getFont().getStyle(), bindAnonLbl.getFont().getSize() + 1));
 
                 //---- serverAddressField ----
                 serverAddressField.setFont(new Font("Arial", serverAddressField.getFont().getStyle(), serverAddressField.getFont().getSize() + 1));
@@ -102,11 +102,20 @@ public class ClientModeConfiguration extends JFrame{
                 serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle(), serverPortField.getFont().getSize() + 1));
                 serverPortField.setText("5704");
 
-                //---- usernameField ----
-                usernameField.setFont(new Font("Arial", usernameField.getFont().getStyle(), usernameField.getFont().getSize() + 1));
-
                 //---- passwordField ----
                 passwordField.setFont(new Font("Arial", passwordField.getFont().getStyle(), passwordField.getFont().getSize() + 1));
+
+                //---- usernameLbl ----
+                usernameLbl.setText("Username:");
+                usernameLbl.setFont(new Font("Arial", usernameLbl.getFont().getStyle(), usernameLbl.getFont().getSize() + 1));
+
+                //---- usernameField ----
+                usernameField.setFont(new Font("Arial", usernameField.getFont().getStyle(), usernameField.getFont().getSize() + 1));
+                usernameField.setText("guest");
+
+                //---- bindAnonLbl ----
+                bindAnonLbl.setText("Bind as Guest:");
+                bindAnonLbl.setFont(new Font("Arial", bindAnonLbl.getFont().getStyle(), bindAnonLbl.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -115,56 +124,50 @@ public class ClientModeConfiguration extends JFrame{
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
+                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                                    .addComponent(serverAddressLbl)
+                                    .addGap(12, 12, 12)
+                                    .addComponent(serverAddressField)
+                                    .addGap(13, 13, 13)
+                                    .addComponent(serverPortLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(GroupLayout.Alignment.LEADING, contentPanelLayout.createSequentialGroup()
+                                            .addComponent(passwordLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(passwordField))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(usernameLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE)))
+                                    .addGap(18, 18, 18)
                                     .addComponent(bindAnonLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(bindAnonymouslyCheckBox)
-                                    .addGap(0, 221, Short.MAX_VALUE))
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGroup(contentPanelLayout.createParallelGroup()
-                                        .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(serverAddressLbl)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(serverAddressField, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(contentPanelLayout.createSequentialGroup()
-                                            .addComponent(serverPortLbl)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                            .addGroup(contentPanelLayout.createSequentialGroup()
-                                                .addComponent(passwordLbl)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(passwordField))
-                                            .addGroup(contentPanelLayout.createSequentialGroup()
-                                                .addComponent(usernameLbl)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 135, GroupLayout.PREFERRED_SIZE))))
-                                    .addContainerGap(56, Short.MAX_VALUE))))
+                                    .addContainerGap(14, Short.MAX_VALUE))))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(serverAddressLbl)
-                                .addComponent(serverAddressField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(14, 14, 14)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(serverPortLbl)
-                                .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(bindAnonLbl)
-                                .addComponent(bindAnonymouslyCheckBox))
-                            .addGap(18, 18, 18)
+                                .addComponent(serverAddressField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(serverAddressLbl))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(usernameLbl)
-                                .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(18, 18, 18)
+                                .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(bindAnonLbl)
+                                .addComponent(bindAnonymouslyCheckBox))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(passwordLbl)
                                 .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addContainerGap(18, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -173,13 +176,19 @@ public class ClientModeConfiguration extends JFrame{
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+
+                //---- backBtn ----
+                backBtn.setText("Back");
+                buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
-                okButton.setText("OK");
+                okButton.setText("Connect");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -192,7 +201,7 @@ public class ClientModeConfiguration extends JFrame{
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        pack();
+        setSize(475, 240);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -292,6 +301,12 @@ public class ClientModeConfiguration extends JFrame{
 
             }
         });
+        backBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                InitialConfiguration.run(clientModeConfiguration);
+                dispose();
+            }
+        });
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
@@ -300,15 +315,16 @@ public class ClientModeConfiguration extends JFrame{
     private JPanel contentPanel;
     private JLabel serverAddressLbl;
     private JLabel serverPortLbl;
-    private JLabel usernameLbl;
     private JLabel passwordLbl;
-    private JLabel bindAnonLbl;
-    private JCheckBox bindAnonymouslyCheckBox;
     private JTextField serverAddressField;
     private JFormattedTextField serverPortField;
-    private JTextField usernameField;
     private JPasswordField passwordField;
+    private JLabel usernameLbl;
+    private JTextField usernameField;
+    private JCheckBox bindAnonymouslyCheckBox;
+    private JLabel bindAnonLbl;
     private JPanel buttonBar;
+    private JButton backBtn;
     private JButton okButton;
     private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
@@ -320,9 +336,9 @@ public class ClientModeConfiguration extends JFrame{
             JOptionPane.showMessageDialog(null, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setText("");
             serverPortField.setText("5704");
-            usernameField.setText("");
+            usernameField.setText("guest");
             passwordField.setText("");
-            bindAnonymouslyCheckBox.setSelected(false);
+            bindAnonymouslyCheckBox.setSelected(true);
             return;
         }
         try{
@@ -346,7 +362,7 @@ public class ClientModeConfiguration extends JFrame{
     private void bindAnonymously(String mode){
         if(mode.equals("yes")){
             usernameField.setEnabled(false);
-            usernameField.setText("");
+            usernameField.setText("guest");
             passwordField.setEnabled(false);
             passwordField.setText("");
         }
@@ -402,8 +418,8 @@ public class ClientModeConfiguration extends JFrame{
         }
     }
 
-    public static void run(JFrame sender) {
-        JFrame clientModeConfiguration = new ClientModeConfiguration();
+    public static void run(JFrame sender, String serverAddress) {
+        clientModeConfiguration = new ClientModeConfiguration(serverAddress);
         CenterWindow.centerOnWindow(sender, clientModeConfiguration);
         clientModeConfiguration.setVisible(true);
     }

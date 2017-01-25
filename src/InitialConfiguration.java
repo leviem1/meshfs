@@ -20,8 +20,8 @@ public class InitialConfiguration extends JFrame {
     private InitialConfiguration() {
         initComponents();
         modeSelectionBox.addItem("none");
-        modeSelectionBox.addItem("Server Mode");
         modeSelectionBox.addItem("Client Mode");
+        modeSelectionBox.addItem("Server Mode");
         frameListeners();
         okButton.setEnabled(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -147,7 +147,7 @@ public class InitialConfiguration extends JFrame {
             dispose();
         }
         else if(modeSelectionBox.getSelectedItem().toString().equals("Client Mode")){
-            ClientModeConfiguration.run(initialConfiguration);
+            ClientModeConfiguration.run(initialConfiguration, "");
             dispose();
         }
     }

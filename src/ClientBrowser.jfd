@@ -91,13 +91,10 @@ new FormModel {
 						"text": "Refresh"
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
-					add( new FormComponent( "javax.swing.JProgressBar" ) {
-						name: "progressBar"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 1
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "sizeLbl"
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "logoutBtn"
+						"text": "Logout"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 2
 					} )
