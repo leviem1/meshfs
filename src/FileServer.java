@@ -33,7 +33,6 @@ public class FileServer {
      */
 
     public void startServer(int port, int maxThreads, int timeout) throws IOException {
-
         fileServer = new ServerSocket();
         fileServer.setPerformancePreferences(1, 0, 1);
         fileServer.bind(new InetSocketAddress(port));
@@ -58,6 +57,13 @@ public class FileServer {
             for (int thread = 0; thread < sockets.size(); thread++) {
                 sockets.get(thread).interrupt();
             }
+
+            try {
+                fileServer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             for (int thread = 0; thread < sockets.size(); thread++) {
                 try {
                     sockets.get(thread).join();
@@ -65,6 +71,7 @@ public class FileServer {
                     e.printStackTrace();
                 }
             }
+
         }
     }
 }
@@ -213,9 +220,9 @@ class ServerInit implements Runnable {
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
-        out.println("201");
-
         FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + filename);
+
+        out.println("201");
 
         while ((br = fis.read(data, 0, data.length)) != -1) {
             dos.write(data, 0, br);
@@ -302,18 +309,17 @@ class ServerInit implements Runnable {
     }
 
     public void run() {
-            while (!Thread.interrupted()) {
-                try {
-                    server.setSoTimeout(1000);
-                    Socket client = server.accept();
-                    client.setSoTimeout(timeout);
-                    processRequest(receiveRequest(client), client);
-                    client.close();
-                } catch (SocketTimeoutException ste) {
-                } catch (IOException io) {
-                    io.printStackTrace();
-                }
+        while (!Thread.interrupted()) {
+            try {
+                server.setSoTimeout(timeout);
+                Socket client = server.accept();
+                processRequest(receiveRequest(client), client);
+                client.close();
+            } catch (SocketTimeoutException | SocketException ignored) {
+            } catch (IOException io) {
+                io.printStackTrace();
             }
-            System.out.println("Socket closed");
+        }
+        System.out.println("Socket closed");
     }
 }
