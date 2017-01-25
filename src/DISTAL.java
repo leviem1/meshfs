@@ -52,7 +52,7 @@ public class DISTAL {
         int numOfWholeCopies = Integer.valueOf(MeshFS.properties.get("numWholeCopy").toString());
         long minFreeSpace = Integer.valueOf(MeshFS.properties.get("minSpace").toString());
         uploadFilePath = MeshFS.properties.get("repository").toString() + uploadFilePath;
-        String manifestFileLocation = MeshFS.properties.get("repository")+"manifest.json";
+        String manifestFileLocation = MeshFS.properties.get("repository")+".manifest.json";
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.get("repository").toString()+".catalog.json";
         try {
@@ -249,7 +249,7 @@ public class DISTAL {
 
     private static void sendFiles (List<List<String>> stripes, String sourceFile, long fileSize, String outName){
         long sizeOfStripe = ((fileSize / (stripes.size() -1) + 1));
-        JSONObject manifestFile = JSONManipulator.getJSONObject(MeshFS.properties.get("repository")+"manifest.json");
+        JSONObject manifestFile = JSONManipulator.getJSONObject(MeshFS.properties.get("repository")+".manifest.json");
         try {
             for (int stripe = -1; stripe < (stripes.size()-1); stripe++){
                 if (stripe == -1){

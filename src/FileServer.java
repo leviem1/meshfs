@@ -206,12 +206,12 @@ class ServerInit implements Runnable {
         reportFull = reportFull.trim();
 
         JSONObject manifest = new JSONObject();
-        if (new File(MeshFS.properties.getProperty("repository") + "manifest.json").exists()){
-            manifest = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + "manifest.json");
+        if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()){
+            manifest = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         }
         JSONArray reportArray = Reporting.splitter(reportFull);
         manifest.put(reportArray.get(0),reportArray.get(1));
-        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository") + "manifest.json", manifest);
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
     private void sendFile(String filename, Socket client) throws IOException {

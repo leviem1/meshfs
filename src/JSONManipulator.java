@@ -234,8 +234,8 @@ public class JSONManipulator {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         int port = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
         String catalogFileLocation = ".catalog.json";
-        String manifestFileLocation = "manifest.json";
-        FileClient.receiveFile(serverAddress, portNumber, "manifest.json", "manifest.json");
+        String manifestFileLocation = ".manifest.json";
+        FileClient.receiveFile(serverAddress, portNumber, ".manifest.json", ".manifest.json");
         String[] folders = itemLocation.split("/");
         JSONObject itemToRead = JSONManipulator.getJSONObject(catalogFileLocation);
         for (String folder : folders) {
