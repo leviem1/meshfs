@@ -19,42 +19,29 @@ public class MeshFS {
 
     public static void main(String[] args) {
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
-
-        System.setProperty("apple.laf.useScreenMenuBar", "true");
-        System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
-        Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
-
         properties = ConfigParser.loadProperties();
         new CliParser(args, properties);
-
-        List<String> possibleIP = Reporting.getIpAddresses();
-        if (properties.getProperty("masterIP").equals("127.0.0.1")) {
-            isMaster = true;
-        } else {
-            for (String iFace : possibleIP) {
-                if (iFace.equals(properties.getProperty("masterIP"))) {
-                    isMaster = true;
-                    break;
-                } else {
-                    isMaster = false;
-
-                }
-            }
-        }
+        Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
 
          if (nogui) {
-            TimerTask timerTask = new TimerTask() {
+             System.setProperty("java.awt.headless", "true");
+
+             List<String> possibleIP = Reporting.getIpAddresses();
+             if (properties.getProperty("masterIP").equals("127.0.0.1")) {
+                 isMaster = true;
+             } else {
+                 for (String iFace : possibleIP) {
+                     if (iFace.equals(properties.getProperty("masterIP"))) {
+                         isMaster = true;
+                         break;
+                     } else {
+                         isMaster = false;
+
+                     }
+                 }
+             }
+
+             TimerTask timerTask = new TimerTask() {
                 @Override
                 public void run() {
                     if(!(isMaster)){
@@ -112,8 +99,22 @@ public class MeshFS {
                 }
             }
 
-            System.setProperty("java.awt.headless", "true");
         } else {
+             System.setProperty("apple.laf.useScreenMenuBar", "true");
+             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "MeshFS");
+
+             try {
+                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+             } catch (ClassNotFoundException e) {
+                 e.printStackTrace();
+             } catch (InstantiationException e) {
+                 e.printStackTrace();
+             } catch (IllegalAccessException e) {
+                 e.printStackTrace();
+             } catch (UnsupportedLookAndFeelException e) {
+                 e.printStackTrace();
+             }
+
             if(Reporting.getSystemOS().toLowerCase().contains("mac")){
                 com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
             }
