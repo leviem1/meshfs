@@ -44,6 +44,10 @@ public class RenameFileWindow extends JFrame {
         }
         currentNameValue.setText(currentNameTruncated);
         currentNameValue.setToolTipText(currentName);
+        newNameValueField.setText(currentName);
+        int beginningExtension = currentName.lastIndexOf(".");
+        newNameValueField.setSelectionStart(0);
+        newNameValueField.setSelectionEnd(beginningExtension);
         okButton.setEnabled(false);
         if(Reporting.getSystemOS().contains("Windows")){
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());

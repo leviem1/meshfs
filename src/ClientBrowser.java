@@ -314,6 +314,9 @@ public class ClientBrowser extends JFrame {
         });
         downloadBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if(checkCatalog()){
+                    refreshWindow();
+                }
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
@@ -334,6 +337,9 @@ public class ClientBrowser extends JFrame {
         });
         downloadAsBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if(checkCatalog()){
+                    refreshWindow();
+                }
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.showSaveDialog(null);

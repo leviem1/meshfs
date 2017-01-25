@@ -368,6 +368,7 @@ public class ClientModeConfiguration extends JFrame{
         }
         else if(mode.equals("no")){
             usernameField.setEnabled(true);
+            usernameField.setText("");
             passwordField.setEnabled(true);
         }
 
