@@ -47,6 +47,7 @@ public class DISTAL {
         catch (Exception e){
             userAccount = filePathInCatalog;
         }
+        JSONManipulator.addToIndex(userAccount, uploadFilePath.substring(uploadFilePath.lastIndexOf("/")) + " (DISTRIBUTING)", uploadFilePath);
         int numOfStripes = Integer.valueOf(MeshFS.properties.getProperty("numStripes"));
         int numOfStripedCopies = Integer.valueOf(MeshFS.properties.getProperty("numStripeCopy"));
         int numOfWholeCopies = Integer.valueOf(MeshFS.properties.getProperty("numWholeCopy"));
@@ -54,7 +55,7 @@ public class DISTAL {
         uploadFilePath = MeshFS.properties.getProperty("repository") + uploadFilePath;
         String manifestFileLocation = MeshFS.properties.getProperty("repository")+".manifest.json";
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
-        String catalogFileLocation = MeshFS.properties.get("repository").toString()+".catalog.json";
+        String catalogFileLocation = MeshFS.properties.getProperty("repository")+".catalog.json";
         try {
              String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
              long sizeOfFile = FileUtils.getSize(uploadFilePath);
@@ -216,8 +217,10 @@ public class DISTAL {
                      }
                  }
              }
-             JSONManipulator.addToIndex(stripes, filePathInCatalog, fileName, catalogFileLocation, newName, userAccount, sizeOfFile);
              sendFiles(stripes,uploadFilePath,sizeOfFile,newName);
+             JSONManipulator.removeItem(jsonObj,userAccount);
+             JSONManipulator.addToIndex(stripes, filePathInCatalog, fileName, catalogFileLocation, newName, userAccount, sizeOfFile);
+
          }
          catch (Exception e) {
              e.printStackTrace();
@@ -247,36 +250,41 @@ public class DISTAL {
         return newName;
     }
 
-    private static void sendFiles (List<List<String>> stripes, String sourceFile, long fileSize, String outName){
+    private static void sendFiles (List<List<String>> stripes, String sourceFileLocation, long fileSize, String outName){
         long sizeOfStripe = ((fileSize / (stripes.size() -1) + 1));
-        JSONObject manifestFile = JSONManipulator.getJSONObject(MeshFS.properties.get("repository")+".manifest.json");
+        new File(sourceFileLocation).renameTo(new File(sourceFileLocation.substring(0,sourceFileLocation.lastIndexOf(File.separator)+1) + outName + "_w"));
+        sourceFileLocation = sourceFileLocation.substring(0,sourceFileLocation.lastIndexOf(File.separator)+1) + outName + "_w";
+        JSONObject manifestFile = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".manifest.json");
         try {
             for (int stripe = -1; stripe < (stripes.size()-1); stripe++){
                 if (stripe == -1){
-                    FileUtils.writeStripe(sourceFile, MeshFS.properties.get("repository").toString() + File.separator + outName + "_w", 0L, fileSize);
                     for (String computerToReceive : stripes.get(stripe+1)) {
-                        FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), MeshFS.properties.get("repository").toString() + File.separator + outName + "_w");
+                        System.out.println("sending wholes");
+                        System.out.println(sourceFileLocation);
+                        FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_w");
                     }
-                    FileUtils.removeFile(MeshFS.properties.get("repository").toString() + File.separator + outName + "_w");
                 }
                 else if (stripe == stripes.size()-2) {
-                    FileUtils.writeStripe(sourceFile, MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe - ((sizeOfStripe * stripes.size() - 1) - fileSize));
+                    FileUtils.writeStripe(sourceFileLocation, MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe - ((sizeOfStripe * stripes.size() - 1) - fileSize));
                     for (String computerToReceive : stripes.get(stripe+1)){
-                        FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe);
+                        System.out.println("sending last stripe");
+                        FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
                     }
-                    FileUtils.removeFile(MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe);
+                    FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
                 }
                 else {
-                    FileUtils.writeStripe(sourceFile, MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe);
+                    FileUtils.writeStripe(sourceFileLocation, MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe);
                     for (String computerToReceive : stripes.get(stripe+1)){
-                        FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.get("portNumber").toString()), MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe);
+                        System.out.println("sending stripe" + stripe);
+                        FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
                     }
-                    FileUtils.removeFile(MeshFS.properties.get("repository").toString() + File.separator + outName + "_s" + stripe);
+                    FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
                 }
             }
         } catch (Exception e){
             e.printStackTrace();
         }
-        FileUtils.removeFile(sourceFile);
+        FileUtils.removeFile(sourceFileLocation);
+        System.out.println("done");
     }
 }

@@ -258,6 +258,7 @@ public class JSONManipulator {
                     if (compInfoFile.containsKey(MACAddress)) {
                         if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameWNum)){
                             String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
+                            System.out.println("receiving: " + fileNameWNum);
                             FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + fileNameWNum);
                             stripeNames.add(outFileDir + File.separator + fileNameWNum);
                             cantContinue = false;
@@ -272,6 +273,7 @@ public class JSONManipulator {
             }
         }
         if (wholeNecessary){
+            System.out.println("using whole");
             String fileNameW = fileName +"_w";
             JSONArray compsWithWhole = (JSONArray) itemToRead.get("whole");
             boolean cantContinue = true;
@@ -293,10 +295,12 @@ public class JSONManipulator {
 
         else {
             String outName = path.substring(path.lastIndexOf("/"));
+            System.out.println("combining");
             FileUtils.combineStripes(stripeNames,outFileDir  + File.separator + outName);
-            for (String filePath:stripeNames){
-                Files.deleteIfExists(Paths.get(filePath));
-            }
+
+        }for (String filePath:stripeNames){
+            System.out.println("deleting: " + filePath);
+            Files.deleteIfExists(Paths.get(filePath));
         }
     }
 
