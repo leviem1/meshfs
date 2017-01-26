@@ -270,8 +270,10 @@ public class JSONManipulator {
                     if (compInfoFile.containsKey(MACAddress)) {
                         if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameWNum)){
                             String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
+
                             FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + fileNameWNum);
                             stripeNames.add(outFileDir + File.separator + fileNameWNum);
+
                             cantContinue = false;
                             break;
                         }
@@ -305,8 +307,7 @@ public class JSONManipulator {
         }
 
         else {
-            String outName = path.substring(path.lastIndexOf("/"));
-            FileUtils.combineStripes(stripeNames,outFileDir  + File.separator + outName);
+            FileUtils.combineStripes(numberSorter(stripeNames),outFileDir  + File.separator + path.substring(path.lastIndexOf("/")));
 
         }for (String filePath:stripeNames){
             Files.deleteIfExists(Paths.get(filePath));
@@ -328,5 +329,21 @@ public class JSONManipulator {
         int exp = (int) (Math.log(bytes) / Math.log(unit));
         String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
+    private static List<String> numberSorter (List<String> unsorted){
+        String name = unsorted.get(0).substring(0,unsorted.get(0).lastIndexOf("s")+1);
+        int[] numbers = new int[unsorted.size()];
+        int index = 0;
+        for(String nameWithNum: unsorted){
+            numbers[index] = Integer.parseInt(nameWithNum.substring(nameWithNum.lastIndexOf("s")+1));
+            index++;
+        }
+        Arrays.sort(numbers);
+        unsorted.clear();
+        for(int number : numbers){
+            unsorted.add(name + String.valueOf(number));
+        }
+        return unsorted;
     }
 }
