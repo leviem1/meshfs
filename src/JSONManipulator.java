@@ -118,6 +118,7 @@ public class JSONManipulator {
         }
         return folderToRead;
     }
+
     public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate) {
         String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         return(copyFile(jsonObject, itemLocation, destinationLocation, showDate, fileName));
@@ -224,13 +225,28 @@ public class JSONManipulator {
         }
     }
 
+    public static void addToIndex(String itemLocation, String fileName, String JSONFilePath, String userAccount, boolean tempFile) {
+        if(tempFile){
+            JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
+            JSONObject objChild = new JSONObject();
+            objChild.put("type", "tempFile");
+            objChild.put("owner", userAccount);
+            jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName, objChild);
+            try{
+                writeJSONObject(JSONFilePath, jsonFile);
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
         try (FileWriter file = new FileWriter(filePath)) {
             file.write(obj.toJSONString());
         }
     }
 
-    public static void pullFile(String itemLocation, String path, String outFile, String serverAddress, int portNumber) throws IOException {
+    public static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int portNumber) throws IOException {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         int port = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
         String catalogFileLocation = ".catalog.json";
@@ -240,10 +256,6 @@ public class JSONManipulator {
         JSONObject itemToRead = JSONManipulator.getJSONObject(catalogFileLocation);
         for (String folder : folders) {
             itemToRead = (JSONObject) itemToRead.get(folder);
-        }
-        if (!itemToRead.get("type").toString().equals("file")){
-            System.out.println("Select a file, not a folder!");
-            return;
         }
         String fileName = itemToRead.get("fileName").toString();
         JSONObject compInfoFile = getJSONObject(manifestFileLocation);
@@ -258,7 +270,6 @@ public class JSONManipulator {
                     if (compInfoFile.containsKey(MACAddress)) {
                         if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameWNum)){
                             String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
-                            System.out.println("receiving: " + fileNameWNum);
                             FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + fileNameWNum);
                             stripeNames.add(outFileDir + File.separator + fileNameWNum);
                             cantContinue = false;
@@ -273,7 +284,6 @@ public class JSONManipulator {
             }
         }
         if (wholeNecessary){
-            System.out.println("using whole");
             String fileNameW = fileName +"_w";
             JSONArray compsWithWhole = (JSONArray) itemToRead.get("whole");
             boolean cantContinue = true;
@@ -281,27 +291,27 @@ public class JSONManipulator {
                 if (compInfoFile.containsKey(MACAddress)) {
                     if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
                         String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
+                        System.out.println("attemting to recieve stripe " + fileNameW + "from " + IPAddress);
                         FileClient.receiveFile(IPAddress, port,fileNameW, outFileDir + File.separator + outFile);
+                        System.out.println("recieved stripe " + fileNameW);
                         cantContinue = false;
                         break;
                     }
                 }
             }
             if (cantContinue){
-                System.out.println("File is unrecoverable!");
-                return;
+                return false;
             }
         }
 
         else {
             String outName = path.substring(path.lastIndexOf("/"));
-            System.out.println("combining");
             FileUtils.combineStripes(stripeNames,outFileDir  + File.separator + outName);
 
         }for (String filePath:stripeNames){
-            System.out.println("deleting: " + filePath);
             Files.deleteIfExists(Paths.get(filePath));
         }
+        return true;
     }
 
     public static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile){

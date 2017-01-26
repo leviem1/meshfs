@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import java.util.Timer;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
@@ -26,6 +27,7 @@ public class ClientBrowser extends JFrame {
     private JSONObject jsonObj;
     private static JFrame clientBrowser;
     private String userAccount;
+    private Timer catalogTimer;
 
     private ClientBrowser(String serverAddress, int port, String userAccount) {
         this.serverAddress = serverAddress;
@@ -34,7 +36,6 @@ public class ClientBrowser extends JFrame {
         initComponents();
         browserBtns(false);
         frameListeners();
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -46,13 +47,14 @@ public class ClientBrowser extends JFrame {
             public void run() {
                 if(checkCatalog()){
                     refreshWindow();
-                    dispose();
                     this.cancel();
+                    //dispose();
+
                 }
             }
         };
-        java.util.Timer timer = new java.util.Timer();
-        timer.scheduleAtFixedRate(catalogCheck, 3000, 3000);
+        catalogTimer = new java.util.Timer();
+        catalogTimer.scheduleAtFixedRate(catalogCheck, 3000, 3000);
     }
 
     private void initComponents() {
@@ -266,15 +268,16 @@ public class ClientBrowser extends JFrame {
                 int rVal = fileChooser.showOpenDialog(null);
                 if (rVal == JFileChooser.APPROVE_OPTION) {
                     String pathToFile = fileChooser.getSelectedFile().getPath();
-                    File file = new File(pathToFile);
-                    int size = Math.toIntExact(file.length());
-
-                    try {
-                        FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath(), userAccount);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    refreshWindow();
+                    Thread upload = new Thread() {
+                        public void run() {
+                            try {
+                                FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath(), userAccount);
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    };
+                    upload.start();
                 }
             }
         });
@@ -286,12 +289,18 @@ public class ClientBrowser extends JFrame {
         tree1.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) throws NullPointerException {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                JSONObject contents = JSONManipulator.getItemContents(jsonObj, tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"));
+                Object type = contents.get("type");
                 try{
                     if(node.toString().equals("(no files)")){
                         browserBtns(false);
                         tree1.setSelectionPath(null);
                     } else if (node.toString().equals(userAccount)) {
                         browserBtns(false);
+
+                    } else if (type.toString().equals("tempFile")){
+                        browserBtns(false);
+                        tree1.setSelectionPath(null);
                     } else {
                         if (node.getChildCount() != 0) {
                             if (!(node.toString().equals(userAccount))) {
@@ -321,7 +330,6 @@ public class ClientBrowser extends JFrame {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
-                int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
                 File localFile  = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
                 if((localFile.exists())){
                     JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
@@ -407,6 +415,9 @@ public class ClientBrowser extends JFrame {
         quitBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                catalogTimer.purge();
+                catalogTimer.cancel();
+                System.exit(0);
             }
         });
         newDirBtn.addActionListener(new ActionListener() {
@@ -426,6 +437,8 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 ClientModeConfiguration.run(clientBrowser, serverAddress);
                 dispose();
+                catalogTimer.purge();
+                catalogTimer.cancel();
             }
         });
     }
@@ -452,7 +465,9 @@ public class ClientBrowser extends JFrame {
 
     private void downloadFile(String node, String path){
          try {
-            JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, node, serverAddress, port);
+            if(!(JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, node, serverAddress, port))){
+                 JOptionPane.showMessageDialog(null, "Download Failed! Please try again later...", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -486,7 +501,6 @@ public class ClientBrowser extends JFrame {
 
     private boolean checkCatalog(){
         try {
-            System.out.println("Checking1");
             File tempCatalog = File.createTempFile(".catalog", ".json");
             tempCatalog.deleteOnExit();
             File localCatalogFile = new File(".catalog.json");
@@ -494,15 +508,11 @@ public class ClientBrowser extends JFrame {
             JSONObject latestCatalog = JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
             JSONObject localCatalog = JSONManipulator.getJSONObject(localCatalogFile.getAbsolutePath());
             if(localCatalog.equals(latestCatalog)){
-                System.out.println("Latest");
                 tempCatalog.delete();
                 return false;
             }else{
-                System.out.println("Not updated");
-                System.out.println(serverAddress);
-                System.out.println(port);
-
                 FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
+                dispose();
                 tempCatalog.delete();
                 return true;
             }

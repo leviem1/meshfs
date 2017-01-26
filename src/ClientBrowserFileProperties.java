@@ -35,7 +35,6 @@ public class ClientBrowserFileProperties extends JFrame {
         fileSizeValue.setText(fileSize);
         creationDateValue.setText(creationDate);
         ownerValue.setText(owner);
-        System.out.println(itemContents);
         int pos = locationList.getModel().getSize();
         for (Object key : itemContents.keySet()) {
             String keyStr = key.toString();

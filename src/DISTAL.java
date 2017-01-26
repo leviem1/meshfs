@@ -47,7 +47,7 @@ public class DISTAL {
         catch (Exception e){
             userAccount = filePathInCatalog;
         }
-        JSONManipulator.addToIndex(userAccount, uploadFilePath.substring(uploadFilePath.lastIndexOf("/")) + " (DISTRIBUTING)", uploadFilePath);
+
         int numOfStripes = Integer.valueOf(MeshFS.properties.getProperty("numStripes"));
         int numOfStripedCopies = Integer.valueOf(MeshFS.properties.getProperty("numStripeCopy"));
         int numOfWholeCopies = Integer.valueOf(MeshFS.properties.getProperty("numWholeCopy"));
@@ -56,6 +56,7 @@ public class DISTAL {
         String manifestFileLocation = MeshFS.properties.getProperty("repository")+".manifest.json";
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.getProperty("repository")+".catalog.json";
+        JSONManipulator.addToIndex(userAccount, uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator)+1) + " (distributing)", catalogFileLocation, userAccount, true);
         try {
              String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
              long sizeOfFile = FileUtils.getSize(uploadFilePath);
@@ -64,7 +65,6 @@ public class DISTAL {
 
              LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFile);
              LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap); //sort the compStorageMap by descending available storage
-             System.out.println("sortedMap: " + sortedCompStorageMap);
              for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){ // account for the desired amount of free space
                  String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
                  sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(String.valueOf(macAddress)) - minFreeSpace);
@@ -109,7 +109,6 @@ public class DISTAL {
                      computersForStripes.add(macAddress);
                  }
                  else if (computerNumS != 0){
-                     System.out.println("happy world");
                      String macAddressNew;
                      long availableStorage;
                      try {
@@ -130,7 +129,6 @@ public class DISTAL {
                          computersForStripes.add(macAddressNew);
                      }
                      else {
-                         System.out.println("newLap");
                          lapNum++;
                          lastResortComp = 0;
 
@@ -147,13 +145,12 @@ public class DISTAL {
                              }
                          }
                          if (lastResortComp >= sortedCompStorageMap.size()){
-                             System.out.println("you should not se this");
                              break;
                          }
                      }
                  }
                  else{
-                     System.out.println("the is no storage space that is available for this file.");
+                     System.out.println("There is no storage space that is available for this file.");
                      break;
                  }
              }
@@ -170,14 +167,11 @@ public class DISTAL {
              }
 
              if (allowStripes){
-                 System.out.println("compsForStripes: " + computersForStripes);
                  for (int copy = 0; copy < numOfStripes; copy++) {
                      stripes.add(new ArrayList<>());
                  }
                  for (int copy = 0; copy < numOfStripedCopies; copy++) {
-                     System.out.println("currentCopy" + copy);
                      for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++){
-                         System.out.println("currentStripe" + currentStripe);
                          try{
                              int test = 0;
 
@@ -193,7 +187,6 @@ public class DISTAL {
                                      boolean isNotBroken = true;
                                      for (String tempMac : stripes.get(currentStripe + 1)) {
                                          if (tempMac.equals(computerToReceive)) {
-                                             System.out.println("reorganizing");
                                              computersForStripes.add(tempMac);
                                              computersForStripes.remove((copy * numOfStripes) + currentStripe);
                                              isNotBroken = false;
@@ -211,15 +204,15 @@ public class DISTAL {
                                  }}
                          }
                          catch (Exception e) {
-                             e.printStackTrace();
                              System.out.println("You are out of Storage!");
                          }
                      }
                  }
              }
              sendFiles(stripes,uploadFilePath,sizeOfFile,newName);
-             JSONManipulator.removeItem(jsonObj,userAccount);
-             JSONManipulator.addToIndex(stripes, filePathInCatalog, fileName, catalogFileLocation, newName, userAccount, sizeOfFile);
+            String itemLocation = userAccount + "/" + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator)+1) + " (distributing)";
+            JSONManipulator.writeJSONObject(catalogFileLocation, JSONManipulator.removeItem(jsonObj, itemLocation));
+            JSONManipulator.addToIndex(stripes, filePathInCatalog, fileName, catalogFileLocation, newName, userAccount, sizeOfFile);
 
          }
          catch (Exception e) {
@@ -259,15 +252,12 @@ public class DISTAL {
             for (int stripe = -1; stripe < (stripes.size()-1); stripe++){
                 if (stripe == -1){
                     for (String computerToReceive : stripes.get(stripe+1)) {
-                        System.out.println("sending wholes");
-                        System.out.println(sourceFileLocation);
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_w");
                     }
                 }
                 else if (stripe == stripes.size()-2) {
-                    FileUtils.writeStripe(sourceFileLocation, MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe - ((sizeOfStripe * stripes.size() - 1) - fileSize));
+                    FileUtils.writeStripe(sourceFileLocation, MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe - ((sizeOfStripe * (stripes.size() - 1)) - fileSize));
                     for (String computerToReceive : stripes.get(stripe+1)){
-                        System.out.println("sending last stripe");
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
                     }
                     FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
@@ -275,7 +265,6 @@ public class DISTAL {
                 else {
                     FileUtils.writeStripe(sourceFileLocation, MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe);
                     for (String computerToReceive : stripes.get(stripe+1)){
-                        System.out.println("sending stripe" + stripe);
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
                     }
                     FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
@@ -285,6 +274,5 @@ public class DISTAL {
             e.printStackTrace();
         }
         FileUtils.removeFile(sourceFileLocation);
-        System.out.println("done");
     }
 }

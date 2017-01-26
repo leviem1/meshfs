@@ -6,6 +6,8 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.net.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -104,7 +106,6 @@ public class Reporting {
         JSONArray mainArray = new JSONArray();
         String[] reportArray = report.split("\\|");
         String[] reportObjects = reportArray[1].split(";");
-        System.out.println(report);
 
         for (String reportSet : reportObjects) {
             String key = reportSet.substring(0,reportSet.indexOf(":"));
@@ -124,6 +125,9 @@ public class Reporting {
         }
         mainArray.add(reportArray[0]);
         mainArray.add(jsonObject);
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+        Date dateObj = new Date();
+        System.out.println(reportArray[0] + " checked in at " + df.format(dateObj));
         return mainArray;
     }
 }
