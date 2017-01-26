@@ -160,8 +160,6 @@ public class MoveFileWindow extends JFrame {
                     e1.printStackTrace();
                 }
                 dispose();
-                sender.dispose();
-                ClientBrowser.run(serverAddress, port, moveFileWindow, userAccount);
             }
         });
     }

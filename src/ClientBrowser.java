@@ -23,11 +23,14 @@ public class ClientBrowser extends JFrame {
     private boolean isLoaded = false;
     private String serverAddress;
     private int port;
-    private DefaultMutableTreeNode tree;
     private JSONObject jsonObj;
     private static JFrame clientBrowser;
     private String userAccount;
     private Timer catalogTimer;
+    private DefaultMutableTreeNode rootNode;
+    private TreeNode root;
+    private DefaultTreeModel treeModel;
+    private boolean timerIsDead;
 
     private ClientBrowser(String serverAddress, int port, String userAccount) {
         this.serverAddress = serverAddress;
@@ -45,28 +48,25 @@ public class ClientBrowser extends JFrame {
         TimerTask catalogCheck = new TimerTask() {
             @Override
             public void run() {
-                if(checkCatalog()){
-                    refreshWindow();
-                    this.cancel();
-                    //dispose();
-
-                }
+                catalogCheck();
             }
         };
         catalogTimer = new java.util.Timer();
-        catalogTimer.scheduleAtFixedRate(catalogCheck, 3000, 3000);
+        catalogTimer.scheduleAtFixedRate(catalogCheck, 0, 250);
+
     }
 
     private void initComponents() {
-
+        jsonObj = JSONManipulator.getJSONObject(".catalog.json");
         try {
             FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        jsonObj = JSONManipulator.getJSONObject(".catalog.json");
-        tree = new DefaultMutableTreeNode(userAccount);
-        tree = (readFolder(userAccount, jsonObj, tree));
+        rootNode = new DefaultMutableTreeNode(userAccount);
+        root = (readFolder(userAccount, JSONManipulator.getJSONObject(".catalog.json"), rootNode));
+        treeModel = new DefaultTreeModel(root);
+
         if (isLoaded) {
             dialogPane.repaint();
             dialogPane.revalidate();
@@ -76,7 +76,7 @@ public class ClientBrowser extends JFrame {
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         scrollPane1 = new JScrollPane();
-        tree1 = new JTree(tree);
+        tree1 = new JTree(new DefaultTreeModel(root));
         panel1 = new JPanel();
         uploadBtn = new JButton();
         downloadBtn = new JButton();
@@ -88,7 +88,6 @@ public class ClientBrowser extends JFrame {
         propertiesBtn = new JButton();
         removeBtn = new JButton();
         buttonBar = new JPanel();
-        refreshBtn = new JButton();
         logoutBtn = new JButton();
         quitBtn = new JButton();
 
@@ -223,27 +222,20 @@ public class ClientBrowser extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
-
-                //---- refreshBtn ----
-                refreshBtn.setText("Refresh");
-                refreshBtn.setFont(new Font("Arial", refreshBtn.getFont().getStyle(), refreshBtn.getFont().getSize() + 1));
-                buttonBar.add(refreshBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
                 //---- logoutBtn ----
                 logoutBtn.setText("Logout");
                 logoutBtn.setFont(new Font("Arial", logoutBtn.getFont().getStyle(), logoutBtn.getFont().getSize() + 1));
-                buttonBar.add(logoutBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(logoutBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- quitBtn ----
                 quitBtn.setText("Quit");
                 quitBtn.setFont(new Font("Arial", quitBtn.getFont().getStyle(), quitBtn.getFont().getSize() + 1));
-                buttonBar.add(quitBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(quitBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -281,26 +273,24 @@ public class ClientBrowser extends JFrame {
                 }
             }
         });
-        refreshBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                refreshWindow();
-            }
-        });
         tree1.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) throws NullPointerException {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                JSONObject contents = JSONManipulator.getItemContents(jsonObj, tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"));
+                if(node == null){
+                    return;
+                }
+                JSONObject contents = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"));
                 Object type = contents.get("type");
                 try{
                     if(node.toString().equals("(no files)")){
                         browserBtns(false);
-                        tree1.setSelectionPath(null);
+                        //tree1.setSelectionPath(null);
                     } else if (node.toString().equals(userAccount)) {
                         browserBtns(false);
 
                     } else if (type.toString().equals("tempFile")){
                         browserBtns(false);
-                        tree1.setSelectionPath(null);
+                        //tree1.setSelectionPath(null);
                     } else {
                         if (node.getChildCount() != 0) {
                             if (!(node.toString().equals(userAccount))) {
@@ -324,12 +314,9 @@ public class ClientBrowser extends JFrame {
         });
         downloadBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(checkCatalog()){
-                    refreshWindow();
-                }
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
+                JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
                 File localFile  = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
                 if((localFile.exists())){
                     JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
@@ -346,15 +333,12 @@ public class ClientBrowser extends JFrame {
         });
         downloadAsBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(checkCatalog()){
-                    refreshWindow();
-                }
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.showSaveDialog(null);
                 fileChooser.setDialogTitle("Choose Save Location");
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
+                JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
                 int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
                 File localFile  = new File(fileChooser.getSelectedFile().toString());
                 if((localFile.exists())){
@@ -375,7 +359,7 @@ public class ClientBrowser extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                JSONObject fileProperties = JSONManipulator.getItemContents(jsonObj, jsonPath);
+                JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
                 Object fileSize = fileProperties.get("fileSize");
                 Object creationDate = fileProperties.get("creationDate");
                 Object owner = fileProperties.get("owner");
@@ -388,10 +372,10 @@ public class ClientBrowser extends JFrame {
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 try {
                     FileClient.deleteFile(serverAddress, port, jsonPath);
+                    catalogCheck();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                refreshWindow();
             }
         });
         duplicateBtn.addActionListener(new ActionListener() {
@@ -399,16 +383,16 @@ public class ClientBrowser extends JFrame {
                 String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
                 try {
                     FileClient.duplicateFile(serverAddress, port, jsonPath);
+                    catalogCheck();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                refreshWindow();
             }
 
         });
         moveBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, jsonObj, clientBrowser, userAccount);
+                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, JSONManipulator.getJSONObject(".catalog.json"), clientBrowser, userAccount);
             }
 
         });
@@ -423,7 +407,7 @@ public class ClientBrowser extends JFrame {
         newDirBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                NewDirectoryWindow.run(serverAddress, port, jsonObj, clientBrowser, userAccount);
+                NewDirectoryWindow.run(serverAddress, port, JSONManipulator.getJSONObject(".catalog.json"), clientBrowser, userAccount);
             }
         });
         renameBtn.addActionListener(new ActionListener() {
@@ -443,8 +427,8 @@ public class ClientBrowser extends JFrame {
         });
     }
 
-    private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
-        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation, userAccount);
+    private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj2, DefaultMutableTreeNode branch){
+        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(JSONManipulator.getJSONObject(".catalog.json"), folderLocation, userAccount);
         if (folderContents.keySet().isEmpty()){
             DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
             branch.add(leaf);
@@ -455,7 +439,7 @@ public class ClientBrowser extends JFrame {
                 leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
                 if (leaf.getAllowsChildren()) {
                     String folderLocation2 = folderLocation + "/" + name;
-                    readFolder(folderLocation2, jsonObj, leaf);
+                    readFolder(folderLocation2, jsonObj2, leaf);
                 }
                 branch.add(leaf);
             }
@@ -483,14 +467,28 @@ public class ClientBrowser extends JFrame {
         moveBtn.setEnabled(state);
     }
 
-    private void refreshWindow(){
-        try {
-            FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        ClientBrowser.run(serverAddress, port, this, userAccount);
-        dispose();
+    private void catalogCheck(){
+        SwingUtilities.invokeLater(() -> {
+            try {
+                File tempCatalog = File.createTempFile(".catalog", ".json");
+                tempCatalog.deleteOnExit();
+                File localCatalogFile = new File(".catalog.json");
+                FileClient.receiveFile(serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath());
+                JSONObject latestCatalog = JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
+                JSONObject localCatalog = JSONManipulator.getJSONObject(localCatalogFile.getAbsolutePath());
+                if(localCatalog.equals(latestCatalog)){
+                    tempCatalog.delete();
+                }else{
+                    FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json"); //grab new catalog
+                    tree1.removeAll();
+                    tree1.setModel(new DefaultTreeModel(readFolder(userAccount, JSONManipulator.getJSONObject(".catalog.json"), new DefaultMutableTreeNode(userAccount))));
+                    tempCatalog.delete();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     public static void run(String serverAddress, int port, JFrame sender, String userAccount) {
@@ -499,28 +497,6 @@ public class ClientBrowser extends JFrame {
         clientBrowser.setVisible(true);
     }
 
-    private boolean checkCatalog(){
-        try {
-            File tempCatalog = File.createTempFile(".catalog", ".json");
-            tempCatalog.deleteOnExit();
-            File localCatalogFile = new File(".catalog.json");
-            FileClient.receiveFile(serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath());
-            JSONObject latestCatalog = JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
-            JSONObject localCatalog = JSONManipulator.getJSONObject(localCatalogFile.getAbsolutePath());
-            if(localCatalog.equals(latestCatalog)){
-                tempCatalog.delete();
-                return false;
-            }else{
-                FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
-                dispose();
-                tempCatalog.delete();
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
@@ -539,7 +515,6 @@ public class ClientBrowser extends JFrame {
     private JButton propertiesBtn;
     private JButton removeBtn;
     private JPanel buttonBar;
-    private JButton refreshBtn;
     private JButton logoutBtn;
     private JButton quitBtn;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

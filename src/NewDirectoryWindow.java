@@ -10,6 +10,7 @@ import javax.swing.border.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
 /*
  * Created by JFormDesigner on Mon Jan 16 18:44:07 MST 2017
  */
@@ -168,6 +169,9 @@ public class NewDirectoryWindow extends JFrame {
         });
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                JTree x = tree1;
+                TreeModel y = x.getModel();
+                System.out.println(y);
                 String newFolderPath = (tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/");
                 String directoryName = dirNameTextField.getText();
                 for(int i = 0; i < tree1.getModel().getChildCount(tree1.getModel().getRoot()); i++){

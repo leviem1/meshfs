@@ -20,7 +20,7 @@ new FormModel {
 							name: "tree1"
 							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 							auxiliary() {
-								"JavaCodeGenerator.customCreateCode": "new JTree(tree);"
+								"JavaCodeGenerator.customCreateCode": "new JTree(new DefaultTreeModel(root));"
 							}
 						} )
 					} )
@@ -79,7 +79,7 @@ new FormModel {
 					"value": "Center"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0, 0:1.0, 0, 80"
+					"$columnSpecs": "0, 0:1.0, 80"
 					"$rowSpecs": "0"
 					"$hGap": 5
 					"$vGap": 5
@@ -87,23 +87,16 @@ new FormModel {
 					name: "buttonBar"
 					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "refreshBtn"
-						"text": "Refresh"
-						"font": #SwingDerivedFont0
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
-					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "logoutBtn"
 						"text": "Logout"
 						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 2
-					} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "quitBtn"
 						"text": "Quit"
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 3
+						"gridx": 2
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "South"

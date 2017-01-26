@@ -194,8 +194,6 @@ public class RenameFileWindow extends JFrame {
                     e1.printStackTrace();
                 }
                 dispose();
-                caller.dispose();
-                ClientBrowser.run(serverAddress, port, renameFileWindow, userAccount);
             }
         });
     }
