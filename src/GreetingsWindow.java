@@ -124,23 +124,19 @@ public class GreetingsWindow extends JFrame {
     }
 
     private void frameListeners(){
-        configBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(runType){
-                    ClientModeConfiguration.run(greetingsWindow, "");
-                    dispose();
-                }
-                else{
-                    onConfigure();
-                }
-
-            }
-        });
-        quitButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        configBtn.addActionListener(e -> {
+            if(runType){
+                ClientModeConfiguration.run(greetingsWindow, "");
                 dispose();
-                System.exit(0);
             }
+            else{
+                onConfigure();
+            }
+
+        });
+        quitButton.addActionListener(e -> {
+            dispose();
+            System.exit(0);
         });
     }
 

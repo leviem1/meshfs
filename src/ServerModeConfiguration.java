@@ -46,10 +46,6 @@ public class ServerModeConfiguration extends JFrame {
         }
     }
 
-    private void createUIComponents() {
-        // TODO: add custom component creation code here
-    }
-
     private void initComponents() {
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setGroupingUsed(false);
@@ -72,6 +68,7 @@ public class ServerModeConfiguration extends JFrame {
         stripedCopiesLbl = new JLabel();
         numWholeField = new JFormattedTextField(numberFormat);
         wholeCopiesLbl = new JLabel();
+        isMasterBox = new JCheckBox();
         storageTab = new JPanel();
         repositoryLbl = new JLabel();
         repoPathField = new JTextField(System.getProperty("user.dir")+ File.separator + "repo");
@@ -84,14 +81,16 @@ public class ServerModeConfiguration extends JFrame {
         userAccounts = new JPanel();
         textArea1 = new JTextArea();
         usernameLbl = new JLabel();
+        passwordLbl = new JLabel();
         usernameValueField = new JTextField();
         passwordValueField = new JPasswordField();
-        passwordLbl = new JLabel();
-        submitBtn = new JButton();
         scrollPane2 = new JScrollPane();
         userAccountDataList = new JList(model);
         removeUserBtn = new JButton();
+        submitBtn = new JButton();
+        allowGuestBox = new JCheckBox();
         buttonBar = new JPanel();
+        backBtn = new JButton();
         importConfigBtn = new JButton();
         backupConfigBtn = new JButton();
         resetConfigBtn = new JButton();
@@ -110,7 +109,7 @@ public class ServerModeConfiguration extends JFrame {
 
             //======== serverSettingPane ========
             {
-                serverSettingPane.setFont(new Font("Arial", serverSettingPane.getFont().getStyle(), serverSettingPane.getFont().getSize()));
+                serverSettingPane.setFont(new Font("Arial", serverSettingPane.getFont().getStyle() & ~Font.BOLD, serverSettingPane.getFont().getSize() + 1));
 
                 //======== networkTab ========
                 {
@@ -118,58 +117,66 @@ public class ServerModeConfiguration extends JFrame {
 
                     //---- serverNetworkInterfaceLbl ----
                     serverNetworkInterfaceLbl.setText("Master Server:");
-                    serverNetworkInterfaceLbl.setFont(new Font("Arial", serverNetworkInterfaceLbl.getFont().getStyle(), serverNetworkInterfaceLbl.getFont().getSize() + 1));
+                    serverNetworkInterfaceLbl.setFont(new Font("Arial", serverNetworkInterfaceLbl.getFont().getStyle() & ~Font.BOLD, serverNetworkInterfaceLbl.getFont().getSize() + 1));
 
                     //---- masterServerField ----
                     masterServerField.setText("127.0.0.1");
+                    masterServerField.setFont(new Font("Arial", masterServerField.getFont().getStyle() & ~Font.BOLD, masterServerField.getFont().getSize() + 1));
 
                     //---- serverPortLbl ----
                     serverPortLbl.setText("Network Port:");
-                    serverPortLbl.setFont(new Font("Arial", serverPortLbl.getFont().getStyle(), serverPortLbl.getFont().getSize() + 1));
+                    serverPortLbl.setFont(new Font("Arial", serverPortLbl.getFont().getStyle() & ~Font.BOLD, serverPortLbl.getFont().getSize() + 1));
 
                     //---- serverPortField ----
                     serverPortField.setText("5704");
-                    serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle(), serverPortField.getFont().getSize() + 1));
+                    serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle() & ~Font.BOLD, serverPortField.getFont().getSize() + 1));
 
                     //---- serverThreadsLbl ----
                     serverThreadsLbl.setText("Network Threads:");
-                    serverThreadsLbl.setFont(new Font("Arial", serverThreadsLbl.getFont().getStyle(), serverThreadsLbl.getFont().getSize() + 1));
+                    serverThreadsLbl.setFont(new Font("Arial", serverThreadsLbl.getFont().getStyle() & ~Font.BOLD, serverThreadsLbl.getFont().getSize() + 1));
 
                     //---- serverThreadsField ----
                     serverThreadsField.setText("16");
-                    serverThreadsField.setFont(new Font("Arial", serverThreadsField.getFont().getStyle(), serverThreadsField.getFont().getSize() + 1));
+                    serverThreadsField.setFont(new Font("Arial", serverThreadsField.getFont().getStyle() & ~Font.BOLD, serverThreadsField.getFont().getSize() + 1));
 
                     //---- serverTimeoutLbl ----
                     serverTimeoutLbl.setText("Server Timeout:");
-                    serverTimeoutLbl.setFont(new Font("Arial", serverTimeoutLbl.getFont().getStyle(), serverTimeoutLbl.getFont().getSize() + 1));
+                    serverTimeoutLbl.setFont(new Font("Arial", serverTimeoutLbl.getFont().getStyle() & ~Font.BOLD, serverTimeoutLbl.getFont().getSize() + 1));
 
                     //---- serverTimeoutField ----
                     serverTimeoutField.setText("90");
-                    serverTimeoutField.setFont(new Font("Arial", serverTimeoutField.getFont().getStyle(), serverTimeoutField.getFont().getSize() + 1));
+                    serverTimeoutField.setFont(new Font("Arial", serverTimeoutField.getFont().getStyle() & ~Font.BOLD, serverTimeoutField.getFont().getSize() + 1));
 
                     //---- numStripesField ----
                     numStripesField.setText("3");
-                    numStripesField.setFont(new Font("Arial", numStripesField.getFont().getStyle(), numStripesField.getFont().getSize() + 1));
+                    numStripesField.setFont(new Font("Arial", numStripesField.getFont().getStyle() & ~Font.BOLD, numStripesField.getFont().getSize() + 1));
 
                     //---- stripesLbl ----
                     stripesLbl.setText("Stripes:");
-                    stripesLbl.setFont(new Font("Arial", stripesLbl.getFont().getStyle(), stripesLbl.getFont().getSize() + 1));
+                    stripesLbl.setFont(new Font("Arial", stripesLbl.getFont().getStyle() & ~Font.BOLD, stripesLbl.getFont().getSize() + 1));
 
                     //---- numStripeCopiesField ----
                     numStripeCopiesField.setText("2");
-                    numStripeCopiesField.setFont(new Font("Arial", numStripeCopiesField.getFont().getStyle(), numStripeCopiesField.getFont().getSize() + 1));
+                    numStripeCopiesField.setFont(new Font("Arial", numStripeCopiesField.getFont().getStyle() & ~Font.BOLD, numStripeCopiesField.getFont().getSize() + 1));
 
                     //---- stripedCopiesLbl ----
                     stripedCopiesLbl.setText("Striped Copies:");
-                    stripedCopiesLbl.setFont(new Font("Arial", stripedCopiesLbl.getFont().getStyle(), stripedCopiesLbl.getFont().getSize() + 1));
+                    stripedCopiesLbl.setFont(new Font("Arial", stripedCopiesLbl.getFont().getStyle() & ~Font.BOLD, stripedCopiesLbl.getFont().getSize() + 1));
 
                     //---- numWholeField ----
                     numWholeField.setText("2");
-                    numWholeField.setFont(new Font("Arial", numWholeField.getFont().getStyle(), numWholeField.getFont().getSize() + 1));
+                    numWholeField.setFont(new Font("Arial", numWholeField.getFont().getStyle() & ~Font.BOLD, numWholeField.getFont().getSize() + 1));
 
                     //---- wholeCopiesLbl ----
                     wholeCopiesLbl.setText("Whole Copies:");
-                    wholeCopiesLbl.setFont(new Font("Arial", wholeCopiesLbl.getFont().getStyle(), wholeCopiesLbl.getFont().getSize() + 1));
+                    wholeCopiesLbl.setFont(new Font("Arial", wholeCopiesLbl.getFont().getStyle() & ~Font.BOLD, wholeCopiesLbl.getFont().getSize() + 1));
+
+                    //---- isMasterBox ----
+                    isMasterBox.setText("Is Master:");
+                    isMasterBox.setFont(new Font("Arial", isMasterBox.getFont().getStyle() & ~Font.BOLD, isMasterBox.getFont().getSize() + 1));
+                    isMasterBox.setToolTipText("Check this box if this computer is the master server");
+                    isMasterBox.setHorizontalTextPosition(SwingConstants.LEADING);
+                    isMasterBox.setSelected(true);
 
                     GroupLayout networkTabLayout = new GroupLayout(networkTab);
                     networkTab.setLayout(networkTabLayout);
@@ -181,20 +188,22 @@ public class ServerModeConfiguration extends JFrame {
                                     .addGroup(networkTabLayout.createSequentialGroup()
                                         .addComponent(serverNetworkInterfaceLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(masterServerField, GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE))
+                                        .addComponent(masterServerField, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(isMasterBox))
                                     .addGroup(networkTabLayout.createSequentialGroup()
                                         .addGroup(networkTabLayout.createParallelGroup()
                                             .addGroup(networkTabLayout.createSequentialGroup()
                                                 .addComponent(serverPortLbl)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                                                 .addComponent(stripesLbl))
                                             .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
                                                 .addComponent(serverThreadsLbl)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                                                 .addComponent(stripedCopiesLbl))
                                             .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
                                                 .addComponent(serverTimeoutLbl)
@@ -215,6 +224,7 @@ public class ServerModeConfiguration extends JFrame {
                                 .addContainerGap()
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverNetworkInterfaceLbl)
+                                    .addComponent(isMasterBox)
                                     .addComponent(masterServerField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -234,7 +244,7 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(wholeCopiesLbl))
-                                .addContainerGap(25, Short.MAX_VALUE))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Network", networkTab);
@@ -287,11 +297,11 @@ public class ServerModeConfiguration extends JFrame {
                                         .addComponent(spaceSldr, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE))
                                     .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(freeSpaceLbl, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 69, Short.MAX_VALUE))
+                                        .addGap(0, 50, Short.MAX_VALUE))
                                     .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(repositoryLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(browseBtn)))
                                 .addContainerGap())
@@ -313,7 +323,7 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(freeSpaceLbl)
-                                .addContainerGap(57, Short.MAX_VALUE))
+                                .addContainerGap(35, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Storage", storageTab);
@@ -326,28 +336,36 @@ public class ServerModeConfiguration extends JFrame {
                     usernameLbl.setText("Username:");
                     usernameLbl.setFont(new Font("Arial", usernameLbl.getFont().getStyle(), usernameLbl.getFont().getSize() + 1));
 
+                    //---- passwordLbl ----
+                    passwordLbl.setText("Password:");
+                    passwordLbl.setFont(new Font("Arial", passwordLbl.getFont().getStyle(), passwordLbl.getFont().getSize() + 1));
+
                     //---- usernameValueField ----
                     usernameValueField.setFont(new Font("Arial", usernameValueField.getFont().getStyle(), usernameValueField.getFont().getSize() + 1));
 
                     //---- passwordValueField ----
                     passwordValueField.setFont(new Font("Arial", passwordValueField.getFont().getStyle(), passwordValueField.getFont().getSize() + 1));
 
-                    //---- passwordLbl ----
-                    passwordLbl.setText("Password:");
-                    passwordLbl.setFont(new Font("Arial", passwordLbl.getFont().getStyle(), passwordLbl.getFont().getSize() + 1));
-
-                    //---- submitBtn ----
-                    submitBtn.setText("Submit");
-                    submitBtn.setFont(new Font("Arial", submitBtn.getFont().getStyle(), submitBtn.getFont().getSize() + 1));
-
                     //======== scrollPane2 ========
                     {
+
+                        //---- userAccountDataList ----
+                        userAccountDataList.setFont(new Font("Arial", userAccountDataList.getFont().getStyle(), userAccountDataList.getFont().getSize() + 1));
                         scrollPane2.setViewportView(userAccountDataList);
                     }
 
                     //---- removeUserBtn ----
-                    removeUserBtn.setText("Remove User");
+                    removeUserBtn.setText("Delete User");
                     removeUserBtn.setFont(new Font("Arial", removeUserBtn.getFont().getStyle(), removeUserBtn.getFont().getSize() + 1));
+
+                    //---- submitBtn ----
+                    submitBtn.setText("Add User");
+                    submitBtn.setFont(new Font("Arial", submitBtn.getFont().getStyle(), submitBtn.getFont().getSize() + 1));
+
+                    //---- allowGuestBox ----
+                    allowGuestBox.setText("Allow Guest");
+                    allowGuestBox.setHorizontalTextPosition(SwingConstants.LEFT);
+                    allowGuestBox.setFont(new Font("Arial", allowGuestBox.getFont().getStyle(), allowGuestBox.getFont().getSize() + 1));
 
                     GroupLayout userAccountsLayout = new GroupLayout(userAccounts);
                     userAccounts.setLayout(userAccountsLayout);
@@ -362,22 +380,24 @@ public class ServerModeConfiguration extends JFrame {
                                     .addGroup(userAccountsLayout.createSequentialGroup()
                                         .addContainerGap()
                                         .addGroup(userAccountsLayout.createParallelGroup()
-                                            .addGroup(userAccountsLayout.createSequentialGroup()
-                                                .addComponent(usernameLbl)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(usernameValueField, GroupLayout.PREFERRED_SIZE, 143, GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                                .addComponent(submitBtn)
-                                                .addGroup(userAccountsLayout.createSequentialGroup()
+                                            .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                                .addGroup(GroupLayout.Alignment.LEADING, userAccountsLayout.createSequentialGroup()
+                                                    .addComponent(usernameLbl)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(usernameValueField))
+                                                .addGroup(GroupLayout.Alignment.LEADING, userAccountsLayout.createSequentialGroup()
                                                     .addComponent(passwordLbl)
                                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE))))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(userAccountsLayout.createParallelGroup()
-                                            .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                                                    .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)))
                                             .addGroup(GroupLayout.Alignment.TRAILING, userAccountsLayout.createSequentialGroup()
-                                                .addGap(0, 78, Short.MAX_VALUE)
-                                                .addComponent(removeUserBtn)))))
+                                                .addComponent(allowGuestBox)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(submitBtn)
+                                                .addGap(6, 6, 6)))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                        .addGroup(userAccountsLayout.createParallelGroup()
+                                            .addComponent(scrollPane2, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(removeUserBtn, GroupLayout.Alignment.TRAILING))))
                                 .addContainerGap())
                     );
                     userAccountsLayout.setVerticalGroup(
@@ -386,21 +406,23 @@ public class ServerModeConfiguration extends JFrame {
                                 .addContainerGap()
                                 .addGroup(userAccountsLayout.createParallelGroup()
                                     .addGroup(userAccountsLayout.createSequentialGroup()
+                                        .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(removeUserBtn)
+                                        .addGap(161, 161, 161)
+                                        .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(userAccountsLayout.createSequentialGroup()
                                         .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                             .addComponent(usernameLbl)
                                             .addComponent(usernameValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addGap(18, 18, 18)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                             .addComponent(passwordLbl)
-                                            .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                                    .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(userAccountsLayout.createParallelGroup()
-                                    .addComponent(submitBtn)
-                                    .addComponent(removeUserBtn))
-                                .addGap(98, 98, 98)
-                                .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addGap(12, 12, 12)
+                                        .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(allowGuestBox)
+                                            .addComponent(submitBtn)))))
                     );
                 }
                 serverSettingPane.addTab("User Accounts", userAccounts);
@@ -411,34 +433,41 @@ public class ServerModeConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 309, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0, 0.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 309, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
+
+                //---- backBtn ----
+                backBtn.setText("Back");
+                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle() & ~Font.BOLD, backBtn.getFont().getSize() + 1));
+                buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- importConfigBtn ----
                 importConfigBtn.setText("Import...");
-                importConfigBtn.setFont(new Font("Arial", importConfigBtn.getFont().getStyle(), importConfigBtn.getFont().getSize() + 1));
-                buttonBar.add(importConfigBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                importConfigBtn.setFont(new Font("Arial", importConfigBtn.getFont().getStyle() & ~Font.BOLD, importConfigBtn.getFont().getSize() + 1));
+                buttonBar.add(importConfigBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- backupConfigBtn ----
                 backupConfigBtn.setText("Backup...");
-                backupConfigBtn.setFont(new Font("Arial", backupConfigBtn.getFont().getStyle(), backupConfigBtn.getFont().getSize() + 1));
-                buttonBar.add(backupConfigBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                backupConfigBtn.setFont(new Font("Arial", backupConfigBtn.getFont().getStyle() & ~Font.BOLD, backupConfigBtn.getFont().getSize() + 1));
+                buttonBar.add(backupConfigBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- resetConfigBtn ----
                 resetConfigBtn.setText("Reset");
-                resetConfigBtn.setFont(new Font("Arial", resetConfigBtn.getFont().getStyle(), resetConfigBtn.getFont().getSize() + 1));
-                buttonBar.add(resetConfigBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                resetConfigBtn.setFont(new Font("Arial", resetConfigBtn.getFont().getStyle() & ~Font.BOLD, resetConfigBtn.getFont().getSize() + 1));
+                buttonBar.add(resetConfigBtn, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle() & ~Font.BOLD, okButton.getFont().getSize() + 1));
+                buttonBar.add(okButton, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -451,40 +480,26 @@ public class ServerModeConfiguration extends JFrame {
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(460, 300);
+        setSize(470, 300);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
     private void frameListeners(){
-        browseBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                final JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-                fileChooser.setDialogTitle("Choose Respository");
-                int rVal = fileChooser.showOpenDialog(null);
-                if (rVal == JFileChooser.APPROVE_OPTION) {
-                    repoPathField.setText(fileChooser.getSelectedFile().toString());
-                    repoPathField.setToolTipText(fileChooser.getSelectedFile().toString());
-                }
+        browseBtn.addActionListener(e -> {
+            final JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+            fileChooser.setDialogTitle("Choose Respository");
+            int rVal = fileChooser.showOpenDialog(null);
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                repoPathField.setText(fileChooser.getSelectedFile().toString());
+                repoPathField.setToolTipText(fileChooser.getSelectedFile().toString());
             }
         });
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOk();
-            }
-        });
-        importConfigBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                importConfig();
-            }
-        });
-        backupConfigBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                backupConfig();
-            }
-        });
+        okButton.addActionListener(e -> onOk());
+        importConfigBtn.addActionListener(e -> importConfig());
+        backupConfigBtn.addActionListener(e -> backupConfig());
         masterServerField.getDocument().addDocumentListener(new DocumentListener() {
 
             public void changedUpdate(DocumentEvent e) {
@@ -507,12 +522,7 @@ public class ServerModeConfiguration extends JFrame {
 
             }
         });
-        spaceSldr.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent ce) {
-                minSpaceField.setText(String.valueOf(spaceSldr.getValue()));
-
-            }
-        });
+        spaceSldr.addChangeListener(ce -> minSpaceField.setText(String.valueOf(spaceSldr.getValue())));
         minSpaceField.addKeyListener(new KeyAdapter(){
             public void keyReleased(KeyEvent ke) {
                 spaceSldr.setValue(0);
@@ -694,52 +704,44 @@ public class ServerModeConfiguration extends JFrame {
 
             }
         });
-        resetConfigBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                resetConfig();
+        resetConfigBtn.addActionListener(e -> resetConfig());
+        submitBtn.addActionListener(e -> {
+            String password = String.valueOf(passwordValueField.getPassword());
+            String value = "<html>Username: " + usernameValueField.getText() + "<br>Password: " + password + "</html>";
+            int index = userAccountDataList.getModel().getSize();
+            if(usernameValueField.getText().equals("guest")){
+                JOptionPane.showMessageDialog(null, "The username \"guest\" is reserved!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                usernameValueField.setText("");
+                passwordValueField.setText("");
+                usernameValueField.requestFocus();
+                return;
             }
-        });
-        submitBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-                String password = String.valueOf(passwordValueField.getPassword());
-                String value = "<html>Username: " + usernameValueField.getText() + "<br>Password: " + password + "</html>";
-                System.out.println(userAccountDataList.getModel().getSize());
-                int pos = userAccountDataList.getModel().getSize();
-                if(userAccountDataList.getModel().getSize() > 0) {
-                    for (int i = 0; i < userAccountDataList.getModel().getSize(); i++) {
-
-                        if (userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>")).equals(usernameValueField.getText())) {
-                            usernameValueField.setText("");
-                            passwordValueField.setText("");
-                            JOptionPane.showMessageDialog(null, "Duplicate users cannot be created!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        } else if (!(userAccountDataList.getModel().getElementAt(i).toString().equals(value))) {
-                            model.add(pos, value);
-                            usernameValueField.setText("");
-                            passwordValueField.setText("");
-                            return;
-                        }
+            if(userAccountDataList.getModel().getSize() > 0) {
+                for (int i = 0; i < userAccountDataList.getModel().getSize(); i++) {
+                    if (userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>")).equals(usernameValueField.getText())) {
+                        usernameValueField.setText("");
+                        passwordValueField.setText("");
+                        JOptionPane.showMessageDialog(null, "Duplicate users cannot be created!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    } else if (!(userAccountDataList.getModel().getElementAt(i).toString().equals(value))) {
+                        model.add(index, value);
+                        usernameValueField.setText("");
+                        passwordValueField.setText("");
+                        return;
                     }
-                }else{
-                    model.add(pos, value);
-                    usernameValueField.setText("");
-                    passwordValueField.setText("");
                 }
+            }else{
+                model.add(index, value);
+                usernameValueField.setText("");
+                passwordValueField.setText("");
             }
         });
-        removeUserBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int index = userAccountDataList.getSelectedIndex();
-                if(index > -1){
-                    userAccountDataList.remove(index);
-                }
-                DefaultListModel modelNew = new DefaultListModel();
-                for(int x = 0; x < userAccountDataList.getModel().getSize() - 1; x ++){
-                    modelNew.addElement(model.getElementAt(x));
-                }
-                userAccountDataList.setModel(modelNew);
+        removeUserBtn.addActionListener(e -> {
+            int index = userAccountDataList.getSelectedIndex();
+            if(index > -1){
+                model.remove(index);
             }
+            userAccountDataList.setModel(model);
         });
         passwordValueField.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
@@ -762,23 +764,24 @@ public class ServerModeConfiguration extends JFrame {
 
             }
         });
-        userAccountDataList.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if(userAccountDataList.isSelectionEmpty()){
-                    removeUserBtn.setEnabled(false);
-                }else{
-                    removeUserBtn.setEnabled(true);
-                }
+        userAccountDataList.addListSelectionListener(listSelectionEvent -> {
+            if(userAccountDataList.isSelectionEmpty()){
+                removeUserBtn.setEnabled(false);
+            }else{
+                removeUserBtn.setEnabled(true);
             }
         });
-    }
-
-    private ArrayList<String> ipJList(){
-        ArrayList<String> x = new ArrayList<>();
-        for(String ip : Reporting.getIpAddresses()){
-            x.add(ip);
-        }
-        return x;
+        isMasterBox.addActionListener(actionEvent -> {
+            if(isMasterBox.isSelected()){
+                setConfigMode("full");
+            }else{
+                setConfigMode("easy");
+            }
+        });
+        backBtn.addActionListener(actionEvent -> {
+            InitialConfiguration.run(serverModeConfiguration);
+            dispose();
+        });
     }
 
     private void onOk(){
@@ -817,7 +820,27 @@ public class ServerModeConfiguration extends JFrame {
         if(out.equals("")){
             out = "(none)";
         }
-        ServerConfigConfirmation.run(this, "<html><center><b>Master IP:</b> " + masterServerField.getText() + "<br><br><b>Timeout:</b> " + String.valueOf(serverTimeoutField.getText()) + "s<br><br><b>Port:</b> " + String.valueOf(serverPortField.getText()) + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + String.valueOf(numWholeField.getText()) + "/" + String.valueOf(numStripesField.getText()) + "/" + String.valueOf(numStripeCopiesField.getText()) + "<br><br><b>Repository:</b> " + String.valueOf(repoPathField.getText()) + "<br><br><b>Minimum Space:</b> " + String.valueOf(Integer.valueOf(minSpaceField.getText())) + " GB<br><br><b>Server Threads:</b> " + String.valueOf(serverThreadsField.getText()) + "<br><br><b>Accounts:</b><br>" + out + "</center></html>", accounts, getConfigProperties());
+        if(allowGuestBox.isSelected()) {
+            String user = "guest";
+            String pass = "guest";
+            String passOrig = "guest";
+            for(int x = 0; x < user.length()-1; x=x+2){
+                try{
+                    pass += user.charAt(x);
+                }catch(IndexOutOfBoundsException ioobe){
+                }
+            }
+            MessageDigest messageDigest = null;
+            try {
+                messageDigest = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            messageDigest.update(pass.getBytes(),0, pass.length());
+            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
+            accounts.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
+        }
+        ServerConfigConfirmation.run(this, "<html><font face=\"arial\"><center><b>Master IP:</b> " + masterServerField.getText() + "<br><br><b>Timeout:</b> " + String.valueOf(serverTimeoutField.getText()) + "s<br><br><b>Port:</b> " + String.valueOf(serverPortField.getText()) + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + String.valueOf(numWholeField.getText()) + "/" + String.valueOf(numStripesField.getText()) + "/" + String.valueOf(numStripeCopiesField.getText()) + "<br><br><b>Repository:</b> " + String.valueOf(repoPathField.getText()) + "<br><br><b>Minimum Space:</b> " + String.valueOf(Integer.valueOf(minSpaceField.getText())) + " GB<br><br><b>Server Threads:</b> " + String.valueOf(serverThreadsField.getText()) + "<br><br><b>Accounts:</b><br>" + out + "</center></font></html>", accounts, getConfigProperties());
         dispose();
     }
 
@@ -884,12 +907,11 @@ public class ServerModeConfiguration extends JFrame {
         ConfigParser.write(properties);
     }
 
-    public Properties getConfigProperties(){
+    private Properties getConfigProperties(){
         Properties configProperties = new Properties();
         configProperties.setProperty("numStripes", String.valueOf(numStripesField.getText()));
         configProperties.setProperty("numStripeCopy", String.valueOf(numStripeCopiesField.getText()));
         configProperties.setProperty("numWholeCopy", String.valueOf(numWholeField.getText()));
-        System.out.println(String.valueOf(Integer.valueOf(minSpaceField.getText()) * 1073741824)+"L");
         configProperties.setProperty("minSpace", minSpaceField.getText());
         configProperties.setProperty("masterIP", masterServerField.getText());
         configProperties.setProperty("portNumber", String.valueOf(serverPortField.getText()));
@@ -899,16 +921,45 @@ public class ServerModeConfiguration extends JFrame {
         return configProperties;
     }
 
-    public boolean checkFields(JFormattedTextField field) {
+    private boolean checkFields(JFormattedTextField field) {
         return !field.getText().isEmpty();
     }
 
-    public boolean checkFields(JTextField field) {
-        return !field.getText().isEmpty();
+    private void setConfigMode(String mode){
+        if(mode.equals("full")){
+            masterServerField.setEnabled(true);
+            serverPortField.setEnabled(true);
+            serverThreadsField.setEnabled(true);
+            serverTimeoutField.setEnabled(true);
+            numStripesField.setEnabled(true);
+            numStripeCopiesField.setEnabled(true);
+            numWholeField.setEnabled(true);
+            usernameValueField.setEnabled(true);
+            passwordValueField.setEnabled(true);
+            submitBtn.setEnabled(true);
+            userAccountDataList.setEnabled(true);
+            removeUserBtn.setEnabled(true);
+            allowGuestBox.setEnabled(true);
+        }else if(mode.equals("easy")){
+            masterServerField.setEnabled(true);
+            serverPortField.setEnabled(true);
+            serverThreadsField.setEnabled(false);
+            serverTimeoutField.setEnabled(false);
+            numStripesField.setEnabled(false);
+            numStripeCopiesField.setEnabled(false);
+            numWholeField.setEnabled(false);
+            usernameValueField.setEnabled(false);
+            passwordValueField.setEnabled(false);
+            submitBtn.setEnabled(false);
+            userAccountDataList.setEnabled(false);
+            removeUserBtn.setEnabled(false);
+            allowGuestBox.setEnabled(false);
+            userAccountDataList.removeAll();
+        }
     }
 
     public static void run(JFrame sender) {
-        JFrame serverModeConfiguration = new ServerModeConfiguration();
+        serverModeConfiguration = new ServerModeConfiguration();
         CenterWindow.centerOnWindow(sender, serverModeConfiguration);
         serverModeConfiguration.setVisible(true);
     }
@@ -932,6 +983,7 @@ public class ServerModeConfiguration extends JFrame {
     private JLabel stripedCopiesLbl;
     private JFormattedTextField numWholeField;
     private JLabel wholeCopiesLbl;
+    private JCheckBox isMasterBox;
     private JPanel storageTab;
     private JLabel repositoryLbl;
     private JTextField repoPathField;
@@ -944,14 +996,16 @@ public class ServerModeConfiguration extends JFrame {
     private JPanel userAccounts;
     private JTextArea textArea1;
     private JLabel usernameLbl;
+    private JLabel passwordLbl;
     private JTextField usernameValueField;
     private JPasswordField passwordValueField;
-    private JLabel passwordLbl;
-    private JButton submitBtn;
     private JScrollPane scrollPane2;
     private JList userAccountDataList;
     private JButton removeUserBtn;
+    private JButton submitBtn;
+    private JCheckBox allowGuestBox;
     private JPanel buttonBar;
+    private JButton backBtn;
     private JButton importConfigBtn;
     private JButton backupConfigBtn;
     private JButton resetConfigBtn;

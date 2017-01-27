@@ -30,7 +30,6 @@ public class ClientBrowser extends JFrame {
     private DefaultMutableTreeNode rootNode;
     private TreeNode root;
     private DefaultTreeModel treeModel;
-    private boolean timerIsDead;
 
     private ClientBrowser(String serverAddress, int port, String userAccount) {
         this.serverAddress = serverAddress;
@@ -124,7 +123,7 @@ public class ClientBrowser extends JFrame {
                     downloadBtn.setFont(new Font("Arial", downloadBtn.getFont().getStyle(), downloadBtn.getFont().getSize() + 1));
 
                     //---- newDirBtn ----
-                    newDirBtn.setText("New Dir...");
+                    newDirBtn.setText("New Folder");
                     newDirBtn.setFont(new Font("Arial", newDirBtn.getFont().getStyle(), newDirBtn.getFont().getSize() + 1));
 
                     //---- downloadAsBtn ----
@@ -166,9 +165,9 @@ public class ClientBrowser extends JFrame {
                                             .addComponent(removeBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(newDirBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(moveBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(downloadAsBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-                                            .addComponent(renameBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-                                            .addComponent(duplicateBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
+                                            .addComponent(downloadAsBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(renameBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(duplicateBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addGap(0, 0, Short.MAX_VALUE)))
                                 .addContainerGap())
                     );
@@ -249,181 +248,156 @@ public class ClientBrowser extends JFrame {
     }
 
     private void frameListeners(){
-        uploadBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                final JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-                fileChooser.setDialogTitle("Choose File to Upload");
-                fileChooser.setAcceptAllFileFilterUsed(true);
-                int rVal = fileChooser.showOpenDialog(null);
-                if (rVal == JFileChooser.APPROVE_OPTION) {
-                    String pathToFile = fileChooser.getSelectedFile().getPath();
-                    Thread upload = new Thread() {
-                        public void run() {
-                            try {
-                                FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath(), userAccount);
-                            } catch (IOException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
-                    };
-                    upload.start();
-                }
-            }
-        });
-        tree1.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent e) throws NullPointerException {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                if(node == null){
+        uploadBtn.addActionListener(e -> {
+            final JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+            fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fileChooser.setDialogTitle("Choose File to Upload");
+            fileChooser.setAcceptAllFileFilterUsed(true);
+            int rVal = fileChooser.showOpenDialog(null);
+            Map<String, String> folderMap = JSONManipulator.getMapOfFolderContents(JSONManipulator.getJSONObject(".catalog.json"), userAccount, userAccount);
+            for (Map.Entry<String, String> item : folderMap.entrySet())
+            {
+                if(item.getKey().equals(fileChooser.getSelectedFile().getName())){
+                    JOptionPane.showMessageDialog(null, "File already exists on server!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                JSONObject contents = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"));
-                Object type = contents.get("type");
-                try{
-                    if(node.toString().equals("(no files)")){
-                        browserBtns(false);
-                        //tree1.setSelectionPath(null);
-                    } else if (node.toString().equals(userAccount)) {
-                        browserBtns(false);
+            }
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                Thread upload = new Thread(() -> {
+                    try {
+                        FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath(), userAccount);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                });
+                upload.start();
+            }
+        });
+        tree1.addTreeSelectionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+            if(node == null){
+                return;
+            }
+            JSONObject contents = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"));
+            Object type = contents.get("type");
+            try{
+                if(node.toString().equals("(no files)")){
+                    browserBtns(false);
+                    tree1.setSelectionPath(null);
+                } else if (node.toString().equals(userAccount)) {
+                    browserBtns(false);
 
-                    } else if (type.toString().equals("tempFile")){
-                        browserBtns(false);
-                        //tree1.setSelectionPath(null);
-                    } else {
-                        if (node.getChildCount() != 0) {
-                            if (!(node.toString().equals(userAccount))) {
-                                browserBtns(false);
-                                removeBtn.setEnabled(true);
-                                renameBtn.setEnabled(true);
-                                duplicateBtn.setEnabled(true);
-                                moveBtn.setEnabled(true);
-                            }
-                        } else {
-                            browserBtns(true);
+                } else if (type.toString().equals("tempFile")){
+                    browserBtns(false);
+                    tree1.setSelectionPath(null);
+                } else {
+                    if (node.getChildCount() != 0) {
+                        if (!(node.toString().equals(userAccount))) {
+                            browserBtns(false);
                             removeBtn.setEnabled(true);
                             renameBtn.setEnabled(true);
                             duplicateBtn.setEnabled(true);
                             moveBtn.setEnabled(true);
                         }
+                    } else {
+                        browserBtns(true);
+                        removeBtn.setEnabled(true);
+                        renameBtn.setEnabled(true);
+                        duplicateBtn.setEnabled(true);
+                        moveBtn.setEnabled(true);
                     }
-                }catch(NullPointerException npe){
                 }
+            }catch(NullPointerException npe){
             }
         });
-        downloadBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
-                File localFile  = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
-                if((localFile.exists())){
-                    JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                Thread download = new Thread() {
-                    public void run() {
-                        downloadFile(node.toString(), System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
-                        JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                };
-                download.start();
+        downloadBtn.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+            String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+            JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
+            File localFile  = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
+            if((localFile.exists())){
+                JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            Thread download = new Thread(() -> {
+                downloadFile(node.toString(), System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
+                JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+            });
+            download.start();
         });
-        downloadAsBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.showSaveDialog(null);
-                fileChooser.setDialogTitle("Choose Save Location");
-                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
-                int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
-                File localFile  = new File(fileChooser.getSelectedFile().toString());
-                if((localFile.exists())){
-                    JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                    return;
+        downloadAsBtn.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.showSaveDialog(null);
+            fileChooser.setDialogTitle("Choose Save Location");
+            String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+            JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
+            int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
+            File localFile  = new File(fileChooser.getSelectedFile().toString());
+            if((localFile.exists())){
+                JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Thread download = new Thread() {
+                public void run() {
+                    downloadFile(node.toString(), fileChooser.getSelectedFile().toString());
+                    JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                 }
-                Thread download = new Thread() {
-                    public void run() {
-                        downloadFile(node.toString(), fileChooser.getSelectedFile().toString());
-                        JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                };
+            };
 
-                download.start();
-            }
+            download.start();
         });
-        propertiesBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
-                Object fileSize = fileProperties.get("fileSize");
-                Object creationDate = fileProperties.get("creationDate");
-                Object owner = fileProperties.get("owner");
+        propertiesBtn.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+            String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+            JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
+            Object fileSize = fileProperties.get("fileSize");
+            Object creationDate = fileProperties.get("creationDate");
+            Object owner = fileProperties.get("owner");
 
-                ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString(), owner.toString(), clientBrowser, fileProperties);
+            ClientBrowserFileProperties.run(node.toString(), fileSize.toString(), creationDate.toString(), owner.toString(), clientBrowser, fileProperties);
+        });
+        removeBtn.addActionListener(e -> {
+            String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+            try {
+                FileClient.deleteFile(serverAddress, port, jsonPath);
+                catalogCheck();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
-        removeBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                try {
-                    FileClient.deleteFile(serverAddress, port, jsonPath);
-                    catalogCheck();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+        duplicateBtn.addActionListener(e -> {
+            String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+            try {
+                FileClient.duplicateFile(serverAddress, port, jsonPath);
+                catalogCheck();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
-        duplicateBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                try {
-                    FileClient.duplicateFile(serverAddress, port, jsonPath);
-                    catalogCheck();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
+        moveBtn.addActionListener(e -> MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, clientBrowser, userAccount));
+        quitBtn.addActionListener(e -> {
+            dispose();
+            catalogTimer.purge();
+            catalogTimer.cancel();
+            System.exit(0);
         });
-        moveBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, JSONManipulator.getJSONObject(".catalog.json"), clientBrowser, userAccount);
-            }
-
+        newDirBtn.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+            NewDirectoryWindow.run(serverAddress, port, JSONManipulator.getJSONObject(".catalog.json"), clientBrowser, userAccount);
         });
-        quitBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                catalogTimer.purge();
-                catalogTimer.cancel();
-                System.exit(0);
-            }
+        renameBtn.addActionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+            String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
+            RenameFileWindow.run(serverAddress, port, clientBrowser, jsonPath, node.toString(), userAccount);
         });
-        newDirBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                NewDirectoryWindow.run(serverAddress, port, JSONManipulator.getJSONObject(".catalog.json"), clientBrowser, userAccount);
-            }
-        });
-        renameBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-                RenameFileWindow.run(serverAddress, port, clientBrowser, jsonPath, node.toString(), userAccount);
-            }
-        });
-        logoutBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ClientModeConfiguration.run(clientBrowser, serverAddress);
-                dispose();
-                catalogTimer.purge();
-                catalogTimer.cancel();
-            }
+        logoutBtn.addActionListener(e -> {
+            ClientModeConfiguration.run(clientBrowser, serverAddress);
+            dispose();
+            catalogTimer.purge();
+            catalogTimer.cancel();
         });
     }
 
@@ -479,7 +453,8 @@ public class ClientBrowser extends JFrame {
                 if(localCatalog.equals(latestCatalog)){
                     tempCatalog.delete();
                 }else{
-                    FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json"); //grab new catalog
+                    FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
+                    browserBtns(false);
                     tree1.removeAll();
                     tree1.setModel(new DefaultTreeModel(readFolder(userAccount, JSONManipulator.getJSONObject(".catalog.json"), new DefaultMutableTreeNode(userAccount))));
                     tempCatalog.delete();

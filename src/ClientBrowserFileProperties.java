@@ -89,44 +89,47 @@ public class ClientBrowserFileProperties extends JFrame {
 
                 //---- fileNameLbl ----
                 fileNameLbl.setText("File Name:");
-                fileNameLbl.setFont(new Font("Arial", fileNameLbl.getFont().getStyle(), fileNameLbl.getFont().getSize() + 1));
+                fileNameLbl.setFont(new Font("Arial", Font.PLAIN, fileNameLbl.getFont().getSize() + 1));
 
                 //---- fileSizeLbl ----
                 fileSizeLbl.setText("File Size:");
-                fileSizeLbl.setFont(new Font("Arial", fileSizeLbl.getFont().getStyle(), fileSizeLbl.getFont().getSize() + 1));
+                fileSizeLbl.setFont(new Font("Arial", Font.PLAIN, fileSizeLbl.getFont().getSize() + 1));
 
                 //---- creationDateLbl ----
                 creationDateLbl.setText("Creation Date:");
-                creationDateLbl.setFont(new Font("Arial", creationDateLbl.getFont().getStyle(), creationDateLbl.getFont().getSize() + 1));
+                creationDateLbl.setFont(new Font("Arial", Font.PLAIN, creationDateLbl.getFont().getSize() + 1));
 
                 //---- ownerLbl ----
                 ownerLbl.setText("Added By:");
-                ownerLbl.setFont(new Font("Arial", ownerLbl.getFont().getStyle(), ownerLbl.getFont().getSize() + 1));
+                ownerLbl.setFont(new Font("Arial", Font.PLAIN, ownerLbl.getFont().getSize() + 1));
 
                 //---- locationLbl ----
                 locationLbl.setText("Located On:");
-                locationLbl.setFont(new Font("Arial", locationLbl.getFont().getStyle(), locationLbl.getFont().getSize() + 1));
+                locationLbl.setFont(new Font("Arial", Font.PLAIN, locationLbl.getFont().getSize() + 1));
 
                 //======== scrollPane1 ========
                 {
+
+                    //---- locationList ----
+                    locationList.setFont(new Font("Arial", Font.PLAIN, locationList.getFont().getSize() + 1));
                     scrollPane1.setViewportView(locationList);
                 }
 
                 //---- fileNameValue ----
                 fileNameValue.setText("null");
-                fileNameValue.setFont(new Font("Arial", fileNameValue.getFont().getStyle(), fileNameValue.getFont().getSize() + 1));
+                fileNameValue.setFont(new Font("Arial", Font.PLAIN, fileNameValue.getFont().getSize() + 1));
 
                 //---- fileSizeValue ----
                 fileSizeValue.setText("null");
-                fileSizeValue.setFont(new Font("Arial", fileSizeValue.getFont().getStyle(), fileSizeValue.getFont().getSize() + 1));
+                fileSizeValue.setFont(new Font("Arial", Font.PLAIN, fileSizeValue.getFont().getSize() + 1));
 
                 //---- creationDateValue ----
                 creationDateValue.setText("null");
-                creationDateValue.setFont(new Font("Arial", creationDateValue.getFont().getStyle(), creationDateValue.getFont().getSize() + 1));
+                creationDateValue.setFont(new Font("Arial", Font.PLAIN, creationDateValue.getFont().getSize() + 1));
 
                 //---- ownerValue ----
                 ownerValue.setText("guest");
-                ownerValue.setFont(new Font("Arial", ownerValue.getFont().getStyle(), ownerValue.getFont().getSize() + 1));
+                ownerValue.setFont(new Font("Arial", Font.PLAIN, ownerValue.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -194,7 +197,7 @@ public class ClientBrowserFileProperties extends JFrame {
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+                okButton.setFont(new Font("Arial", Font.PLAIN, okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -214,11 +217,7 @@ public class ClientBrowserFileProperties extends JFrame {
     }
 
     private void frameListeners(){
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        okButton.addActionListener(e -> dispose());
     }
 
     public static void run(String fileName, String fileSize, String creationDate, String owner, JFrame sender, JSONObject itemContents) {

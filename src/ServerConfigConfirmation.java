@@ -128,13 +128,11 @@ public class ServerConfigConfirmation extends JFrame {
     }
 
     private void frameListeners(){
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    onOk();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+        okButton.addActionListener(e -> {
+            try {
+                onOk();
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
         });
     }
@@ -154,6 +152,7 @@ public class ServerConfigConfirmation extends JFrame {
             }
             final ArrayList<String> command = new ArrayList<>();
             command.add(javaBin);
+            command.add("-server");
             command.add("-cp");
             command.add(MeshFS.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
             command.add("-jar");

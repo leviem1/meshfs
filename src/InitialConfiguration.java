@@ -123,21 +123,15 @@ public class InitialConfiguration extends JFrame {
     }
 
     private void frameListeners(){
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOk();
+        okButton.addActionListener(e -> onOk());
+        modeSelectionBox.addActionListener(e -> {
+            if(modeSelectionBox.getSelectedItem().toString().equals("none")){
+                okButton.setEnabled(false);
+            }else{
+                okButton.setEnabled(true);
             }
-        });
-        modeSelectionBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(modeSelectionBox.getSelectedItem().toString().equals("none")){
-                    okButton.setEnabled(false);
-                }else{
-                    okButton.setEnabled(true);
-                }
-                contentPanel.getRootPane().setDefaultButton(okButton);
-                contentPanel.requestFocus();
-            }
+            contentPanel.getRootPane().setDefaultButton(okButton);
+            contentPanel.requestFocus();
         });
     }
 
