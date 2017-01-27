@@ -19,61 +19,62 @@ public class MeshFS {
 
     public static void main(String[] args) {
 
+        boolean runConfig = !new File(".config.properties").exists();
+
         properties = ConfigParser.loadProperties();
         new CliParser(args, properties);
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
 
-         if (nogui) {
-             System.setProperty("java.awt.headless", "true");
+        if (nogui) {
+            System.setProperty("java.awt.headless", "true");
 
-             List<String> possibleIP = Reporting.getIpAddresses();
-             if (properties.getProperty("masterIP").equals("127.0.0.1")) {
-                 isMaster = true;
-             } else {
-                 for (String iFace : possibleIP) {
-                     if (iFace.equals(properties.getProperty("masterIP"))) {
-                         isMaster = true;
-                         break;
-                     } else {
-                         isMaster = false;
-
-                     }
-                 }
-             }
-
-             TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    if(!(isMaster)){
-                        if(FileClient.ping(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")))) {
-                            try {
-                                FileClient.sendReport(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")));
-                            } catch (IOException ioe) {
-                                ioe.printStackTrace();
-                            }
-                        }
-
+            List<String> possibleIP = Reporting.getIpAddresses();
+            if (properties.getProperty("masterIP").equals("127.0.0.1")) {
+                isMaster = true;
+            } else {
+                for (String iFace : possibleIP) {
+                    if (iFace.equals(properties.getProperty("masterIP"))) {
+                        isMaster = true;
+                        break;
+                    } else {
+                        isMaster = false;
                     }
                 }
-            };
-            java.util.Timer timer = new java.util.Timer();
-            timer.scheduleAtFixedRate(timerTask, 0, 60000);
+            }
+
+            if (isMaster) {
+                File catalog = new File(properties.getProperty("repository")+".catalog.json");
+
+                if(!catalog.exists()){
+                    JSONObject newCatalog = new JSONObject();
+                    newCatalog.put("currentName", "0000000000000000");
+                    try {
+                        JSONManipulator.writeJSONObject(properties.getProperty("repository")+".catalog.json", newCatalog);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                         if (FileClient.ping(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")))) {
+                             try {
+                                 FileClient.sendReport(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")));
+                             } catch (IOException ioe) {
+                                 ioe.printStackTrace();
+                             }
+                         }
+                    }
+                };
+                java.util.Timer timer = new java.util.Timer();
+                timer.scheduleAtFixedRate(timerTask, 0, 60000);
+            }
 
             File repo = new File(properties.getProperty("repository"));
-            File catalog = new File(properties.getProperty("repository")+".catalog.json");
 
             if (!repo.exists()) {
                 if (!repo.mkdirs()) System.exit(1);
-            }
-
-            if(!catalog.exists()){
-                JSONObject newCatalog = new JSONObject();
-                newCatalog.put("currentName", "0000000000000000");
-                try {
-                    JSONManipulator.writeJSONObject(properties.getProperty("repository")+".catalog.json", newCatalog);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
 
             try {
@@ -119,9 +120,7 @@ public class MeshFS {
                 com.apple.eawt.Application.getApplication().setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
             }
 
-            File properties = new File(".config.properties");
-
-            if (!properties.exists() || configure) {
+            if (runConfig || configure) {
                 GreetingsWindow.run(true);
             } else {
                 GreetingsWindow.run(false);
