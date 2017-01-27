@@ -251,27 +251,40 @@ public class JSONManipulator {
         int port = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
         String catalogFileLocation = ".catalog.json";
         String manifestFileLocation = ".manifest.json";
-        FileClient.receiveFile(serverAddress, portNumber, ".manifest.json", ".manifest.json");
         String[] folders = itemLocation.split("/");
         JSONObject itemToRead = JSONManipulator.getJSONObject(catalogFileLocation);
-        for (String folder : folders) {
-            itemToRead = (JSONObject) itemToRead.get(folder);
-        }
-        String fileName = itemToRead.get("fileName").toString();
         JSONObject compInfoFile = getJSONObject(manifestFileLocation);
         List<String> stripeNames = new ArrayList<>();
         boolean wholeNecessary = false;
+
+        FileClient.receiveFile(serverAddress, portNumber, ".manifest.json", ".manifest.json");
+
+        for (String folder : folders) {
+            itemToRead = (JSONObject) itemToRead.get(folder);
+        }
+
+        String fileName = itemToRead.get("fileName").toString();
+
         for (Object stripe: itemToRead.keySet() ) {
             if (stripe.toString().contains("stripe")) {
                 String fileNameWNum = fileName + "_s" + stripe.toString().substring(stripe.toString().lastIndexOf("_")+1);
                 JSONArray compsWithStripe = (JSONArray) itemToRead.get(stripe);
                 boolean cantContinue = true;
+
                 for (Object MACAddress : compsWithStripe) {
                     if (compInfoFile.containsKey(MACAddress)) {
                         if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameWNum)){
                             String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
 
-                            FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + fileNameWNum);
+                            Thread child = new Thread (() -> {
+                                try {
+                                    FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + fileNameWNum);
+                                } catch (IOException ioe) {
+                                    ioe.printStackTrace();
+                                }
+                            });
+
+
                             stripeNames.add(outFileDir + File.separator + fileNameWNum);
 
                             cantContinue = false;

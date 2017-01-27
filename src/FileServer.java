@@ -54,8 +54,8 @@ public class FileServer {
 
     public void stopServer() {
         if (fileServer.isBound()) {
-            for (int thread = 0; thread < sockets.size(); thread++) {
-                sockets.get(thread).interrupt();
+            for (Thread socket : sockets) {
+                socket.interrupt();
             }
 
             try {
@@ -64,9 +64,9 @@ public class FileServer {
                 e.printStackTrace();
             }
 
-            for (int thread = 0; thread < sockets.size(); thread++) {
+            for (Thread socket : sockets) {
                 try {
-                    sockets.get(thread).join();
+                    socket.join();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -108,42 +108,54 @@ class ServerInit implements Runnable {
         if (request != null) {
             try {
                 String[] requestParts = request.trim().split("\\|");
-                if (requestParts[0].equals("101")) {            //101:Get file
-                    sendFile(requestParts[1], out);
+                switch (requestParts[0]) {
+                    case "101":             //101:Get file
+                        sendFile(requestParts[1], out);
 
-                } else if (requestParts[0].equals("102")) {     //102:Post file
-                    if (requestParts.length == 3) {
-                        receiveFile(requestParts[1], requestParts[2], out);
-                    } else {
-                        receiveFile(requestParts[1], out);
-                    }
+                        break;
+                    case "102":      //102:Post file
+                        if (requestParts.length == 3) {
+                            receiveFile(requestParts[1], requestParts[2], out);
+                        } else {
+                            receiveFile(requestParts[1], out);
+                        }
 
-                } else if (requestParts[0].equals("103")) {     //103:Move file (virtual only)
-                    moveFile(requestParts[1], requestParts[2], out);
+                        break;
+                    case "103":      //103:Move file (virtual only)
+                        moveFile(requestParts[1], requestParts[2], out);
 
-                } else if (requestParts[0].equals("104")) {     //104:Copy file (virtual only)
-                    duplicateFile(requestParts[1], out);
+                        break;
+                    case "104":      //104:Copy file (virtual only)
+                        duplicateFile(requestParts[1], out);
 
-                } else if (requestParts[0].equals("105")) {     //105:Delete file (virtual and physical)
-                    deleteFile(requestParts[1], out);
+                        break;
+                    case "105":      //105:Delete file (virtual and physical)
+                        deleteFile(requestParts[1], out);
 
-                } else if (requestParts[0].equals("106")) {     //106:Make directory (virtual)
-                    createDirectory(requestParts[1], requestParts[2], out, requestParts[3]);
+                        break;
+                    case "106":      //106:Make directory (virtual)
+                        createDirectory(requestParts[1], requestParts[2], out, requestParts[3]);
 
-                } else if (requestParts[0].equals("107")) {     //107:Get report
-                    sendReport(out);
+                        break;
+                    case "107":      //107:Get report
+                        sendReport(out);
 
-                } else if (requestParts[0].equals("108")) {     //108:Post report
-                    receiveReport(out);
+                        break;
+                    case "108":      //108:Post report
+                        receiveReport(out);
 
-                } else if (requestParts[0].equals("109")) {     //109:Ping
-                    ping(out);
+                        break;
+                    case "109":      //109:Ping
+                        ping(out);
 
-                } else if (requestParts[0].equals("110")) {     //110:Rename File (virtual only)
-                    renameFile(requestParts[1], requestParts[2], out);
+                        break;
+                    case "110":      //110:Rename File (virtual only)
+                        renameFile(requestParts[1], requestParts[2], out);
 
-                } else {
-                    badRequest(out, request);
+                        break;
+                    default:
+                        badRequest(out, request);
+                        break;
                 }
             } catch (Exception e) {
                 badRequest(out, request);
@@ -270,12 +282,7 @@ class ServerInit implements Runnable {
         fos.close();
         dis.close();
 
-        Thread distributor = new Thread() {
-            public void run() {
-                DISTAL.distributor(filename, userAccount);
-            }
-        };
-        distributor.setDaemon(true);
+        Thread distributor = new Thread(() -> DISTAL.distributor(filename, userAccount));
         distributor.start();
 
     }
