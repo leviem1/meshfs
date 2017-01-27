@@ -14,8 +14,8 @@ new FormModel {
 					name: "serverSettingPane"
 					"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 65536, 1, false )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, par l {comp separator1::::476:x, seq {comp serverNetworkInterfaceLbl:::p::p, space :::p, comp masterServerField:::::x, space :::p, comp isMasterBox:::p::p}, seq l {par t:::p {seq l {comp serverPortLbl:::p::p, space :::p, comp serverPortField:::::x}, par l {seq l {comp serverThreadsLbl:::p::p, space :::p, comp serverThreadsField:::p:73:p}, seq l {comp serverTimeoutLbl:::p::p, space :::p, comp serverTimeoutField:::p:30:p, space :::p, comp timeUnitLbl:::p::p}}}, space ::15:x, par l {seq t {comp stripesLbl:::p::p, space :::p, comp numStripesField:::p:95:p}, seq t {comp stripedCopiesLbl:::p::p, space :::p, comp numStripeCopiesField:::p:95:p}, seq t {comp wholeCopiesLbl:::p::p, space :::p, comp numWholeField:::p:95:p}}}}, space :::p}, seq l {par l:::p {comp backupConfigBtn:::::x, comp importConfigBtn:::::x}, space :::p, par l {comp importDescriptionLbl:::p::p, comp exportDescriptionLbl:::p::p}, space :0:56:x}}"
-						"$verticalGroup": "par l {seq l {space :::p, par b {comp serverNetworkInterfaceLbl::b:p::p, comp isMasterBox::b:p::p, comp masterServerField::b:p::p}, space u:::p, par b {comp serverPortLbl::b:p::p, comp numStripesField::b:p::p, comp stripesLbl::b:p::p, comp serverPortField::b:p::p}, space u:::p, par b {comp serverThreadsLbl::b:p::p, comp serverThreadsField::b:p::p, comp numStripeCopiesField::b:p::p, comp stripedCopiesLbl::b:p::p}, space u:::p, par b {comp serverTimeoutLbl::b:p::p, comp timeUnitLbl::b:p::p, comp serverTimeoutField::b:p::p, comp numWholeField::b:p::p, comp wholeCopiesLbl::b:p::p}, space s:::p, comp separator1:::p::p, space :::p, par b {comp importDescriptionLbl::b:p::p, comp importConfigBtn::b:p::p}, space :::p, par b {comp backupConfigBtn::b:p::p, comp exportDescriptionLbl::b:p::p}, space ::11:x}}"
+						"$horizontalGroup": "par l {seq l {space :::p, par l {comp configurationToolsLblSep::::476:x, seq {comp serverNetworkInterfaceLbl:::p::p, space :::p, comp masterServerField:::::x, space :::p, comp isMasterBox:::p::p}, seq l {par t:::p {seq l {comp serverPortLbl:::p::p, space :::p, comp serverPortField:::::x}, par l {seq l {comp serverThreadsLbl:::p::p, space :::p, comp serverThreadsField:::p:73:p}, seq l {comp serverTimeoutLbl:::p::p, space :::p, comp serverTimeoutField:::p:30:p, space :::p, comp timeUnitLbl:::p::p}}}, space ::15:x, par l {seq t {comp stripesLbl:::p::p, space :::p, comp numStripesField:::p:95:p}, seq t {comp stripedCopiesLbl:::p::p, space :::p, comp numStripeCopiesField:::p:95:p}, seq t {comp wholeCopiesLbl:::p::p, space :::p, comp numWholeField:::p:95:p}}}}, space :::p}, seq l {par l:::p {comp backupConfigBtn:::::x, comp importConfigBtn:::::x}, space :::p, par l {comp importDescriptionLbl:::p::p, comp exportDescriptionLbl:::p::p}, space :0:56:x}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp serverNetworkInterfaceLbl::b:p::p, comp isMasterBox::b:p::p, comp masterServerField::b:p::p}, space u:::p, par b {comp serverPortLbl::b:p::p, comp numStripesField::b:p::p, comp stripesLbl::b:p::p, comp serverPortField::b:p::p}, space u:::p, par b {comp serverThreadsLbl::b:p::p, comp serverThreadsField::b:p::p, comp numStripeCopiesField::b:p::p, comp stripedCopiesLbl::b:p::p}, space u:::p, par b {comp serverTimeoutLbl::b:p::p, comp timeUnitLbl::b:p::p, comp serverTimeoutField::b:p::p, comp numWholeField::b:p::p, comp wholeCopiesLbl::b:p::p}, space s:::p, comp configurationToolsLblSep:::p::p, space :::p, par b {comp importDescriptionLbl::b:p::p, comp importConfigBtn::b:p::p}, space :::p, par b {comp backupConfigBtn::b:p::p, comp exportDescriptionLbl::b:p::p}, space ::11:x}}"
 					} ) {
 						name: "networkTab"
 						"background": new java.awt.Color( 229, 229, 229, 255 )
@@ -142,7 +142,7 @@ new FormModel {
 							"font": #SwingDerivedFont1
 						} )
 						add( new FormComponent( "com.jformdesigner.designer.wrapper.JGoodiesFormsSeparator" ) {
-							name: "separator1"
+							name: "configurationToolsLblSep"
 							"text": "Configuration Tools"
 							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 196608, 1, false )
 						} )
@@ -304,13 +304,6 @@ new FormModel {
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
 			"size": new java.awt.Dimension( 535, 435 )
-		} )
-		add( new FormComponent( "javax.swing.JLabel" ) {
-			name: "label2"
-			"text": "Configuration Tools"
-			"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 196608, 1, false )
-		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 565, 45 )
 		} )
 	}
 }

@@ -335,21 +335,22 @@ class sendFilesTreading implements Runnable{
 
                 childThreads.add(child);
             }
+            for (Thread child : childThreads) {
+                child.start();
+            }
+
+            for (Thread child : childThreads) {
+                if (child.isAlive()) {
+                    try {
+                        child.join();
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+            }
             FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
         }
 
-        for (Thread child : childThreads) {
-            child.start();
-        }
 
-        for (Thread child : childThreads) {
-            if (child.isAlive()) {
-                try {
-                    child.join();
-                } catch (InterruptedException ignored) {
-                }
-            }
-        }
     }
 
     public void run() {
