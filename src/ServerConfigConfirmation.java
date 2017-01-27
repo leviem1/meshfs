@@ -20,6 +20,7 @@ import javax.swing.border.*;
 public class ServerConfigConfirmation extends JFrame {
     private HashMap accountDetails;
     private Properties properties;
+    private static JFrame serverConfigConfirmation;
     private ServerConfigConfirmation(String content, HashMap accountDetails, Properties properties) {
         this.properties = properties;
         this.accountDetails = accountDetails;
@@ -50,6 +51,7 @@ public class ServerConfigConfirmation extends JFrame {
         configValuesPane = new JScrollPane();
         configValues = new JTextPane();
         buttonBar = new JPanel();
+        backBtn = new JButton();
         okButton = new JButton();
         titleLbl = new JLabel();
 
@@ -103,13 +105,20 @@ public class ServerConfigConfirmation extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+
+                //---- backBtn ----
+                backBtn.setText("Back");
+                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
+                buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
-                okButton.setText("OK");
+                okButton.setText("Launch Server");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -134,6 +143,10 @@ public class ServerConfigConfirmation extends JFrame {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
+        });
+        backBtn.addActionListener(e -> {
+            ServerModeConfiguration.run(serverConfigConfirmation);
+            dispose();
         });
     }
 
@@ -168,7 +181,7 @@ public class ServerConfigConfirmation extends JFrame {
     }
 
     public static void run(JFrame sender, String content, HashMap accountDetails, Properties properties) {
-        JFrame serverConfigConfirmation = new ServerConfigConfirmation(content, accountDetails, properties);
+        serverConfigConfirmation = new ServerConfigConfirmation(content, accountDetails, properties);
         CenterWindow.centerOnWindow(sender, serverConfigConfirmation);
         serverConfigConfirmation.setVisible(true);
     }
@@ -181,6 +194,7 @@ public class ServerConfigConfirmation extends JFrame {
     private JScrollPane configValuesPane;
     private JTextPane configValues;
     private JPanel buttonBar;
+    private JButton backBtn;
     private JButton okButton;
     private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

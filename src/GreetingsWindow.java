@@ -42,8 +42,8 @@ public class GreetingsWindow extends JFrame {
         scrollPane1 = new JScrollPane();
         greetingsPane = new JTextPane();
         buttonBar = new JPanel();
-        configBtn = new JButton();
         quitButton = new JButton();
+        configBtn = new JButton();
 
         //======== this ========
         setTitle("MeshFS - Greetings");
@@ -101,17 +101,17 @@ public class GreetingsWindow extends JFrame {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
 
-                //---- configBtn ----
-                configBtn.setText("Configuration...");
-                configBtn.setFont(new Font("Arial", configBtn.getFont().getStyle(), configBtn.getFont().getSize() + 1));
-                buttonBar.add(configBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                //---- quitButton ----
+                quitButton.setText("Quit");
+                quitButton.setFont(new Font("Arial", quitButton.getFont().getStyle(), quitButton.getFont().getSize() + 1));
+                buttonBar.add(quitButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
-                //---- quitButton ----
-                quitButton.setText("Exit");
-                quitButton.setFont(new Font("Arial", quitButton.getFont().getStyle(), quitButton.getFont().getSize() + 1));
-                buttonBar.add(quitButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                //---- configBtn ----
+                configBtn.setText("Configuration...");
+                configBtn.setFont(new Font("Arial", configBtn.getFont().getStyle(), configBtn.getFont().getSize() + 1));
+                buttonBar.add(configBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -151,6 +151,12 @@ public class GreetingsWindow extends JFrame {
         greetingsWindow.setVisible(true);
     }
 
+    public static void run(boolean runType, JFrame sender) {
+        greetingsWindow = new GreetingsWindow(runType);
+        CenterWindow.centerOnWindow(sender, greetingsWindow);
+        greetingsWindow.setVisible(true);
+    }
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
@@ -159,8 +165,8 @@ public class GreetingsWindow extends JFrame {
     private JScrollPane scrollPane1;
     private JTextPane greetingsPane;
     private JPanel buttonBar;
-    private JButton configBtn;
     private JButton quitButton;
+    private JButton configBtn;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }

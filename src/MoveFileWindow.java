@@ -58,6 +58,7 @@ public class MoveFileWindow extends JFrame {
         tree1 = new JTree(tree);
         buttonBar = new JPanel();
         okButton = new JButton();
+        label1 = new JLabel();
 
         //======== this ========
         setTitle("filename - Move");
@@ -114,6 +115,11 @@ public class MoveFileWindow extends JFrame {
                     new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
+
+            //---- label1 ----
+            label1.setText("Select a location to move selected file to:");
+            label1.setFont(new Font("Arial", label1.getFont().getStyle(), label1.getFont().getSize() + 1));
+            dialogPane.add(label1, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
@@ -199,6 +205,7 @@ public class MoveFileWindow extends JFrame {
     private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;
+    private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }

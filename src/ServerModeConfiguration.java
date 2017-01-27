@@ -1,23 +1,19 @@
-import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
-
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.tree.DefaultMutableTreeNode;
+import com.jgoodies.forms.factories.*;
 
 import static java.lang.String.valueOf;
 import static java.lang.Math.toIntExact;
@@ -28,6 +24,11 @@ public class ServerModeConfiguration extends JFrame {
 
     private static JFrame serverModeConfiguration;
     private DefaultListModel model;
+    private HashMap<String, String> accountsEnc;
+    private HashMap<String, String> accountsPlain;
+    private HashMap<String, String> accountsImported;
+
+    private String out;
     private ServerModeConfiguration() {
         model = new DefaultListModel();
         initComponents();
@@ -35,6 +36,9 @@ public class ServerModeConfiguration extends JFrame {
         removeUserBtn.setEnabled(false);
         backupConfigBtn.setEnabled(false);
         okButton.setEnabled(false);
+        accountsEnc = new HashMap<>();
+        accountsPlain = new HashMap<>();
+        accountsImported = new HashMap<>();
         frameListeners();
         freeSpaceLbl.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
         spaceSldr.setMaximum(toIntExact(Reporting.getSystemStorage()/1073741824)-10);
@@ -46,11 +50,13 @@ public class ServerModeConfiguration extends JFrame {
         }
     }
 
+
     private void initComponents() {
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setGroupingUsed(false);
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
+        DefaultComponentFactory compFactory = DefaultComponentFactory.getInstance();
         dialogPane = new JPanel();
         serverSettingPane = new JTabbedPane();
         networkTab = new JPanel();
@@ -58,17 +64,23 @@ public class ServerModeConfiguration extends JFrame {
         masterServerField = new JTextField();
         serverPortLbl = new JLabel();
         serverPortField = new JFormattedTextField(numberFormat);
+        isMasterBox = new JCheckBox();
         serverThreadsLbl = new JLabel();
         serverThreadsField = new JFormattedTextField(numberFormat);
         serverTimeoutLbl = new JLabel();
         serverTimeoutField = new JFormattedTextField(numberFormat);
+        timeUnitLbl = new JLabel();
         numStripesField = new JFormattedTextField(numberFormat);
         stripesLbl = new JLabel();
         numStripeCopiesField = new JFormattedTextField(numberFormat);
         stripedCopiesLbl = new JLabel();
         numWholeField = new JFormattedTextField(numberFormat);
         wholeCopiesLbl = new JLabel();
-        isMasterBox = new JCheckBox();
+        importConfigBtn = new JButton();
+        backupConfigBtn = new JButton();
+        importDescriptionLbl = new JLabel();
+        exportDescriptionLbl = new JLabel();
+        separator1 = compFactory.createSeparator("Configuration Tools");
         storageTab = new JPanel();
         repositoryLbl = new JLabel();
         repoPathField = new JTextField(System.getProperty("user.dir")+ File.separator + "repo");
@@ -91,11 +103,10 @@ public class ServerModeConfiguration extends JFrame {
         allowGuestBox = new JCheckBox();
         buttonBar = new JPanel();
         backBtn = new JButton();
-        importConfigBtn = new JButton();
-        backupConfigBtn = new JButton();
         resetConfigBtn = new JButton();
         okButton = new JButton();
         titleLbl = new JLabel();
+        label2 = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Server Configuration");
@@ -131,6 +142,13 @@ public class ServerModeConfiguration extends JFrame {
                     serverPortField.setText("5704");
                     serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle() & ~Font.BOLD, serverPortField.getFont().getSize() + 1));
 
+                    //---- isMasterBox ----
+                    isMasterBox.setText("Is Master:");
+                    isMasterBox.setFont(new Font("Arial", isMasterBox.getFont().getStyle() & ~Font.BOLD, isMasterBox.getFont().getSize() + 1));
+                    isMasterBox.setToolTipText("Check this box if this computer is the master server");
+                    isMasterBox.setHorizontalTextPosition(SwingConstants.LEADING);
+                    isMasterBox.setSelected(true);
+
                     //---- serverThreadsLbl ----
                     serverThreadsLbl.setText("Network Threads:");
                     serverThreadsLbl.setFont(new Font("Arial", serverThreadsLbl.getFont().getStyle() & ~Font.BOLD, serverThreadsLbl.getFont().getSize() + 1));
@@ -144,15 +162,20 @@ public class ServerModeConfiguration extends JFrame {
                     serverTimeoutLbl.setFont(new Font("Arial", serverTimeoutLbl.getFont().getStyle() & ~Font.BOLD, serverTimeoutLbl.getFont().getSize() + 1));
 
                     //---- serverTimeoutField ----
-                    serverTimeoutField.setText("90");
+                    serverTimeoutField.setText("5");
                     serverTimeoutField.setFont(new Font("Arial", serverTimeoutField.getFont().getStyle() & ~Font.BOLD, serverTimeoutField.getFont().getSize() + 1));
+                    serverTimeoutField.setColumns(2);
+
+                    //---- timeUnitLbl ----
+                    timeUnitLbl.setText("seconds");
+                    timeUnitLbl.setFont(new Font("Arial", timeUnitLbl.getFont().getStyle() & ~Font.BOLD, timeUnitLbl.getFont().getSize() - 1));
 
                     //---- numStripesField ----
                     numStripesField.setText("3");
                     numStripesField.setFont(new Font("Arial", numStripesField.getFont().getStyle() & ~Font.BOLD, numStripesField.getFont().getSize() + 1));
 
                     //---- stripesLbl ----
-                    stripesLbl.setText("Stripes:");
+                    stripesLbl.setText("Number of Stripes:");
                     stripesLbl.setFont(new Font("Arial", stripesLbl.getFont().getStyle() & ~Font.BOLD, stripesLbl.getFont().getSize() + 1));
 
                     //---- numStripeCopiesField ----
@@ -160,7 +183,7 @@ public class ServerModeConfiguration extends JFrame {
                     numStripeCopiesField.setFont(new Font("Arial", numStripeCopiesField.getFont().getStyle() & ~Font.BOLD, numStripeCopiesField.getFont().getSize() + 1));
 
                     //---- stripedCopiesLbl ----
-                    stripedCopiesLbl.setText("Striped Copies:");
+                    stripedCopiesLbl.setText("Number of Striped Copies:");
                     stripedCopiesLbl.setFont(new Font("Arial", stripedCopiesLbl.getFont().getStyle() & ~Font.BOLD, stripedCopiesLbl.getFont().getSize() + 1));
 
                     //---- numWholeField ----
@@ -168,54 +191,82 @@ public class ServerModeConfiguration extends JFrame {
                     numWholeField.setFont(new Font("Arial", numWholeField.getFont().getStyle() & ~Font.BOLD, numWholeField.getFont().getSize() + 1));
 
                     //---- wholeCopiesLbl ----
-                    wholeCopiesLbl.setText("Whole Copies:");
+                    wholeCopiesLbl.setText("Number of Whole Copies:");
                     wholeCopiesLbl.setFont(new Font("Arial", wholeCopiesLbl.getFont().getStyle() & ~Font.BOLD, wholeCopiesLbl.getFont().getSize() + 1));
 
-                    //---- isMasterBox ----
-                    isMasterBox.setText("Is Master:");
-                    isMasterBox.setFont(new Font("Arial", isMasterBox.getFont().getStyle() & ~Font.BOLD, isMasterBox.getFont().getSize() + 1));
-                    isMasterBox.setToolTipText("Check this box if this computer is the master server");
-                    isMasterBox.setHorizontalTextPosition(SwingConstants.LEADING);
-                    isMasterBox.setSelected(true);
+                    //---- importConfigBtn ----
+                    importConfigBtn.setText("Import Existing Configuration");
+                    importConfigBtn.setFont(new Font("Arial", importConfigBtn.getFont().getStyle() & ~Font.BOLD, importConfigBtn.getFont().getSize() + 1));
+
+                    //---- backupConfigBtn ----
+                    backupConfigBtn.setText("Backup Existing Configuration");
+                    backupConfigBtn.setFont(new Font("Arial", backupConfigBtn.getFont().getStyle() & ~Font.BOLD, backupConfigBtn.getFont().getSize() + 1));
+
+                    //---- importDescriptionLbl ----
+                    importDescriptionLbl.setText("(Select an existing configuration file)");
+                    importDescriptionLbl.setFont(new Font("Arial", importDescriptionLbl.getFont().getStyle(), importDescriptionLbl.getFont().getSize() - 1));
+
+                    //---- exportDescriptionLbl ----
+                    exportDescriptionLbl.setText("(Backup current configuration options)");
+                    exportDescriptionLbl.setFont(new Font("Arial", exportDescriptionLbl.getFont().getStyle(), exportDescriptionLbl.getFont().getSize() - 1));
+
+                    //---- separator1 ----
+                    separator1.setFont(new Font("Arial", Font.PLAIN, separator1.getFont().getSize() + 1));
 
                     GroupLayout networkTabLayout = new GroupLayout(networkTab);
                     networkTab.setLayout(networkTabLayout);
                     networkTabLayout.setHorizontalGroup(
                         networkTabLayout.createParallelGroup()
                             .addGroup(networkTabLayout.createSequentialGroup()
+                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(backupConfigBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(importConfigBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(networkTabLayout.createParallelGroup()
+                                    .addComponent(importDescriptionLbl)
+                                    .addComponent(exportDescriptionLbl))
+                                .addGap(0, 56, Short.MAX_VALUE))
+                            .addGroup(networkTabLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(networkTabLayout.createParallelGroup()
+                                    .addComponent(separator1, GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                                     .addGroup(networkTabLayout.createSequentialGroup()
                                         .addComponent(serverNetworkInterfaceLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(masterServerField, GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                                        .addComponent(masterServerField)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(isMasterBox))
                                     .addGroup(networkTabLayout.createSequentialGroup()
-                                        .addGroup(networkTabLayout.createParallelGroup()
-                                            .addGroup(networkTabLayout.createSequentialGroup()
+                                        .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                            .addGroup(GroupLayout.Alignment.LEADING, networkTabLayout.createSequentialGroup()
                                                 .addComponent(serverPortLbl)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
-                                                .addComponent(stripesLbl))
+                                                .addComponent(serverPortField))
+                                            .addGroup(networkTabLayout.createParallelGroup()
+                                                .addGroup(networkTabLayout.createSequentialGroup()
+                                                    .addComponent(serverThreadsLbl)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(networkTabLayout.createSequentialGroup()
+                                                    .addComponent(serverTimeoutLbl)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(timeUnitLbl))))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                                        .addGroup(networkTabLayout.createParallelGroup()
                                             .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
-                                                .addComponent(serverThreadsLbl)
+                                                .addComponent(stripesLbl)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
-                                                .addComponent(stripedCopiesLbl))
+                                                .addComponent(numStripesField, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE))
                                             .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
-                                                .addComponent(serverTimeoutLbl)
+                                                .addComponent(stripedCopiesLbl)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(wholeCopiesLbl)))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(numWholeField, GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
-                                            .addComponent(numStripeCopiesField, GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
-                                            .addComponent(numStripesField, GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE))))
+                                                .addComponent(numStripeCopiesField, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
+                                                .addComponent(wholeCopiesLbl)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)))))
                                 .addContainerGap())
                     );
                     networkTabLayout.setVerticalGroup(
@@ -229,22 +280,33 @@ public class ServerModeConfiguration extends JFrame {
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverPortLbl)
-                                    .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(numStripesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(stripesLbl))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(stripesLbl)
+                                    .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverThreadsLbl)
                                     .addComponent(serverThreadsField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(numStripeCopiesField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(stripedCopiesLbl))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(serverTimeoutLbl)
+                                    .addComponent(timeUnitLbl)
                                     .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(wholeCopiesLbl))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addComponent(separator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(1, 1, 1)
+                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(importConfigBtn)
+                                    .addComponent(importDescriptionLbl))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(backupConfigBtn)
+                                    .addComponent(exportDescriptionLbl))
+                                .addContainerGap(15, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Network", networkTab);
@@ -297,11 +359,11 @@ public class ServerModeConfiguration extends JFrame {
                                         .addComponent(spaceSldr, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE))
                                     .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(freeSpaceLbl, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 50, Short.MAX_VALUE))
+                                        .addGap(0, 125, Short.MAX_VALUE))
                                     .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(repositoryLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
+                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(browseBtn)))
                                 .addContainerGap())
@@ -323,7 +385,7 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(freeSpaceLbl)
-                                .addContainerGap(35, Short.MAX_VALUE))
+                                .addContainerGap(169, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Storage", storageTab);
@@ -379,22 +441,21 @@ public class ServerModeConfiguration extends JFrame {
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addGroup(userAccountsLayout.createSequentialGroup()
                                         .addContainerGap()
-                                        .addGroup(userAccountsLayout.createParallelGroup()
-                                            .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                                .addGroup(GroupLayout.Alignment.LEADING, userAccountsLayout.createSequentialGroup()
-                                                    .addComponent(usernameLbl)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(usernameValueField))
-                                                .addGroup(GroupLayout.Alignment.LEADING, userAccountsLayout.createSequentialGroup()
-                                                    .addComponent(passwordLbl)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                                .addComponent(usernameLbl)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(usernameValueField, GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
+                                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                                .addComponent(passwordLbl)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(passwordValueField))
                                             .addGroup(GroupLayout.Alignment.TRAILING, userAccountsLayout.createSequentialGroup()
                                                 .addComponent(allowGuestBox)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(submitBtn)
                                                 .addGap(6, 6, 6)))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGroup(userAccountsLayout.createParallelGroup()
                                             .addComponent(scrollPane2, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE)
                                             .addComponent(removeUserBtn, GroupLayout.Alignment.TRAILING))))
@@ -421,8 +482,8 @@ public class ServerModeConfiguration extends JFrame {
                                             .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                         .addGap(12, 12, 12)
                                         .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                            .addComponent(allowGuestBox)
-                                            .addComponent(submitBtn)))))
+                                            .addComponent(submitBtn)
+                                            .addComponent(allowGuestBox)))))
                     );
                 }
                 serverSettingPane.addTab("User Accounts", userAccounts);
@@ -438,34 +499,20 @@ public class ServerModeConfiguration extends JFrame {
 
                 //---- backBtn ----
                 backBtn.setText("Back");
-                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle() & ~Font.BOLD, backBtn.getFont().getSize() + 1));
+                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
                 buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
-                //---- importConfigBtn ----
-                importConfigBtn.setText("Import...");
-                importConfigBtn.setFont(new Font("Arial", importConfigBtn.getFont().getStyle() & ~Font.BOLD, importConfigBtn.getFont().getSize() + 1));
-                buttonBar.add(importConfigBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
-
-                //---- backupConfigBtn ----
-                backupConfigBtn.setText("Backup...");
-                backupConfigBtn.setFont(new Font("Arial", backupConfigBtn.getFont().getStyle() & ~Font.BOLD, backupConfigBtn.getFont().getSize() + 1));
-                buttonBar.add(backupConfigBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
-
                 //---- resetConfigBtn ----
-                resetConfigBtn.setText("Reset");
+                resetConfigBtn.setText("Reset to Defaults");
                 resetConfigBtn.setFont(new Font("Arial", resetConfigBtn.getFont().getStyle() & ~Font.BOLD, resetConfigBtn.getFont().getSize() + 1));
                 buttonBar.add(resetConfigBtn, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
-                okButton.setText("OK");
+                okButton.setText("Continue...");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle() & ~Font.BOLD, okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -480,8 +527,12 @@ public class ServerModeConfiguration extends JFrame {
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(470, 300);
+        setSize(535, 430);
         setLocationRelativeTo(getOwner());
+
+        //---- label2 ----
+        label2.setText("Configuration Tools");
+        label2.setFont(new Font("Arial", Font.PLAIN, label2.getFont().getSize() + 1));
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
@@ -785,7 +836,7 @@ public class ServerModeConfiguration extends JFrame {
     }
 
     private void onOk(){
-        HashMap<String, String> accounts = new HashMap<>();
+
         try{
             File repoDirectory = new File(String.valueOf(repoPathField.getText()));
             if (!repoDirectory.exists()) {
@@ -795,52 +846,8 @@ public class ServerModeConfiguration extends JFrame {
             JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
             z.printStackTrace();
         }
-        String out = "";
-        for (int i = 0; i < userAccountDataList.getModel().getSize(); i++) {
-            String user = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>"));
-            String pass = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
-            String passOrig = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
-
-            for(int x = 0; x < user.length()-1; x=x+2){
-                try{
-                    pass += user.charAt(x);
-                }catch(IndexOutOfBoundsException ioobe){
-                }
-            }
-            MessageDigest messageDigest = null;
-            try {
-                messageDigest = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-            messageDigest.update(pass.getBytes(),0, pass.length());
-            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
-            accounts.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
-        }
-        if(out.equals("")){
-            out = "(none)";
-        }
-        if(allowGuestBox.isSelected()) {
-            String user = "guest";
-            String pass = "guest";
-            String passOrig = "guest";
-            for(int x = 0; x < user.length()-1; x=x+2){
-                try{
-                    pass += user.charAt(x);
-                }catch(IndexOutOfBoundsException ioobe){
-                }
-            }
-            MessageDigest messageDigest = null;
-            try {
-                messageDigest = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-            messageDigest.update(pass.getBytes(),0, pass.length());
-            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
-            accounts.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
-        }
-        ServerConfigConfirmation.run(this, "<html><font face=\"arial\"><center><b>Master IP:</b> " + masterServerField.getText() + "<br><br><b>Timeout:</b> " + String.valueOf(serverTimeoutField.getText()) + "s<br><br><b>Port:</b> " + String.valueOf(serverPortField.getText()) + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + String.valueOf(numWholeField.getText()) + "/" + String.valueOf(numStripesField.getText()) + "/" + String.valueOf(numStripeCopiesField.getText()) + "<br><br><b>Repository:</b> " + String.valueOf(repoPathField.getText()) + "<br><br><b>Minimum Space:</b> " + String.valueOf(Integer.valueOf(minSpaceField.getText())) + " GB<br><br><b>Server Threads:</b> " + String.valueOf(serverThreadsField.getText()) + "<br><br><b>Accounts:</b><br>" + out + "</center></font></html>", accounts, getConfigProperties());
+        generateAuthObjs();
+        ServerConfigConfirmation.run(this, "<html><font face=\"arial\"><center><b>Master IP:</b> " + masterServerField.getText() + "<br><br><b>Timeout:</b> " + String.valueOf(serverTimeoutField.getText()) + "s<br><br><b>Port:</b> " + String.valueOf(serverPortField.getText()) + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + String.valueOf(numWholeField.getText()) + "/" + String.valueOf(numStripesField.getText()) + "/" + String.valueOf(numStripeCopiesField.getText()) + "<br><br><b>Repository:</b> " + String.valueOf(repoPathField.getText()) + "<br><br><b>Minimum Space:</b> " + String.valueOf(Integer.valueOf(minSpaceField.getText())) + " GB<br><br><b>Server Threads:</b> " + String.valueOf(serverThreadsField.getText()) + "<br><br><b>Accounts:</b><br>" + out + "</center></font></html>", accountsEnc, getConfigProperties());
         dispose();
     }
 
@@ -852,15 +859,25 @@ public class ServerModeConfiguration extends JFrame {
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         fileChooser.setDialogTitle("Choose Existing Configuration");
         fileChooser.setAcceptAllFileFilterUsed(false);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("MeshFS Properties", "properties");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("MeshFS Properties", "mfsarchive");
         fileChooser.setFileFilter(filter);
         int rVal = fileChooser.showOpenDialog(null);
         if (rVal == JFileChooser.APPROVE_OPTION) {
             try {
-                properties = ConfigParser.reader(fileChooser.getSelectedFile().toString());
-            } catch (IOException e) {
+                FileInputStream fis = new FileInputStream(fileChooser.getSelectedFile().toString());
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                ArrayList<Object> importedObjects = new ArrayList<>();
+                importedObjects = (ArrayList<Object>)ois.readObject();
+                properties = (Properties) importedObjects.get(0);
+                accountsImported = (HashMap<String, String>) importedObjects.get(1);
+                isMasterBox.setSelected((boolean)importedObjects.get(2));
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
+            int index = userAccountDataList.getModel().getSize();
+
+
+            masterServerField.setText(properties.getProperty("masterIP"));
             serverPortField.setText(properties.getProperty("portNumber"));
             numStripesField.setText(properties.getProperty("numStripes"));
             numStripeCopiesField.setText(properties.getProperty("numStripeCopy"));
@@ -868,7 +885,24 @@ public class ServerModeConfiguration extends JFrame {
             minSpaceField.setText(properties.getProperty("minSpace"));
             repoPathField.setText(properties.getProperty("repository"));
             serverThreadsField.setText(properties.getProperty("serverThreads"));
-            serverTimeoutField.setText(properties.getProperty("serverTimeout"));
+            serverTimeoutField.setText(properties.getProperty("timeout"));
+            userAccountDataList.removeAll();
+            model.removeAllElements();
+            allowGuestBox.setSelected(false);
+            for (HashMap.Entry<String,String> entry : accountsImported.entrySet()) {
+                String username = entry.getKey();
+                String password = entry.getValue();
+                String value = "";
+                if(!(username.equals("guest"))) {
+                     value = "<html>Username: " + username + "<br>Password: " + password + "</html>";
+                }else if (username.equals("guest")){
+                    allowGuestBox.setSelected(true);
+                }
+                System.out.println("Adding " + value);
+                if(!(value.equals(""))){
+                    model.add(index, value);
+                }
+            }
         }
     }
 
@@ -882,7 +916,15 @@ public class ServerModeConfiguration extends JFrame {
         int rVal = fileChooser.showOpenDialog(null);
         if (rVal == JFileChooser.APPROVE_OPTION) {
             try {
-                ConfigParser.backup(currentProperties, fileChooser.getSelectedFile().toString());
+                FileOutputStream fos = new FileOutputStream(fileChooser.getSelectedFile().toString() + File.separator + "backup_config_" + Reporting.getSystemDate() + ".mfsarchive");
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                generateAuthObjs();
+                ArrayList<Object> outputObjects = new ArrayList<>();
+                outputObjects.add(currentProperties);
+                outputObjects.add(accountsPlain);
+                outputObjects.add(isMasterBox.isSelected());
+                oos.writeObject(outputObjects);
+                oos.flush();
                 JOptionPane.showMessageDialog(null, "Backup Successful!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Backup Failed!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
@@ -923,6 +965,56 @@ public class ServerModeConfiguration extends JFrame {
 
     private boolean checkFields(JFormattedTextField field) {
         return !field.getText().isEmpty();
+    }
+
+    private void generateAuthObjs(){
+        out = "";
+        for (int i = 0; i < userAccountDataList.getModel().getSize(); i++) {
+            String user = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>"));
+            String pass = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
+            String passOrig = userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
+
+            for(int x = 0; x < user.length()-1; x=x+2){
+                try{
+                    pass += user.charAt(x);
+                }catch(IndexOutOfBoundsException ioobe){
+                }
+            }
+            MessageDigest messageDigest = null;
+            try {
+                messageDigest = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            messageDigest.update(pass.getBytes(),0, pass.length());
+            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
+            accountsEnc.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
+            accountsPlain.put(user, passOrig);
+        }
+        if(out.equals("")){
+            out = "(none)";
+        }
+        if(allowGuestBox.isSelected()) {
+            String user = "guest";
+            String pass = "guest";
+            String passOrig = "guest";
+            for(int x = 0; x < user.length()-1; x=x+2){
+                try{
+                    pass += user.charAt(x);
+                }catch(IndexOutOfBoundsException ioobe){
+                }
+            }
+            MessageDigest messageDigest = null;
+            try {
+                messageDigest = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            messageDigest.update(pass.getBytes(),0, pass.length());
+            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
+            accountsEnc.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
+            accountsPlain.put(user, passOrig);
+        }
     }
 
     private void setConfigMode(String mode){
@@ -973,17 +1065,23 @@ public class ServerModeConfiguration extends JFrame {
     private JTextField masterServerField;
     private JLabel serverPortLbl;
     private JFormattedTextField serverPortField;
+    private JCheckBox isMasterBox;
     private JLabel serverThreadsLbl;
     private JFormattedTextField serverThreadsField;
     private JLabel serverTimeoutLbl;
     private JFormattedTextField serverTimeoutField;
+    private JLabel timeUnitLbl;
     private JFormattedTextField numStripesField;
     private JLabel stripesLbl;
     private JFormattedTextField numStripeCopiesField;
     private JLabel stripedCopiesLbl;
     private JFormattedTextField numWholeField;
     private JLabel wholeCopiesLbl;
-    private JCheckBox isMasterBox;
+    private JButton importConfigBtn;
+    private JButton backupConfigBtn;
+    private JLabel importDescriptionLbl;
+    private JLabel exportDescriptionLbl;
+    private JComponent separator1;
     private JPanel storageTab;
     private JLabel repositoryLbl;
     private JTextField repoPathField;
@@ -1006,10 +1104,9 @@ public class ServerModeConfiguration extends JFrame {
     private JCheckBox allowGuestBox;
     private JPanel buttonBar;
     private JButton backBtn;
-    private JButton importConfigBtn;
-    private JButton backupConfigBtn;
     private JButton resetConfigBtn;
     private JButton okButton;
     private JLabel titleLbl;
+    private JLabel label2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

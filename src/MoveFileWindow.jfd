@@ -46,6 +46,13 @@ new FormModel {
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "South"
 				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "Select a location to move selected file to:"
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "North"
+				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
 			} )

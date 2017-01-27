@@ -35,8 +35,8 @@ public class RenameFileWindow extends JFrame {
         initComponents();
         frameListeners();
         String currentNameTruncated = currentName;
-        if(currentName.length() > 10){
-            currentNameTruncated = currentName.substring(0, 7) + "...";
+        if(currentName.length() > 33){
+            currentNameTruncated = currentName.substring(0, 30) + "...";
         }
         currentNameValue.setText(currentNameTruncated);
         currentNameValue.setToolTipText(currentName);
@@ -60,6 +60,7 @@ public class RenameFileWindow extends JFrame {
         newNameLbl = new JLabel();
         newNameValueField = new JTextField();
         buttonBar = new JPanel();
+        cancelBtn = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -100,12 +101,12 @@ public class RenameFileWindow extends JFrame {
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addComponent(currentNameLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(currentNameValue))
+                                    .addComponent(currentNameValue, GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addComponent(newNameLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(newNameValueField, GroupLayout.PREFERRED_SIZE, 148, GroupLayout.PREFERRED_SIZE)))
-                            .addContainerGap(8, Short.MAX_VALUE))
+                                    .addComponent(newNameValueField, GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)))
+                            .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -127,13 +128,20 @@ public class RenameFileWindow extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+
+                //---- cancelBtn ----
+                cancelBtn.setText("Cancel");
+                cancelBtn.setFont(new Font("Arial", cancelBtn.getFont().getStyle(), cancelBtn.getFont().getSize() + 1));
+                buttonBar.add(cancelBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -208,6 +216,7 @@ public class RenameFileWindow extends JFrame {
     private JLabel newNameLbl;
     private JTextField newNameValueField;
     private JPanel buttonBar;
+    private JButton cancelBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

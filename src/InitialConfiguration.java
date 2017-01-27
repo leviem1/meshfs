@@ -40,6 +40,7 @@ public class InitialConfiguration extends JFrame {
         modeLbl = new JLabel();
         modeSelectionBox = new JComboBox();
         buttonBar = new JPanel();
+        backBtn = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -60,9 +61,12 @@ public class InitialConfiguration extends JFrame {
                 titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
                 //---- modeLbl ----
-                modeLbl.setText("Please select the correct mode of operation:");
+                modeLbl.setText("Please select the desired mode of operation:");
                 modeLbl.setFont(new Font("Arial", modeLbl.getFont().getStyle(), modeLbl.getFont().getSize() + 1));
                 modeLbl.setHorizontalAlignment(SwingConstants.CENTER);
+
+                //---- modeSelectionBox ----
+                modeSelectionBox.setFont(new Font("Arial", modeSelectionBox.getFont().getStyle(), modeSelectionBox.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -94,13 +98,20 @@ public class InitialConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+
+                //---- backBtn ----
+                backBtn.setText("Back");
+                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
+                buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -133,6 +144,10 @@ public class InitialConfiguration extends JFrame {
             contentPanel.getRootPane().setDefaultButton(okButton);
             contentPanel.requestFocus();
         });
+        backBtn.addActionListener(e -> {
+            dispose();
+            GreetingsWindow.run(false, initialConfiguration);
+        });
     }
 
     private void onOk() {
@@ -160,6 +175,7 @@ public class InitialConfiguration extends JFrame {
     private JLabel modeLbl;
     private JComboBox modeSelectionBox;
     private JPanel buttonBar;
+    private JButton backBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 

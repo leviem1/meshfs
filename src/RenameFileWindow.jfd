@@ -10,7 +10,7 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp currentNameLbl:::p::p, space u:::p, comp currentNameValue:::p::p}, seq l {comp newNameLbl:::p::p, space u:::p, comp newNameValueField:::p:148:p}}, space ::8:x}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp currentNameLbl:::p::p, space u:::p, comp currentNameValue::::231:x}, seq l {comp newNameLbl:::p::p, space u:::p, comp newNameValueField::::251:x}}, space :::p}}"
 					"$verticalGroup": "par l {seq l {space :::p, par b {comp currentNameLbl::b:p::p, comp currentNameValue::b:p::p}, space u:::p, par b {comp newNameLbl::b:p::p, comp newNameValueField::b:p::p}, space ::5:x}}"
 				} ) {
 					name: "contentPanel"
@@ -37,7 +37,7 @@ new FormModel {
 					"value": "Center"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0:1.0, 80"
+					"$columnSpecs": "0, 0:1.0, 80"
 					"$rowSpecs": "0"
 					"$hGap": 5
 					"$vGap": 5
@@ -45,11 +45,16 @@ new FormModel {
 					name: "buttonBar"
 					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
 					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "cancelBtn"
+						"text": "Cancel"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 1
+						"gridx": 2
 						"gridy": 0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
@@ -60,7 +65,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 270, 155 )
+			"size": new java.awt.Dimension( 375, 160 )
 		} )
 	}
 }
