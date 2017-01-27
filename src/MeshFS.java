@@ -10,15 +10,14 @@ import java.util.*;
 import java.util.List;
 
 public class MeshFS {
-    public static Properties properties;
-    public static FileServer fileServer;
-    public static boolean nogui = false;
-    public static boolean isMaster = false;
-    public static  boolean configure = false;
+    static Properties properties;
+    static FileServer fileServer;
+    static boolean nogui = false;
+    static  boolean configure = false;
 
 
     public static void main(String[] args) {
-
+        boolean isMaster = false;
         boolean runConfig = !new File(".config.properties").exists();
 
         properties = ConfigParser.loadProperties();

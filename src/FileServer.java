@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * @version 1.0.0
  */
 
-public class FileServer {
+class FileServer {
 
     private ArrayList<Thread> sockets = new ArrayList<>();
     private ServerSocket fileServer;
@@ -32,7 +32,7 @@ public class FileServer {
      * @throws IOException if a socket cannot be initialized
      */
 
-    public void startServer(int port, int maxThreads, int timeout) throws IOException {
+    void startServer(int port, int maxThreads, int timeout) throws IOException {
         fileServer = new ServerSocket();
         fileServer.setPerformancePreferences(1, 0, 1);
         fileServer.bind(new InetSocketAddress(port));
@@ -52,7 +52,7 @@ public class FileServer {
      * This method is used to halt a server.
      */
 
-    public void stopServer() {
+    void stopServer() {
         if (fileServer.isBound()) {
             for (Thread socket : sockets) {
                 socket.interrupt();
@@ -80,7 +80,7 @@ class ServerInit implements Runnable {
     private ServerSocket server;
     private int timeout;
 
-    public ServerInit(ServerSocket server, int timeout) {
+    ServerInit(ServerSocket server, int timeout) {
         this.server = server;
         this.timeout = timeout;
     }
@@ -182,7 +182,7 @@ class ServerInit implements Runnable {
         out.println("201");
         out.flush();
         JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
-        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.moveFile(jsonObj, currentPath.toString(), newPath));
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.moveFile(jsonObj, currentPath, newPath));
     }
 
     private void deleteFile(String jsonPath, Socket client) throws IOException {
