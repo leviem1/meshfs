@@ -214,11 +214,7 @@ public class ClientBrowserFileProperties extends JFrame {
     }
 
     private void frameListeners(){
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        okButton.addActionListener(e -> dispose());
     }
 
     public static void run(String fileName, String fileSize, String creationDate, String owner, JFrame sender, JSONObject itemContents) {

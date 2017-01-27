@@ -23,16 +23,12 @@ public class RenameFileWindow extends JFrame {
     private String serverAddress;
     private int port;
     private String jsonObj;
-    private JFrame caller;
-    private String newName;
-    private static JFrame renameFileWindow;
     private String userAccount;
     private String originalName;
     private RenameFileWindow(String serverAddress, int port, String jsonObj, JFrame sender, String currentName, String userAccount) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
-        this.caller = sender;
         this.userAccount = userAccount;
         this.originalName = currentName;
 
@@ -186,15 +182,13 @@ public class RenameFileWindow extends JFrame {
                 }
             }
         });
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    FileClient.renameFile(serverAddress, port, jsonObj, newNameValueField.getText());
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                dispose();
+        okButton.addActionListener(e -> {
+            try {
+                FileClient.renameFile(serverAddress, port, jsonObj, newNameValueField.getText());
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
+            dispose();
         });
     }
 

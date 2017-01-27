@@ -293,9 +293,9 @@ public class JSONManipulator {
                 if (compInfoFile.containsKey(MACAddress)) {
                     if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
                         String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
-                        System.out.println("attemting to recieve stripe " + fileNameW + "from " + IPAddress);
+                        System.out.println("Attempting to receive stripe " + fileNameW + "from " + IPAddress);
                         FileClient.receiveFile(IPAddress, port,fileNameW, outFileDir + File.separator + outFile);
-                        System.out.println("recieved stripe " + fileNameW);
+                        System.out.println("Successfully received stripe " + fileNameW);
                         cantContinue = false;
                         break;
                     }

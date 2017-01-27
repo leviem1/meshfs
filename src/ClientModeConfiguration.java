@@ -104,6 +104,7 @@ public class ClientModeConfiguration extends JFrame{
 
                 //---- passwordField ----
                 passwordField.setFont(new Font("Arial", passwordField.getFont().getStyle(), passwordField.getFont().getSize() + 1));
+                passwordField.setText("guest");
 
                 //---- usernameLbl ----
                 usernameLbl.setText("Username:");
@@ -112,6 +113,9 @@ public class ClientModeConfiguration extends JFrame{
                 //---- usernameField ----
                 usernameField.setFont(new Font("Arial", usernameField.getFont().getStyle(), usernameField.getFont().getSize() + 1));
                 usernameField.setText("guest");
+
+                //---- bindAnonymouslyCheckBox ----
+                bindAnonymouslyCheckBox.setSelected(true);
 
                 //---- bindAnonLbl ----
                 bindAnonLbl.setText("Bind as Guest:");
@@ -146,7 +150,7 @@ public class ClientModeConfiguration extends JFrame{
                                     .addComponent(bindAnonLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(bindAnonymouslyCheckBox)
-                                    .addContainerGap(14, Short.MAX_VALUE))))
+                                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -167,7 +171,7 @@ public class ClientModeConfiguration extends JFrame{
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(passwordLbl)
                                 .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(18, Short.MAX_VALUE))
+                            .addContainerGap(14, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -207,19 +211,13 @@ public class ClientModeConfiguration extends JFrame{
     }
 
     private void frameListeners(){
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOk();
+        okButton.addActionListener(e -> onOk());
+        bindAnonymouslyCheckBox.addActionListener(e -> {
+            if(bindAnonymouslyCheckBox.isSelected()){
+                bindAnonymously("yes");
             }
-        });
-        bindAnonymouslyCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(bindAnonymouslyCheckBox.isSelected()){
-                    bindAnonymously("yes");
-                }
-                else{
-                    bindAnonymously("no");
-                }
+            else{
+                bindAnonymously("no");
             }
         });
         serverAddressField.getDocument().addDocumentListener(new DocumentListener() {
@@ -301,11 +299,9 @@ public class ClientModeConfiguration extends JFrame{
 
             }
         });
-        backBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                InitialConfiguration.run(clientModeConfiguration);
-                dispose();
-            }
+        backBtn.addActionListener(e -> {
+            InitialConfiguration.run(clientModeConfiguration);
+            dispose();
         });
     }
 
@@ -337,20 +333,13 @@ public class ClientModeConfiguration extends JFrame{
             serverAddressField.setText("");
             serverPortField.setText("5704");
             usernameField.setText("guest");
-            passwordField.setText("");
+            passwordField.setText("guest");
             bindAnonymouslyCheckBox.setSelected(true);
             return;
         }
         try{
-            if(!(bindAnonymouslyCheckBox.isSelected())){
-                connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
-                if(!(usernameFinal.equals(""))){
-                    FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", ".catalog.json");
-                    ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration, usernameFinal);
-                    dispose();
-                }
-            }else{
-                usernameFinal = "guest";
+            connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+            if(!(usernameFinal.equals(""))){
                 FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", ".catalog.json");
                 ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration, usernameFinal);
                 dispose();
@@ -364,7 +353,7 @@ public class ClientModeConfiguration extends JFrame{
             usernameField.setEnabled(false);
             usernameField.setText("guest");
             passwordField.setEnabled(false);
-            passwordField.setText("");
+            passwordField.setText("guest");
         }
         else if(mode.equals("no")){
             usernameField.setEnabled(true);

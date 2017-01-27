@@ -22,21 +22,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class MoveFileWindow extends JFrame {
     private String currentJsonPath;
-    private String fileName;
     private String serverAddress;
     private int port;
-    private JSONObject jsonObj;
-    private JFrame sender;
-    private static JFrame moveFileWindow;
     private String userAccount;
 
-    private MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, JSONObject jsonObj, JFrame sender, String userAccount) {
-        this.fileName = fileName;
+    private MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, String userAccount) {
         this.currentJsonPath = currentJsonPath;
         this.serverAddress = serverAddress;
         this.port = port;
-        this.jsonObj = jsonObj;
-        this.sender = sender;
         this.userAccount = userAccount;
         initComponents();
         frameListeners();
@@ -127,40 +120,36 @@ public class MoveFileWindow extends JFrame {
     }
 
     private void frameListeners(){
-        tree1.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent e) throws NullPointerException {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                buttonBar.getRootPane().setDefaultButton(okButton);
-                try{
-                    if(node.getChildCount() == 0){
+        tree1.addTreeSelectionListener(e -> {
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+            buttonBar.getRootPane().setDefaultButton(okButton);
+            try{
+                if(node.getChildCount() == 0){
 
-                        if(!(node.toString().equals(userAccount))){
-                            tree1.setSelectionPath(null);
-                        }
+                    if(!(node.toString().equals(userAccount))){
+                        tree1.setSelectionPath(null);
                     }
-                    else{
-                    }
-                }catch(NullPointerException npe){
-
                 }
+                else{
+                }
+            }catch(NullPointerException npe){
+
             }
         });
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
-                try {
-                    if(currentJsonPath.equals(newJsonPath.substring(0, newJsonPath.lastIndexOf("/")))){
-                        JOptionPane.showMessageDialog(null, "Cannot move directory to this location!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                        tree1.setSelectionPath(null);
-                        okButton.setEnabled(false);
-                        return;
-                    }
-                    FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+        okButton.addActionListener(e -> {
+            String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
+            try {
+                if(currentJsonPath.equals(newJsonPath.substring(0, newJsonPath.lastIndexOf("/")))){
+                    JOptionPane.showMessageDialog(null, "Cannot move directory to this location!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                    tree1.setSelectionPath(null);
+                    okButton.setEnabled(false);
+                    return;
                 }
-                dispose();
+                FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
+            dispose();
         });
     }
 
@@ -184,8 +173,8 @@ public class MoveFileWindow extends JFrame {
         return branch;
     }
 
-    public static void run(String fileName, String filePath, String serverAddress, int port, JSONObject jsonObj, JFrame sender, String userAccount) {
-        JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, jsonObj, sender, userAccount);
+    public static void run(String fileName, String filePath, String serverAddress, int port, JFrame sender, String userAccount) {
+        JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount);
         CenterWindow.centerOnWindow(sender, moveFileWindow);
         moveFileWindow.setVisible(true);
     }
