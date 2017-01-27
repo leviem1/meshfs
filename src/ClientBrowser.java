@@ -285,13 +285,13 @@ public class ClientBrowser extends JFrame {
             try{
                 if(node.toString().equals("(no files)")){
                     browserBtns(false);
-                    //tree1.setSelectionPath(null);
+                    tree1.setSelectionPath(null);
                 } else if (node.toString().equals(userAccount)) {
                     browserBtns(false);
 
                 } else if (type.toString().equals("tempFile")){
                     browserBtns(false);
-                    //tree1.setSelectionPath(null);
+                    tree1.setSelectionPath(null);
                 } else {
                     if (node.getChildCount() != 0) {
                         if (!(node.toString().equals(userAccount))) {

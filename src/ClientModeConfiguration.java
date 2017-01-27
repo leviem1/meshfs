@@ -214,10 +214,10 @@ public class ClientModeConfiguration extends JFrame{
         okButton.addActionListener(e -> onOk());
         bindAnonymouslyCheckBox.addActionListener(e -> {
             if(bindAnonymouslyCheckBox.isSelected()){
-                bindAnonymously("yes");
+                bindAnonymously(true);
             }
             else{
-                bindAnonymously("no");
+                bindAnonymously(false);
             }
         });
         serverAddressField.getDocument().addDocumentListener(new DocumentListener() {
@@ -348,16 +348,19 @@ public class ClientModeConfiguration extends JFrame{
         }
     }
 
-    private void bindAnonymously(String mode){
-        if(mode.equals("yes")){
-            usernameField.setEnabled(false);
+    private void bindAnonymously(boolean value){
+        if(value){
             usernameField.setText("guest");
-            passwordField.setEnabled(false);
             passwordField.setText("guest");
+            usernameField.setEnabled(false);
+            passwordField.setEnabled(false);
+            okButton.requestFocus();
         }
-        else if(mode.equals("no")){
-            usernameField.setEnabled(true);
+        else if(!(value)){
+            usernameField.requestFocus();
             usernameField.setText("");
+            passwordField.setText("");
+            usernameField.setEnabled(true);
             passwordField.setEnabled(true);
         }
 

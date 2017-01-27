@@ -25,12 +25,14 @@ public class MoveFileWindow extends JFrame {
     private String serverAddress;
     private int port;
     private String userAccount;
+    private String fileName;
 
     private MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, String userAccount) {
         this.currentJsonPath = currentJsonPath;
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
+        this.fileName = fileName;
         initComponents();
         frameListeners();
         if(fileName.length() > 35){
@@ -123,18 +125,25 @@ public class MoveFileWindow extends JFrame {
         tree1.addTreeSelectionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
             buttonBar.getRootPane().setDefaultButton(okButton);
-            try{
-                if(node.getChildCount() == 0){
+            if(node.toString().equals("(no files)")){
+                tree1.setSelectionPath(null);
+                okButton.setEnabled(false);
+                return;
+            }else{
+                try{
+                    if(node.getChildCount() == 0){
 
-                    if(!(node.toString().equals(userAccount))){
-                        tree1.setSelectionPath(null);
+                        if(!(node.toString().equals(userAccount))){
+                            tree1.setSelectionPath(null);
+                        }
                     }
-                }
-                else{
-                }
-            }catch(NullPointerException npe){
+                    else{
+                    }
+                }catch(NullPointerException npe){
 
+                }
             }
+
         });
         okButton.addActionListener(e -> {
             String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
@@ -155,8 +164,9 @@ public class MoveFileWindow extends JFrame {
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch){
         Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation, userAccount);
+        folderContents.remove(fileName);
         if (!(folderContents.values().contains("directory"))){
-            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no folders)");
+            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
             branch.add(leaf);
         }
         else {
@@ -166,7 +176,9 @@ public class MoveFileWindow extends JFrame {
                 if (leaf.getAllowsChildren()) {
                     String folderLocation2 = folderLocation + "/" + name;
                     readFolder(folderLocation2, jsonObj, leaf);
-                    branch.add(leaf);
+                    if (!(leaf.toString().equals(fileName))){
+                        branch.add(leaf);
+                    }
                 }
             }
         }

@@ -167,6 +167,7 @@ public class NewDirectoryWindow extends JFrame {
                 if(directoryName.equals(tree1.getModel().getChild(tree1.getModel().getRoot(), i).toString())){
                     dirNameTextField.setText("");
                     JOptionPane.showMessageDialog(null, "Directory already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                    dirNameTextField.requestFocus();
                     return;
                 }
             }
