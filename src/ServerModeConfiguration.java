@@ -218,15 +218,6 @@ public class ServerModeConfiguration extends JFrame {
                     networkTabLayout.setHorizontalGroup(
                         networkTabLayout.createParallelGroup()
                             .addGroup(networkTabLayout.createSequentialGroup()
-                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(backupConfigBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(importConfigBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(networkTabLayout.createParallelGroup()
-                                    .addComponent(importDescriptionLbl)
-                                    .addComponent(exportDescriptionLbl))
-                                .addGap(0, 56, Short.MAX_VALUE))
-                            .addGroup(networkTabLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(networkTabLayout.createParallelGroup()
                                     .addComponent(separator1, GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
@@ -268,6 +259,15 @@ public class ServerModeConfiguration extends JFrame {
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)))))
                                 .addContainerGap())
+                            .addGroup(networkTabLayout.createSequentialGroup()
+                                .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(backupConfigBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(importConfigBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(networkTabLayout.createParallelGroup()
+                                    .addComponent(importDescriptionLbl)
+                                    .addComponent(exportDescriptionLbl))
+                                .addGap(0, 56, Short.MAX_VALUE))
                     );
                     networkTabLayout.setVerticalGroup(
                         networkTabLayout.createParallelGroup()
@@ -298,15 +298,15 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(wholeCopiesLbl))
                                 .addGap(18, 18, 18)
                                 .addComponent(separator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addGap(1, 1, 1)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(importConfigBtn)
-                                    .addComponent(importDescriptionLbl))
+                                    .addComponent(importDescriptionLbl)
+                                    .addComponent(importConfigBtn))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(backupConfigBtn)
                                     .addComponent(exportDescriptionLbl))
-                                .addContainerGap(15, Short.MAX_VALUE))
+                                .addContainerGap(11, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Network", networkTab);
@@ -385,7 +385,7 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(freeSpaceLbl)
-                                .addContainerGap(169, Short.MAX_VALUE))
+                                .addContainerGap(170, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Storage", storageTab);
@@ -494,8 +494,8 @@ public class ServerModeConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 309, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 309, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
@@ -507,14 +507,14 @@ public class ServerModeConfiguration extends JFrame {
                 //---- resetConfigBtn ----
                 resetConfigBtn.setText("Reset to Defaults");
                 resetConfigBtn.setFont(new Font("Arial", resetConfigBtn.getFont().getStyle() & ~Font.BOLD, resetConfigBtn.getFont().getSize() + 1));
-                buttonBar.add(resetConfigBtn, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(resetConfigBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("Continue...");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle() & ~Font.BOLD, okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -527,7 +527,7 @@ public class ServerModeConfiguration extends JFrame {
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(535, 430);
+        setSize(535, 435);
         setLocationRelativeTo(getOwner());
 
         //---- label2 ----
