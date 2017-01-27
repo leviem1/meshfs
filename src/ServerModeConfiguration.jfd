@@ -12,21 +12,22 @@ new FormModel {
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 					name: "serverSettingPane"
-					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 0, false )
+					"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 65536, 1, false )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp serverNetworkInterfaceLbl:::p::p, space :::p, comp masterServerField::::200:x, space :::p, comp isMasterBox:::p::p}, seq {par l {seq {comp serverPortLbl:::p::p, space :::p, comp serverPortField:::p:100:p, space ::60:x, comp stripesLbl:::p::p}, seq t {comp serverThreadsLbl:::p::p, space :::p, comp serverThreadsField:::p:73:p, space ::11:x, comp stripedCopiesLbl:::p::p}, seq t {comp serverTimeoutLbl:::p::p, space :::p, comp serverTimeoutField:::p:88:p, space :::x, comp wholeCopiesLbl:::p::p}}, space :::p, par l:::p {comp numWholeField::::95:x, comp numStripeCopiesField::::95:x, comp numStripesField::::95:x}}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, par b {comp serverNetworkInterfaceLbl::b:p::p, comp isMasterBox::b:p::p, comp masterServerField::b:p::p}, space u:::p, par b {comp serverPortLbl::b:p::p, comp serverPortField::b:p::p, comp numStripesField::b:p::p, comp stripesLbl::b:p::p}, space :::p, par b {comp serverThreadsLbl::b:p::p, comp serverThreadsField::b:p::p, comp numStripeCopiesField::b:p::p, comp stripedCopiesLbl::b:p::p}, space :::p, par b {comp serverTimeoutLbl::b:p::p, comp serverTimeoutField::b:p::p, comp numWholeField::b:p::p, comp wholeCopiesLbl::b:p::p}, space ::1:x}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp serverNetworkInterfaceLbl::b:p::p, comp isMasterBox::b:p::p, comp masterServerField::b:p::p}, space u:::p, par b {comp serverPortLbl::b:p::p, comp serverPortField::b:p::p, comp numStripesField::b:p::p, comp stripesLbl::b:p::p}, space :::p, par b {comp serverThreadsLbl::b:p::p, comp serverThreadsField::b:p::p, comp numStripeCopiesField::b:p::p, comp stripedCopiesLbl::b:p::p}, space :::p, par b {comp serverTimeoutLbl::b:p::p, comp serverTimeoutField::b:p::p, comp numWholeField::b:p::p, comp wholeCopiesLbl::b:p::p}, space :::x}}"
 					} ) {
 						name: "networkTab"
 						"background": new java.awt.Color( 229, 229, 229, 255 )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "serverNetworkInterfaceLbl"
 							"text": "Master Server:"
-							"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "masterServerField"
 							"text": "127.0.0.1"
+							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "serverPortLbl"
@@ -109,7 +110,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "isMasterBox"
 							"text": "Is Master:"
-							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+							"font": #SwingDerivedFont0
 							"toolTipText": "Check this box if this computer is the master server"
 							"horizontalTextPosition": 10
 							"selected": true
@@ -200,6 +201,7 @@ new FormModel {
 							name: "scrollPane2"
 							add( new FormComponent( "javax.swing.JList" ) {
 								name: "userAccountDataList"
+								"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 								auxiliary() {
 									"JavaCodeGenerator.customCreateCode": "new JList(model);"
 								}
@@ -219,6 +221,7 @@ new FormModel {
 							name: "allowGuestBox"
 							"text": "Allow Guest"
 							"horizontalTextPosition": 2
+							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 						} )
 					}, new FormLayoutConstraints( null ) {
 						"title": "User Accounts"
@@ -237,32 +240,33 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "backBtn"
 						"text": "Back"
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "importConfigBtn"
 						"text": "Import..."
-						"font": #SwingDerivedFont1
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "backupConfigBtn"
 						"text": "Backup..."
-						"font": #SwingDerivedFont1
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 2
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "resetConfigBtn"
 						"text": "Reset"
-						"font": #SwingDerivedFont1
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 4
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
-						"font": #SwingDerivedFont1
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 5
 					} )
@@ -282,7 +286,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 460, 300 )
+			"size": new java.awt.Dimension( 470, 300 )
 		} )
 	}
 }

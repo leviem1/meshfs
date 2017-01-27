@@ -17,7 +17,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "fileNameLbl"
 						"text": "File Name:"
-						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 196608, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "fileSizeLbl"
@@ -43,6 +43,7 @@ new FormModel {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JList" ) {
 							name: "locationList"
+							"font": #SwingDerivedFont0
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JList(model);"
 							}

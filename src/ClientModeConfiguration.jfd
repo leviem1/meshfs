@@ -18,7 +18,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "serverAddressLbl"
 						"text": "Master Address:"
-						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 131072, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "serverPortLbl"
@@ -64,7 +64,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "bindAnonLbl"
 						"text": "Bind as Guest:"
-						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+						"font": #SwingDerivedFont0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -80,11 +80,12 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "backBtn"
 						"text": "Back"
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "Connect"
-						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 2
 						"gridy": 0
@@ -109,4 +110,3 @@ new FormModel {
 		} )
 	}
 }
-

@@ -109,7 +109,7 @@ public class ServerModeConfiguration extends JFrame {
 
             //======== serverSettingPane ========
             {
-                serverSettingPane.setFont(new Font("Arial", serverSettingPane.getFont().getStyle(), serverSettingPane.getFont().getSize()));
+                serverSettingPane.setFont(new Font("Arial", serverSettingPane.getFont().getStyle() & ~Font.BOLD, serverSettingPane.getFont().getSize() + 1));
 
                 //======== networkTab ========
                 {
@@ -117,62 +117,63 @@ public class ServerModeConfiguration extends JFrame {
 
                     //---- serverNetworkInterfaceLbl ----
                     serverNetworkInterfaceLbl.setText("Master Server:");
-                    serverNetworkInterfaceLbl.setFont(new Font("Arial", serverNetworkInterfaceLbl.getFont().getStyle(), serverNetworkInterfaceLbl.getFont().getSize() + 1));
+                    serverNetworkInterfaceLbl.setFont(new Font("Arial", serverNetworkInterfaceLbl.getFont().getStyle() & ~Font.BOLD, serverNetworkInterfaceLbl.getFont().getSize() + 1));
 
                     //---- masterServerField ----
                     masterServerField.setText("127.0.0.1");
+                    masterServerField.setFont(new Font("Arial", masterServerField.getFont().getStyle() & ~Font.BOLD, masterServerField.getFont().getSize() + 1));
 
                     //---- serverPortLbl ----
                     serverPortLbl.setText("Network Port:");
-                    serverPortLbl.setFont(new Font("Arial", serverPortLbl.getFont().getStyle(), serverPortLbl.getFont().getSize() + 1));
+                    serverPortLbl.setFont(new Font("Arial", serverPortLbl.getFont().getStyle() & ~Font.BOLD, serverPortLbl.getFont().getSize() + 1));
 
                     //---- serverPortField ----
                     serverPortField.setText("5704");
-                    serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle(), serverPortField.getFont().getSize() + 1));
+                    serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle() & ~Font.BOLD, serverPortField.getFont().getSize() + 1));
 
                     //---- serverThreadsLbl ----
                     serverThreadsLbl.setText("Network Threads:");
-                    serverThreadsLbl.setFont(new Font("Arial", serverThreadsLbl.getFont().getStyle(), serverThreadsLbl.getFont().getSize() + 1));
+                    serverThreadsLbl.setFont(new Font("Arial", serverThreadsLbl.getFont().getStyle() & ~Font.BOLD, serverThreadsLbl.getFont().getSize() + 1));
 
                     //---- serverThreadsField ----
                     serverThreadsField.setText("16");
-                    serverThreadsField.setFont(new Font("Arial", serverThreadsField.getFont().getStyle(), serverThreadsField.getFont().getSize() + 1));
+                    serverThreadsField.setFont(new Font("Arial", serverThreadsField.getFont().getStyle() & ~Font.BOLD, serverThreadsField.getFont().getSize() + 1));
 
                     //---- serverTimeoutLbl ----
                     serverTimeoutLbl.setText("Server Timeout:");
-                    serverTimeoutLbl.setFont(new Font("Arial", serverTimeoutLbl.getFont().getStyle(), serverTimeoutLbl.getFont().getSize() + 1));
+                    serverTimeoutLbl.setFont(new Font("Arial", serverTimeoutLbl.getFont().getStyle() & ~Font.BOLD, serverTimeoutLbl.getFont().getSize() + 1));
 
                     //---- serverTimeoutField ----
                     serverTimeoutField.setText("90");
-                    serverTimeoutField.setFont(new Font("Arial", serverTimeoutField.getFont().getStyle(), serverTimeoutField.getFont().getSize() + 1));
+                    serverTimeoutField.setFont(new Font("Arial", serverTimeoutField.getFont().getStyle() & ~Font.BOLD, serverTimeoutField.getFont().getSize() + 1));
 
                     //---- numStripesField ----
                     numStripesField.setText("3");
-                    numStripesField.setFont(new Font("Arial", numStripesField.getFont().getStyle(), numStripesField.getFont().getSize() + 1));
+                    numStripesField.setFont(new Font("Arial", numStripesField.getFont().getStyle() & ~Font.BOLD, numStripesField.getFont().getSize() + 1));
 
                     //---- stripesLbl ----
                     stripesLbl.setText("Stripes:");
-                    stripesLbl.setFont(new Font("Arial", stripesLbl.getFont().getStyle(), stripesLbl.getFont().getSize() + 1));
+                    stripesLbl.setFont(new Font("Arial", stripesLbl.getFont().getStyle() & ~Font.BOLD, stripesLbl.getFont().getSize() + 1));
 
                     //---- numStripeCopiesField ----
                     numStripeCopiesField.setText("2");
-                    numStripeCopiesField.setFont(new Font("Arial", numStripeCopiesField.getFont().getStyle(), numStripeCopiesField.getFont().getSize() + 1));
+                    numStripeCopiesField.setFont(new Font("Arial", numStripeCopiesField.getFont().getStyle() & ~Font.BOLD, numStripeCopiesField.getFont().getSize() + 1));
 
                     //---- stripedCopiesLbl ----
                     stripedCopiesLbl.setText("Striped Copies:");
-                    stripedCopiesLbl.setFont(new Font("Arial", stripedCopiesLbl.getFont().getStyle(), stripedCopiesLbl.getFont().getSize() + 1));
+                    stripedCopiesLbl.setFont(new Font("Arial", stripedCopiesLbl.getFont().getStyle() & ~Font.BOLD, stripedCopiesLbl.getFont().getSize() + 1));
 
                     //---- numWholeField ----
                     numWholeField.setText("2");
-                    numWholeField.setFont(new Font("Arial", numWholeField.getFont().getStyle(), numWholeField.getFont().getSize() + 1));
+                    numWholeField.setFont(new Font("Arial", numWholeField.getFont().getStyle() & ~Font.BOLD, numWholeField.getFont().getSize() + 1));
 
                     //---- wholeCopiesLbl ----
                     wholeCopiesLbl.setText("Whole Copies:");
-                    wholeCopiesLbl.setFont(new Font("Arial", wholeCopiesLbl.getFont().getStyle(), wholeCopiesLbl.getFont().getSize() + 1));
+                    wholeCopiesLbl.setFont(new Font("Arial", wholeCopiesLbl.getFont().getStyle() & ~Font.BOLD, wholeCopiesLbl.getFont().getSize() + 1));
 
                     //---- isMasterBox ----
                     isMasterBox.setText("Is Master:");
-                    isMasterBox.setFont(new Font("Arial", isMasterBox.getFont().getStyle(), isMasterBox.getFont().getSize() + 1));
+                    isMasterBox.setFont(new Font("Arial", isMasterBox.getFont().getStyle() & ~Font.BOLD, isMasterBox.getFont().getSize() + 1));
                     isMasterBox.setToolTipText("Check this box if this computer is the master server");
                     isMasterBox.setHorizontalTextPosition(SwingConstants.LEADING);
                     isMasterBox.setSelected(true);
@@ -243,7 +244,7 @@ public class ServerModeConfiguration extends JFrame {
                                     .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(numWholeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(wholeCopiesLbl))
-                                .addContainerGap(1, Short.MAX_VALUE))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Network", networkTab);
@@ -347,6 +348,9 @@ public class ServerModeConfiguration extends JFrame {
 
                     //======== scrollPane2 ========
                     {
+
+                        //---- userAccountDataList ----
+                        userAccountDataList.setFont(new Font("Arial", userAccountDataList.getFont().getStyle(), userAccountDataList.getFont().getSize() + 1));
                         scrollPane2.setViewportView(userAccountDataList);
                     }
 
@@ -361,6 +365,7 @@ public class ServerModeConfiguration extends JFrame {
                     //---- allowGuestBox ----
                     allowGuestBox.setText("Allow Guest");
                     allowGuestBox.setHorizontalTextPosition(SwingConstants.LEFT);
+                    allowGuestBox.setFont(new Font("Arial", allowGuestBox.getFont().getStyle(), allowGuestBox.getFont().getSize() + 1));
 
                     GroupLayout userAccountsLayout = new GroupLayout(userAccounts);
                     userAccounts.setLayout(userAccountsLayout);
@@ -433,34 +438,35 @@ public class ServerModeConfiguration extends JFrame {
 
                 //---- backBtn ----
                 backBtn.setText("Back");
+                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle() & ~Font.BOLD, backBtn.getFont().getSize() + 1));
                 buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- importConfigBtn ----
                 importConfigBtn.setText("Import...");
-                importConfigBtn.setFont(new Font("Arial", importConfigBtn.getFont().getStyle(), importConfigBtn.getFont().getSize() + 1));
+                importConfigBtn.setFont(new Font("Arial", importConfigBtn.getFont().getStyle() & ~Font.BOLD, importConfigBtn.getFont().getSize() + 1));
                 buttonBar.add(importConfigBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- backupConfigBtn ----
                 backupConfigBtn.setText("Backup...");
-                backupConfigBtn.setFont(new Font("Arial", backupConfigBtn.getFont().getStyle(), backupConfigBtn.getFont().getSize() + 1));
+                backupConfigBtn.setFont(new Font("Arial", backupConfigBtn.getFont().getStyle() & ~Font.BOLD, backupConfigBtn.getFont().getSize() + 1));
                 buttonBar.add(backupConfigBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- resetConfigBtn ----
                 resetConfigBtn.setText("Reset");
-                resetConfigBtn.setFont(new Font("Arial", resetConfigBtn.getFont().getStyle(), resetConfigBtn.getFont().getSize() + 1));
+                resetConfigBtn.setFont(new Font("Arial", resetConfigBtn.getFont().getStyle() & ~Font.BOLD, resetConfigBtn.getFont().getSize() + 1));
                 buttonBar.add(resetConfigBtn, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle() & ~Font.BOLD, okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(5, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -474,7 +480,7 @@ public class ServerModeConfiguration extends JFrame {
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(460, 300);
+        setSize(470, 300);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -834,7 +840,7 @@ public class ServerModeConfiguration extends JFrame {
             out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
             accounts.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
         }
-        ServerConfigConfirmation.run(this, "<html><center><b>Master IP:</b> " + masterServerField.getText() + "<br><br><b>Timeout:</b> " + String.valueOf(serverTimeoutField.getText()) + "s<br><br><b>Port:</b> " + String.valueOf(serverPortField.getText()) + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + String.valueOf(numWholeField.getText()) + "/" + String.valueOf(numStripesField.getText()) + "/" + String.valueOf(numStripeCopiesField.getText()) + "<br><br><b>Repository:</b> " + String.valueOf(repoPathField.getText()) + "<br><br><b>Minimum Space:</b> " + String.valueOf(Integer.valueOf(minSpaceField.getText())) + " GB<br><br><b>Server Threads:</b> " + String.valueOf(serverThreadsField.getText()) + "<br><br><b>Accounts:</b><br>" + out + "</center></html>", accounts, getConfigProperties());
+        ServerConfigConfirmation.run(this, "<html><font face=\"arial\"><center><b>Master IP:</b> " + masterServerField.getText() + "<br><br><b>Timeout:</b> " + String.valueOf(serverTimeoutField.getText()) + "s<br><br><b>Port:</b> " + String.valueOf(serverPortField.getText()) + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + String.valueOf(numWholeField.getText()) + "/" + String.valueOf(numStripesField.getText()) + "/" + String.valueOf(numStripeCopiesField.getText()) + "<br><br><b>Repository:</b> " + String.valueOf(repoPathField.getText()) + "<br><br><b>Minimum Space:</b> " + String.valueOf(Integer.valueOf(minSpaceField.getText())) + " GB<br><br><b>Server Threads:</b> " + String.valueOf(serverThreadsField.getText()) + "<br><br><b>Accounts:</b><br>" + out + "</center></font></html>", accounts, getConfigProperties());
         dispose();
     }
 
