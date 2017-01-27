@@ -7,16 +7,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class DISTAL {
+class DISTAL {
 
     private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
         sortedMap.put("temp", 99999999999990L);
+
         for (String key : storageMap.keySet()){
             Long storageAmount = storageMap.get(key);
             List<String> moreStorage = new ArrayList<>();
             boolean isBroken = false;
+
             for (String sortedKey : sortedMap.keySet()){
                 if (storageAmount >= sortedMap.get(sortedKey)){
                     LinkedHashMap<String,Long>  reorderStorageMap = (LinkedHashMap<String,Long>) sortedMap.clone();
@@ -32,6 +34,7 @@ public class DISTAL {
                 }
                 moreStorage.add(sortedKey);
             }
+
             if (!isBroken){
                 sortedMap.put(key,storageMap.get(key));
             }
@@ -40,7 +43,7 @@ public class DISTAL {
         return sortedMap;
     }
 
-    public static void distributor(String uploadFilePath, String filePathInCatalog){
+    static void distributor(String uploadFilePath, String filePathInCatalog){
         String userAccount;
         try {
             userAccount = filePathInCatalog.substring(0,filePathInCatalog.indexOf("/"));
@@ -58,6 +61,7 @@ public class DISTAL {
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.getProperty("repository")+".catalog.json";
         JSONManipulator.addToIndex(userAccount, uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator)+1) + " (distributing)", catalogFileLocation, userAccount, true);
+
         try {
              String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
              long sizeOfFile = FileUtils.getSize(uploadFilePath);
@@ -66,10 +70,11 @@ public class DISTAL {
 
              LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFile);
              LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap); //sort the compStorageMap by descending available storage
-             for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){ // account for the desired amount of free space
+
+            for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){ // account for the desired amount of free space
                  String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
                  sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(String.valueOf(macAddress)) - minFreeSpace);
-             }
+            }
              /*//uncomment me for dynamic resigning of numStripes by number of computers that are on
              int numOfComputersUsed = sortedCompStorageMap.size();
              if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
@@ -83,89 +88,92 @@ public class DISTAL {
              String newName = incrementName(currentName);
 
              //determine which computers can hold the full file
-             int stopOfWholes = (-1);
-             for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
-                 String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
-                 if (sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
+            int stopOfWholes = (-1);
+            for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
+                String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
+                if (sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
                      computersForWholes.add(macAddress);
-                 }
-                 else {
-                     break;
-                 }
-                 stopOfWholes = computerNumW;
-             }
+                }
+                else {
+                    break;
+                }
+                stopOfWholes = computerNumW;
+            }
 
-             int lastResortComp = 0;
-             int lapNum = 1;
-             List<String> computersForStripes = new ArrayList<>();
-             for (int computerNumS = stopOfWholes+1; computerNumS < ((numOfStripes * numOfStripedCopies) + stopOfWholes+1); computerNumS++) {
-                 String macAddress;
-                 try{
-                     macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
-                 }
-                 catch (Exception e){
-                     macAddress = "none";
-                 }
-                 if ((!macAddress.equals("none") && (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe)) {
-                     computersForStripes.add(macAddress);
-                 }
-                 else if (computerNumS != 0){
-                     String macAddressNew;
-                     long availableStorage;
-                     try {
-                         macAddressNew = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                         availableStorage = (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
-                         if (lastResortComp <= stopOfWholes){
-                             availableStorage -= sizeOfFile;
-                         }
-                         lastResortComp++;
-                     }
-                     catch (Exception e){
-                         availableStorage = 0L;
-                         macAddressNew = "none";
-                     }
+            int lastResortComp = 0;
+            int lapNum = 1;
+            List<String> computersForStripes = new ArrayList<>();
+            for (int computerNumS = stopOfWholes+1; computerNumS < ((numOfStripes * numOfStripedCopies) + stopOfWholes+1); computerNumS++) {
+                String macAddress;
+
+                try{
+                    macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
+                } catch (Exception e){
+                    macAddress = "none";
+                }
+
+                if ((!macAddress.equals("none") && (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe)) {
+                    computersForStripes.add(macAddress);
+                } else if (computerNumS != 0){
+                    String macAddressNew;
+                    long availableStorage;
+
+                    try {
+                        macAddressNew = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
+                        availableStorage = (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
+
+                        if (lastResortComp <= stopOfWholes){
+                            availableStorage -= sizeOfFile;
+                        }
+                        lastResortComp++;
+                    } catch (Exception e){
+                        availableStorage = 0L;
+                        macAddressNew = "none";
+                    }
 
 
-                     if (availableStorage >= sizeOfStripe) {
-                         computersForStripes.add(macAddressNew);
-                     }
-                     else {
-                         lapNum++;
-                         lastResortComp = 0;
+                    if (availableStorage >= sizeOfStripe) {
+                        computersForStripes.add(macAddressNew);
+                    }
+                    else {
+                        lapNum++;
+                        lastResortComp = 0;
 
-                         while (lastResortComp < sortedCompStorageMap.size()){
-                             macAddressNew = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                             availableStorage = (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
-                             if (lastResortComp <= stopOfWholes){
-                                 availableStorage -= sizeOfFile;
-                             }
-                             lastResortComp++;
-                             if (availableStorage >= sizeOfStripe) {
-                                 computersForStripes.add(macAddressNew);
-                                 break;
-                             }
-                         }
-                         if (lastResortComp >= sortedCompStorageMap.size()){
-                             break;
-                         }
-                     }
-                 }
-                 else{
-                     System.out.println("There is no storage space that is available for this file.");
-                     break;
-                 }
-             }
+                        while (lastResortComp < sortedCompStorageMap.size()){
+                            macAddressNew = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
+                            availableStorage = (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
+                            if (lastResortComp <= stopOfWholes){
+                                availableStorage -= sizeOfFile;
+                            }
 
-             List<List<String>> stripes = new ArrayList<>();
-             stripes.add(computersForWholes);
+                            lastResortComp++;
 
-             boolean allowStripes = false;
-             for (String computer : computersForStripes){
+                            if (availableStorage >= sizeOfStripe) {
+                                computersForStripes.add(macAddressNew);
+                                break;
+                            }
+                        }
+                        if (lastResortComp >= sortedCompStorageMap.size()){
+                            break;
+                        }
+                    }
+                }
+                else{
+                    System.out.println("There is no storage space that is available for this file.");
+                    break;
+                }
+            }
+
+            List<List<String>> stripes = new ArrayList<>();
+            stripes.add(computersForWholes);
+
+            boolean allowStripes = false;
+            for (String computer : computersForStripes){
                 if (!computer.equals(computersForStripes.get(0))){
                     allowStripes = true;
                     break;
                 }
-             }
+            }
 
              if (allowStripes){
                  for (int copy = 0; copy < numOfStripes; copy++) {
@@ -198,27 +206,25 @@ public class DISTAL {
                                          stripes.get(currentStripe + 1).add(computerToReceive);
                                          break;
                                      }
-                                 }
-                                 else {
+                                 } else {
                                      stripes.get(currentStripe + 1).add(computerToReceive);
                                      break;
-                                 }}
-                         }
-                         catch (Exception e) {
+                                 }
+                             }
+                         } catch (Exception e) {
                              System.out.println("You are out of Storage!");
                          }
                      }
                  }
              }
-             sendFiles(stripes,uploadFilePath,sizeOfFile,newName);
+            sendFiles(stripes,uploadFilePath,sizeOfFile,newName);
             String itemLocation = userAccount + "/" + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator)+1) + " (distributing)";
             JSONManipulator.writeJSONObject(catalogFileLocation, JSONManipulator.removeItem(jsonObj, itemLocation));
             JSONManipulator.addToIndex(stripes, filePathInCatalog, fileName, catalogFileLocation, newName, userAccount, sizeOfFile);
 
-         }
-         catch (Exception e) {
-             e.printStackTrace();
-         }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static String incrementName(String name){

@@ -4,13 +4,13 @@ import java.util.List;
 /**
  * Created by Levi Muniz on 1/12/17.
  */
-public class FileUtils {
+class FileUtils {
 
-    public static long getSize(String filePath) {
+    static long getSize(String filePath) {
         return (new File(filePath).length());
     }
 
-    public static void writeStripe(String filePath, String outFile, long off, long len) throws IOException {
+    static void writeStripe(String filePath, String outFile, long off, long len) throws IOException {
         int br = 0;
         int read;
         byte[] data = new byte[4096];

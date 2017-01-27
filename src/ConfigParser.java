@@ -5,9 +5,9 @@ import java.util.Properties;
  * Created by Levi Muniz on 10/29/16.
  */
 
-public class ConfigParser {
+class ConfigParser {
 
-    public static Properties loadDefaultProperties() {
+    static Properties loadDefaultProperties() {
         Properties defaultProperties = new Properties();
         defaultProperties.setProperty("numStripes","3");
         defaultProperties.setProperty("numStripeCopy", "2");
@@ -21,7 +21,7 @@ public class ConfigParser {
         return defaultProperties;
     }
 
-    public static void write(Properties props) {
+    static void write(Properties props) {
         OutputStream output = null;
 
         try {
@@ -40,7 +40,7 @@ public class ConfigParser {
         }
     }
 
-    public static Properties reader(String path) throws IOException {
+    static Properties reader(String path) throws IOException {
         Properties prop = new Properties();
         InputStream input = new FileInputStream(path);
         prop.load(input);
@@ -53,7 +53,7 @@ public class ConfigParser {
         return prop;
     }
 
-    public static Properties loadProperties() {
+    static Properties loadProperties() {
 
         Properties properties;
 
@@ -79,7 +79,7 @@ public class ConfigParser {
         return properties;
     }
 
-    public static void backup(Properties props, String destination) {
+    static void backup(Properties props, String destination) {
         OutputStream output = null;
         try {
             output = new FileOutputStream(destination + "/backup_config_" + Reporting.getSystemDate() + ".properties");

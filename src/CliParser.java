@@ -4,11 +4,11 @@ import java.util.Properties;
 /**
  * Created by Levi Muniz on 10/30/16.
  */
-public class CliParser {
+class CliParser {
 
     private Options opt = new Options();
 
-    public CliParser(String[] args, Properties properties) {
+    CliParser(String[] args, Properties properties) {
         opt.addOption("h", "help", false, "Display application's help message.");
         opt.addOption("m", "masterIP", true, "IP of master (if self, use 127.0.0.1 or own IP).");
         opt.addOption("i", "interface", true, "Preferred interface to allow connections on.");

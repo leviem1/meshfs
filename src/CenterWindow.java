@@ -20,7 +20,7 @@ public final class CenterWindow {
      * @param window the window to center
      */
 
-    public static void centerOnScreen(final Component window) {
+    static void centerOnScreen(final Component window) {
         GraphicsConfiguration config = window.getGraphicsConfiguration();
         GraphicsDevice currentScreen = config.getDevice();
         GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -33,6 +33,8 @@ public final class CenterWindow {
                 break;
             }
         }
+        assert activeScreen != null;
+
         final int width = window.getWidth();
         final int height = window.getHeight();
         final int screenWidth = activeScreen.getDisplayMode().getWidth();
@@ -49,7 +51,7 @@ public final class CenterWindow {
      * @param windowToBeCentered the window that will be centered on the guide window
      */
 
-    public static void centerOnWindow(final JFrame guideWindow, final JFrame windowToBeCentered) {
+    static void centerOnWindow(final JFrame guideWindow, final JFrame windowToBeCentered) {
         int x = guideWindow.getX() + (guideWindow.getWidth()/2 - windowToBeCentered.getWidth()/2);
         int y = guideWindow.getY();
 
