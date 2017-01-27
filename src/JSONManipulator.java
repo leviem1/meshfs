@@ -57,7 +57,6 @@ class JSONManipulator {
             else{
                 folderToRead = folderToReadNew;
             }
-
         }
         Map<String,String> contents = new HashMap<>();
         for (Object key : folderToRead.keySet()) {
@@ -239,7 +238,7 @@ class JSONManipulator {
 
                             Thread child = new Thread (() -> {
                                 try {
-                                    FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + fileNameWNum);
+                                    FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + "." + fileNameWNum);
                                 } catch (IOException ioe) {
                                     ioe.printStackTrace();
                                 }
@@ -247,7 +246,7 @@ class JSONManipulator {
 
                             childThreads.add(child);
                             child.start();
-                            stripeNames.add(outFileDir + File.separator + fileNameWNum);
+                            stripeNames.add(outFileDir + File.separator + "." + fileNameWNum);
 
                             cantContinue = false;
                             break;
@@ -259,7 +258,6 @@ class JSONManipulator {
                     break;
                 }
             }
-
         }
         if (wholeNecessary){
             String fileNameW = fileName +"_w";
@@ -270,9 +268,8 @@ class JSONManipulator {
                 if (compInfoFile.containsKey(MACAddress)) {
                     if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
                         String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
-                        System.out.println("Attempting to receive stripe " + fileNameW + "from " + IPAddress);
-                        FileClient.receiveFile(IPAddress, port,fileNameW, outFileDir + File.separator + outFile);
-                        System.out.println("Successfully received stripe " + fileNameW);
+                        FileClient.receiveFile(IPAddress, port,fileNameW, outFileDir + File.separator + "." + outFile);
+                        new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFile));
                         cantContinue = false;
                         break;
                     }
@@ -291,7 +288,8 @@ class JSONManipulator {
                     }
                 }
             }
-            FileUtils.combineStripes(numberSorter(stripeNames),outFileDir  + File.separator + path.substring(path.lastIndexOf("/")));
+            FileUtils.combineStripes(numberSorter(stripeNames),outFileDir  + File.separator + "." + outFile);
+            new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFile));
         }
         for (String filePath:stripeNames){
             Files.deleteIfExists(Paths.get(filePath));
