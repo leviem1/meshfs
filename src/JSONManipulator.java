@@ -14,9 +14,9 @@ import java.util.*;
 /**
  * Created by Levi Muniz on 10/19/16.
  */
-public class JSONManipulator {
+class JSONManipulator {
 
-    public static JSONObject getJSONObject(String filePath) {
+    static JSONObject getJSONObject(String filePath) {
         JSONParser reader = new JSONParser();
         JSONObject jsonObject = null;
         try {
@@ -28,7 +28,7 @@ public class JSONManipulator {
         return jsonObject;
     }
 
-    public static JSONArray getJSONArray(String filePath) {
+    static JSONArray getJSONArray(String filePath) {
         JSONParser reader = new JSONParser();
         JSONArray jsonArray = null;
         try {
@@ -42,7 +42,7 @@ public class JSONManipulator {
         return jsonArray;
     }
 
-    public static Map<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
+    static Map<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
         String[] Tree = folderLocation.split("/");
         JSONObject folderToRead = jsonObject;
         JSONObject folderToReadNew;
@@ -73,7 +73,7 @@ public class JSONManipulator {
         return contents;
     }
 
-    public static JSONObject removeItem(JSONObject jsonObject, String itemLocation){
+    static JSONObject removeItem(JSONObject jsonObject, String itemLocation){
         String item = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         String[] folders = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
         JSONObject folderToRead = jsonObject;
@@ -90,27 +90,7 @@ public class JSONManipulator {
         return jsonObject;
     }
 
-    public static JSONObject putItemInFolder(JSONObject jsonObject, String itemDestinationLocation, String fileName, JSONObject itemContents){
-        String[] folders = itemDestinationLocation.split("/");
-        JSONObject folderToRead = jsonObject;
-        JSONObject folderToReadNew;
-        for (String folder : folders) {
-            folderToReadNew = (JSONObject) folderToRead.get(folder);
-            if (folderToReadNew == null){
-                JSONObject folderCreator = new JSONObject();
-                folderCreator.put("type", "directory");
-                folderToRead.put(folder, folderCreator);
-                folderToRead = (JSONObject) folderToRead.get(folder);
-            }
-            else{
-                folderToRead = folderToReadNew;
-            }
-        }
-        folderToRead.put(fileName, itemContents);
-        return jsonObject;
-    }
-
-    public static JSONObject getItemContents(JSONObject jsonObject, String itemLocation){
+    static JSONObject getItemContents(JSONObject jsonObject, String itemLocation){
         String[] folders = itemLocation.split("/");
         JSONObject folderToRead = jsonObject;
         for (String folder : folders) {
@@ -119,26 +99,12 @@ public class JSONManipulator {
         return folderToRead;
     }
 
-    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate) {
+    static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate) {
         String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         return(copyFile(jsonObject, itemLocation, destinationLocation, showDate, fileName));
     }
 
-    public static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate, String newName){
-        JSONObject itemContents = getItemContents(jsonObject,itemLocation);
-
-        DateFormat df = new SimpleDateFormat("h:mm:ss a");
-        Date dateObj = new Date();
-        if(showDate){
-            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName+" ("+ df.format(dateObj)+")", itemContents);
-        }else{
-            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName, itemContents);
-        }
-
-        return jsonObject;
-    }
-
-    public static JSONObject addFolder(JSONObject jsonObject, String jsonPath, String directoryName, String userAccount){
+    static JSONObject addFolder(JSONObject jsonObject, String jsonPath, String directoryName, String userAccount){
         JSONObject type = new JSONObject();
         type.put("type", "directory");
         type.put("owner", userAccount);
@@ -146,22 +112,16 @@ public class JSONManipulator {
         return jsonObject;
     }
 
-    public static JSONObject renameFile(JSONObject jsonObject, String itemLocation, String newName){
+    static JSONObject renameFile(JSONObject jsonObject, String itemLocation, String newName){
         return moveFile(jsonObject,itemLocation,itemLocation.substring(0,itemLocation.lastIndexOf("/")),newName);
     }
 
-    public static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
+    static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
         String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         return (moveFile(jsonObject,itemLocation,destinationLocation,fileName));
     }
 
-    public static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation, String NewName){
-        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false, NewName);
-        jsonObject = removeItem(jsonObject, itemLocation);
-        return jsonObject;
-    }
-
-    public static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String userAccount, long fileSize) {
+    static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String userAccount, long fileSize) {
 
         JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
         jsonFile.replace("currentName", alphanumericName);
@@ -205,7 +165,7 @@ public class JSONManipulator {
         }
     }
 
-    public static void addToIndex(String itemLocation, String fileName, String JSONFilePath) {
+    static void addToIndex(String itemLocation, String fileName, String JSONFilePath) {
 
         JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
 
@@ -225,7 +185,7 @@ public class JSONManipulator {
         }
     }
 
-    public static void addToIndex(String itemLocation, String fileName, String JSONFilePath, String userAccount, boolean tempFile) {
+    static void addToIndex(String itemLocation, String fileName, String JSONFilePath, String userAccount, boolean tempFile) {
         if(tempFile){
             JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
             JSONObject objChild = new JSONObject();
@@ -240,13 +200,13 @@ public class JSONManipulator {
         }
     }
 
-    public static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
+    static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
         try (FileWriter file = new FileWriter(filePath)) {
             file.write(obj.toJSONString());
         }
     }
 
-    public static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int portNumber) throws IOException {
+    static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int portNumber) throws IOException {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         int port = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
         String catalogFileLocation = ".catalog.json";
@@ -255,6 +215,7 @@ public class JSONManipulator {
         JSONObject itemToRead = JSONManipulator.getJSONObject(catalogFileLocation);
         JSONObject compInfoFile = getJSONObject(manifestFileLocation);
         List<String> stripeNames = new ArrayList<>();
+        List<Thread> childThreads = new ArrayList<>();
         boolean wholeNecessary = false;
 
         FileClient.receiveFile(serverAddress, portNumber, ".manifest.json", ".manifest.json");
@@ -284,7 +245,8 @@ public class JSONManipulator {
                                 }
                             });
 
-
+                            childThreads.add(child);
+                            child.start();
                             stripeNames.add(outFileDir + File.separator + fileNameWNum);
 
                             cantContinue = false;
@@ -297,11 +259,13 @@ public class JSONManipulator {
                     break;
                 }
             }
+
         }
         if (wholeNecessary){
             String fileNameW = fileName +"_w";
             JSONArray compsWithWhole = (JSONArray) itemToRead.get("whole");
             boolean cantContinue = true;
+
             for (Object MACAddress : compsWithWhole) {
                 if (compInfoFile.containsKey(MACAddress)) {
                     if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
@@ -317,23 +281,70 @@ public class JSONManipulator {
             if (cantContinue){
                 return false;
             }
-        }
-
-        else {
+        } else {
+            for (Thread child : childThreads) {
+                if (child.isAlive()) {
+                    try {
+                        child.join();
+                    } catch (InterruptedException ie) {
+                        ie.printStackTrace();
+                    }
+                }
+            }
             FileUtils.combineStripes(numberSorter(stripeNames),outFileDir  + File.separator + path.substring(path.lastIndexOf("/")));
-
-        }for (String filePath:stripeNames){
+        }
+        for (String filePath:stripeNames){
             Files.deleteIfExists(Paths.get(filePath));
         }
         return true;
     }
 
-    public static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile){
+    static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile){
         LinkedHashMap<String,Long> storageMap = new LinkedHashMap();
         for (Object MACAddress: manifestFile.keySet()){
             storageMap.put(MACAddress.toString(),Long.valueOf((((JSONObject)manifestFile.get(MACAddress)).get("FreeSpace")).toString()));
         }
         return storageMap;
+    }
+
+    static JSONObject putItemInFolder(JSONObject jsonObject, String itemDestinationLocation, String fileName, JSONObject itemContents){
+        String[] folders = itemDestinationLocation.split("/");
+        JSONObject folderToRead = jsonObject;
+        JSONObject folderToReadNew;
+        for (String folder : folders) {
+            folderToReadNew = (JSONObject) folderToRead.get(folder);
+            if (folderToReadNew == null){
+                JSONObject folderCreator = new JSONObject();
+                folderCreator.put("type", "directory");
+                folderToRead.put(folder, folderCreator);
+                folderToRead = (JSONObject) folderToRead.get(folder);
+            }
+            else{
+                folderToRead = folderToReadNew;
+            }
+        }
+        folderToRead.put(fileName, itemContents);
+        return jsonObject;
+    }
+
+    static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation, String NewName){
+        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false, NewName);
+        jsonObject = removeItem(jsonObject, itemLocation);
+        return jsonObject;
+    }
+
+    static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate, String newName){
+        JSONObject itemContents = getItemContents(jsonObject,itemLocation);
+
+        DateFormat df = new SimpleDateFormat("h:mm:ss a");
+        Date dateObj = new Date();
+        if(showDate){
+            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName+" ("+ df.format(dateObj)+")", itemContents);
+        }else{
+            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName, itemContents);
+        }
+
+        return jsonObject;
     }
 
     private static String humanReadableByteCount(long bytes, boolean si) {
