@@ -6,7 +6,6 @@ new FormModel {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			"title": "MeshFS - Client Configuration"
-			"$sizePolicy": 1
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -45,7 +44,6 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JPasswordField" ) {
 						name: "passwordField"
 						"font": #SwingDerivedFont0
-						"text": "guest"
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "usernameLbl"
@@ -55,11 +53,9 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "usernameField"
 						"font": #SwingDerivedFont0
-						"text": "guest"
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "bindAnonymouslyCheckBox"
-						"selected": true
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "bindAnonLbl"

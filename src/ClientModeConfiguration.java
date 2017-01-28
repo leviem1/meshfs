@@ -9,6 +9,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.GroupLayout;
@@ -38,9 +39,6 @@ public class ClientModeConfiguration extends JFrame{
         }else{
             okButton.setEnabled(true);
         }
-        bindAnonymouslyCheckBox.setSelected(true);
-        usernameField.setEnabled(false);
-        passwordField.setEnabled(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         if(Reporting.getSystemOS().contains("Windows")){
@@ -104,7 +102,6 @@ public class ClientModeConfiguration extends JFrame{
 
                 //---- passwordField ----
                 passwordField.setFont(new Font("Arial", passwordField.getFont().getStyle() & ~Font.ITALIC, passwordField.getFont().getSize() + 1));
-                passwordField.setText("guest");
 
                 //---- usernameLbl ----
                 usernameLbl.setText("Username:");
@@ -112,10 +109,6 @@ public class ClientModeConfiguration extends JFrame{
 
                 //---- usernameField ----
                 usernameField.setFont(new Font("Arial", usernameField.getFont().getStyle() & ~Font.ITALIC, usernameField.getFont().getSize() + 1));
-                usernameField.setText("guest");
-
-                //---- bindAnonymouslyCheckBox ----
-                bindAnonymouslyCheckBox.setSelected(true);
 
                 //---- bindAnonLbl ----
                 bindAnonLbl.setText("Bind as Guest:");
@@ -206,7 +199,7 @@ public class ClientModeConfiguration extends JFrame{
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(475, 240);
+        pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -233,6 +226,14 @@ public class ClientModeConfiguration extends JFrame{
                 changed();
             }
             public void changed() {
+                if(!(bindAnonymouslyCheckBox.isSelected())){
+                    if(usernameField.getText().isEmpty()){
+                        return;
+                    }
+                    if(passwordField.getPassword().length == 0){
+                        return;
+                    }
+                }
                 if (!(checkFields(serverAddressField))) {
                     okButton.setEnabled(false);
                 }else {
@@ -254,6 +255,7 @@ public class ClientModeConfiguration extends JFrame{
                 changed();
             }
             public void changed() {
+
                 if (serverPortField.getText().isEmpty() == true){
                     okButton.setEnabled(false);
                 }else {
@@ -273,6 +275,9 @@ public class ClientModeConfiguration extends JFrame{
                 changed();
             }
             public void changed() {
+                if(serverAddressField.getText().isEmpty()){
+                    return;
+                }
                 if (passwordField.getPassword().length == 0){
                     okButton.setEnabled(false);
                 }else {
@@ -292,6 +297,9 @@ public class ClientModeConfiguration extends JFrame{
                 changed();
             }
             public void changed() {
+                if(serverAddressField.getText().isEmpty()){
+                    return;
+                }
                 if (!(checkFields(usernameField))) {
                     okButton.setEnabled(false);
                 }else {

@@ -6,7 +6,6 @@ new FormModel {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			"title": "MeshFS - Server Configuration"
-			"$sizePolicy": 1
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -202,8 +201,8 @@ new FormModel {
 						"title": "Storage"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {par l {seq {space :p:238:p, comp textArea1:::p::p, space :0:0:x}, seq {space :::p, par l:::p {seq l {comp usernameLbl:::p::p, space :::p, comp usernameValueField::::214:x}, seq l {comp passwordLbl:::p::p, space :::p, comp passwordValueField:::::x}, seq t {comp allowGuestBox:::p::p, space :::x, comp submitBtn:::p::p, space :p:6:p}}, space :::x, par l {comp scrollPane2::t:p:168:p, comp removeUserBtn::t:p::p}}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, par l {seq l {comp scrollPane2:::p:83:p, space :::p, comp removeUserBtn:::p::p, space :p:161:p, comp textArea1:::p::p}, seq l {par b {comp usernameLbl::b:p::p, comp usernameValueField::b:p::p}, space u:::p, par b {comp passwordLbl::b:p::p, comp passwordValueField::b:p::p}, space :p:12:p, par b {comp submitBtn::b:p::p, comp allowGuestBox::b:p::p}}}}}"
+						"$horizontalGroup": "par l {seq {par l {seq {par l {seq {space :p:238:p, comp textArea1:::p::p}, seq {space :::p, par l:::p {seq l {comp usernameLbl:::p::p, space :::p, comp usernameValueField::::214:x}, seq l {comp passwordLbl:::p::p, space :::p, comp passwordValueField:::::x}}}, seq t {space :::p, comp submitBtn:::p::p}}, space :::p, comp scrollPane2::::180:x}, seq {space :::p, comp allowGuestBox:::p::p, space ::175:x, comp removeUserBtn:::p::p}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, par l {seq l {comp scrollPane2:::p:223:p, space :::p, par b {comp removeUserBtn::b:p::p, comp allowGuestBox::b:p::p}, space :p:21:p, comp textArea1:::p::p}, seq l {par b {comp usernameLbl::b:p::p, comp usernameValueField::b:p::p}, space u:::p, par b {comp passwordLbl::b:p::p, comp passwordValueField::b:p::p}, space u:::p, comp submitBtn:::p::p}}}}"
 					} ) {
 						name: "userAccounts"
 						"background": new java.awt.Color( 229, 229, 229, 255 )
@@ -239,18 +238,18 @@ new FormModel {
 							} )
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "removeUserBtn"
-							"text": "Delete User"
-							"font": #SwingDerivedFont2
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "submitBtn"
 							"text": "Add User"
 							"font": #SwingDerivedFont2
 						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "removeUserBtn"
+							"text": "Delete User"
+							"font": #SwingDerivedFont2
+						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "allowGuestBox"
-							"text": "Allow Guest"
+							"text": "Allow Guest User to Login"
 							"horizontalTextPosition": 2
 							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 						} )
