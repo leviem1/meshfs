@@ -263,6 +263,14 @@ class DISTAL {
         for (Thread parent : parentThreads) {
             parent.start();
         }
+        for (Thread parent : parentThreads) {
+            if (parent.isAlive()) {
+                try {
+                    parent.join();
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }
 
         FileUtils.removeFile(sourceFileLocation);
     }
@@ -307,7 +315,6 @@ class sendFilesTreading implements Runnable{
 
             FileUtils.writeStripe(sourceFileLocation, MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe - ((sizeOfStripe * (stripes.size() - 1)) - fileSize));
             for (String computerToReceive : stripes.get(stripe+1)){
-
                 Thread child = new Thread(() -> {
                     try {
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
@@ -316,15 +323,11 @@ class sendFilesTreading implements Runnable{
                     }
                 });
                 childThreads.add(child);
-
-                
-
             }
-            FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
         }
         else {
             FileUtils.writeStripe(sourceFileLocation, MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe);
-            for (String computerToReceive : stripes.get(stripe+1)){
+            for (String computerToReceive : stripes.get(stripe + 1)) {
                 Thread child = new Thread(() -> {
                     try {
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
@@ -335,21 +338,20 @@ class sendFilesTreading implements Runnable{
 
                 childThreads.add(child);
             }
-            for (Thread child : childThreads) {
-                child.start();
-            }
-
-            for (Thread child : childThreads) {
-                if (child.isAlive()) {
-                    try {
-                        child.join();
-                    } catch (InterruptedException ignored) {
-                    }
-                }
-            }
-            FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
+        }
+        for (Thread child : childThreads) {
+            child.start();
         }
 
+        for (Thread child : childThreads) {
+            if (child.isAlive()) {
+                try {
+                    child.join();
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }
+        FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
 
     }
 

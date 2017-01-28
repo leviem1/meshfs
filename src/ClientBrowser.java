@@ -51,7 +51,7 @@ public class ClientBrowser extends JFrame {
             }
         };
         catalogTimer = new java.util.Timer();
-        catalogTimer.scheduleAtFixedRate(catalogCheck, 0, 250);
+        catalogTimer.scheduleAtFixedRate(catalogCheck, 0, 500);
 
     }
 

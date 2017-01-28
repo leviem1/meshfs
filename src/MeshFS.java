@@ -67,7 +67,7 @@ public class MeshFS {
                     }
                 };
                 java.util.Timer timer = new java.util.Timer();
-                timer.scheduleAtFixedRate(timerTask, 0, 60000);
+                timer.scheduleAtFixedRate(timerTask, 0, 500);
             }
 
             File repo = new File(properties.getProperty("repository"));
