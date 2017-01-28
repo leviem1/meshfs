@@ -42,7 +42,7 @@ class JSONManipulator {
         return jsonArray;
     }
 
-    static Map<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
+    static LinkedHashMap<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
         String[] Tree = folderLocation.split("/");
         JSONObject folderToRead = jsonObject;
         JSONObject folderToReadNew;
@@ -58,7 +58,7 @@ class JSONManipulator {
                 folderToRead = folderToReadNew;
             }
         }
-        Map<String,String> contents = new HashMap<>();
+        LinkedHashMap<String,String> contents = new LinkedHashMap<>();
         for (Object key : folderToRead.keySet()) {
             String keyStr = key.toString();
             try{
@@ -69,6 +69,7 @@ class JSONManipulator {
             }
             catch (Exception e){}
         }
+        
         return contents;
     }
 
