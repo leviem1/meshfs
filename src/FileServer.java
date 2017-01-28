@@ -133,7 +133,7 @@ class ServerInit implements Runnable {
                         deleteFile(requestParts[1], out);
 
                         break;
-                    case "106":      //106:Make directory (virtual)
+                    case "106":      //106:Make directory (virtual only)
                         createDirectory(requestParts[1], requestParts[2], out, requestParts[3]);
 
                         break;
@@ -270,6 +270,7 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
         out.println("201");
+        JSONManipulator.addToIndex(userAccount, filename + "(Uploading)",MeshFS.properties.getProperty("repository")+".catalog.json", userAccount, true);
 
         DataInputStream dis = new DataInputStream(client.getInputStream());
         FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
@@ -281,6 +282,7 @@ class ServerInit implements Runnable {
         out.close();
         fos.close();
         dis.close();
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.removeItem(JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json"),userAccount + "/" + filename + "(Uploading)"));
 
         Thread distributor = new Thread(() -> DISTAL.distributor(filename, userAccount));
         distributor.start();
