@@ -216,7 +216,7 @@ class JSONManipulator {
         JSONObject compInfoFile = getJSONObject(manifestFileLocation);
         List<String> stripeNames = new ArrayList<>();
         List<Thread> childThreads = new ArrayList<>();
-        boolean wholeNecessary = false;
+        boolean wholeNecessary = true;
 
         FileClient.receiveFile(serverAddress, portNumber, ".manifest.json", ".manifest.json");
 
@@ -228,6 +228,7 @@ class JSONManipulator {
 
         for (Object stripe: itemToRead.keySet() ) {
             if (stripe.toString().contains("stripe")) {
+                wholeNecessary = false;
                 String fileNameWNum = fileName + "_s" + stripe.toString().substring(stripe.toString().lastIndexOf("_")+1);
                 JSONArray compsWithStripe = (JSONArray) itemToRead.get(stripe);
                 boolean cantContinue = true;
@@ -267,8 +268,10 @@ class JSONManipulator {
 
             for (Object MACAddress : compsWithWhole) {
                 if (compInfoFile.containsKey(MACAddress)) {
+                    System.out.println("one");
                     if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
                         String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
+                        System.out.println("two");
                         FileClient.receiveFile(IPAddress, port,fileNameW, outFileDir + File.separator + "." + outFile);
                         new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFile));
                         cantContinue = false;

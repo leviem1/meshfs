@@ -6,6 +6,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.*;
+
 import java.util.ArrayList;
 
 
@@ -171,10 +172,33 @@ class ServerInit implements Runnable {
     }
 
     private void sendReport(Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         out.println("201");
-        out.print(Reporting.generate());
-        out.flush();
+        out.println(Reporting.generate()+"\n");
+    }
+
+    private void receiveReport(Socket client) throws IOException {
+        String reportPart;
+        String reportFull = "";
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+        out.println("201");
+
+        while (true) {
+            reportPart = input.readLine();
+            if ((reportPart == null) || (reportPart.equals("\n"))) break;
+            reportFull = reportFull + reportPart + "\n";
+        }
+        reportFull = reportFull.trim();
+
+        JSONObject manifest = new JSONObject();
+        if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()){
+            manifest = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
+        }
+        JSONArray reportArray = Reporting.splitter(reportFull);
+        manifest.put(reportArray.get(0),reportArray.get(1));
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
     private void moveFile(String currentPath, String newPath, Socket client) throws IOException {
@@ -200,30 +224,6 @@ class ServerInit implements Runnable {
         out.flush();
         JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.copyFile(jsonObj, currentPath, currentPath.substring(0, currentPath.lastIndexOf("/")), true));
-    }
-
-    private void receiveReport(Socket client) throws IOException {
-        String reportPart;
-        String reportFull = "";
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-
-        out.println("201");
-
-        while (true) {
-            reportPart = input.readLine();
-            if ((reportPart == null) || (reportPart.equals("\n"))) break;
-            reportFull = reportFull + reportPart + "\n";
-        }
-        reportFull = reportFull.trim();
-
-        JSONObject manifest = new JSONObject();
-        if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()){
-            manifest = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
-        }
-        JSONArray reportArray = Reporting.splitter(reportFull);
-        manifest.put(reportArray.get(0),reportArray.get(1));
-        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
     private void sendFile(String filename, Socket client) throws IOException {
@@ -262,6 +262,7 @@ class ServerInit implements Runnable {
         out.close();
         fos.close();
         dis.close();
+        sendReport(client);
     }
 
     private void receiveFile(String filename, String userAccount, Socket client) throws IOException {
@@ -270,7 +271,7 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
         out.println("201");
-        JSONManipulator.addToIndex(userAccount, filename + "(Uploading)",MeshFS.properties.getProperty("repository")+".catalog.json", userAccount, true);
+        JSONManipulator.addToIndex(userAccount, filename + " (uploading)",MeshFS.properties.getProperty("repository")+".catalog.json", userAccount, true);
 
         DataInputStream dis = new DataInputStream(client.getInputStream());
         FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
@@ -282,7 +283,7 @@ class ServerInit implements Runnable {
         out.close();
         fos.close();
         dis.close();
-        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.removeItem(JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json"),userAccount + "/" + filename + "(Uploading)"));
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.removeItem(JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json"),userAccount + "/" + filename + " (uploading)"));
 
         Thread distributor = new Thread(() -> DISTAL.distributor(filename, userAccount));
         distributor.start();
@@ -309,6 +310,7 @@ class ServerInit implements Runnable {
 
     private void badRequest(Socket client, String request) {
         try {
+            if(client.isClosed()) return;
             PrintWriter out = new PrintWriter(client.getOutputStream());
             out.println("202\nBad request:\n\n" + request);
             out.flush();

@@ -252,7 +252,12 @@ class DISTAL {
 
     private static void sendFiles (List<List<String>> stripes, String sourceFileLocationOld, long fileSize, String outName){
         List<Thread> parentThreads = new ArrayList<>();
-        long sizeOfStripe = ((fileSize / (stripes.size() -1) + 1));
+        long sizeOfStripe;
+        try{
+            sizeOfStripe = ((fileSize / (stripes.size() - 1) + 1));
+        }catch(Exception e){
+            sizeOfStripe = 0L;
+        }
         new File(sourceFileLocationOld).renameTo(new File(sourceFileLocationOld.substring(0,sourceFileLocationOld.lastIndexOf(File.separator)+1) + outName + "_w"));
         final String sourceFileLocation = sourceFileLocationOld.substring(0, sourceFileLocationOld.lastIndexOf(File.separator) + 1) + outName + "_w";
         JSONObject manifestFile = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".manifest.json");
@@ -303,6 +308,8 @@ class sendFilesTreading implements Runnable{
                 Thread child = new Thread(() -> {
                     try {
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_w");
+                        System.out.println("One");
+                        FileClient.receiveReport((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
                     }
@@ -314,10 +321,12 @@ class sendFilesTreading implements Runnable{
         else if (stripe == stripes.size()-2) {
 
             FileUtils.writeStripe(sourceFileLocation, MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe, (sizeOfStripe * stripe), sizeOfStripe - ((sizeOfStripe * (stripes.size() - 1)) - fileSize));
-            for (String computerToReceive : stripes.get(stripe+1)){
+            for (String computerToReceive : stripes.get(stripe + 1)){
                 Thread child = new Thread(() -> {
                     try {
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
+                        System.out.println("Two");
+                        FileClient.receiveReport((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
                     }
@@ -331,6 +340,8 @@ class sendFilesTreading implements Runnable{
                 Thread child = new Thread(() -> {
                     try {
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
+                        System.out.println("Three");
+                        FileClient.receiveReport((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
                     }

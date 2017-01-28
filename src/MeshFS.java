@@ -54,7 +54,7 @@ public class MeshFS {
                     }
                 }
             } else {
-                TimerTask timerTask = new TimerTask() {
+                TimerTask scheduledReporting = new TimerTask() {
                     @Override
                     public void run() {
                          if (FileClient.ping(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")))) {
@@ -66,8 +66,8 @@ public class MeshFS {
                          }
                     }
                 };
-                java.util.Timer timer = new java.util.Timer();
-                timer.scheduleAtFixedRate(timerTask, 0, 500);
+                java.util.Timer scheduledReportingTimer = new java.util.Timer();
+                scheduledReportingTimer.scheduleAtFixedRate(scheduledReporting, 0, 30000);
             }
 
             File repo = new File(properties.getProperty("repository"));

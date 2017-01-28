@@ -323,7 +323,6 @@ public class ClientBrowser extends JFrame {
             }
             Thread download = new Thread(() -> {
                 downloadFile(node.toString(), System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
-                JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
             });
             download.start();
         });
@@ -425,6 +424,8 @@ public class ClientBrowser extends JFrame {
          try {
             if(!(JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, node, serverAddress, port))){
                  JOptionPane.showMessageDialog(null, "Download Failed! Please try again later...", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (IOException e) {
             e.printStackTrace();

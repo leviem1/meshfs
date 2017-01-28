@@ -255,7 +255,6 @@ public class ClientModeConfiguration extends JFrame{
                 changed();
             }
             public void changed() {
-
                 if (serverPortField.getText().isEmpty() == true){
                     okButton.setEnabled(false);
                 }else {
@@ -363,6 +362,7 @@ public class ClientModeConfiguration extends JFrame{
             passwordField.setText("guest");
             usernameField.setEnabled(false);
             passwordField.setEnabled(false);
+            buttonBar.getRootPane().setDefaultButton(okButton);
             okButton.requestFocus();
         }
         else if(!(value)){

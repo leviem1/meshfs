@@ -8,6 +8,9 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * The FileClient class handles connecting to
@@ -18,7 +21,6 @@ import java.net.SocketTimeoutException;
  */
 
 public final class FileClient {
-    private static int timeout;
 
     /**
      * This method is used to ping a server.
@@ -31,15 +33,7 @@ public final class FileClient {
     static boolean ping(String serverAddress, int port) {
         try {
             Socket client = new Socket(serverAddress, port);
-            try{
-                if(MeshFS.properties.getProperty("timeout") != null){
-                    timeout = Integer.parseInt(MeshFS.properties.getProperty("timeout"));
-                }
-                else{
-                    timeout = 5;
-                }
-            }catch(NullPointerException ignored){}
-            client.setSoTimeout(timeout * 1000);
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
             out.println("109\n");
@@ -90,7 +84,7 @@ public final class FileClient {
      * @throws IOException on error connecting
      */
 
-    public static void receiveReport(String serverAddress, int port) throws IOException {
+    static void receiveReport(String serverAddress, int port) throws IOException {
         String reportPart;
         String reportFull = "";
         Socket client = new Socket(serverAddress, port);
