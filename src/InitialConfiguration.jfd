@@ -7,13 +7,13 @@ new FormModel {
 			name: "this"
 			"title": "MeshFS - Initial Configuration"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {par l {comp contentPanel:::p::p, comp buttonBar:::p:309:p}, space :p:58:p}}"
-				"$verticalGroup": "par l {seq {comp contentPanel:::p::p, space :0:0:p, comp buttonBar:::p::p}}"
+				"$horizontalGroup": "par l {seq t {par t {seq l {space :::p, comp buttonBar:::::x}, comp contentPanel:::::x}, space :p:10:p}}"
+				"$verticalGroup": "par l {seq l {comp contentPanel:::p::p, space :::x, comp buttonBar:::p:45:p}}"
 			} ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {comp titleLbl::::337:x, seq {space :::p, comp modeLbl::::325:x, space :::p}, seq l {space :p:84:p, comp modeSelectionBox:::p:137:p, space ::116:x}}"
+					"$horizontalGroup": "par l {comp titleLbl:::::x, seq {space :p:84:p, comp modeSelectionBox:::p:137:p, space :::x}, seq l {space :::p, comp modeLbl:::::x, space :::p}}"
 					"$verticalGroup": "par l {seq l {comp titleLbl:::p::p, space :::p, comp modeLbl:::p::p, space ::10:x, comp modeSelectionBox:::p::p}}"
 				} ) {
 					name: "contentPanel"
@@ -35,7 +35,7 @@ new FormModel {
 					} )
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0, 0:1.0, 80, 0"
+					"$columnSpecs": "0, 0:1.0, 80"
 					"$rowSpecs": "0"
 					"$hGap": 5
 					"$vGap": 5
@@ -52,7 +52,7 @@ new FormModel {
 						"text": "OK"
 						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 3
+						"gridx": 2
 					} )
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
