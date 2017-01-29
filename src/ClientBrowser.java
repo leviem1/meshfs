@@ -323,13 +323,12 @@ public class ClientBrowser extends JFrame {
         });
         downloadBtn.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-            File localFile  = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
-            if((localFile.exists())){
+            if((new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString()).exists())){
                 JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             Thread download = new Thread(() -> {
-                downloadFile(node.toString(), System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
+                downloadFile(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
             });
             download.start();
         });
@@ -343,12 +342,9 @@ public class ClientBrowser extends JFrame {
                 JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Thread download = new Thread() {
-                public void run() {
-                    downloadFile(node.toString(), fileChooser.getSelectedFile().toString());
-                    JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
-                }
-            };
+            Thread download = new Thread(() -> {
+                downloadFile(fileChooser.getSelectedFile().toString());
+            });
 
             download.start();
         });
@@ -424,9 +420,9 @@ public class ClientBrowser extends JFrame {
         return branch;
     }
 
-    private void downloadFile(String node, String path){
+    private void downloadFile(String path){
          try {
-            if(!(JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, node, serverAddress, port))){
+            if(!(JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, path.substring(path.lastIndexOf(File.separator)), serverAddress, port))){
                  JOptionPane.showMessageDialog(null, "Download Failed! Please try again later...", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             }else{
                 JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
