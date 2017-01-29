@@ -323,8 +323,6 @@ public class ClientBrowser extends JFrame {
         });
         downloadBtn.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-            String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-            JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
             File localFile  = new File(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
             if((localFile.exists())){
                 JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
@@ -340,9 +338,6 @@ public class ClientBrowser extends JFrame {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.showSaveDialog(null);
             fileChooser.setDialogTitle("Choose Save Location");
-            String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-            JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
-            int fileSizeActual = Integer.parseInt(fileProperties.get("fileSizeActual").toString());
             File localFile  = new File(fileChooser.getSelectedFile().toString());
             if((localFile.exists())){
                 JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);

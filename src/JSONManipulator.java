@@ -151,7 +151,6 @@ class JSONManipulator {
         objChild.put("owner", userAccount);
         objChild.put("type", "file");
         objChild.put("fileName", alphanumericName);
-        objChild.put("fileSizeActual", Math.toIntExact(fileSize));
         objChild.put("fileSize", humanReadableByteCount(fileSize, true));
         objChild.put("creationDate", creationDate);
 
