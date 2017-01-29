@@ -86,6 +86,8 @@ class DISTAL {
                 sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(String.valueOf(macAddress)) - minFreeSpace);
             }
 
+            int numOfComputersUsed = sortedCompStorageMap.size();
+
             //don't use stripes if a file is less than 4096 byte
             if (sizeOfFile <= 4096L){
                 numOfWholeCopies += numOfStripedCopies;
@@ -93,8 +95,14 @@ class DISTAL {
                 numOfStripedCopies = 0;
             }
 
+            //use stripes only when the number of computers available exceeds the number of requested redundancies
+            if(numOfComputersUsed <= numOfStripedCopies + numOfWholeCopies){
+                numOfWholeCopies = numOfComputersUsed;
+                numOfStripes = 0;
+                numOfStripedCopies = 0;
+            }
+
             //dynamic resigning of number of Wholes by number of computers that are on
-            int numOfComputersUsed = sortedCompStorageMap.size();
             if (numOfComputersUsed < numOfWholeCopies){
                 numOfWholeCopies = numOfComputersUsed;
             }
@@ -359,7 +367,6 @@ class sendFilesTreading implements Runnable{
                 Thread child = new Thread(() -> {
                     try {
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_w");
-                        System.out.println("One");
                         FileClient.receiveReport((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
@@ -376,7 +383,6 @@ class sendFilesTreading implements Runnable{
                 Thread child = new Thread(() -> {
                     try {
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
-                        System.out.println("Two");
                         FileClient.receiveReport((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
@@ -392,7 +398,6 @@ class sendFilesTreading implements Runnable{
                 Thread child = new Thread(() -> {
                     try {
                         FileClient.sendFile((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
-                        System.out.println("Three");
                         FileClient.receiveReport((((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
                     } catch (IOException ioe) {
                         ioe.printStackTrace();
