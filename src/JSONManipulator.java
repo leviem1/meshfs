@@ -280,14 +280,14 @@ class JSONManipulator {
      * @param itemLocation      The source virtual path within the JSONObject.
      * @param path              Where the download file is to be saved to.
      * @param outFile           The name that the download file is to be saved as.
-     * @param serverAddress      
+     * @param serverAddress
      *
      */
 
     static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int port) throws IOException {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         String catalogFileLocation = ".catalog.json";
-        String manifestFileLocation = MeshFS.properties.getProperty("repository") + ".manifest.json";
+        String manifestFileLocation = ".manifest.json";
         FileClient.receiveFile(serverAddress, port, manifestFileLocation, manifestFileLocation);
         JSONObject compInfoFile = getJSONObject(manifestFileLocation);
         String[] folders = itemLocation.split("/");
