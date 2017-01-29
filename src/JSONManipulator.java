@@ -54,7 +54,6 @@ class JSONManipulator {
      */
 
     static LinkedHashMap<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
-        System.out.println(folderLocation);
         if (folderLocation.equals(userAccount)){
             folderLocation += "/";
         }
@@ -349,10 +348,8 @@ class JSONManipulator {
 
             for (Object MACAddress : compsWithWhole) {
                 if (compInfoFile.containsKey(MACAddress)) {
-                    System.out.println("one");
                     if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
                         String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
-                        System.out.println("two");
                         FileClient.receiveFile(IPAddress, port,fileNameW, outFileDir + File.separator + "." + outFile);
                         new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFile));
                         cantContinue = false;

@@ -136,11 +136,6 @@ class DISTAL {
                 numOfStripedCopies = 0;
             }
 
-            System.out.println("comps " + numOfComputersUsed);
-            System.out.println("whole " + numOfWholeCopies);
-            System.out.println("stripe copies " + numOfStripedCopies);
-            System.out.println("stripe " + numOfStripes);
-
             //create a unique filename for the uploaded file
             List<String> computersForWholes = new ArrayList<>();
             JSONObject jsonObj = JSONManipulator.getJSONObject(catalogFileLocation);

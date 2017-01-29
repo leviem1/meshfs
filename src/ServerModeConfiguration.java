@@ -926,7 +926,6 @@ public class ServerModeConfiguration extends JFrame {
                 }else if (username.equals("guest")){
                     allowGuestBox.setSelected(true);
                 }
-                System.out.println("Adding " + value);
                 if(!(value.equals(""))){
                     model.add(index, value);
                 }
