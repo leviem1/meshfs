@@ -14,11 +14,11 @@ import java.util.*;
 
 public class Reporting {
 
-    public static String getSystemOS() {
+    static String getSystemOS() {
         return System.getProperty("os.name");
     }
 
-    public static long getSystemStorage() {
+    static long getSystemStorage() {
         String os = System.getProperty("os.name");
         File file;
         if (os.startsWith("Windows")) {
@@ -29,7 +29,7 @@ public class Reporting {
         return file.getUsableSpace();
     }
 
-    public static List<String> getIpAddresses() {
+    static List<String> getIpAddresses() {
         List<String> ip = new ArrayList<>();
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -51,23 +51,23 @@ public class Reporting {
         return ip;
     }
 
-    public static long getUptime() {
+    static long getUptime() {
         return ManagementFactory.getRuntimeMXBean().getUptime();
     }
 
-    public static String getJavaVersion(){
+    static String getJavaVersion(){
         return System.getProperty("java.version");
     }
 
-    public static String getUserName(){
+    static String getUserName(){
         return System.getProperty("user.name");
     }
 
-    public static String getSystemDate(){
+    static String getSystemDate(){
         return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
-    public static String getMacAddress(){
+    static String getMacAddress(){
         String macAddress = null;
         try {
             Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
@@ -88,7 +88,7 @@ public class Reporting {
         return macAddress;
     }
 
-    public static String getRepositoryContents() {
+    static String getRepositoryContents() {
         File[] repoContents = new File(MeshFS.properties.getProperty("repository")).listFiles();
         List<String> contents = new ArrayList<>();
         for (File file : repoContents){
@@ -97,11 +97,11 @@ public class Reporting {
         return contents.toString();
     }
 
-    public static String generate() {
+    static String generate() {
         return getMacAddress() + "|IP:" + getIpAddresses().get(0) + ";OS:" + getSystemOS() + ";JavaVersion:" + getJavaVersion() + ";FreeSpace:" + getSystemStorage() + ";Uptime:" + getUptime() + ";Username:" + getUserName() + ";RepoContents:" + getRepositoryContents();
     }
 
-    public static JSONArray splitter(String report) {
+    static JSONArray splitter(String report) {
         JSONObject jsonObject = new JSONObject();
         JSONArray mainArray = new JSONArray();
         String[] reportArray = report.split("\\|");
