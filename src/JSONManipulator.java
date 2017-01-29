@@ -14,7 +14,23 @@ import java.util.*;
 /**
  * Created by Levi Muniz on 10/19/16.
  */
+
+/**
+ * The JSONManipulator class has the
+ * ability to read, write, and change
+ * JSON files and objects.
+ *
+ * @author Aaron Duran
+ * @version 1.0.0
+ */
+
 class JSONManipulator {
+
+    /**
+     * This method is returns the JSONObject stored in a file.
+     *
+     * @param filePath    the file path of the file that is to be read.
+     */
 
     static JSONObject getJSONObject(String filePath) {
         JSONParser reader = new JSONParser();
@@ -28,19 +44,14 @@ class JSONManipulator {
         return jsonObject;
     }
 
-    static JSONArray getJSONArray(String filePath) {
-        JSONParser reader = new JSONParser();
-        JSONArray jsonArray = null;
-        try {
-            Object obj = reader.parse(new FileReader(filePath));
-
-            jsonArray = (JSONArray) obj;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return jsonArray;
-    }
+    /**
+     * This method is returns a LinkedHashMap of the contents of a folder.
+     * The contents are returned in the format of "itemName", "itemType"
+     *
+     * @param jsonObject        the JSONObject that is being read.
+     * @param folderLocation    the virtual path within the catalog file.
+     * @param userAccount       the file path of the file that is to be read.
+     */
 
     static LinkedHashMap<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
         String[] Tree = folderLocation.split("/");
@@ -73,6 +84,13 @@ class JSONManipulator {
         return contents;
     }
 
+    /**
+     * This method deletes the designated item within the JSONObject.
+     *
+     * @param jsonObject        the JSONObject that is being read.
+     * @param itemLocation      the virtual path within the JSONObject.
+     */
+
     static JSONObject removeItem(JSONObject jsonObject, String itemLocation){
         String item = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         String[] folders = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
@@ -90,6 +108,13 @@ class JSONManipulator {
         return jsonObject;
     }
 
+    /**
+     * This method returns the JSONObject associated with the designated item.
+     *
+     * @param jsonObject        the JSONObject that is being read.
+     * @param itemLocation      the virtual path within the JSONObject.
+     */
+
     static JSONObject getItemContents(JSONObject jsonObject, String itemLocation){
         String[] folders = itemLocation.split("/");
         JSONObject folderToRead = jsonObject;
@@ -99,10 +124,27 @@ class JSONManipulator {
         return folderToRead;
     }
 
+    /**
+     * This method copies the given item to the designated path within the JSONObject.
+     *
+     * @param jsonObject            the JSONObject that is being read.
+     * @param itemLocation          the source virtual path within the JSONObject.
+     * @param destinationLocation   the destination virtual path within the JSONObject
+     *                              should not have the name of the item in this path
+     */
+
     static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate) {
         String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         return(copyFile(jsonObject, itemLocation, destinationLocation, showDate, fileName));
     }
+
+    /**
+     * This method adds a directory within the designated folder within the JSONObject.
+     *
+     * @param jsonObject      the JSONObject that is being read.
+     * @param jsonPath        the virtual path within the JSONObject.
+     * @param directoryName   the name of the new folder.
+     */
 
     static JSONObject addFolder(JSONObject jsonObject, String jsonPath, String directoryName, String userAccount){
         JSONObject type = new JSONObject();
@@ -112,14 +154,43 @@ class JSONManipulator {
         return jsonObject;
     }
 
+    /**
+     * This method rename the given item within the JSONObject.
+     *
+     * @param jsonObject      the JSONObject that is being read.
+     * @param itemLocation    the virtual path within the JSONObject.
+     * @param newName         the new name for the file.
+     */
+
     static JSONObject renameFile(JSONObject jsonObject, String itemLocation, String newName){
         return moveFile(jsonObject,itemLocation,itemLocation.substring(0,itemLocation.lastIndexOf("/")),newName);
     }
+
+    /**
+     * This method moves the given item to the designated path within the JSONObject.
+     *
+     * @param jsonObject            the JSONObject that is being read.
+     * @param itemLocation          the source virtual path within the JSONObject.
+     * @param destinationLocation   the destination virtual path within the JSONObject
+     *                              should not have the name of the item in this path
+     */
 
     static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
         String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
         return (moveFile(jsonObject,itemLocation,destinationLocation,fileName));
     }
+
+    /**
+     * This method adds a new file, with all of its properties, to the JSONObject.
+     *
+     * @param stripes               The list of computers the store each stripe and whole copy.
+     * @param itemLocation          The source virtual path within the JSONObject.
+     * @param fileName              The name of the file, the way it appears in the file browser.
+     * @param JSONFilePath          The file path of the catalog file.
+     * @param alphanumericName      The name of the file, as it is stored on the slave computers.
+     * @param userAccount           The account name person that uploaded the file.
+     * @param fileSize              The size of the file, in Bytes.
+     */
 
     static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String userAccount, long fileSize) {
 
@@ -165,38 +236,27 @@ class JSONManipulator {
         }
     }
 
-    static void addToIndex(String itemLocation, String fileName, String JSONFilePath) {
+    /**
+     * This method adds a new file, with all of its properties, to the JSONObject.
+     *
+     * @param itemLocation          The source virtual path within the JSONObject.
+     * @param fileName              The name of the file, the way it appears in the file browser.
+     * @param JSONFilePath          The file path of the catalog file.
+     * @param userAccount           The account name person that uploaded the file.
+     *
+     *
+     */
 
+    static void addToIndex(String itemLocation, String fileName, String JSONFilePath, String userAccount) {
         JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
-
         JSONObject objChild = new JSONObject();
-
-
-        objChild.put("type", "file");
-        objChild.put("fileName", fileName);
-
-        jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName,objChild);
-
-
+        objChild.put("type", "tempFile");
+        objChild.put("owner", userAccount);
+        jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName, objChild);
         try{
             writeJSONObject(JSONFilePath, jsonFile);
         }catch(IOException e){
             e.printStackTrace();
-        }
-    }
-
-    static void addToIndex(String itemLocation, String fileName, String JSONFilePath, String userAccount, boolean tempFile) {
-        if(tempFile){
-            JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
-            JSONObject objChild = new JSONObject();
-            objChild.put("type", "tempFile");
-            objChild.put("owner", userAccount);
-            jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName, objChild);
-            try{
-                writeJSONObject(JSONFilePath, jsonFile);
-            }catch(IOException e){
-                e.printStackTrace();
-            }
         }
     }
 

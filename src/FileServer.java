@@ -271,7 +271,7 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
         out.println("201");
-        JSONManipulator.addToIndex(userAccount, filename + " (uploading)",MeshFS.properties.getProperty("repository")+".catalog.json", userAccount, true);
+        JSONManipulator.addToIndex(userAccount, filename + " (uploading)",MeshFS.properties.getProperty("repository")+".catalog.json", userAccount);
 
         DataInputStream dis = new DataInputStream(client.getInputStream());
         FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
