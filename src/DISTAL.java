@@ -7,6 +7,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * The DISTAL class distributes a file across
+ * the linked computers with a variable number
+ * of whole copies, stripes, and striped copies.
+ *
+ * @author Aaron Duran
+ * @version 1.0.0
+ */
+
 class DISTAL {
 
     private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
@@ -47,6 +56,17 @@ class DISTAL {
         return sortedMap;
     }
 
+    /**
+     * This method is used determines which load
+     * balance which computers will receive a file
+     * and its stripes. The method also sends the
+     * file to the appropriate computers and updates
+     * the catalog file.
+     *
+     * @param uploadFilePath    the file path of the file that is to be distributed
+     * @param filePathInCatalog where the file is to be put in the catalog.
+     */
+
     static void distributor(String uploadFilePath, String filePathInCatalog){
         String userAccount;
         try {
@@ -67,7 +87,7 @@ class DISTAL {
         String catalogFileLocation = MeshFS.properties.getProperty("repository")+".catalog.json";
 
         //make the JTree show that the file is being distributed
-        JSONManipulator.addToIndex(userAccount, uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator)+1) + " (distributing)", catalogFileLocation, userAccount, true);
+        JSONManipulator.addToIndex(userAccount, uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator)+1) + " (distributing)", catalogFileLocation, userAccount);
 
         try {
             String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
@@ -362,7 +382,7 @@ class sendFilesTreading implements Runnable{
     private int stripe;
     private String outName;
 
-    public sendFilesTreading(long sizeOfStripe, long fileSize, String sourceFileLocation, JSONObject manifestFile, List<List<String>> stripes, int stripe, String outName){
+    sendFilesTreading(long sizeOfStripe, long fileSize, String sourceFileLocation, JSONObject manifestFile, List<List<String>> stripes, int stripe, String outName){
         this.sizeOfStripe = sizeOfStripe;
         this.fileSize = fileSize;
         this.sourceFileLocation = sourceFileLocation;
@@ -372,7 +392,7 @@ class sendFilesTreading implements Runnable{
         this.outName = outName;
     }
 
-    public void writeSendStripe() throws IOException{
+    void writeSendStripe() throws IOException{
         List<Thread> childThreads = new ArrayList<>();
 
         if (stripe == -1){
