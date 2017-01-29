@@ -279,7 +279,9 @@ class JSONManipulator {
      * @param itemLocation      The source virtual path within the JSONObject.
      * @param path              Where the download file is to be saved to.
      * @param outFile           The name that the download file is to be saved as.
-     * @param serverAddress
+     * @param serverAddress     The address of the the master server
+     * @param port              The port that MeshFS uses
+     * @throws IOException if a socket cannot be initialized
      *
      */
 
