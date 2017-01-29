@@ -86,9 +86,16 @@ class DISTAL {
                 sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(String.valueOf(macAddress)) - minFreeSpace);
             }
 
+            //don't use stripes if a file is less than 4096 byte
+            if (sizeOfFile <= 4096L){
+                numOfWholeCopies += numOfStripedCopies;
+                numOfStripes = 0;
+                numOfStripedCopies = 0;
+            }
+
             //dynamic resigning of number of Wholes by number of computers that are on
             int numOfComputersUsed = sortedCompStorageMap.size();
-            if (numOfComputersUsed > numOfWholeCopies){
+            if (numOfComputersUsed < numOfWholeCopies){
                 numOfWholeCopies = numOfComputersUsed;
             }
 
