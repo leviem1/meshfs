@@ -110,7 +110,7 @@ class ServerInit implements Runnable {
             try {
                 String[] requestParts = request.trim().split("\\|");
                 switch (requestParts[0]) {
-                    case "101":             //101:Get file
+                    case "101":      //101:Get file
                         sendFile(requestParts[1], out);
 
                         break;
@@ -174,7 +174,7 @@ class ServerInit implements Runnable {
     private void sendReport(Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         out.println("201");
-        out.println(Reporting.generate()+"\n");
+        out.println(Reporting.generate() + "\n");
     }
 
     private void receiveReport(Socket client) throws IOException {
@@ -262,7 +262,6 @@ class ServerInit implements Runnable {
         out.close();
         fos.close();
         dis.close();
-        sendReport(client);
     }
 
     private void receiveFile(String filename, String userAccount, Socket client) throws IOException {

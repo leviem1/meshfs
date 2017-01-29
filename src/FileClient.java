@@ -104,12 +104,12 @@ public final class FileClient {
             client.close();
 
             JSONObject manifest = new JSONObject();
-            if (new File(".manifest.json").exists()){
-                manifest = JSONManipulator.getJSONObject(".manifest.json");
+            if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()){
+                manifest = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
             }
             JSONArray reportArray = Reporting.splitter(reportFull);
             manifest.put(reportArray.get(0),reportArray.get(1));
-            JSONManipulator.writeJSONObject(".manifest.json", manifest);
+            JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
         }
     }
 

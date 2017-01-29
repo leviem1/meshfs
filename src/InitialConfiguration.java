@@ -77,15 +77,15 @@ public class InitialConfiguration extends JFrame {
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
                     contentPanelLayout.createParallelGroup()
-                        .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(modeLbl, GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
-                            .addContainerGap())
+                        .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addGap(84, 84, 84)
                             .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(116, Short.MAX_VALUE))
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(modeLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -102,8 +102,8 @@ public class InitialConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 85, 0};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
@@ -115,7 +115,7 @@ public class InitialConfiguration extends JFrame {
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -124,18 +124,20 @@ public class InitialConfiguration extends JFrame {
             dialogPane.setLayout(dialogPaneLayout);
             dialogPaneLayout.setHorizontalGroup(
                 dialogPaneLayout.createParallelGroup()
-                    .addGroup(dialogPaneLayout.createSequentialGroup()
-                        .addGroup(dialogPaneLayout.createParallelGroup()
-                            .addComponent(contentPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE))
-                        .addGap(58, 58, 58))
+                    .addGroup(GroupLayout.Alignment.TRAILING, dialogPaneLayout.createSequentialGroup()
+                        .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addGroup(GroupLayout.Alignment.LEADING, dialogPaneLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(buttonBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(contentPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(10, 10, 10))
             );
             dialogPaneLayout.setVerticalGroup(
                 dialogPaneLayout.createParallelGroup()
                     .addGroup(dialogPaneLayout.createSequentialGroup()
                         .addComponent(contentPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
             );
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
