@@ -54,6 +54,10 @@ class JSONManipulator {
      */
 
     static LinkedHashMap<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
+        System.out.println(folderLocation);
+        if (folderLocation.equals(userAccount)){
+            folderLocation += "/";
+        }
         String[] Tree = folderLocation.split("/");
         JSONObject folderToRead = jsonObject;
         JSONObject folderToReadNew;

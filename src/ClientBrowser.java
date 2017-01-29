@@ -297,7 +297,6 @@ public class ClientBrowser extends JFrame {
                     tree1.setSelectionPath(null);
                 } else if (node.toString().equals(userAccount)) {
                     browserBtns(false);
-
                 } else if (type.toString().equals("tempFile")){
                     browserBtns(false);
                     tree1.setSelectionPath(null);
@@ -384,7 +383,6 @@ public class ClientBrowser extends JFrame {
             System.exit(0);
         });
         newDirBtn.addActionListener(e -> {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
             NewDirectoryWindow.run(serverAddress, port, JSONManipulator.getJSONObject(".catalog.json"), clientBrowser, userAccount);
         });
         renameBtn.addActionListener(e -> {

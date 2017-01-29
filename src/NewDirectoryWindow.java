@@ -25,6 +25,10 @@ public class NewDirectoryWindow extends JFrame {
     private int port;
     private String userAccount;
     private NewDirectoryWindow(String serverAddress, int port, JSONObject jsonObj, String userAccount) {
+        this.serverAddress = serverAddress;
+        this.port = port;
+        this.userAccount = userAccount;
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -35,16 +39,13 @@ public class NewDirectoryWindow extends JFrame {
         initComponents();
         frameListeners();
 
-        this.serverAddress = serverAddress;
-        this.port = port;
-        this.userAccount = userAccount;
-
         okButton.setEnabled(false);
     }
 
     private void initComponents() {
         JSONObject jsonObj = JSONManipulator.getJSONObject(".catalog.json");
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode(userAccount);
+
         tree = (readFolder(userAccount,jsonObj,tree));
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license

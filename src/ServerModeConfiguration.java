@@ -137,6 +137,7 @@ public class ServerModeConfiguration extends JFrame {
                     //---- masterServerField ----
                     masterServerField.setText("127.0.0.1");
                     masterServerField.setFont(new Font("Arial", masterServerField.getFont().getStyle() & ~Font.BOLD, masterServerField.getFont().getSize() + 1));
+                    masterServerField.setEnabled(false);
 
                     //---- serverPortLbl ----
                     serverPortLbl.setText("Network Port:");

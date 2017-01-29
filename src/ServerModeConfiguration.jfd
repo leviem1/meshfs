@@ -27,6 +27,7 @@ new FormModel {
 							name: "masterServerField"
 							"text": "127.0.0.1"
 							"font": #SwingDerivedFont0
+							"enabled": false
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "serverPortLbl"
