@@ -19,18 +19,21 @@ public class GreetingsWindow extends JFrame {
     private boolean runType;
 
     private GreetingsWindow(boolean runType) {
-        this.runType = runType;
-        initComponents();
-        frameListeners();
-        dialogPane.getRootPane().setDefaultButton(configBtn);
-        configBtn.requestFocus();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         toFront();
+
         if(Reporting.getSystemOS().contains("Windows")){
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
 
+        this.runType = runType;
+
+        initComponents();
+        frameListeners();
+
+        dialogPane.getRootPane().setDefaultButton(configBtn);
+        configBtn.requestFocus();
     }
 
     private void initComponents() {

@@ -18,17 +18,22 @@ public class InitialConfiguration extends JFrame {
     private static JFrame initialConfiguration;
 
     private InitialConfiguration() {
-        initComponents();
-        modeSelectionBox.addItem("none");
-        modeSelectionBox.addItem("Client Mode");
-        modeSelectionBox.addItem("Server Mode");
-        frameListeners();
-        okButton.setEnabled(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+
         if(Reporting.getSystemOS().contains("Windows")){
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
+
+        initComponents();
+        frameListeners();
+
+        modeSelectionBox.addItem("none");
+        modeSelectionBox.addItem("Client Mode");
+        modeSelectionBox.addItem("Server Mode");
+
+        okButton.setEnabled(false);
+        modeSelectionBox.requestFocus();
     }
 
     private void initComponents() {

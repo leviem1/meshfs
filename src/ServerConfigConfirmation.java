@@ -22,24 +22,30 @@ public class ServerConfigConfirmation extends JFrame {
     private Properties properties;
     private static JFrame serverConfigConfirmation;
     private ServerConfigConfirmation(String content, HashMap accountDetails, Properties properties) {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
+
         this.properties = properties;
         this.accountDetails = accountDetails;
+
         try{
             ServerModeConfiguration.writeConfig(properties);
             JOptionPane.showMessageDialog(null, "Configuration was saved!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
         }catch(Exception e){
             JOptionPane.showMessageDialog(null, "Error when saving configuration!", "MeshFS - Success", JOptionPane.ERROR_MESSAGE);
         }
+
         initComponents();
         frameListeners();
+
         configValues.setContentType("text/html");
         configValues.setText(content);
         configValues.setCaretPosition(0);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        if(Reporting.getSystemOS().contains("Windows")){
-            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-        }
+
     }
 
     private void initComponents() {

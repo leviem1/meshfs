@@ -25,17 +25,21 @@ public class NewDirectoryWindow extends JFrame {
     private int port;
     private String userAccount;
     private NewDirectoryWindow(String serverAddress, int port, JSONObject jsonObj, String userAccount) {
-        this.serverAddress = serverAddress;
-        this.port = port;
-        this.userAccount = userAccount;
-        initComponents();
-        okButton.setEnabled(false);
-        frameListeners();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+
         if(Reporting.getSystemOS().contains("Windows")){
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
+
+        initComponents();
+        frameListeners();
+
+        this.serverAddress = serverAddress;
+        this.port = port;
+        this.userAccount = userAccount;
+
+        okButton.setEnabled(false);
     }
 
     private void initComponents() {

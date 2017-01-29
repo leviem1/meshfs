@@ -28,27 +28,31 @@ public class ServerModeConfiguration extends JFrame {
     private HashMap<String, String> accountsEnc;
     private HashMap<String, String> accountsPlain;
     private HashMap<String, String> accountsImported;
-
     private String out;
+
     private ServerModeConfiguration() {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
+
         model = new DefaultListModel();
+        accountsEnc = new HashMap<>();
+        accountsPlain = new HashMap<>();
+        accountsImported = new HashMap<>();
+
         initComponents();
+        frameListeners();
+
         submitBtn.setEnabled(false);
         removeUserBtn.setEnabled(false);
         backupConfigBtn.setEnabled(false);
         okButton.setEnabled(false);
-        accountsEnc = new HashMap<>();
-        accountsPlain = new HashMap<>();
-        accountsImported = new HashMap<>();
-        frameListeners();
         freeSpaceLbl.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
         spaceSldr.setMaximum(toIntExact(Reporting.getSystemStorage()/1073741824)-10);
         spaceSldr.setMinimum(0);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        if(Reporting.getSystemOS().contains("Windows")){
-            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-        }
     }
 
 

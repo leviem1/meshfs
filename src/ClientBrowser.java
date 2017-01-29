@@ -32,27 +32,36 @@ public class ClientBrowser extends JFrame {
     private DefaultTreeModel treeModel;
 
     private ClientBrowser(String serverAddress, int port, String userAccount) {
-        this.serverAddress = serverAddress;
-        this.port = port;
-        this.userAccount = userAccount;
-        initComponents();
-        browserBtns(false);
-        frameListeners();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
-        tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         if(Reporting.getSystemOS().contains("Windows")){
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
+
+        this.serverAddress = serverAddress;
+        this.port = port;
+        this.userAccount = userAccount;
+
+        catalogTimer = new java.util.Timer();
+
+        initComponents();
+        frameListeners();
+
+        browserBtns(false);
+
+
+        tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+
         TimerTask catalogCheck = new TimerTask() {
             @Override
             public void run() {
                 catalogCheck();
             }
         };
-        catalogTimer = new java.util.Timer();
         catalogTimer.scheduleAtFixedRate(catalogCheck, 0, 500);
+        uploadBtn.requestFocus();
 
     }
 
@@ -469,10 +478,9 @@ public class ClientBrowser extends JFrame {
 
     public static void run(String serverAddress, int port, JFrame sender, String userAccount) {
         clientBrowser = new ClientBrowser(serverAddress, port, userAccount);
-        CenterWindow.centerOnScreen(clientBrowser);
+        CenterWindow.centerOnWindow(sender, clientBrowser);
         clientBrowser.setVisible(true);
     }
-
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license

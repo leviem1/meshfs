@@ -28,22 +28,29 @@ public class MoveFileWindow extends JFrame {
     private String fileName;
 
     private MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, String userAccount) {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
+
         this.currentJsonPath = currentJsonPath;
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
         this.fileName = fileName;
+
+        setTitle("Move - " + fileName);
+
+
         initComponents();
         frameListeners();
+
         if(fileName.length() > 35){
             fileName = fileName.substring(0, 30) + "...";
         }
-        this.setTitle("Move - " + fileName);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        if(Reporting.getSystemOS().contains("Windows")){
-            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-        }
+
     }
 
     private void initComponents() {

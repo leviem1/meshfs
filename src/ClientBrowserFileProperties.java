@@ -19,10 +19,21 @@ public class ClientBrowserFileProperties extends JFrame {
     private DefaultListModel model;
 
     private ClientBrowserFileProperties(String fileName, String fileSize, String creationDate, String owner, JSONObject itemContents) {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
+
+        this.setTitle("Properties - " + fileName);
+
         model = new DefaultListModel();
+
         initComponents(fileName, fileSize, creationDate);
         frameListeners();
-        fileNameValue.setToolTipText(fileName);
+
+
         String fileNameLbl = fileName;
         if(fileName.length() > 25){
             fileNameLbl = fileName.substring(0, 22) + "...";
@@ -31,10 +42,12 @@ public class ClientBrowserFileProperties extends JFrame {
             fileName = fileName.substring(0, 10) + "...";
         }
 
+        fileNameValue.setToolTipText(fileName);
         fileNameValue.setText(fileNameLbl);
         fileSizeValue.setText(fileSize);
         creationDateValue.setText(creationDate);
         ownerValue.setText(owner);
+
         int pos = locationList.getModel().getSize();
         for (Object key : itemContents.keySet()) {
             String keyStr = key.toString();
@@ -44,12 +57,6 @@ public class ClientBrowserFileProperties extends JFrame {
             }
         }
 
-        this.setTitle("Properties - " + fileName);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        if(Reporting.getSystemOS().contains("Windows")){
-            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-        }
     }
 
 

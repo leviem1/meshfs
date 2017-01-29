@@ -31,18 +31,21 @@ public class ClientModeConfiguration extends JFrame{
     private String usernameFinal = "";
 
     private ClientModeConfiguration(String serverAddress) {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
+
         initComponents();
         frameListeners();
+
         serverAddressField.setText(serverAddress);
         if(serverAddress.equals("")) {
             okButton.setEnabled(false);
         }else{
             okButton.setEnabled(true);
-        }
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-        if(Reporting.getSystemOS().contains("Windows")){
-            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
     }
 
@@ -274,7 +277,7 @@ public class ClientModeConfiguration extends JFrame{
                 changed();
             }
             public void changed() {
-                if(serverAddressField.getText().isEmpty()){
+                if(serverAddressField.getText().isEmpty() || serverPortField.getText().isEmpty()){
                     return;
                 }
                 if (passwordField.getPassword().length == 0){
@@ -296,7 +299,7 @@ public class ClientModeConfiguration extends JFrame{
                 changed();
             }
             public void changed() {
-                if(serverAddressField.getText().isEmpty()){
+                if(serverAddressField.getText().isEmpty() || serverPortField.getText().isEmpty()){
                     return;
                 }
                 if (!(checkFields(usernameField))) {
@@ -334,8 +337,6 @@ public class ClientModeConfiguration extends JFrame{
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     private void onOk(){
-        String password = String.valueOf(passwordField.getPassword());
-        String username = usernameField.getText();
         if(!(FileClient.ping(serverAddressField.getText(), Integer.parseInt(serverPortField.getText())))){
             JOptionPane.showMessageDialog(null, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setText("");

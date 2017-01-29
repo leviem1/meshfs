@@ -26,6 +26,13 @@ public class RenameFileWindow extends JFrame {
     private String userAccount;
     private String originalName;
     private RenameFileWindow(String serverAddress, int port, String jsonObj, JFrame sender, String currentName, String userAccount) {
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        if(Reporting.getSystemOS().contains("Windows")){
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
+
         this.serverAddress = serverAddress;
         this.port = port;
         this.jsonObj = jsonObj;
@@ -34,20 +41,21 @@ public class RenameFileWindow extends JFrame {
 
         initComponents();
         frameListeners();
+
         String currentNameTruncated = currentName;
         if(currentName.length() > 33){
             currentNameTruncated = currentName.substring(0, 30) + "...";
         }
+
+        int beginningExtension = currentName.lastIndexOf(".");
+
         currentNameValue.setText(currentNameTruncated);
         currentNameValue.setToolTipText(currentName);
         newNameValueField.setText(currentName);
-        int beginningExtension = currentName.lastIndexOf(".");
         newNameValueField.setSelectionStart(0);
         newNameValueField.setSelectionEnd(beginningExtension);
         okButton.setEnabled(false);
-        if(Reporting.getSystemOS().contains("Windows")){
-            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-        }
+
     }
 
     private void initComponents() {
