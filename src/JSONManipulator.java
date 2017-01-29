@@ -244,7 +244,6 @@ class JSONManipulator {
      * @param JSONFilePath          The file path of the catalog file.
      * @param userAccount           The account name person that uploaded the file.
      *
-     *
      */
 
     static void addToIndex(String itemLocation, String fileName, String JSONFilePath, String userAccount) {
@@ -260,25 +259,42 @@ class JSONManipulator {
         }
     }
 
+    /**
+     * This method writes out a json file from a JSONObject.
+     *
+     * @param filePath      where the json file is to be written to.
+     * @param obj           The JSONObject the is to be written the json file
+     * @throws IOException  if the file cannot be written.
+     *
+     */
+
     static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
         try (FileWriter file = new FileWriter(filePath)) {
             file.write(obj.toJSONString());
         }
     }
 
-    static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int portNumber) throws IOException {
+    /**
+     * This method adds a new file, with all of its properties, to the JSONObject.
+     *
+     * @param itemLocation      The source virtual path within the JSONObject.
+     * @param path              Where the download file is to be saved to.
+     * @param outFile           The name that the download file is to be saved as.
+     * @param serverAddress      
+     *
+     */
+
+    static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int port) throws IOException {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
-        int port = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
         String catalogFileLocation = ".catalog.json";
-        String manifestFileLocation = ".manifest.json";
+        String manifestFileLocation = MeshFS.properties.getProperty("repository") + ".manifest.json";
+        FileClient.receiveFile(serverAddress, port, manifestFileLocation, manifestFileLocation);
+        JSONObject compInfoFile = getJSONObject(manifestFileLocation);
         String[] folders = itemLocation.split("/");
         JSONObject itemToRead = JSONManipulator.getJSONObject(catalogFileLocation);
-        JSONObject compInfoFile = getJSONObject(manifestFileLocation);
         List<String> stripeNames = new ArrayList<>();
         List<Thread> childThreads = new ArrayList<>();
         boolean wholeNecessary = true;
-
-        FileClient.receiveFile(serverAddress, portNumber, ".manifest.json", ".manifest.json");
 
         for (String folder : folders) {
             itemToRead = (JSONObject) itemToRead.get(folder);
