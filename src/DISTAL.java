@@ -100,12 +100,7 @@ class DISTAL {
             //sort the compStorageMap by descending available storage
             LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap);
 
-            for (int storage = 0; storage < sortedCompStorageMap.size(); storage++){
-                // account for the desired amount of free space
-                String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[storage]);
-                sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(String.valueOf(macAddress)) - minFreeSpace);
-            }
-
+            
             int numOfComputersUsed = sortedCompStorageMap.size();
 
             //don't use stripes if a file is less than 4096 byte
