@@ -101,7 +101,7 @@ class JSONManipulator {
             }
             catch (Exception ignored){}
         }
-        
+
         return contents;
     }
 
@@ -129,6 +129,7 @@ class JSONManipulator {
         return jsonObject;
     }
 
+
     /**
      * This method returns the JSONObject associated with the designated item.
      *
@@ -148,15 +149,26 @@ class JSONManipulator {
     /**
      * This method copies the given item to the designated path within the JSONObject.
      *
-     * @param jsonObject            the JSONObject that is being read.
-     * @param itemLocation          the source virtual path within the JSONObject.
-     * @param destinationLocation   the destination virtual path within the JSONObject
-     *                              should not have the name of the item in this path
+     * @param jsonObject            The JSONObject that is being read.
+     * @param itemLocation          The source virtual path within the JSONObject.
+     * @param destinationLocation   The destination virtual path within the JSONObject
+     *                              Should not have the name of the item in this path
+     * @param showDate              This determines if the time of the copy should be reflected in the file name
+     * @param newName               What the new file should be called.
      */
 
-    static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate) {
-        String fileName = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
-        return(copyFile(jsonObject, itemLocation, destinationLocation, showDate, fileName));
+    static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate, String newName){
+        JSONObject itemContents = getItemContents(jsonObject,itemLocation);
+
+        if(showDate){
+            DateFormat df = new SimpleDateFormat("h:mm:ss a");
+            Date dateObj = new Date();
+            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName+" ("+ df.format(dateObj)+")", itemContents);
+        }else{
+            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName, itemContents);
+        }
+
+        return jsonObject;
     }
 
     /**
@@ -243,7 +255,7 @@ class JSONManipulator {
         objChild.put("owner", userAccount);
         objChild.put("type", "file");
         objChild.put("fileName", alphanumericName);
-        objChild.put("fileSize", humanReadableByteCount(fileSize, true));
+        objChild.put("fileSize", humanReadableByteCount(fileSize));
         objChild.put("creationDate", creationDate);
 
         jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName,objChild);
@@ -415,6 +427,16 @@ class JSONManipulator {
         return true;
     }
 
+    /**
+     * This method produces a LinkedHashMap that where
+     * each element is comprised of the computers mac
+     * address and is available storage, with all of
+     * its properties, to the JSONObject.
+     *
+     * @param manifestFile The JSONObject that contains the information from the manifest file.
+     *
+     */
+
     static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile){
         LinkedHashMap<String,Long> storageMap = new LinkedHashMap();
         for (Object MACAddress: manifestFile.keySet()){
@@ -422,6 +444,16 @@ class JSONManipulator {
         }
         return storageMap;
     }
+
+    /**
+     * This method copies the given item to the designated path within the JSONObject.
+     *
+     * @param jsonObject                The JSONObject that is being read.
+     * @param itemDestinationLocation   The source virtual path within the JSONObject.
+     *                                  The name of the item should not be in this path.
+     * @param fileName                  The destination virtual path within the JSONObject.
+     * @param itemContents              This is the JSONObject the contains all the information abou the file.
+     */
 
     static JSONObject putItemInFolder(JSONObject jsonObject, String itemDestinationLocation, String fileName, JSONObject itemContents){
         String[] folders = itemDestinationLocation.split("/");
@@ -443,31 +475,27 @@ class JSONManipulator {
         return jsonObject;
     }
 
-    static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation, String NewName){
-        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false, NewName);
+    /**
+     * This method copies the given item to the designated path within the JSONObject.
+     *
+     * @param jsonObject            The JSONObject that is being read.
+     * @param itemLocation          The source virtual path within the JSONObject.
+     * @param destinationLocation   The destination virtual path within the JSONObject
+     *                              Should not have the name of the item in this path
+     * @param newName               What the moved file should be called.
+     */
+
+    static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation, String newName){
+        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false, newName);
         jsonObject = removeItem(jsonObject, itemLocation);
         return jsonObject;
     }
 
-    static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate, String newName){
-        JSONObject itemContents = getItemContents(jsonObject,itemLocation);
-
-        if(showDate){
-            DateFormat df = new SimpleDateFormat("h:mm:ss a");
-            Date dateObj = new Date();
-            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName+" ("+ df.format(dateObj)+")", itemContents);
-        }else{
-            jsonObject = putItemInFolder(jsonObject, destinationLocation, newName, itemContents);
-        }
-
-        return jsonObject;
-    }
-
-    private static String humanReadableByteCount(long bytes, boolean si) {
-        int unit = si ? 1000 : 1024;
+    private static String humanReadableByteCount(long bytes) {
+        int unit = 1024;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+        String pre = ("KMGTPE").charAt(exp-1) + ("i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
