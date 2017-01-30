@@ -9,29 +9,7 @@ import java.util.List;
 class FileUtils {
 
     static long getSize(String filePath) {
-        long fLen;
-        File file = new File(filePath);
-        while (true) {
-            try {
-                FileOutputStream fos = new FileOutputStream(file);
-                FileLock fl = fos.getChannel().lock();
-                fLen = file.length();
-                fl.release();
-                break;
-            } catch (IOException ioe) {
-                fLen = 0;
-                break;
-            } catch (OverlappingFileLockException ofle) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ie) {
-                    fLen = 0;
-                    break;
-                }
-            }
-        }
-
-        return fLen;
+        return new File(filePath).length();
     }
 
     static void writeStripe(String filePath, String outFile, long off, long len) throws IOException {
@@ -43,8 +21,7 @@ class FileUtils {
 
         while (true) {
             try {
-                FileLock fisFl = fis.getChannel().lock();
-                FileLock fosFl = fos.getChannel().lock();
+                FileLock fl = fos.getChannel().lock();
                 fis.skip(off);
 
                 while ((br != -1) && (len > 0)) {
@@ -61,8 +38,7 @@ class FileUtils {
                     len -= br;
                 }
 
-                fisFl.release();
-                fosFl.release();
+                fl.release();
                 break;
             } catch (OverlappingFileLockException ofle) {
                 try {
@@ -87,16 +63,14 @@ class FileUtils {
 
             while (true) {
                 try {
-                    FileLock fosFl = fos.getChannel().lock();
-                    FileLock fisFl = fis.getChannel().lock();
+                    FileLock fl = fos.getChannel().lock();
 
                     while ((br = fis.read(data, 0, data.length)) != -1) {
                         fos.write(data, 0, br);
                         fos.flush();
                     }
 
-                    fosFl.release();
-                    fisFl.release();
+                    fl.release();
                     fis.close();
                     break;
                 } catch (OverlappingFileLockException ofle) {
@@ -113,30 +87,6 @@ class FileUtils {
     }
 
     static boolean removeFile(String path) {
-        boolean result;
-        File file = new File(path);
-        while (true) {
-            try {
-                FileOutputStream fos = new FileOutputStream(file);
-                FileLock fl = fos.getChannel().lock();
-
-                result = file.delete();
-                fl.release();
-                fos.close();
-                break;
-            } catch (IOException ioe) {
-                result = false;
-                break;
-            } catch (OverlappingFileLockException ofle) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ie) {
-                    result = false;
-                    break;
-                }
-            }
-        }
-
-        return result;
+        return new File(path).delete();
     }
 }
