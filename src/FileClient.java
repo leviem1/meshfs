@@ -8,6 +8,8 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 
 
 /**
@@ -82,7 +84,7 @@ public final class FileClient {
      * @throws IOException on error connecting
      */
 
-    synchronized static void receiveReport(String serverAddress, int port) throws IOException {
+    static void receiveReport(String serverAddress, int port) throws IOException {
         String reportPart;
         String reportFull = "";
         Socket client = new Socket(serverAddress, port);
@@ -111,7 +113,7 @@ public final class FileClient {
         }
     }
 
-    synchronized static void duplicateFile(String serverAddress, int port, String currFile) throws IOException {
+    static void duplicateFile(String serverAddress, int port, String currFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -131,7 +133,7 @@ public final class FileClient {
         }
     }
 
-    synchronized static void renameFile(String serverAddress, int port, String jsonObj, String newName) throws IOException {
+    static void renameFile(String serverAddress, int port, String jsonObj, String newName) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -150,7 +152,7 @@ public final class FileClient {
         }
     }
 
-    synchronized static void moveFile(String serverAddress, int port, String currFile, String destFile) throws IOException {
+    static void moveFile(String serverAddress, int port, String currFile, String destFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -170,7 +172,7 @@ public final class FileClient {
         }
     }
 
-    synchronized static void deleteFile(String serverAddress, int port, String currFile) throws IOException {
+    static void deleteFile(String serverAddress, int port, String currFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -188,7 +190,7 @@ public final class FileClient {
         }
     }
 
-    synchronized static void addFolder(String serverAddress, int port, String directoryPath, String directoryName, String userAccount) throws IOException {
+    static void addFolder(String serverAddress, int port, String directoryPath, String directoryName, String userAccount) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -207,12 +209,13 @@ public final class FileClient {
         }
     }
 
-    synchronized static void sendFile(String serverAddress, int port, String filepath) throws IOException {
+    static void sendFile(String serverAddress, int port, String filepath) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        FileInputStream fis = new FileInputStream(filepath);
 
         try {
             out.println("102|" + (new File(filepath)).getName() + "\n");
@@ -221,28 +224,42 @@ public final class FileClient {
                 int br;
                 byte[] data = new byte[4096];
 
-                FileInputStream fis = new FileInputStream(filepath);
+                while (true) {
+                    try {
+                        FileLock fl = fis.getChannel().lock();
 
-                while ((br = fis.read(data, 0, data.length)) != -1) {
-                    dos.write(data, 0, br);
-                    dos.flush();
+                        while ((br = fis.read(data, 0, data.length)) != -1) {
+                            dos.write(data, 0, br);
+                            dos.flush();
+                        }
+
+                        fl.release();
+                        fis.close();
+                        dos.close();
+                        break;
+                    } catch (OverlappingFileLockException ofle) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ie) {
+                            break;
+                        }
+                    }
                 }
-
-                fis.close();
-                dos.close();
             }
+
             client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
     }
 
-    synchronized static void sendFile(String serverAddress, int port, String filepath, String userAccount) throws IOException {
+    static void sendFile(String serverAddress, int port, String filepath, String userAccount) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        FileInputStream fis = new FileInputStream(filepath);
 
         try {
             out.println("102|" + (new File(filepath)).getName() + "|" + userAccount + "\n");
@@ -251,46 +268,29 @@ public final class FileClient {
                 int br;
                 byte[] data = new byte[4096];
 
-                FileInputStream fis = new FileInputStream(filepath);
+                while (true) {
+                    try {
+                        FileLock fl = fis.getChannel().lock();
 
-                while ((br = fis.read(data, 0, data.length)) != -1) {
-                    dos.write(data, 0, br);
-                    dos.flush();
+                        while ((br = fis.read(data, 0, data.length)) != -1) {
+                            dos.write(data, 0, br);
+                            dos.flush();
+                        }
+
+                        fl.release();
+                        fis.close();
+                        dos.close();
+                        break;
+                    } catch (OverlappingFileLockException ofle) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ie) {
+                            break;
+                        }
+                    }
                 }
-
-                fis.close();
-                dos.close();
             }
-            client.close();
-        } catch (SocketTimeoutException ste) {
-            client.close();
-        }
-    }
 
-
-    @SuppressWarnings( "deprecation" )
-    synchronized public static void receiveFile(String serverAddress, int port, String fileName) throws IOException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        DataInputStream dis = new DataInputStream(client.getInputStream());
-
-        try {
-            out.println("101|" + fileName + "\n");
-
-            if (dis.readLine().trim().equals("201")) {
-                int br;
-                byte[] data = new byte[4096];
-                FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + fileName);
-
-                while ((br = dis.read(data, 0, data.length)) != -1) {
-                    fos.write(data, 0, br);
-                    fos.flush();
-                }
-
-                fos.close();
-                dis.close();
-            }
             client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
@@ -298,11 +298,12 @@ public final class FileClient {
     }
 
     @SuppressWarnings( "deprecation" )
-    synchronized static void receiveFile(String serverAddress, int port, String fileName, String fileOut) throws IOException {
+    public static void receiveFile(String serverAddress, int port, String fileName) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         DataInputStream dis = new DataInputStream(client.getInputStream());
+        FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + fileName);
 
         try {
             out.println("101|" + fileName + "\n");
@@ -311,15 +312,70 @@ public final class FileClient {
                 int br;
                 byte[] data = new byte[4096];
 
-                FileOutputStream fos = new FileOutputStream(fileOut);
+                while (true) {
+                    try {
+                        FileLock fl = fos.getChannel().lock();
 
-                while ((br = dis.read(data, 0, data.length)) != -1){
-                    fos.write(data, 0, br);
-                    fos.flush();
+                        while ((br = dis.read(data, 0, data.length)) != -1) {
+                            fos.write(data, 0, br);
+                            fos.flush();
+                        }
+
+                        fl.release();
+                        fos.close();
+                        dis.close();
+                        break;
+                    } catch (OverlappingFileLockException ofle) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ie) {
+                            break;
+                        }
+                    }
                 }
+            }
+            client.close();
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+    }
 
-                fos.close();
-                dis.close();
+    @SuppressWarnings( "deprecation" )
+    static void receiveFile(String serverAddress, int port, String fileName, String fileOut) throws IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        DataInputStream dis = new DataInputStream(client.getInputStream());
+        FileOutputStream fos = new FileOutputStream(fileOut);
+
+        try {
+            out.println("101|" + fileName + "\n");
+
+            if (dis.readLine().trim().equals("201")) {
+                int br;
+                byte[] data = new byte[4096];
+
+                while (true) {
+                    try {
+                        FileLock fl = fos.getChannel().lock();
+
+                        while ((br = dis.read(data, 0, data.length)) != -1) {
+                            fos.write(data, 0, br);
+                            fos.flush();
+                        }
+
+                        fl.release();
+                        fos.close();
+                        dis.close();
+                        break;
+                    } catch (OverlappingFileLockException ofle) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ie) {
+                            break;
+                        }
+                    }
+                }
             }
 
             client.close();

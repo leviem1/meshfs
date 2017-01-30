@@ -1,10 +1,10 @@
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
+import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -33,13 +33,31 @@ class JSONManipulator {
      */
 
     static JSONObject getJSONObject(String filePath) {
-        JSONParser reader = new JSONParser();
+        File file = new File(filePath);
         JSONObject jsonObject = null;
-        try {
-            Object obj = reader.parse(new FileReader(filePath));
-            jsonObject = (JSONObject) obj;
-        } catch (Exception e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                FileLock fl = fos.getChannel().lock();
+
+                FileReader fr = new FileReader(file);
+                JSONParser reader = new JSONParser();
+                Object obj = reader.parse(fr);
+                jsonObject = (JSONObject) obj;
+
+                fl.release();
+                fos.close();
+                break;
+            } catch (ParseException | IOException e) {
+                e.printStackTrace();
+                break;
+            } catch (OverlappingFileLockException e) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    break;
+                }
+            }
         }
         return jsonObject;
     }
@@ -271,8 +289,26 @@ class JSONManipulator {
      */
 
     static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
-        try (FileWriter file = new FileWriter(filePath)) {
-            file.write(obj.toJSONString());
+        File file = new File(filePath);
+        FileOutputStream fos = new FileOutputStream(file);
+        FileWriter fw = new FileWriter(file);
+
+        while (true) {
+            try {
+                FileLock fl = fos.getChannel().lock();
+
+                fw.write(obj.toJSONString());
+
+                fl.release();
+                fos.close();
+                break;
+            } catch (OverlappingFileLockException ofle) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    break;
+                }
+            }
         }
     }
 
@@ -349,7 +385,7 @@ class JSONManipulator {
             for (Object MACAddress : compsWithWhole) {
                 if (compInfoFile.containsKey(MACAddress)) {
                     if (((JSONArray)(((JSONObject)compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)){
-                        String IPAddress = (((JSONObject)compInfoFile.get(MACAddress)).get("IP")).toString();
+                        String IPAddress = ((JSONObject)compInfoFile.get(MACAddress)).get("IP").toString();
                         FileClient.receiveFile(IPAddress, port,fileNameW, outFileDir + File.separator + "." + outFile);
                         new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFile));
                         cantContinue = false;
@@ -416,9 +452,9 @@ class JSONManipulator {
     static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate, String newName){
         JSONObject itemContents = getItemContents(jsonObject,itemLocation);
 
-        DateFormat df = new SimpleDateFormat("h:mm:ss a");
-        Date dateObj = new Date();
         if(showDate){
+            DateFormat df = new SimpleDateFormat("h:mm:ss a");
+            Date dateObj = new Date();
             jsonObject = putItemInFolder(jsonObject, destinationLocation, newName+" ("+ df.format(dateObj)+")", itemContents);
         }else{
             jsonObject = putItemInFolder(jsonObject, destinationLocation, newName, itemContents);

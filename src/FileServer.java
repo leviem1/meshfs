@@ -7,6 +7,8 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.*;
 
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
 
 
@@ -171,13 +173,13 @@ class ServerInit implements Runnable {
         out.flush();
     }
 
-    synchronized private void sendReport(Socket client) throws IOException {
+    private void sendReport(Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         out.println("201");
         out.println(Reporting.generate() + "\n");
     }
 
-    synchronized private void receiveReport(Socket client) throws IOException {
+    private void receiveReport(Socket client) throws IOException {
         String reportPart;
         String reportFull = "";
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -201,7 +203,7 @@ class ServerInit implements Runnable {
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
-    synchronized private void moveFile(String currentPath, String newPath, Socket client) throws IOException {
+    private void moveFile(String currentPath, String newPath, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
@@ -209,7 +211,7 @@ class ServerInit implements Runnable {
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.moveFile(jsonObj, currentPath, newPath));
     }
 
-    synchronized private void deleteFile(String jsonPath, Socket client) throws IOException {
+    private void deleteFile(String jsonPath, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
@@ -218,7 +220,7 @@ class ServerInit implements Runnable {
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.removeItem(jsonObj, jsonPath));
     }
 
-    synchronized private void duplicateFile(String currentPath, Socket client) throws IOException {
+    private void duplicateFile(String currentPath, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
@@ -226,70 +228,115 @@ class ServerInit implements Runnable {
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.copyFile(jsonObj, currentPath, currentPath.substring(0, currentPath.lastIndexOf("/")), true));
     }
 
-    synchronized private void sendFile(String filename, Socket client) throws IOException {
+    private void sendFile(String filename, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-
         FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + filename);
 
         out.println("201");
 
-        while ((br = fis.read(data, 0, data.length)) != -1) {
-            dos.write(data, 0, br);
-            dos.flush();
+        while (true) {
+            try {
+                FileLock fl = fis.getChannel().lock();
+
+                while ((br = fis.read(data, 0, data.length)) != -1) {
+                    dos.write(data, 0, br);
+                    dos.flush();
+                }
+
+                fl.release();
+                break;
+            } catch (OverlappingFileLockException ofle) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    break;
+                }
+            }
         }
 
+        out.close();
         fis.close();
         dos.close();
     }
 
-    synchronized private void receiveFile(String filename, Socket client) throws IOException {
+    private void receiveFile(String filename, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-
-        out.println("201");
-
         DataInputStream dis = new DataInputStream(client.getInputStream());
         FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
-        while ((br = dis.read(data, 0, data.length)) != -1) {
-            fos.write(data, 0, br);
-            fos.flush();
+        out.println("201");
+
+        while (true) {
+            try {
+                FileLock fl = fos.getChannel().lock();
+
+                while ((br = dis.read(data, 0, data.length)) != -1) {
+                    fos.write(data, 0, br);
+                    fos.flush();
+                }
+
+                fl.release();
+                break;
+            } catch (OverlappingFileLockException ofle) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    break;
+                }
+            }
         }
+
         out.close();
         fos.close();
         dis.close();
     }
 
-    synchronized private void receiveFile(String filename, String userAccount, Socket client) throws IOException {
+    private void receiveFile(String filename, String userAccount, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        DataInputStream dis = new DataInputStream(client.getInputStream());
+        FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
         out.println("201");
         JSONManipulator.addToIndex(userAccount, filename + " (uploading)",MeshFS.properties.getProperty("repository")+".catalog.json", userAccount);
 
-        DataInputStream dis = new DataInputStream(client.getInputStream());
-        FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
+        while (true) {
+            try {
+                FileLock fl = fos.getChannel().lock();
 
-        while ((br = dis.read(data, 0, data.length)) != -1){
-            fos.write(data, 0, br);
-            fos.flush();
+                while ((br = dis.read(data, 0, data.length)) != -1) {
+                    fos.write(data, 0, br);
+                    fos.flush();
+                }
+
+                fl.release();
+                break;
+            } catch (OverlappingFileLockException ofle) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    break;
+                }
+            }
         }
+
         out.close();
         fos.close();
         dis.close();
+
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.removeItem(JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json"),userAccount + "/" + filename + " (uploading)"));
 
         Thread distributor = new Thread(() -> DISTAL.distributor(filename, userAccount));
         distributor.start();
-
     }
 
-    synchronized private void createDirectory(String directoryPath, String directoryName, Socket client, String userAccount) throws IOException {
+    private void createDirectory(String directoryPath, String directoryName, Socket client, String userAccount) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
@@ -298,7 +345,7 @@ class ServerInit implements Runnable {
 
     }
 
-    synchronized private void renameFile(String jsonPath, String newName, Socket client) throws IOException {
+    private void renameFile(String jsonPath, String newName, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
