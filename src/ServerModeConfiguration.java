@@ -53,6 +53,7 @@ public class ServerModeConfiguration extends JFrame {
         spaceSldr.setMinimum(0);
         helpIcon.setIcon(new ImageIcon(MeshFS.class.getResource("help_icon.png")));
         helpIcon.setToolTipText("<html>Selecting this option will designate<br>this computer as the master MeshFS<br>server</html>");
+
     }
 
 
@@ -255,7 +256,7 @@ public class ServerModeConfiguration extends JFrame {
                                                             .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
                                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                             .addComponent(timeUnitLbl))))
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                                                 .addGroup(networkTabLayout.createParallelGroup()
                                                     .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
                                                         .addComponent(stripesLbl)
@@ -319,7 +320,7 @@ public class ServerModeConfiguration extends JFrame {
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(backupConfigBtn)
                                     .addComponent(exportDescriptionLbl))
-                                .addContainerGap(3, Short.MAX_VALUE))
+                                .addContainerGap(12, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Network", networkTab);
@@ -445,6 +446,7 @@ public class ServerModeConfiguration extends JFrame {
                     allowGuestBox.setText("Allow Guest User to Login");
                     allowGuestBox.setHorizontalTextPosition(SwingConstants.LEFT);
                     allowGuestBox.setFont(new Font("Arial", allowGuestBox.getFont().getStyle(), allowGuestBox.getFont().getSize() + 1));
+                    allowGuestBox.setSelected(true);
 
                     GroupLayout userAccountsLayout = new GroupLayout(userAccounts);
                     userAccounts.setLayout(userAccountsLayout);
@@ -472,11 +474,11 @@ public class ServerModeConfiguration extends JFrame {
                                                 .addContainerGap()
                                                 .addComponent(submitBtn)))
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
+                                        .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
                                     .addGroup(userAccountsLayout.createSequentialGroup()
                                         .addContainerGap()
                                         .addComponent(allowGuestBox)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 175, Short.MAX_VALUE)
                                         .addComponent(removeUserBtn)))
                                 .addContainerGap())
                     );
@@ -1079,8 +1081,7 @@ public class ServerModeConfiguration extends JFrame {
             browseBtn.setEnabled(false);
             spaceSldr.setEnabled(false);
             minSpaceField.setEnabled(false);
-
-
+            serverSettingPane.addTab("User Accounts", userAccounts);
 
         }else if(mode.equals("easy")){
             masterServerField.setEnabled(true);
@@ -1102,7 +1103,7 @@ public class ServerModeConfiguration extends JFrame {
             browseBtn.setEnabled(true);
             spaceSldr.setEnabled(true);
             minSpaceField.setEnabled(true);
-
+            serverSettingPane.removeTabAt(2);
         }
     }
 
