@@ -49,8 +49,7 @@ public class MeshFS {
                     newCatalog.put("currentName", "0000000000000000");
                     try {
                         JSONManipulator.writeJSONObject(properties.getProperty("repository")+".catalog.json", newCatalog);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException ignored) {
                     }
                 }
             } else {

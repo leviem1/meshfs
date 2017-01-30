@@ -168,8 +168,8 @@ public class NewDirectoryWindow extends JFrame {
             }
             try {
                 FileClient.addFolder(serverAddress, port, newFolderPath, directoryName, userAccount);
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException ignored) {
+
             }
             dispose();
         });

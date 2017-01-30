@@ -1,3 +1,4 @@
+import com.oracle.javafx.jmx.json.JSONReader;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
 import org.json.simple.parser.ParseException;
@@ -33,31 +34,14 @@ class JSONManipulator {
      */
 
     static JSONObject getJSONObject(String filePath) {
-        File file = new File(filePath);
         JSONObject jsonObject = null;
-        while (true) {
-            try {
-                FileOutputStream fos = new FileOutputStream(file);
-                FileLock fl = fos.getChannel().lock();
+        JSONParser reader = new JSONParser();
 
-                FileReader fr = new FileReader(file);
-                JSONParser reader = new JSONParser();
-                Object obj = reader.parse(fr);
-                jsonObject = (JSONObject) obj;
-
-                fl.release();
-                fos.close();
-                break;
-            } catch (ParseException | IOException e) {
-                e.printStackTrace();
-                break;
-            } catch (OverlappingFileLockException e) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ie) {
-                    break;
-                }
-            }
+        try {
+            Object obj = reader.parse(new FileReader(filePath));
+            jsonObject = (JSONObject) obj;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return jsonObject;
     }
@@ -303,21 +287,19 @@ class JSONManipulator {
     static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
         File file = new File(filePath);
         FileOutputStream fos = new FileOutputStream(file);
-        FileWriter fw = new FileWriter(file);
-
         while (true) {
             try {
                 FileLock fl = fos.getChannel().lock();
-
-                fw.write(obj.toJSONString());
-
+                fos.write(obj.toJSONString().getBytes());
                 fl.release();
                 fos.close();
                 break;
             } catch (OverlappingFileLockException ofle) {
+                ofle.printStackTrace();
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ie) {
+                    ie.printStackTrace();
                     break;
                 }
             }

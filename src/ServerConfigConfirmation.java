@@ -140,8 +140,7 @@ public class ServerConfigConfirmation extends JFrame {
         okButton.addActionListener(e -> {
             try {
                 onOk();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException ignored) {
             }
         });
         backBtn.addActionListener(e -> {
@@ -175,8 +174,7 @@ public class ServerConfigConfirmation extends JFrame {
             builder.start();
             dispose();
             System.exit(0);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        } catch (URISyntaxException ignored) {
         }
     }
 
