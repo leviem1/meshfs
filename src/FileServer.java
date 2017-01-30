@@ -225,7 +225,7 @@ class ServerInit implements Runnable {
         out.println("201");
         out.flush();
         JSONObject jsonObj = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json");
-        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.copyFile(jsonObj, currentPath, currentPath.substring(0, currentPath.lastIndexOf("/")), true));
+        JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.copyFile(jsonObj, currentPath, currentPath.substring(0, currentPath.lastIndexOf("/")), true, currentPath.substring(currentPath.lastIndexOf("/")+1)));
     }
 
     private void sendFile(String filename, Socket client) throws IOException {
