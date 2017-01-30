@@ -18,12 +18,12 @@ import java.util.*;
 
 class DISTAL {
 
-    private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap){
+    private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap , long sizeOfStripe){
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
 
         //put something in the map to compare against
-        sortedMap.put("temp", 99999999999999L);
+        sortedMap.put("temp", -1L);
 
         for (String key : storageMap.keySet()){
             Long storageAmount = storageMap.get(key);
@@ -51,8 +51,12 @@ class DISTAL {
                 sortedMap.put(key,storageMap.get(key));
             }
         }
-        //remove the temporary key, value combination
-        sortedMap.remove("temp");
+        //remove any key, value combination that cannot store a stripe
+        for (String macAddress : sortedMap.keySet()){
+            if (sortedMap.get(macAddress) < sizeOfStripe){
+                sortedMap.remove(macAddress);
+            }
+        }
         return sortedMap;
     }
 
@@ -98,7 +102,7 @@ class DISTAL {
             LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFile);
 
             //sort the compStorageMap by descending available storage
-            LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap);
+            LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap, sizeOfStripe);
 
             
             int numOfComputersUsed = sortedCompStorageMap.size();
