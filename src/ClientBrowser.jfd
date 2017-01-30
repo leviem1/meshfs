@@ -79,7 +79,7 @@ new FormModel {
 					"value": "Center"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0, 0:1.0, 0"
+					"$columnSpecs": "0, 369:1.0, 0"
 					"$rowSpecs": "0"
 					"$hGap": 5
 					"$vGap": 5
@@ -91,6 +91,12 @@ new FormModel {
 						"text": "Logout"
 						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "statusLbl"
+						"horizontalAlignment": 0
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "quitBtn"
 						"text": "Quit"

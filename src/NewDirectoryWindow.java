@@ -1,20 +1,10 @@
 import org.json.simple.JSONObject;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Map;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeModel;
-/*
- * Created by JFormDesigner on Mon Jan 16 18:44:07 MST 2017
- */
-
 
 
 /**
@@ -162,7 +152,7 @@ public class NewDirectoryWindow extends JFrame {
                 }
                 else{
                 }
-            }catch(NullPointerException npe){
+            }catch(NullPointerException ignored){
             }
         });
         okButton.addActionListener(e -> {

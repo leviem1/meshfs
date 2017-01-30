@@ -1,14 +1,6 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
-/*
- * Created by JFormDesigner on Sun Oct 30 14:13:25 MDT 2016
- */
-
-
 
 /**
  * Created by Mark Hedrick on 10/30/16.

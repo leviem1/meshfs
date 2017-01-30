@@ -1,19 +1,12 @@
 import org.json.simple.JSONObject;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Map;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-/*
- * Created by JFormDesigner on Tue Jan 17 18:36:29 MST 2017
- */
-
 
 
 /**

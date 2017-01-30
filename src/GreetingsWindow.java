@@ -1,13 +1,6 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
-/*
- * Created by JFormDesigner on Sun Oct 30 13:52:07 MDT 2016
- */
-
 
 
 /**
@@ -31,6 +24,10 @@ public class GreetingsWindow extends JFrame {
 
         initComponents();
         frameListeners();
+
+        if(!runType){
+            configBtn.setText("Continue...");
+        }
 
         dialogPane.getRootPane().setDefaultButton(configBtn);
         configBtn.requestFocus();
@@ -128,7 +125,7 @@ public class GreetingsWindow extends JFrame {
 
     private void frameListeners(){
         configBtn.addActionListener(e -> {
-            if(runType){
+            if(!runType){
                 ClientModeConfiguration.run(greetingsWindow, "");
                 dispose();
             }
@@ -148,15 +145,14 @@ public class GreetingsWindow extends JFrame {
         dispose();
     }
 
-    public static void run(boolean runType) {
-        greetingsWindow = new GreetingsWindow(runType);
-        CenterWindow.centerOnScreen(greetingsWindow);
-        greetingsWindow.setVisible(true);
-    }
 
     public static void run(boolean runType, JFrame sender) {
         greetingsWindow = new GreetingsWindow(runType);
-        CenterWindow.centerOnWindow(sender, greetingsWindow);
+        if(!(sender == null)){
+            CenterWindow.centerOnWindow(sender, greetingsWindow);
+        }else{
+            CenterWindow.centerOnScreen(greetingsWindow);
+        }
         greetingsWindow.setVisible(true);
     }
 

@@ -1,6 +1,4 @@
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,11 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
-/*
- * Created by JFormDesigner on Mon Jan 09 21:01:45 MST 2017
- */
 
 
 public class ServerConfigConfirmation extends JFrame {

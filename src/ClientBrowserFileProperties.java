@@ -1,15 +1,8 @@
 import org.json.simple.JSONObject;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
-/*
- * Created by JFormDesigner on Thu Dec 01 19:07:39 MST 2016
- */
-
 
 
 /**
@@ -213,7 +206,7 @@ public class ClientBrowserFileProperties extends JFrame {
 
             //---- titleLbl ----
             titleLbl.setText("File Properties");
-            titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
             titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
