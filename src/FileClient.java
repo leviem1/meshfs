@@ -84,7 +84,7 @@ public final class FileClient {
      * @throws IOException on error connecting
      */
 
-    static void receiveReport(String serverAddress, int port) throws IOException {
+    synchronized static void receiveReport(String serverAddress, int port) throws IOException {
         String reportPart;
         String reportFull = "";
         Socket client = new Socket(serverAddress, port);
@@ -113,7 +113,7 @@ public final class FileClient {
         }
     }
 
-    static void duplicateFile(String serverAddress, int port, String currFile) throws IOException {
+    synchronized static void duplicateFile(String serverAddress, int port, String currFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -133,7 +133,7 @@ public final class FileClient {
         }
     }
 
-    static void renameFile(String serverAddress, int port, String jsonObj, String newName) throws IOException {
+    synchronized static void renameFile(String serverAddress, int port, String jsonObj, String newName) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -152,7 +152,7 @@ public final class FileClient {
         }
     }
 
-    static void moveFile(String serverAddress, int port, String currFile, String destFile) throws IOException {
+    synchronized static void moveFile(String serverAddress, int port, String currFile, String destFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -172,7 +172,7 @@ public final class FileClient {
         }
     }
 
-    static void deleteFile(String serverAddress, int port, String currFile) throws IOException {
+    synchronized static void deleteFile(String serverAddress, int port, String currFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -190,7 +190,7 @@ public final class FileClient {
         }
     }
 
-    static void addFolder(String serverAddress, int port, String directoryPath, String directoryName, String userAccount) throws IOException {
+    synchronized static void addFolder(String serverAddress, int port, String directoryPath, String directoryName, String userAccount) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -209,7 +209,7 @@ public final class FileClient {
         }
     }
 
-    static void sendFile(String serverAddress, int port, String filepath) throws IOException {
+    synchronized static void sendFile(String serverAddress, int port, String filepath) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -239,7 +239,7 @@ public final class FileClient {
         }
     }
 
-    static void sendFile(String serverAddress, int port, String filepath, String userAccount) throws IOException {
+    synchronized static void sendFile(String serverAddress, int port, String filepath, String userAccount) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -271,7 +271,7 @@ public final class FileClient {
 
 
     @SuppressWarnings( "deprecation" )
-    public static void receiveFile(String serverAddress, int port, String fileName) throws IOException {
+    synchronized public static void receiveFile(String serverAddress, int port, String fileName) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -300,7 +300,7 @@ public final class FileClient {
     }
 
     @SuppressWarnings( "deprecation" )
-    static void receiveFile(String serverAddress, int port, String fileName, String fileOut) throws IOException {
+    synchronized static void receiveFile(String serverAddress, int port, String fileName, String fileOut) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);

@@ -171,13 +171,13 @@ class ServerInit implements Runnable {
         out.flush();
     }
 
-    private void sendReport(Socket client) throws IOException {
+    synchronized private void sendReport(Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         out.println("201");
         out.println(Reporting.generate() + "\n");
     }
 
-    private void receiveReport(Socket client) throws IOException {
+    synchronized private void receiveReport(Socket client) throws IOException {
         String reportPart;
         String reportFull = "";
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -201,7 +201,7 @@ class ServerInit implements Runnable {
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
-    private void moveFile(String currentPath, String newPath, Socket client) throws IOException {
+    synchronized private void moveFile(String currentPath, String newPath, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
@@ -209,7 +209,7 @@ class ServerInit implements Runnable {
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.moveFile(jsonObj, currentPath, newPath));
     }
 
-    private void deleteFile(String jsonPath, Socket client) throws IOException {
+    synchronized private void deleteFile(String jsonPath, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
@@ -218,7 +218,7 @@ class ServerInit implements Runnable {
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.removeItem(jsonObj, jsonPath));
     }
 
-    private void duplicateFile(String currentPath, Socket client) throws IOException {
+    synchronized private void duplicateFile(String currentPath, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
@@ -226,7 +226,7 @@ class ServerInit implements Runnable {
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".catalog.json", JSONManipulator.copyFile(jsonObj, currentPath, currentPath.substring(0, currentPath.lastIndexOf("/")), true));
     }
 
-    private void sendFile(String filename, Socket client) throws IOException {
+    synchronized private void sendFile(String filename, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
@@ -245,7 +245,7 @@ class ServerInit implements Runnable {
         dos.close();
     }
 
-    private void receiveFile(String filename, Socket client) throws IOException {
+    synchronized private void receiveFile(String filename, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -264,7 +264,7 @@ class ServerInit implements Runnable {
         dis.close();
     }
 
-    private void receiveFile(String filename, String userAccount, Socket client) throws IOException {
+    synchronized private void receiveFile(String filename, String userAccount, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -289,7 +289,7 @@ class ServerInit implements Runnable {
 
     }
 
-    private void createDirectory(String directoryPath, String directoryName, Socket client, String userAccount) throws IOException {
+    synchronized private void createDirectory(String directoryPath, String directoryName, Socket client, String userAccount) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
@@ -298,7 +298,7 @@ class ServerInit implements Runnable {
 
     }
 
-    private void renameFile(String jsonPath, String newName, Socket client) throws IOException {
+    synchronized private void renameFile(String jsonPath, String newName, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
