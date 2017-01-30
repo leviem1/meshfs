@@ -334,6 +334,7 @@ public class ClientModeConfiguration extends JFrame{
             usernameField.setText("guest");
             passwordField.setText("guest");
             bindAnonymouslyCheckBox.setSelected(true);
+            okButton.setEnabled(false);
             return;
         }
         try{

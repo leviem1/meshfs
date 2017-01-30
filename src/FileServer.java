@@ -237,24 +237,10 @@ class ServerInit implements Runnable {
 
         out.println("201");
 
-        while (true) {
-            try {
-                FileLock fl = fis.getChannel().lock();
 
-                while ((br = fis.read(data, 0, data.length)) != -1) {
-                    dos.write(data, 0, br);
-                    dos.flush();
-                }
-
-                fl.release();
-                break;
-            } catch (OverlappingFileLockException ofle) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ie) {
-                    break;
-                }
-            }
+        while ((br = fis.read(data, 0, data.length)) != -1) {
+            dos.write(data, 0, br);
+            dos.flush();
         }
 
         out.close();

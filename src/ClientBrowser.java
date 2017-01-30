@@ -23,6 +23,7 @@ public class ClientBrowser extends JFrame {
     private DefaultMutableTreeNode rootNode;
     private TreeNode root;
     private DefaultTreeModel treeModel;
+    private int failureCount;
 
     private ClientBrowser(String serverAddress, int port, String userAccount) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -62,8 +63,7 @@ public class ClientBrowser extends JFrame {
         jsonObj = JSONManipulator.getJSONObject(".catalog.json");
         try {
             FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException ignored) {
         }
         rootNode = new DefaultMutableTreeNode(userAccount);
         root = (readFolder(userAccount, JSONManipulator.getJSONObject(".catalog.json"), rootNode));
@@ -266,20 +266,19 @@ public class ClientBrowser extends JFrame {
             fileChooser.setDialogTitle("Choose File to Upload");
             fileChooser.setAcceptAllFileFilterUsed(true);
             int rVal = fileChooser.showOpenDialog(null);
-            Map<String, String> folderMap = JSONManipulator.getMapOfFolderContents(JSONManipulator.getJSONObject(".catalog.json"), userAccount, userAccount);
-            for (Map.Entry<String, String> item : folderMap.entrySet())
-            {
-                if(item.getKey().equals(fileChooser.getSelectedFile().getName())){
-                    JOptionPane.showMessageDialog(null, "File already exists on server!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-            }
             if (rVal == JFileChooser.APPROVE_OPTION) {
+                Map<String, String> folderMap = JSONManipulator.getMapOfFolderContents(JSONManipulator.getJSONObject(".catalog.json"), userAccount, userAccount);
+                for (Map.Entry<String, String> item : folderMap.entrySet())
+                {
+                    if(item.getKey().equals(fileChooser.getSelectedFile().getName())){
+                        JOptionPane.showMessageDialog(null, "File already exists on server!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
                 Thread upload = new Thread(() -> {
                     try {
                         FileClient.sendFile(serverAddress, port, fileChooser.getSelectedFile().getPath(), userAccount);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
+                    } catch (IOException ignored) {
                     }
                 });
                 upload.start();
@@ -336,19 +335,22 @@ public class ClientBrowser extends JFrame {
         downloadAsBtn.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.showSaveDialog(null);
-            fileChooser.setDialogTitle("Choose Save Location");
-            File localFile  = new File(fileChooser.getSelectedFile().toString());
-            if((localFile.exists())){
-                JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            Thread download = new Thread(() -> {
-                statusLbl.setText("Downloading...");
-                downloadFile(fileChooser.getSelectedFile().toString());
-            });
+            fileChooser.setSelectedFile(new File(node.toString()));
+            int rVal = fileChooser.showSaveDialog(null);
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                fileChooser.setDialogTitle("Choose Save Location");
+                File localFile  = new File(fileChooser.getSelectedFile().toString());
+                if((localFile.exists())){
+                    JOptionPane.showMessageDialog(null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                Thread download = new Thread(() -> {
+                    statusLbl.setText("Downloading...");
+                    downloadFile(fileChooser.getSelectedFile().toString());
+                });
 
-            download.start();
+                download.start();
+            }
         });
         propertiesBtn.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
@@ -365,8 +367,7 @@ public class ClientBrowser extends JFrame {
             try {
                 FileClient.deleteFile(serverAddress, port, jsonPath);
                 catalogCheck();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException ignored) {
             }
         });
         duplicateBtn.addActionListener(e -> {
@@ -374,8 +375,7 @@ public class ClientBrowser extends JFrame {
             try {
                 FileClient.duplicateFile(serverAddress, port, jsonPath);
                 catalogCheck();
-            } catch (IOException e1) {
-                e1.printStackTrace();
+            } catch (IOException ignored) {
             }
         });
         moveBtn.addActionListener(e -> MoveFileWindow.run(tree1.getLastSelectedPathComponent().toString(), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), serverAddress, port, clientBrowser, userAccount));
@@ -430,8 +430,7 @@ public class ClientBrowser extends JFrame {
                 JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                 statusLbl.setText("Download Completed!");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 
@@ -447,24 +446,34 @@ public class ClientBrowser extends JFrame {
 
     private void catalogCheck(){
         SwingUtilities.invokeLater(() -> {
-            try {
-                File tempCatalog = File.createTempFile(".catalog", ".json");
-                tempCatalog.deleteOnExit();
-                File localCatalogFile = new File(".catalog.json");
-                FileClient.receiveFile(serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath());
-                JSONObject latestCatalog = JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
-                JSONObject localCatalog = JSONManipulator.getJSONObject(localCatalogFile.getAbsolutePath());
-                if(localCatalog.equals(latestCatalog)){
-                    tempCatalog.delete();
-                }else{
-                    FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
-                    browserBtns(false);
-                    tree1.removeAll();
-                    tree1.setModel(new DefaultTreeModel(readFolder(userAccount, JSONManipulator.getJSONObject(".catalog.json"), new DefaultMutableTreeNode(userAccount))));
-                    tempCatalog.delete();
+            if(failureCount >= 5){
+                catalogTimer.cancel();
+                catalogTimer.purge();
+                JOptionPane.showMessageDialog(null, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                ClientModeConfiguration.run(clientBrowser, serverAddress);
+                dispose();
+            }else{
+                try {
+                    File tempCatalog = File.createTempFile(".catalog", ".json");
+                    tempCatalog.deleteOnExit();
+                    try{
+                        FileClient.receiveFile(serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath());
+                    }catch(Exception e){
+                        failureCount += 1;
+                    }
+                    JSONObject latestCatalog = JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
+                    JSONObject localCatalog = JSONManipulator.getJSONObject(new File(".catalog.json").getAbsolutePath());
+                    if(localCatalog.equals(latestCatalog)){
+                        tempCatalog.delete();
+                    }else{
+                        FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
+                        browserBtns(false);
+                        tree1.removeAll();
+                        tree1.setModel(new DefaultTreeModel(readFolder(userAccount, JSONManipulator.getJSONObject(".catalog.json"), new DefaultMutableTreeNode(userAccount))));
+                        tempCatalog.delete();
+                    }
+                } catch (IOException ignored) {
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         });
 
