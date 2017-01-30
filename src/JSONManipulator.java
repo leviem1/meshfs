@@ -81,7 +81,7 @@ class JSONManipulator {
                     contents.put(keyStr, type);
                 }
             }
-            catch (Exception e){}
+            catch (Exception ignored){}
         }
         
         return contents;

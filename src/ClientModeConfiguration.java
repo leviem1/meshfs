@@ -1,25 +1,15 @@
-import sun.java2d.BackBufferCapsProvider;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.HashMap;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-/*
- * Created by JFormDesigner on Sun Oct 30 15:17:23 MDT 2016
- */
-
 
 
 /**
@@ -353,7 +343,7 @@ public class ClientModeConfiguration extends JFrame{
                 ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration, usernameFinal);
                 dispose();
             }
-        }catch(IOException ioe){
+        }catch(IOException ignored){
         }
     }
 
@@ -388,7 +378,7 @@ public class ClientModeConfiguration extends JFrame{
                     for(int i = 0; i < username.length()-1; i=i+2){
                         try{
                             password += username.charAt(i);
-                        }catch(IndexOutOfBoundsException ioobe){
+                        }catch(IndexOutOfBoundsException ignored){
                         }
                     }
                     MessageDigest messageDigest = null;
@@ -414,16 +404,16 @@ public class ClientModeConfiguration extends JFrame{
     }
 
     private boolean checkFields(JTextField field) {
-        if (field.getText().isEmpty() == true){
-            return false;
-        }else{
-            return true;
-        }
+        return field.getText().isEmpty() != true;
     }
 
     public static void run(JFrame sender, String serverAddress) {
         clientModeConfiguration = new ClientModeConfiguration(serverAddress);
-        CenterWindow.centerOnWindow(sender, clientModeConfiguration);
+        if(!(sender == null)){
+            CenterWindow.centerOnWindow(sender, clientModeConfiguration);
+        }else{
+            CenterWindow.centerOnScreen(clientModeConfiguration);
+        }
         clientModeConfiguration.setVisible(true);
     }
 }

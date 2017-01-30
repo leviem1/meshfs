@@ -8,9 +8,7 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 
 /**
  * The FileClient class handles connecting to

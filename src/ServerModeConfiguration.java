@@ -9,12 +9,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import com.jgoodies.forms.factories.*;
-import com.jgoodies.forms.layout.*;
 
 import static java.lang.String.valueOf;
 import static java.lang.Math.toIntExact;
@@ -529,7 +527,7 @@ public class ServerModeConfiguration extends JFrame {
 
             //---- titleLbl ----
             titleLbl.setText("Server Settings");
-            titleLbl.setFont(new Font("Helvetica Neue", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
             titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
@@ -894,7 +892,7 @@ public class ServerModeConfiguration extends JFrame {
             try {
                 FileInputStream fis = new FileInputStream(fileChooser.getSelectedFile().toString());
                 ObjectInputStream ois = new ObjectInputStream(fis);
-                ArrayList<Object> importedObjects = new ArrayList<>();
+                ArrayList<Object> importedObjects;
                 importedObjects = (ArrayList<Object>)ois.readObject();
                 properties = (Properties) importedObjects.get(0);
                 accountsImported = (HashMap<String, String>) importedObjects.get(1);
@@ -1006,7 +1004,7 @@ public class ServerModeConfiguration extends JFrame {
             for(int x = 0; x < user.length()-1; x=x+2){
                 try{
                     pass += user.charAt(x);
-                }catch(IndexOutOfBoundsException ioobe){
+                }catch(IndexOutOfBoundsException ignored){
                 }
             }
             MessageDigest messageDigest = null;
@@ -1030,7 +1028,7 @@ public class ServerModeConfiguration extends JFrame {
             for(int x = 0; x < user.length()-1; x=x+2){
                 try{
                     pass += user.charAt(x);
-                }catch(IndexOutOfBoundsException ioobe){
+                }catch(IndexOutOfBoundsException ignored){
                 }
             }
             MessageDigest messageDigest = null;

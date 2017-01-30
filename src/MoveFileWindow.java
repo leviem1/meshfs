@@ -1,21 +1,11 @@
 import org.json.simple.JSONObject;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Map;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-/*
- * Created by JFormDesigner on Sat Jan 14 16:33:36 MST 2017
- */
-
-
 
 /**
  * @author Mark Hedrick
@@ -41,15 +31,14 @@ public class MoveFileWindow extends JFrame {
         this.userAccount = userAccount;
         this.fileName = fileName;
 
-        setTitle("Move - " + fileName);
-
-
         initComponents();
         frameListeners();
 
         if(fileName.length() > 35){
             fileName = fileName.substring(0, 30) + "...";
         }
+
+        setTitle("Move - " + fileName);
 
     }
 
@@ -152,7 +141,7 @@ public class MoveFileWindow extends JFrame {
                     }
                     else{
                     }
-                }catch(NullPointerException npe){
+                }catch(NullPointerException ignored){
 
                 }
             }

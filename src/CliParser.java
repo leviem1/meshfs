@@ -7,11 +7,12 @@ import java.util.Properties;
 class CliParser {
 
     private Options opt = new Options();
+    private Properties properties = ConfigParser.loadProperties();
 
-    CliParser(String[] args, Properties properties) {
+    CliParser(String[] args) {
+
         opt.addOption("h", "help", false, "Display application's help message.");
         opt.addOption("m", "masterIP", true, "IP of master (if self, use 127.0.0.1 or own IP).");
-        opt.addOption("i", "interface", true, "Preferred interface to allow connections on.");
         opt.addOption("r", "regenConfig", false, "Regenerate application's default configuration file.");
         opt.addOption("nogui", false, "Run MeshFS without graphical user interface (server mode only)");
         opt.addOption("reconfig", false, "Reconfigure MeshFS graphically");
@@ -24,6 +25,7 @@ class CliParser {
 
             if (cmd.hasOption("m")) {
                 properties.setProperty("masterIP", cmd.getOptionValue("m"));
+                MeshFS.nogui = true;
             }
 
             if (cmd.hasOption("r")) {

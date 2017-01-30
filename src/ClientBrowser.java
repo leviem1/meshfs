@@ -1,18 +1,11 @@
 import org.json.simple.JSONObject;
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.Timer;
 import javax.swing.*;
-import javax.swing.GroupLayout;
 import javax.swing.border.*;
-import javax.swing.event.*;
 import javax.swing.tree.*;
-/*
- * Created by JFormDesigner on Sun Nov 06 18:04:04 MST 2016
- */
-
 
 
 /**
@@ -32,7 +25,7 @@ public class ClientBrowser extends JFrame {
     private DefaultTreeModel treeModel;
 
     private ClientBrowser(String serverAddress, int port, String userAccount) {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
         if(Reporting.getSystemOS().contains("Windows")){
@@ -98,6 +91,7 @@ public class ClientBrowser extends JFrame {
         removeBtn = new JButton();
         buttonBar = new JPanel();
         logoutBtn = new JButton();
+        statusLbl = new JLabel();
         quitBtn = new JButton();
 
         //======== this ========
@@ -231,12 +225,19 @@ public class ClientBrowser extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 374, 0};
                 ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
                 //---- logoutBtn ----
                 logoutBtn.setText("Logout");
                 logoutBtn.setFont(new Font("Arial", logoutBtn.getFont().getStyle(), logoutBtn.getFont().getSize() + 1));
                 buttonBar.add(logoutBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+
+                //---- statusLbl ----
+                statusLbl.setHorizontalAlignment(SwingConstants.CENTER);
+                buttonBar.add(statusLbl, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
@@ -317,7 +318,7 @@ public class ClientBrowser extends JFrame {
                         moveBtn.setEnabled(true);
                     }
                 }
-            }catch(NullPointerException npe){
+            }catch(NullPointerException ignored){
             }
         });
         downloadBtn.addActionListener(e -> {
@@ -327,6 +328,7 @@ public class ClientBrowser extends JFrame {
                 return;
             }
             Thread download = new Thread(() -> {
+                statusLbl.setText("Downloading...");
                 downloadFile(System.getProperty("user.home") + File.separator + "Downloads" + File.separator + node.toString());
             });
             download.start();
@@ -342,6 +344,7 @@ public class ClientBrowser extends JFrame {
                 return;
             }
             Thread download = new Thread(() -> {
+                statusLbl.setText("Downloading...");
                 downloadFile(fileChooser.getSelectedFile().toString());
             });
 
@@ -422,8 +425,10 @@ public class ClientBrowser extends JFrame {
          try {
             if(!(JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, path.substring(path.lastIndexOf(File.separator)), serverAddress, port))){
                  JOptionPane.showMessageDialog(null, "Download Failed! Please try again later...", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                statusLbl.setText("Download Failure!");
             }else{
                 JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+                statusLbl.setText("Download Completed!");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -489,6 +494,7 @@ public class ClientBrowser extends JFrame {
     private JButton removeBtn;
     private JPanel buttonBar;
     private JButton logoutBtn;
+    private JLabel statusLbl;
     private JButton quitBtn;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

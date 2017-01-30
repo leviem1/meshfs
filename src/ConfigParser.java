@@ -54,7 +54,6 @@ class ConfigParser {
     }
 
     static Properties loadProperties() {
-
         Properties properties;
 
         try {
@@ -67,13 +66,15 @@ class ConfigParser {
                         properties.setProperty(key, defaultProperties.getProperty(key));
                     }
                 }
-
                 write(properties);
             }
 
         } catch (IOException io) {
+
             properties = loadDefaultProperties();
-            write(properties);
+            if(MeshFS.nogui){
+                write(properties);
+            }
         }
 
         return properties;
