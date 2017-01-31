@@ -126,7 +126,7 @@ public class GreetingsWindow extends JFrame {
     private void frameListeners(){
         configBtn.addActionListener(e -> {
             if(!runType){
-                ClientModeConfiguration.run(greetingsWindow, "");
+                ClientModeConfiguration.run(greetingsWindow, "", false);
                 dispose();
             }
             else{

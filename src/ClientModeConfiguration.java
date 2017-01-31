@@ -19,8 +19,11 @@ public class ClientModeConfiguration extends JFrame{
 
     private static JFrame clientModeConfiguration;
     private String usernameFinal = "";
+    private boolean runType;
 
-    private ClientModeConfiguration(String serverAddress) {
+    private ClientModeConfiguration(String serverAddress, boolean runType) {
+        this.runType = runType;
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -301,7 +304,12 @@ public class ClientModeConfiguration extends JFrame{
             }
         });
         backBtn.addActionListener(e -> {
-            InitialConfiguration.run(clientModeConfiguration);
+            if(runType){
+                InitialConfiguration.run(clientModeConfiguration);
+            }else{
+                GreetingsWindow.run(false, clientModeConfiguration);
+            }
+
             dispose();
         });
     }
@@ -409,8 +417,8 @@ public class ClientModeConfiguration extends JFrame{
         return field.getText().isEmpty() != true;
     }
 
-    public static void run(JFrame sender, String serverAddress) {
-        clientModeConfiguration = new ClientModeConfiguration(serverAddress);
+    public static void run(JFrame sender, String serverAddress, boolean runType) {
+        clientModeConfiguration = new ClientModeConfiguration(serverAddress, runType);
         if(!(sender == null)){
             CenterWindow.centerOnWindow(sender, clientModeConfiguration);
         }else{

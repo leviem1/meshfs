@@ -396,7 +396,7 @@ public class ClientBrowser extends JFrame {
             RenameFileWindow.run(serverAddress, port, clientBrowser, jsonPath, node.toString(), userAccount);
         });
         logoutBtn.addActionListener(e -> {
-            ClientModeConfiguration.run(clientBrowser, serverAddress);
+            ClientModeConfiguration.run(clientBrowser, serverAddress, true);
             dispose();
             catalogTimer.purge();
             catalogTimer.cancel();
@@ -458,7 +458,7 @@ public class ClientBrowser extends JFrame {
                 catalogTimer.cancel();
                 catalogTimer.purge();
                 JOptionPane.showMessageDialog(null, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                ClientModeConfiguration.run(clientBrowser, serverAddress);
+                ClientModeConfiguration.run(clientBrowser, serverAddress, true);
                 dispose();
             }else{
                 try {

@@ -161,7 +161,7 @@ public class InitialConfiguration extends JFrame {
             dispose();
         }
         else if(modeSelectionBox.getSelectedItem().toString().equals("Client Mode")){
-            ClientModeConfiguration.run(initialConfiguration, "");
+            ClientModeConfiguration.run(initialConfiguration, "", true);
             dispose();
         }
     }
