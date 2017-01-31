@@ -1,7 +1,5 @@
-import com.oracle.javafx.jmx.json.JSONReader;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
-import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.nio.channels.FileLock;
@@ -295,11 +293,9 @@ class JSONManipulator {
                 fos.close();
                 break;
             } catch (OverlappingFileLockException ofle) {
-                ofle.printStackTrace();
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ie) {
-                    ie.printStackTrace();
                     break;
                 }
             }
