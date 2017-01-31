@@ -305,6 +305,7 @@ class JSONManipulator {
     static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int port, File catalog) throws IOException {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
+        tempManifest.deleteOnExit();
         FileClient.receiveFile(serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath());
         JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
         String[] folders = itemLocation.split("/");
