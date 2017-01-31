@@ -1,7 +1,9 @@
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
+import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.Files;
@@ -35,12 +37,25 @@ class JSONManipulator {
         JSONObject jsonObject = null;
         JSONParser reader = new JSONParser();
 
-        try {
-            Object obj = reader.parse(new FileReader(filePath));
-            jsonObject = (JSONObject) obj;
-        } catch (Exception e) {
-            e.printStackTrace();
+        while (true) {
+            try {
+                FileLock fl = new RandomAccessFile(filePath, "rw").getChannel().lock(0L, Long.MAX_VALUE, true);
+                Object obj = reader.parse(new FileReader(filePath));
+                jsonObject = (JSONObject) obj;
+                fl.release();
+                break;
+            } catch (OverlappingFileLockException ofle) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    break;
+                }
+            } catch (ParseException | IOException e) {
+                e.printStackTrace();
+                break;
+            }
         }
+
         return jsonObject;
     }
 
