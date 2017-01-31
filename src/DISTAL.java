@@ -84,11 +84,11 @@ class DISTAL {
         int numOfStripes = Integer.valueOf(MeshFS.properties.getProperty("numStripes"));
         int numOfStripedCopies = Integer.valueOf(MeshFS.properties.getProperty("numStripeCopy"));
         int numOfWholeCopies = Integer.valueOf(MeshFS.properties.getProperty("numWholeCopy"));
-        long minFreeSpace = Integer.valueOf(MeshFS.properties.getProperty("minSpace")) * 1073741824;
         uploadFilePath = MeshFS.properties.getProperty("repository") + uploadFilePath;
         String manifestFileLocation = MeshFS.properties.getProperty("repository")+".manifest.json";
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.getProperty("repository")+".catalog.json";
+        int portNum = Integer.valueOf(MeshFS.properties.getProperty("portNumber"));
 
         //make the JTree show that the file is being distributed
         JSONManipulator.addToIndex(userAccount, uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator)+1) + " (distributing)", catalogFileLocation, userAccount);
@@ -150,8 +150,8 @@ class DISTAL {
             int stopOfWholes = (-1);
             for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
                 String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
-                if (sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
-                     computersForWholes.add(macAddress);
+                if (sortedCompStorageMap.get(macAddress) >= sizeOfFile && FileClient.ping(((JSONObject) manifestFile.get(macAddress)).get("IP").toString(), portNum)) {
+                    computersForWholes.add(macAddress);
                 }
                 else {
                     break;
@@ -172,7 +172,7 @@ class DISTAL {
                     macAddress = "none";
                 }
 
-                if ((!macAddress.equals("none") && (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe)) {
+                if ((!macAddress.equals("none") && (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe) && FileClient.ping(((JSONObject) manifestFile.get(macAddress)).get("IP").toString(), portNum)) {
                     computersForStripes.add(macAddress);
                 } else if (computerNumS != 0){
 
@@ -193,7 +193,7 @@ class DISTAL {
                         macAddressNew = "none";
                     }
 
-                    if (availableStorage >= sizeOfStripe) {
+                    if (availableStorage >= sizeOfStripe && FileClient.ping(((JSONObject) manifestFile.get(macAddress)).get("IP").toString(), portNum)) {
                         computersForStripes.add(macAddressNew);
                     }
 
@@ -211,7 +211,7 @@ class DISTAL {
 
                             lastResortComp++;
 
-                            if (availableStorage >= sizeOfStripe) {
+                            if (availableStorage >= sizeOfStripe && FileClient.ping(((JSONObject) manifestFile.get(macAddress)).get("IP").toString(), portNum)) {
                                 computersForStripes.add(macAddressNew);
                                 break;
                             }
