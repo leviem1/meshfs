@@ -302,14 +302,13 @@ class JSONManipulator {
      *
      */
 
-    static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int port) throws IOException {
+    static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int port, File catalog) throws IOException {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
-        String catalogFileLocation = ".catalog.json";
-        String manifestFileLocation = ".manifest.json";
-        FileClient.receiveFile(serverAddress, port, manifestFileLocation, manifestFileLocation);
-        JSONObject compInfoFile = getJSONObject(manifestFileLocation);
+        File tempManifest = File.createTempFile(".manifest", ".json");
+        FileClient.receiveFile(serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath());
+        JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
         String[] folders = itemLocation.split("/");
-        JSONObject itemToRead = JSONManipulator.getJSONObject(catalogFileLocation);
+        JSONObject itemToRead = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
         List<String> stripeNames = new ArrayList<>();
         List<Thread> childThreads = new ArrayList<>();
         boolean wholeNecessary = true;

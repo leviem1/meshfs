@@ -425,8 +425,8 @@ public class ClientBrowser extends JFrame {
 
     private void downloadFile(String path){
          try {
-            if(!(JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, path.substring(path.lastIndexOf(File.separator)), serverAddress, port))){
-                 JOptionPane.showMessageDialog(null, "Download Failed! Please try again later...", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+            if(!(JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, path.substring(path.lastIndexOf(File.separator)), serverAddress, port, catalogFile))){
+                JOptionPane.showMessageDialog(null, "Download Failed! Please try again later...", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                 statusLbl.setText("Download Failure!");
                 Thread.sleep(1000);
                 statusLbl.setText("");
