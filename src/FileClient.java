@@ -79,7 +79,7 @@ public final class FileClient {
      *
      * @param serverAddress the IP address of the server to connect to
      * @param port the port of the server to connect to
-     * @throws IOException on error connecting
+     * @throws IOException on error connecting or writing to manifest file
      */
 
     static void receiveReport(String serverAddress, int port) throws IOException {
@@ -111,6 +111,15 @@ public final class FileClient {
         }
     }
 
+    /**
+     * This method is used to request a duplication of a file in the catalog.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @param currFile the file to duplicate
+     * @throws IOException on error connecting
+     */
+
     static void duplicateFile(String serverAddress, int port, String currFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -131,6 +140,16 @@ public final class FileClient {
         }
     }
 
+    /**
+     * This method is used to request a rename of a file or folder in the catalog.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @param jsonObj the JSONObject to rename
+     * @param newName the name to set the JSONObject to
+     * @throws IOException on error connecting
+     */
+
     static void renameFile(String serverAddress, int port, String jsonObj, String newName) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -149,6 +168,16 @@ public final class FileClient {
             client.close();
         }
     }
+
+    /**
+     * This method is used to request a move of a file or folder in the catalog.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @param currFile the file that is to be moved
+     * @param destFile the location that the file is to be moved to
+     * @throws IOException on error connecting
+     */
 
     static void moveFile(String serverAddress, int port, String currFile, String destFile) throws IOException {
         String response;
@@ -170,6 +199,15 @@ public final class FileClient {
         }
     }
 
+    /**
+     * This method is used to request file deletion from the catalog.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @param currFile the file to be deleted
+     * @throws IOException on error connecting
+     */
+
     static void deleteFile(String serverAddress, int port, String currFile) throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -187,6 +225,17 @@ public final class FileClient {
             client.close();
         }
     }
+
+    /**
+     * This method is used to request a folder addition in the catalog.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @param directoryPath the location to add the folder to
+     * @param directoryName the name of folder
+     * @param userAccount the name of the user to add the folder for
+     * @throws IOException on error connecting
+     */
 
     static void addFolder(String serverAddress, int port, String directoryPath, String directoryName, String userAccount) throws IOException {
         String response;
@@ -206,6 +255,15 @@ public final class FileClient {
             client.close();
         }
     }
+
+    /**
+     * This method is used to request to send a file to the server.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @param filepath the location of the file to send
+     * @throws IOException on error connecting
+     */
 
     static void sendFile(String serverAddress, int port, String filepath) throws IOException {
         Socket client = new Socket(serverAddress, port);
@@ -237,6 +295,16 @@ public final class FileClient {
         }
     }
 
+    /**
+     * This method is used to request to send a file to the server.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @param filepath the location of the file to send
+     * @param userAccount the account to add the file for
+     * @throws IOException on error connecting
+     */
+
     static void sendFile(String serverAddress, int port, String filepath, String userAccount) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -267,6 +335,15 @@ public final class FileClient {
         }
     }
 
+    /**
+     * This method is used to request to download a file from the server.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @param fileName the name of the file that is requested
+     * @throws IOException on error connecting or writing file
+     */
+
     @SuppressWarnings( "deprecation" )
     public static void receiveFile(String serverAddress, int port, String fileName) throws IOException {
         Socket client = new Socket(serverAddress, port);
@@ -296,6 +373,16 @@ public final class FileClient {
             client.close();
         }
     }
+
+    /**
+     * This method is used to request to download a file from the server.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port the port of the server to connect to
+     * @param fileName the name of the file that is requested
+     * @param fileOut the file name to write the recieved file as
+     * @throws IOException on error connecting or writing file
+     */
 
     @SuppressWarnings( "deprecation" )
     static void receiveFile(String serverAddress, int port, String fileName, String fileOut) throws IOException {
