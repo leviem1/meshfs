@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.Timer;
 
 public class MeshFS {
     static Properties properties;
@@ -42,6 +43,8 @@ public class MeshFS {
             }
 
             if (isMaster) {
+                File manifestFile = new File(MeshFS.properties.getProperty("repository")+".manifest.json");
+                manifestFile.delete();
                 File catalog = new File(properties.getProperty("repository")+".catalog.json");
 
                 if(!catalog.exists()){
@@ -52,6 +55,31 @@ public class MeshFS {
                     } catch (IOException ignored) {
                     }
                 }
+                TimerTask manifestCheck = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Long currentTimeStamp = new Date().getTime();
+                        if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists())){
+                            return;
+                        }
+                        JSONObject manifest = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
+                        JSONObject newManifest = manifest;
+                        for(Object computer : manifest.keySet()){
+                            Long slaveTimeStamp = (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
+                            if(currentTimeStamp > slaveTimeStamp + 32000){
+                                newManifest = JSONManipulator.removeItem(newManifest, computer.toString());
+                                break;
+                            }
+                        }
+                        try {
+                            JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository")+".manifest.json", newManifest);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                Timer manifestTimer = new Timer();
+                manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
             } else {
                 TimerTask scheduledReporting = new TimerTask() {
                     @Override

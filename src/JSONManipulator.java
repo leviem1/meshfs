@@ -94,20 +94,23 @@ class JSONManipulator {
      */
 
     static JSONObject removeItem(JSONObject jsonObject, String itemLocation){
-        String item = itemLocation.substring(itemLocation.lastIndexOf("/")+1);
-        String[] folders = itemLocation.substring(0,itemLocation.lastIndexOf("/")).split("/");
         JSONObject folderToRead = jsonObject;
+        String item;
+        if (itemLocation.contains("/")) {
+            item = itemLocation.substring(itemLocation.lastIndexOf("/") + 1);
+            String[] folders = itemLocation.substring(0, itemLocation.lastIndexOf("/")).split("/");
 
-        for (String folder : folders) {
-            folderToRead = (JSONObject) folderToRead.get(folder);
+            for (String folder : folders) {
+                folderToRead = (JSONObject) folderToRead.get(folder);
+            }
         }
+        else {item = itemLocation;}
         try {
             folderToRead.remove(item);
         }
         catch (Exception e){
             e.printStackTrace();
-        }
-        return jsonObject;
+        }return jsonObject;
     }
 
 
