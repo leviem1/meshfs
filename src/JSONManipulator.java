@@ -9,10 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by Levi Muniz on 10/19/16.
- */
-
-/**
  * The JSONManipulator class has the
  * ability to read, write, and change
  * JSON files and objects.
@@ -63,7 +59,9 @@ class JSONManipulator {
             folderToReadNew = (JSONObject) folderToRead.get(folder);
             if (folderToReadNew == null){
                 JSONObject folderCreator = new JSONObject();
+
                 folderCreator.put("type", "directory");
+
                 folderToRead.put(folder, folderCreator);
                 folderToRead = (JSONObject) folderToRead.get(folder);
             }
@@ -165,7 +163,9 @@ class JSONManipulator {
 
     static JSONObject addFolder(JSONObject jsonObject, String jsonPath, String directoryName, String userAccount){
         JSONObject type = new JSONObject();
+
         type.put("type", "directory");
+
         type.put("owner", userAccount);
         jsonObject = putItemInFolder(jsonObject, jsonPath, directoryName, type);
         return jsonObject;
@@ -212,6 +212,7 @@ class JSONManipulator {
     static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String userAccount, long fileSize) {
 
         JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
+
         jsonFile.replace("currentName", alphanumericName);
 
 
@@ -222,12 +223,15 @@ class JSONManipulator {
 
         for (int stripe = 0; stripe < stripes.size(); stripe++){
             for (int copy = 0; copy < (stripes.get(stripe)).size(); copy++){
+
                 ipArray.add(stripes.get(stripe).get(copy));
             }
             if (stripe == 0){
+
                 objChild.put("whole", ipArray.clone());
             }
             else{
+
                 objChild.put("stripe" + "_" + String.valueOf(stripe-1), ipArray.clone());
             }
             ipArray.clear();
@@ -236,10 +240,15 @@ class JSONManipulator {
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
         String creationDate = df.format(new Date());
 
+
         objChild.put("owner", userAccount);
+
         objChild.put("type", "file");
+
         objChild.put("fileName", alphanumericName);
+
         objChild.put("fileSize", humanReadableByteCount(fileSize));
+
         objChild.put("creationDate", creationDate);
 
         jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName,objChild);
@@ -265,7 +274,9 @@ class JSONManipulator {
     static void addToIndex(String itemLocation, String fileName, String JSONFilePath, String userAccount) {
         JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
         JSONObject objChild = new JSONObject();
+
         objChild.put("type", "tempFile");
+
         objChild.put("owner", userAccount);
         jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName, objChild);
         try{
@@ -404,7 +415,7 @@ class JSONManipulator {
      */
 
     static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile){
-        LinkedHashMap<String,Long> storageMap = new LinkedHashMap();
+        @SuppressWarnings("unchecked") LinkedHashMap<String,Long> storageMap = new LinkedHashMap();
         for (Object MACAddress: manifestFile.keySet()){
             storageMap.put(MACAddress.toString(),Long.valueOf((((JSONObject)manifestFile.get(MACAddress)).get("FreeSpace")).toString()));
         }
@@ -418,10 +429,10 @@ class JSONManipulator {
      * @param itemDestinationLocation   The source virtual path within the JSONObject.
      *                                  The name of the item should not be in this path.
      * @param fileName                  The destination virtual path within the JSONObject.
-     * @param itemContents              This is the JSONObject the contains all the information abou the file.
+     * @param itemContents              This is the JSONObject the contains all the information about the file.
      */
 
-    static JSONObject putItemInFolder(JSONObject jsonObject, String itemDestinationLocation, String fileName, JSONObject itemContents){
+    private static JSONObject putItemInFolder(JSONObject jsonObject, String itemDestinationLocation, String fileName, JSONObject itemContents){
         String[] folders = itemDestinationLocation.split("/");
         JSONObject folderToRead = jsonObject;
         JSONObject folderToReadNew;
@@ -429,7 +440,9 @@ class JSONManipulator {
             folderToReadNew = (JSONObject) folderToRead.get(folder);
             if (folderToReadNew == null){
                 JSONObject folderCreator = new JSONObject();
+
                 folderCreator.put("type", "directory");
+
                 folderToRead.put(folder, folderCreator);
                 folderToRead = (JSONObject) folderToRead.get(folder);
             }
@@ -437,6 +450,7 @@ class JSONManipulator {
                 folderToRead = folderToReadNew;
             }
         }
+
         folderToRead.put(fileName, itemContents);
         return jsonObject;
     }
@@ -451,7 +465,7 @@ class JSONManipulator {
      * @param newName               What the moved file should be called.
      */
 
-    static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation, String newName){
+    private static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation, String newName){
         jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false, newName);
         jsonObject = removeItem(jsonObject, itemLocation);
         return jsonObject;

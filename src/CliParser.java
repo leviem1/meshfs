@@ -6,7 +6,7 @@ import java.util.Properties;
  */
 class CliParser {
 
-    private Options opt = new Options();
+    private final Options opt = new Options();
 
     CliParser(String[] args, Properties properties) {
         opt.addOption("h", "help", false, "Display application's help message.");

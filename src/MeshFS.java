@@ -1,7 +1,3 @@
-/**
- * Created by Levi Muniz on 10/3/16.
- */
-
 import org.json.simple.JSONObject;
 import javax.swing.*;
 import java.io.File;
@@ -9,7 +5,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
 
-public class MeshFS {
+class MeshFS {
     static Properties properties;
     static FileServer fileServer;
     static boolean nogui = false;
@@ -48,6 +44,7 @@ public class MeshFS {
 
                 if(!catalog.exists()){
                     JSONObject newCatalog = new JSONObject();
+
                     newCatalog.put("currentName", "0000000000000000");
                     try {
                         JSONManipulator.writeJSONObject(properties.getProperty("repository")+".catalog.json", newCatalog);

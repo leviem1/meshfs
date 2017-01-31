@@ -1,7 +1,3 @@
-/**
- * Created by Levi Muniz on 12/6/16.
- */
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -18,7 +14,7 @@ import java.net.SocketTimeoutException;
  * @version 1.0.0
  */
 
-public final class FileClient {
+final class FileClient {
 
     /**
      * This method is used to ping a server.
@@ -106,6 +102,7 @@ public final class FileClient {
                 manifest = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
             }
             JSONArray reportArray = Reporting.splitter(reportFull);
+
             manifest.put(reportArray.get(0),reportArray.get(1));
             JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
         }
@@ -284,13 +281,11 @@ public final class FileClient {
                     dos.write(data, 0, br);
                     dos.flush();
                 }
-
-                fis.close();
-                dos.close();
             }
-
-            client.close();
-        } catch (SocketTimeoutException ste) {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
+            fis.close();
+            dos.close();
             client.close();
         }
     }
@@ -324,52 +319,13 @@ public final class FileClient {
                     dos.write(data, 0, br);
                     dos.flush();
                 }
-
-                fis.close();
-                dos.close();
             }
-
-            client.close();
-        } catch (SocketTimeoutException ste) {
-            client.close();
-        }
-    }
-
-    /**
-     * This method is used to request to download a file from the server.
-     *
-     * @param serverAddress the IP address of the server to connect to
-     * @param port the port of the server to connect to
-     * @param fileName the name of the file that is requested
-     * @throws IOException on error connecting or writing file
-     */
-
-    @SuppressWarnings( "deprecation" )
-    public static void receiveFile(String serverAddress, int port, String fileName) throws IOException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        DataInputStream dis = new DataInputStream(client.getInputStream());
-        FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + fileName);
-
-        try {
-            out.println("101|" + fileName + "\n");
-
-            if (dis.readLine().trim().equals("201")) {
-                int br;
-                byte[] data = new byte[4096];
-
-                while ((br = dis.read(data, 0, data.length)) != -1) {
-                    fos.write(data, 0, br);
-                    fos.flush();
-                }
-            }
-
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             out.close();
-            fos.close();
-            dis.close();
-            client.close();
-        } catch (SocketTimeoutException ste) {
+            input.close();
+            dos.close();
+            fis.close();
             client.close();
         }
     }
@@ -380,7 +336,7 @@ public final class FileClient {
      * @param serverAddress the IP address of the server to connect to
      * @param port the port of the server to connect to
      * @param fileName the name of the file that is requested
-     * @param fileOut the file name to write the recieved file as
+     * @param fileOut the file name to write the received file as
      * @throws IOException on error connecting or writing file
      */
 
@@ -403,14 +359,12 @@ public final class FileClient {
                     fos.write(data, 0, br);
                     fos.flush();
                 }
-
             }
-
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             out.close();
             dis.close();
             fos.close();
-            client.close();
-        } catch (SocketTimeoutException ste) {
             client.close();
         }
     }

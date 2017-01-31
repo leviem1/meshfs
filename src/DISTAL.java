@@ -1,6 +1,3 @@
-/**
- * Created by Aaron Duran on 10/13/16.
- */
 import org.json.simple.JSONObject;
 
 import java.io.File;
@@ -20,20 +17,19 @@ class DISTAL {
 
     private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap , long sizeOfStripe){
 
-        LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
+        @SuppressWarnings("unchecked") LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
 
         //put something in the map to compare against
         sortedMap.put("temp", -1L);
 
         for (String key : storageMap.keySet()){
             Long storageAmount = storageMap.get(key);
-            List<String> moreStorage = new ArrayList<>();
             boolean isBroken = false;
 
             for (String sortedKey : sortedMap.keySet()){
                 if (storageAmount >= sortedMap.get(sortedKey)){
                     //reorder the map when a storage value is larger than one that is already in the map
-                    LinkedHashMap<String,Long>  reorderStorageMap = (LinkedHashMap<String,Long>) sortedMap.clone();
+                    @SuppressWarnings("unchecked") LinkedHashMap<String,Long>  reorderStorageMap = (LinkedHashMap<String,Long>) sortedMap.clone();
                     sortedMap.clear();
                     for (String reorderKey : reorderStorageMap.keySet()){
                         if (reorderKey.equals(sortedKey)){
@@ -44,7 +40,6 @@ class DISTAL {
                     isBroken = true;
                     break;
                 }
-                moreStorage.add(sortedKey);
             }
 
             if (!isBroken){
@@ -81,9 +76,9 @@ class DISTAL {
         }
 
         //import properties
-        int numOfStripes = Integer.valueOf(MeshFS.properties.getProperty("numStripes"));
-        int numOfStripedCopies = Integer.valueOf(MeshFS.properties.getProperty("numStripeCopy"));
-        int numOfWholeCopies = Integer.valueOf(MeshFS.properties.getProperty("numWholeCopy"));
+        int numOfStripes = Integer.parseInt(MeshFS.properties.getProperty("numStripes"));
+        int numOfStripedCopies = Integer.parseInt(MeshFS.properties.getProperty("numStripeCopy"));
+        int numOfWholeCopies = Integer.parseInt(MeshFS.properties.getProperty("numWholeCopy"));
         uploadFilePath = MeshFS.properties.getProperty("repository") + uploadFilePath;
         String manifestFileLocation = MeshFS.properties.getProperty("repository")+".manifest.json";
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
@@ -232,7 +227,7 @@ class DISTAL {
             //create the list that will be used to distribute the wholes and stripes
             List<List<String>> stripes = new ArrayList<>();
 
-            //frist list is for the computers that will receive wholes
+            //first list is for the computers that will receive wholes
             stripes.add(computersForWholes);
 
             //if only computer is available to hold stripes, then do not use stripes.
@@ -368,13 +363,13 @@ class DISTAL {
 }
 
 class sendFilesTreading implements Runnable{
-    private long sizeOfStripe;
-    private long fileSize;
-    private String sourceFileLocation;
-    private JSONObject manifestFile;
-    private List<List<String>> stripes;
-    private int stripe;
-    private String outName;
+    private final long sizeOfStripe;
+    private final long fileSize;
+    private final String sourceFileLocation;
+    private final JSONObject manifestFile;
+    private final List<List<String>> stripes;
+    private final int stripe;
+    private final String outName;
 
     sendFilesTreading(long sizeOfStripe, long fileSize, String sourceFileLocation, JSONObject manifestFile, List<List<String>> stripes, int stripe, String outName){
         this.sizeOfStripe = sizeOfStripe;
@@ -386,7 +381,7 @@ class sendFilesTreading implements Runnable{
         this.outName = outName;
     }
 
-    void writeSendStripe() throws IOException{
+    private void writeSendStripe() throws IOException{
         List<Thread> childThreads = new ArrayList<>();
 
         if (stripe == -1){

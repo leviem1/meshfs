@@ -8,8 +8,8 @@ import javax.swing.border.*;
 /**
  * @author Mark Hedrick
  */
-public class ClientBrowserFileProperties extends JFrame {
-    private DefaultListModel model;
+class ClientBrowserFileProperties extends JFrame {
+    private final DefaultListModel model;
 
     private ClientBrowserFileProperties(String fileName, String fileSize, String creationDate, String owner, JSONObject itemContents) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -58,15 +58,8 @@ public class ClientBrowserFileProperties extends JFrame {
                 }
             }
 
-            /*if(keyStr.contains("stripe_") || keyStr.contains("whole")){
-                if(keyValue.toString().equals("[]")){
-                    model.add(pos, keyStr + ": " + "None");
-                }else{
-                    model.add(pos, keyStr + ": " + keyValue);
-                }
-            }*/
-
         }
+
         model.add(pos, "Stripes: " + stripes);
         model.add(pos, "Wholes: " + wholes);
     }
@@ -75,23 +68,23 @@ public class ClientBrowserFileProperties extends JFrame {
     private void initComponents(String fileName, String fileSize, String creationDate) {
 
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        fileNameLbl = new JLabel();
-        fileSizeLbl = new JLabel();
-        creationDateLbl = new JLabel();
-        ownerLbl = new JLabel();
-        locationLbl = new JLabel();
-        scrollPane1 = new JScrollPane();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel fileNameLbl = new JLabel();
+        JLabel fileSizeLbl = new JLabel();
+        JLabel creationDateLbl = new JLabel();
+        JLabel ownerLbl = new JLabel();
+        JLabel locationLbl = new JLabel();
+        JScrollPane scrollPane1 = new JScrollPane();
+
         locationList = new JList(model);
         fileNameValue = new JLabel(fileName);
         fileSizeValue = new JLabel(fileSize);
         creationDateValue = new JLabel(creationDate);
         ownerValue = new JLabel();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("filename - Properties");
@@ -212,8 +205,8 @@ public class ClientBrowserFileProperties extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[] {0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
@@ -246,23 +239,11 @@ public class ClientBrowserFileProperties extends JFrame {
         clientBrowserFileProperties.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel fileNameLbl;
-    private JLabel fileSizeLbl;
-    private JLabel creationDateLbl;
-    private JLabel ownerLbl;
-    private JLabel locationLbl;
-    private JScrollPane scrollPane1;
     private JList locationList;
     private JLabel fileNameValue;
     private JLabel fileSizeValue;
     private JLabel creationDateValue;
     private JLabel ownerValue;
-    private JPanel buttonBar;
     private JButton okButton;
-    private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

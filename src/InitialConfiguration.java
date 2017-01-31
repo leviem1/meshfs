@@ -3,9 +3,9 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 /**
- * Created by Mark Hedrick on 10/30/16.
+ * @author Mark Hedrick
  */
-public class InitialConfiguration extends JFrame {
+class InitialConfiguration extends JFrame {
 
     private static JFrame initialConfiguration;
 
@@ -20,8 +20,11 @@ public class InitialConfiguration extends JFrame {
         initComponents();
         frameListeners();
 
+
         modeSelectionBox.addItem("none");
+
         modeSelectionBox.addItem("Client Mode");
+
         modeSelectionBox.addItem("Server Mode");
 
         okButton.setEnabled(false);
@@ -30,13 +33,12 @@ public class InitialConfiguration extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
+        JPanel dialogPane = new JPanel();
         contentPanel = new JPanel();
-        titleLbl = new JLabel();
-        modeLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
+        JLabel modeLbl = new JLabel();
         modeSelectionBox = new JComboBox();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
 
@@ -94,8 +96,8 @@ public class InitialConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
@@ -172,14 +174,8 @@ public class InitialConfiguration extends JFrame {
         initialConfiguration.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel titleLbl;
-    private JLabel modeLbl;
     private JComboBox modeSelectionBox;
-    private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

@@ -1,7 +1,3 @@
-/**
- * Created by Levi Muniz on 10/16/16.
- */
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.io.*;
@@ -21,7 +17,7 @@ import java.util.ArrayList;
 
 class FileServer {
 
-    private ArrayList<Thread> sockets = new ArrayList<>();
+    private final ArrayList<Thread> sockets = new ArrayList<>();
     private ServerSocket fileServer;
 
     /**
@@ -77,8 +73,8 @@ class FileServer {
 }
 
 class ServerInit implements Runnable {
-    private ServerSocket server;
-    private int timeout;
+    private final ServerSocket server;
+    private final int timeout;
 
     ServerInit(ServerSocket server, int timeout) {
         this.server = server;
@@ -198,6 +194,7 @@ class ServerInit implements Runnable {
             manifest = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         }
         JSONArray reportArray = Reporting.splitter(reportFull);
+
         manifest.put(reportArray.get(0),reportArray.get(1));
         JSONManipulator.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }

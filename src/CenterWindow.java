@@ -1,6 +1,3 @@
-/**
- * Created by muniz on 10/10/16.
- */
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,7 +9,7 @@ import java.awt.*;
  * @version 1.0.0
  */
 
-public final class CenterWindow {
+final class CenterWindow {
 
     /**
      * This method is used to center a window

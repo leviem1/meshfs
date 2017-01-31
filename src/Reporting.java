@@ -1,6 +1,3 @@
-/**
- * Created by Levi Muniz on 10/13/16.
- */
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import java.io.*;
@@ -12,7 +9,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Reporting {
+class Reporting {
 
     static String getSystemOS() {
         return System.getProperty("os.name");
@@ -26,7 +23,7 @@ public class Reporting {
         } else {
             file = new File("/");
         }
-        return file.getUsableSpace() - (Integer.parseInt(MeshFS.properties.getProperty("minSpace")) * 1073741824);
+        return file.getUsableSpace() - (Long.getLong(MeshFS.properties.getProperty("minSpace")) * 1073741824);
     }
 
     static List<String> getIpAddresses() {
@@ -51,15 +48,15 @@ public class Reporting {
         return ip;
     }
 
-    static long getUptime() {
+    private static long getUptime() {
         return ManagementFactory.getRuntimeMXBean().getUptime();
     }
 
-    static String getJavaVersion(){
+    private static String getJavaVersion(){
         return System.getProperty("java.version");
     }
 
-    static String getUserName(){
+    private static String getUserName(){
         return System.getProperty("user.name");
     }
 
@@ -67,7 +64,7 @@ public class Reporting {
         return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
-    static String getMacAddress(){
+    private static String getMacAddress(){
         String macAddress = null;
         try {
             Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
@@ -88,9 +85,10 @@ public class Reporting {
         return macAddress;
     }
 
-    static String getRepositoryContents() {
+    private static String getRepositoryContents() {
         File[] repoContents = new File(MeshFS.properties.getProperty("repository")).listFiles();
         List<String> contents = new ArrayList<>();
+        assert repoContents != null;
         for (File file : repoContents){
             contents.add(file.getName());
         }
@@ -113,18 +111,22 @@ public class Reporting {
             if (key.equals("RepoContents")){
                 JSONArray Contents = new JSONArray();
                 String[] files = value.substring(1,value.length() -1).split(", ");
-                for (String file : files){
-                    Contents.add(file);
-                }
+
+                Collections.addAll(Contents, files);
+
                 jsonObject.put(key,Contents);
             }
             else{
                 String[] reportSetData = reportSet.split(":");
+
                 jsonObject.put(reportSetData[0],reportSetData[1]);
             }
         }
+
         jsonObject.put("checkInTimestamp", new Date().getTime());
+
         mainArray.add(reportArray[0]);
+
         mainArray.add(jsonObject);
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
         Date dateObj = new Date();

@@ -13,13 +13,13 @@ import javax.swing.event.DocumentListener;
 
 
 /**
- * Created by Mark Hedrick on 10/30/16.
+ * @author Mark Hedrick
  */
-public class ClientModeConfiguration extends JFrame{
+class ClientModeConfiguration extends JFrame{
 
     private static JFrame clientModeConfiguration;
     private String usernameFinal = "";
-    private boolean runType;
+    private final boolean runType;
 
     private ClientModeConfiguration(String serverAddress, boolean runType) {
         this.runType = runType;
@@ -46,23 +46,22 @@ public class ClientModeConfiguration extends JFrame{
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setGroupingUsed(false);
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        serverAddressLbl = new JLabel();
-        serverPortLbl = new JLabel();
-        passwordLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel serverAddressLbl = new JLabel();
+        JLabel serverPortLbl = new JLabel();
+        JLabel passwordLbl = new JLabel();
         serverAddressField = new JTextField();
         serverPortField = new JFormattedTextField(numberFormat);
         passwordField = new JPasswordField();
-        usernameLbl = new JLabel();
+        JLabel usernameLbl = new JLabel();
         usernameField = new JTextField();
         bindAnonymouslyCheckBox = new JCheckBox();
-        bindAnonLbl = new JLabel();
+        JLabel bindAnonLbl = new JLabel();
         buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Client Configuration");
@@ -251,7 +250,7 @@ public class ClientModeConfiguration extends JFrame{
                 changed();
             }
             public void changed() {
-                if (serverPortField.getText().isEmpty() == true){
+                if (serverPortField.getText().isEmpty()){
                     okButton.setEnabled(false);
                 }else {
                     okButton.setEnabled(true);
@@ -314,24 +313,14 @@ public class ClientModeConfiguration extends JFrame{
         });
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel serverAddressLbl;
-    private JLabel serverPortLbl;
-    private JLabel passwordLbl;
     private JTextField serverAddressField;
     private JFormattedTextField serverPortField;
     private JPasswordField passwordField;
-    private JLabel usernameLbl;
     private JTextField usernameField;
     private JCheckBox bindAnonymouslyCheckBox;
-    private JLabel bindAnonLbl;
     private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
-    private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     private void onOk(){
@@ -366,7 +355,7 @@ public class ClientModeConfiguration extends JFrame{
             buttonBar.getRootPane().setDefaultButton(okButton);
             okButton.requestFocus();
         }
-        else if(!(value)){
+        else {
             usernameField.requestFocus();
             usernameField.setText("");
             passwordField.setText("");
@@ -380,7 +369,7 @@ public class ClientModeConfiguration extends JFrame{
         try {
             FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".auth", ".auth");
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(".auth"));
-            HashMap<String, String> credentials = (HashMap<String, String>)ois.readObject();
+            @SuppressWarnings("unchecked") HashMap<String, String> credentials = (HashMap<String, String>)ois.readObject();
             for (HashMap.Entry<String,String> entry : credentials.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
@@ -397,6 +386,7 @@ public class ClientModeConfiguration extends JFrame{
                     } catch (NoSuchAlgorithmException e) {
                         e.printStackTrace();
                     }
+                    assert messageDigest != null;
                     messageDigest.update(password.getBytes(),0, password.length());
                     String enc = new BigInteger(1,messageDigest.digest()).toString(128);
                     if(!(value.equals(enc))){
@@ -408,13 +398,14 @@ public class ClientModeConfiguration extends JFrame{
                     }
                 }
             }
+            ois.close();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     private boolean checkFields(JTextField field) {
-        return field.getText().isEmpty() != true;
+        return !field.getText().isEmpty();
     }
 
     public static void run(JFrame sender, String serverAddress, boolean runType) {

@@ -10,11 +10,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * @author Mark Hedrick
  */
-public class NewDirectoryWindow extends JFrame {
-    private String serverAddress;
-    private int port;
-    private String userAccount;
-    private NewDirectoryWindow(String serverAddress, int port, JSONObject jsonObj, String userAccount) {
+class NewDirectoryWindow extends JFrame {
+    private final String serverAddress;
+    private final int port;
+    private final String userAccount;
+    private NewDirectoryWindow(String serverAddress, int port, String userAccount) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
@@ -38,13 +38,12 @@ public class NewDirectoryWindow extends JFrame {
 
         tree = (readFolder(userAccount,jsonObj,tree));
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        dirNameLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel dirNameLbl = new JLabel();
         dirNameTextField = new JTextField();
-        label2 = new JLabel();
-        scrollPane1 = new JScrollPane();
+        JLabel label2 = new JLabel();
+        JScrollPane scrollPane1 = new JScrollPane();
         tree1 = new JTree(tree);
         buttonBar = new JPanel();
         okButton = new JButton();
@@ -145,12 +144,11 @@ public class NewDirectoryWindow extends JFrame {
             }
             buttonBar.getRootPane().setDefaultButton(okButton);
             try{
+                assert node != null;
                 if(node.getChildCount() == 0){
                     if(!(node.toString().equals(userAccount))){
                         tree1.setSelectionPath(null);
                     }
-                }
-                else{
                 }
             }catch(NullPointerException ignored){
             }
@@ -195,21 +193,14 @@ public class NewDirectoryWindow extends JFrame {
         return branch;
     }
 
-    public static void run(String serverAddress, int port, JSONObject jsonObj, JFrame sender, String userAccount){
-        JFrame newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, jsonObj, userAccount);
+    public static void run(String serverAddress, int port, JFrame sender, String userAccount){
+        JFrame newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, userAccount);
         CenterWindow.centerOnWindow(sender, newDirectoryWindow);
         newDirectoryWindow.setVisible(true);
 
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel dirNameLbl;
     private JTextField dirNameTextField;
-    private JLabel label2;
-    private JScrollPane scrollPane1;
     private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;

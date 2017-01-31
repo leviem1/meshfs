@@ -17,14 +17,14 @@ import com.jgoodies.forms.factories.*;
 import static java.lang.String.valueOf;
 import static java.lang.Math.toIntExact;
 /**
- * Created by Mark Hedrick on 10/30/16.
+ * @author Mark Hedrick
  */
-public class ServerModeConfiguration extends JFrame {
+class ServerModeConfiguration extends JFrame {
 
     private static JFrame serverModeConfiguration;
-    private DefaultListModel model;
-    private HashMap<String, String> accountsEnc;
-    private HashMap<String, String> accountsPlain;
+    private final DefaultListModel model;
+    private final HashMap<String, String> accountsEnc;
+    private final HashMap<String, String> accountsPlain;
     private HashMap<String, String> accountsImported;
     private String out;
 
@@ -61,58 +61,58 @@ public class ServerModeConfiguration extends JFrame {
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setGroupingUsed(false);
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
         DefaultComponentFactory compFactory = DefaultComponentFactory.getInstance();
-        dialogPane = new JPanel();
+        JPanel dialogPane = new JPanel();
         serverSettingPane = new JTabbedPane();
-        networkTab = new JPanel();
-        serverNetworkInterfaceLbl = new JLabel();
+        JPanel networkTab = new JPanel();
+        JLabel serverNetworkInterfaceLbl = new JLabel();
         masterServerField = new JTextField();
-        serverPortLbl = new JLabel();
+        JLabel serverPortLbl = new JLabel();
         serverPortField = new JFormattedTextField(numberFormat);
         isMasterBox = new JCheckBox();
-        serverThreadsLbl = new JLabel();
+        JLabel serverThreadsLbl = new JLabel();
         serverThreadsField = new JFormattedTextField(numberFormat);
-        serverTimeoutLbl = new JLabel();
+        JLabel serverTimeoutLbl = new JLabel();
         serverTimeoutField = new JFormattedTextField(numberFormat);
-        timeUnitLbl = new JLabel();
+        JLabel timeUnitLbl = new JLabel();
         numStripesField = new JFormattedTextField(numberFormat);
-        stripesLbl = new JLabel();
+        JLabel stripesLbl = new JLabel();
         numStripeCopiesField = new JFormattedTextField(numberFormat);
-        stripedCopiesLbl = new JLabel();
+        JLabel stripedCopiesLbl = new JLabel();
         numWholeField = new JFormattedTextField(numberFormat);
-        wholeCopiesLbl = new JLabel();
+        JLabel wholeCopiesLbl = new JLabel();
         importConfigBtn = new JButton();
         backupConfigBtn = new JButton();
-        importDescriptionLbl = new JLabel();
-        exportDescriptionLbl = new JLabel();
-        configurationToolsLblSep = compFactory.createSeparator("Configuration Tools");
+        JLabel importDescriptionLbl = new JLabel();
+        JLabel exportDescriptionLbl = new JLabel();
+        JComponent configurationToolsLblSep = compFactory.createSeparator("Configuration Tools");
         helpIcon = new JLabel();
-        storageTab = new JPanel();
-        repositoryLbl = new JLabel();
+        JPanel storageTab = new JPanel();
+        JLabel repositoryLbl = new JLabel();
         repoPathField = new JTextField(System.getProperty("user.dir")+ File.separator + "repo");
-        minFreeSpaceLbl = new JLabel();
+        JLabel minFreeSpaceLbl = new JLabel();
         minSpaceField = new JFormattedTextField(numberFormat);
-        label1 = new JLabel();
+        JLabel label1 = new JLabel();
         spaceSldr = new JSlider();
         freeSpaceLbl = new JLabel();
         browseBtn = new JButton();
         userAccounts = new JPanel();
-        textArea1 = new JTextArea();
-        usernameLbl = new JLabel();
-        passwordLbl = new JLabel();
+        JTextArea textArea1 = new JTextArea();
+        JLabel usernameLbl = new JLabel();
+        JLabel passwordLbl = new JLabel();
         usernameValueField = new JTextField();
         passwordValueField = new JPasswordField();
-        scrollPane2 = new JScrollPane();
+        JScrollPane scrollPane2 = new JScrollPane();
+
         userAccountDataList = new JList(model);
         submitBtn = new JButton();
         removeUserBtn = new JButton();
         allowGuestBox = new JCheckBox();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         backBtn = new JButton();
         resetConfigBtn = new JButton();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Server Configuration");
@@ -515,8 +515,8 @@ public class ServerModeConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 309, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[] {0, 309, 0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
@@ -558,7 +558,7 @@ public class ServerModeConfiguration extends JFrame {
             final JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-            fileChooser.setDialogTitle("Choose Respository");
+            fileChooser.setDialogTitle("Choose Repository");
             int rVal = fileChooser.showOpenDialog(null);
             if (rVal == JFileChooser.APPROVE_OPTION) {
                 repoPathField.setText(fileChooser.getSelectedFile().toString());
@@ -766,7 +766,7 @@ public class ServerModeConfiguration extends JFrame {
                 changed();
             }
             public void changed() {
-                if (repoPathField.getText().isEmpty() == true){
+                if (repoPathField.getText().isEmpty()){
                     backupConfigBtn.setEnabled(false);
                     okButton.setEnabled(false);
                 }else{
@@ -817,6 +817,7 @@ public class ServerModeConfiguration extends JFrame {
                         JOptionPane.showMessageDialog(null, "Duplicate users cannot be created!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     } else if (!(userAccountDataList.getModel().getElementAt(i).toString().equals(value))) {
+
                         model.add(index, value);
                         usernameValueField.setText("");
                         passwordValueField.setText("");
@@ -824,6 +825,7 @@ public class ServerModeConfiguration extends JFrame {
                     }
                 }
             }else{
+
                 model.add(index, value);
                 usernameValueField.setText("");
                 passwordValueField.setText("");
@@ -834,6 +836,7 @@ public class ServerModeConfiguration extends JFrame {
             if(index > -1){
                 model.remove(index);
             }
+
             userAccountDataList.setModel(model);
         });
         passwordValueField.getDocument().addDocumentListener(new DocumentListener() {
@@ -909,16 +912,21 @@ public class ServerModeConfiguration extends JFrame {
                 FileInputStream fis = new FileInputStream(fileChooser.getSelectedFile().toString());
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 ArrayList<Object> importedObjects;
+
                 importedObjects = (ArrayList<Object>)ois.readObject();
                 properties = (Properties) importedObjects.get(0);
+
                 accountsImported = (HashMap<String, String>) importedObjects.get(1);
                 isMasterBox.setSelected((boolean)importedObjects.get(2));
+                ois.close();
+                fis.close();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
             int index = userAccountDataList.getModel().getSize();
 
 
+            assert properties != null;
             masterServerField.setText(properties.getProperty("masterIP"));
             serverPortField.setText(properties.getProperty("portNumber"));
             numStripesField.setText(properties.getProperty("numStripes"));
@@ -941,6 +949,7 @@ public class ServerModeConfiguration extends JFrame {
                     allowGuestBox.setSelected(true);
                 }
                 if(!(value.equals(""))){
+
                     model.add(index, value);
                 }
             }
@@ -967,6 +976,8 @@ public class ServerModeConfiguration extends JFrame {
                 oos.writeObject(outputObjects);
                 oos.flush();
                 JOptionPane.showMessageDialog(null, "Backup Successful!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+                oos.close();
+                fos.close();
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "Backup Failed!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
@@ -1029,6 +1040,7 @@ public class ServerModeConfiguration extends JFrame {
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
+            assert messageDigest != null;
             messageDigest.update(pass.getBytes(),0, pass.length());
             out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
             accountsEnc.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
@@ -1053,6 +1065,7 @@ public class ServerModeConfiguration extends JFrame {
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
+            assert messageDigest != null;
             messageDigest.update(pass.getBytes(),0, pass.length());
             out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
             accountsEnc.put(user, new BigInteger(1,messageDigest.digest()).toString(256));
@@ -1113,57 +1126,32 @@ public class ServerModeConfiguration extends JFrame {
         serverModeConfiguration.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
     private JTabbedPane serverSettingPane;
-    private JPanel networkTab;
-    private JLabel serverNetworkInterfaceLbl;
     private JTextField masterServerField;
-    private JLabel serverPortLbl;
     private JFormattedTextField serverPortField;
     private JCheckBox isMasterBox;
-    private JLabel serverThreadsLbl;
     private JFormattedTextField serverThreadsField;
-    private JLabel serverTimeoutLbl;
     private JFormattedTextField serverTimeoutField;
-    private JLabel timeUnitLbl;
     private JFormattedTextField numStripesField;
-    private JLabel stripesLbl;
     private JFormattedTextField numStripeCopiesField;
-    private JLabel stripedCopiesLbl;
     private JFormattedTextField numWholeField;
-    private JLabel wholeCopiesLbl;
     private JButton importConfigBtn;
     private JButton backupConfigBtn;
-    private JLabel importDescriptionLbl;
-    private JLabel exportDescriptionLbl;
-    private JComponent configurationToolsLblSep;
     private JLabel helpIcon;
-    private JPanel storageTab;
-    private JLabel repositoryLbl;
     private JTextField repoPathField;
-    private JLabel minFreeSpaceLbl;
     private JFormattedTextField minSpaceField;
-    private JLabel label1;
     private JSlider spaceSldr;
     private JLabel freeSpaceLbl;
     private JButton browseBtn;
     private JPanel userAccounts;
-    private JTextArea textArea1;
-    private JLabel usernameLbl;
-    private JLabel passwordLbl;
     private JTextField usernameValueField;
     private JPasswordField passwordValueField;
-    private JScrollPane scrollPane2;
     private JList userAccountDataList;
     private JButton submitBtn;
     private JButton removeUserBtn;
     private JCheckBox allowGuestBox;
-    private JPanel buttonBar;
     private JButton backBtn;
     private JButton resetConfigBtn;
     private JButton okButton;
-    private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -10,12 +10,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 /**
  * @author Mark Hedrick
  */
-public class MoveFileWindow extends JFrame {
-    private String currentJsonPath;
-    private String serverAddress;
-    private int port;
-    private String userAccount;
-    private String fileName;
+class MoveFileWindow extends JFrame {
+    private final String currentJsonPath;
+    private final String serverAddress;
+    private final int port;
+    private final String userAccount;
+    private final String fileName;
 
     private MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, String userAccount) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -47,14 +47,13 @@ public class MoveFileWindow extends JFrame {
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode(userAccount);
         tree = (readFolder(userAccount, jsonObj, tree));
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        scrollPane1 = new JScrollPane();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JScrollPane scrollPane1 = new JScrollPane();
         tree1 = new JTree(tree);
         buttonBar = new JPanel();
         okButton = new JButton();
-        label1 = new JLabel();
+        JLabel label1 = new JLabel();
 
         //======== this ========
         setTitle("filename - Move");
@@ -130,7 +129,6 @@ public class MoveFileWindow extends JFrame {
             if(node.toString().equals("(no files)")){
                 tree1.setSelectionPath(null);
                 okButton.setEnabled(false);
-                return;
             }else{
                 try{
                     if(node.getChildCount() == 0){
@@ -138,8 +136,6 @@ public class MoveFileWindow extends JFrame {
                         if(!(node.toString().equals(userAccount))){
                             tree1.setSelectionPath(null);
                         }
-                    }
-                    else{
                     }
                 }catch(NullPointerException ignored){
 
@@ -193,15 +189,9 @@ public class MoveFileWindow extends JFrame {
         moveFileWindow.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JScrollPane scrollPane1;
     private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;
-    private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }

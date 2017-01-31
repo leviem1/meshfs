@@ -11,20 +11,16 @@ import javax.swing.tree.*;
 /**
  * @author Mark Hedrick
  */
-public class ClientBrowser extends JFrame {
+class ClientBrowser extends JFrame {
 
     private boolean isLoaded = false;
-    private String serverAddress;
-    private int port;
-    private JSONObject jsonObj;
+    private final String serverAddress;
+    private final int port;
     private static JFrame clientBrowser;
-    private String userAccount;
-    private Timer catalogTimer;
-    private DefaultMutableTreeNode rootNode;
-    private TreeNode root;
-    private DefaultTreeModel treeModel;
+    private final String userAccount;
+    private final Timer catalogTimer;
     private int failureCount;
-    private File catalogFile;
+    private final File catalogFile;
 
     private ClientBrowser(String serverAddress, int port, String userAccount, File catalogFile) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -62,26 +58,23 @@ public class ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
-        jsonObj = JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
         try {
             FileClient.receiveFile(serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
         } catch (IOException ignored) {
         }
-        rootNode = new DefaultMutableTreeNode(userAccount);
-        root = (readFolder(userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), rootNode));
-        treeModel = new DefaultTreeModel(root);
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(userAccount);
+        TreeNode root = (readFolder(userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), rootNode));
 
         if (isLoaded) {
             dialogPane.repaint();
             dialogPane.revalidate();
         }
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        scrollPane1 = new JScrollPane();
+        JPanel contentPanel = new JPanel();
+        JScrollPane scrollPane1 = new JScrollPane();
         tree1 = new JTree(new DefaultTreeModel(root));
-        panel1 = new JPanel();
+        JPanel panel1 = new JPanel();
         uploadBtn = new JButton();
         downloadBtn = new JButton();
         newDirBtn = new JButton();
@@ -91,7 +84,7 @@ public class ClientBrowser extends JFrame {
         renameBtn = new JButton();
         propertiesBtn = new JButton();
         removeBtn = new JButton();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         logoutBtn = new JButton();
         statusLbl = new JLabel();
         quitBtn = new JButton();
@@ -227,8 +220,8 @@ public class ClientBrowser extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 374, 0};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[] {0, 374, 0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
                 //---- logoutBtn ----
                 logoutBtn.setText("Logout");
@@ -387,9 +380,7 @@ public class ClientBrowser extends JFrame {
             catalogTimer.cancel();
             System.exit(0);
         });
-        newDirBtn.addActionListener(e -> {
-            NewDirectoryWindow.run(serverAddress, port, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), clientBrowser, userAccount);
-        });
+        newDirBtn.addActionListener(e -> NewDirectoryWindow.run(serverAddress, port, clientBrowser, userAccount));
         renameBtn.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
             String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
@@ -495,12 +486,8 @@ public class ClientBrowser extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JScrollPane scrollPane1;
     private JTree tree1;
-    private JPanel panel1;
     private JButton uploadBtn;
     private JButton downloadBtn;
     private JButton newDirBtn;
@@ -510,7 +497,6 @@ public class ClientBrowser extends JFrame {
     private JButton renameBtn;
     private JButton propertiesBtn;
     private JButton removeBtn;
-    private JPanel buttonBar;
     private JButton logoutBtn;
     private JLabel statusLbl;
     private JButton quitBtn;

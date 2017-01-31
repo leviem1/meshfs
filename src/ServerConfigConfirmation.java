@@ -10,10 +10,11 @@ import java.util.Properties;
 import javax.swing.*;
 import javax.swing.border.*;
 
-
-public class ServerConfigConfirmation extends JFrame {
-    private HashMap accountDetails;
-    private Properties properties;
+/**
+ * @author Mark Hedrick
+ */
+class ServerConfigConfirmation extends JFrame {
+    private final HashMap accountDetails;
     private static JFrame serverConfigConfirmation;
     private ServerConfigConfirmation(String content, HashMap accountDetails, Properties properties) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -23,7 +24,6 @@ public class ServerConfigConfirmation extends JFrame {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
 
-        this.properties = properties;
         this.accountDetails = accountDetails;
 
         try{
@@ -44,16 +44,15 @@ public class ServerConfigConfirmation extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        label1 = new JLabel();
-        configValuesPane = new JScrollPane();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel label1 = new JLabel();
+        JScrollPane configValuesPane = new JScrollPane();
         configValues = new JTextPane();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Server Configuration Confirmation");
@@ -105,8 +104,8 @@ public class ServerConfigConfirmation extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
@@ -175,6 +174,8 @@ public class ServerConfigConfirmation extends JFrame {
             dispose();
             System.exit(0);
         } catch (URISyntaxException ignored) {
+        } finally {
+            oos.close();
         }
     }
 
@@ -184,16 +185,8 @@ public class ServerConfigConfirmation extends JFrame {
         serverConfigConfirmation.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel label1;
-    private JScrollPane configValuesPane;
     private JTextPane configValues;
-    private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
-    private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

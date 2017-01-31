@@ -40,9 +40,9 @@ class ConfigParser {
         }
     }
 
-    static Properties reader(String path) throws IOException {
+    private static Properties reader() throws IOException {
         Properties prop = new Properties();
-        InputStream input = new FileInputStream(path);
+        InputStream input = new FileInputStream(".config.properties");
         prop.load(input);
         if (!(prop.getProperty("repository").substring(prop.getProperty("repository").length()-1)).equals(File.separator)) {
             prop.setProperty("repository", prop.getProperty("repository") + File.separator);
@@ -50,6 +50,7 @@ class ConfigParser {
         }
 
         if (prop.getProperty("timeout") == null) prop.setProperty("timeout", "5");
+        input.close();
         return prop;
     }
 
@@ -58,7 +59,7 @@ class ConfigParser {
         Properties properties;
 
         try {
-            properties = reader(".config.properties");
+            properties = reader();
             Properties defaultProperties = loadDefaultProperties();
 
             if (!properties.stringPropertyNames().equals(defaultProperties.stringPropertyNames())) {

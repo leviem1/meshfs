@@ -12,13 +12,13 @@ import javax.swing.event.DocumentListener;
 /**
  * @author Mark Hedrick
  */
-public class RenameFileWindow extends JFrame {
-    private String serverAddress;
-    private int port;
-    private String jsonObj;
-    private String userAccount;
-    private String originalName;
-    private RenameFileWindow(String serverAddress, int port, String jsonObj, JFrame sender, String currentName, String userAccount) {
+class RenameFileWindow extends JFrame {
+    private final String serverAddress;
+    private final int port;
+    private final String jsonObj;
+    private final String userAccount;
+    private final String originalName;
+    private RenameFileWindow(String serverAddress, int port, String jsonObj, String currentName, String userAccount) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -53,15 +53,14 @@ public class RenameFileWindow extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        currentNameLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel currentNameLbl = new JLabel();
         currentNameValue = new JLabel();
-        newNameLbl = new JLabel();
+        JLabel newNameLbl = new JLabel();
         newNameValueField = new JTextField();
         buttonBar = new JPanel();
-        cancelBtn = new JButton();
+        JButton cancelBtn = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -202,22 +201,15 @@ public class RenameFileWindow extends JFrame {
     }
 
     public static void run(String serverAddress, int port, JFrame sender, String jsonObj, String currentName, String userAccount){
-        JFrame renameFileWindow = new RenameFileWindow(serverAddress, port, jsonObj, sender, currentName, userAccount);
+        JFrame renameFileWindow = new RenameFileWindow(serverAddress, port, jsonObj, currentName, userAccount);
         CenterWindow.centerOnWindow(sender, renameFileWindow);
         renameFileWindow.setVisible(true);
 
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel currentNameLbl;
     private JLabel currentNameValue;
-    private JLabel newNameLbl;
     private JTextField newNameValueField;
     private JPanel buttonBar;
-    private JButton cancelBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

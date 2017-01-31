@@ -4,12 +4,12 @@ import javax.swing.border.*;
 
 
 /**
- * Created by Mark Hedrick on 10/30/16.
+ * @author Mark Hedrick
  */
-public class GreetingsWindow extends JFrame {
+class GreetingsWindow extends JFrame {
 
     private static JFrame greetingsWindow;
-    private boolean runType;
+    private final boolean runType;
 
     private GreetingsWindow(boolean runType) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -35,13 +35,12 @@ public class GreetingsWindow extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        titleLbl = new JLabel();
-        scrollPane1 = new JScrollPane();
-        greetingsPane = new JTextPane();
-        buttonBar = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel titleLbl = new JLabel();
+        JScrollPane scrollPane1 = new JScrollPane();
+        JTextPane greetingsPane = new JTextPane();
+        JPanel buttonBar = new JPanel();
         quitButton = new JButton();
         configBtn = new JButton();
 
@@ -157,13 +156,7 @@ public class GreetingsWindow extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel titleLbl;
-    private JScrollPane scrollPane1;
-    private JTextPane greetingsPane;
-    private JPanel buttonBar;
     private JButton quitButton;
     private JButton configBtn;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
