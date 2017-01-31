@@ -282,7 +282,9 @@ class JSONManipulator {
      */
 
     synchronized static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
-        new FileWriter(filePath).write(obj.toJSONString());
+        try (FileWriter file = new FileWriter(filePath)) {
+            file.write(obj.toJSONString());
+        }
     }
 
     /**
