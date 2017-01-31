@@ -24,8 +24,9 @@ public class ClientBrowser extends JFrame {
     private TreeNode root;
     private DefaultTreeModel treeModel;
     private int failureCount;
+    private File catalogFile;
 
-    private ClientBrowser(String serverAddress, int port, String userAccount) {
+    private ClientBrowser(String serverAddress, int port, String userAccount, File catalogFile) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
@@ -36,6 +37,7 @@ public class ClientBrowser extends JFrame {
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
+        this.catalogFile = catalogFile;
 
         catalogTimer = new java.util.Timer();
 
@@ -60,13 +62,13 @@ public class ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
-        jsonObj = JSONManipulator.getJSONObject(".catalog.json");
+        jsonObj = JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
         try {
-            FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
+            FileClient.receiveFile(serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
         } catch (IOException ignored) {
         }
         rootNode = new DefaultMutableTreeNode(userAccount);
-        root = (readFolder(userAccount, JSONManipulator.getJSONObject(".catalog.json"), rootNode));
+        root = (readFolder(userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), rootNode));
         treeModel = new DefaultTreeModel(root);
 
         if (isLoaded) {
@@ -267,7 +269,7 @@ public class ClientBrowser extends JFrame {
             fileChooser.setAcceptAllFileFilterUsed(true);
             int rVal = fileChooser.showOpenDialog(null);
             if (rVal == JFileChooser.APPROVE_OPTION) {
-                Map<String, String> folderMap = JSONManipulator.getMapOfFolderContents(JSONManipulator.getJSONObject(".catalog.json"), userAccount, userAccount);
+                Map<String, String> folderMap = JSONManipulator.getMapOfFolderContents(JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), userAccount, userAccount);
                 for (Map.Entry<String, String> item : folderMap.entrySet())
                 {
                     if(item.getKey().equals(fileChooser.getSelectedFile().getName())){
@@ -289,7 +291,7 @@ public class ClientBrowser extends JFrame {
             if(node == null){
                 return;
             }
-            JSONObject contents = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"));
+            JSONObject contents = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"));
             Object type = contents.get("type");
             try{
                 if(node.toString().equals("(no files)")){
@@ -355,7 +357,7 @@ public class ClientBrowser extends JFrame {
         propertiesBtn.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
             String jsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/");
-            JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(".catalog.json"), jsonPath);
+            JSONObject fileProperties = JSONManipulator.getItemContents(JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), jsonPath);
             Object fileSize = fileProperties.get("fileSize");
             Object creationDate = fileProperties.get("creationDate");
             Object owner = fileProperties.get("owner");
@@ -386,7 +388,7 @@ public class ClientBrowser extends JFrame {
             System.exit(0);
         });
         newDirBtn.addActionListener(e -> {
-            NewDirectoryWindow.run(serverAddress, port, JSONManipulator.getJSONObject(".catalog.json"), clientBrowser, userAccount);
+            NewDirectoryWindow.run(serverAddress, port, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), clientBrowser, userAccount);
         });
         renameBtn.addActionListener(e -> {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
@@ -402,7 +404,7 @@ public class ClientBrowser extends JFrame {
     }
 
     private DefaultMutableTreeNode readFolder(String folderLocation, JSONObject jsonObj2, DefaultMutableTreeNode branch){
-        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(JSONManipulator.getJSONObject(".catalog.json"), folderLocation, userAccount);
+        Map<String,String> folderContents = JSONManipulator.getMapOfFolderContents(JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), folderLocation, userAccount);
         if (folderContents.keySet().isEmpty()){
             DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
             branch.add(leaf);
@@ -468,14 +470,14 @@ public class ClientBrowser extends JFrame {
                         failureCount += 1;
                     }
                     JSONObject latestCatalog = JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
-                    JSONObject localCatalog = JSONManipulator.getJSONObject(new File(".catalog.json").getAbsolutePath());
+                    JSONObject localCatalog = JSONManipulator.getJSONObject(new File(catalogFile.getAbsolutePath()).getAbsolutePath());
                     if(localCatalog.equals(latestCatalog)){
                         tempCatalog.delete();
                     }else{
-                        FileClient.receiveFile(serverAddress, port, ".catalog.json", ".catalog.json");
+                        FileClient.receiveFile(serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
                         browserBtns(false);
                         tree1.removeAll();
-                        tree1.setModel(new DefaultTreeModel(readFolder(userAccount, JSONManipulator.getJSONObject(".catalog.json"), new DefaultMutableTreeNode(userAccount))));
+                        tree1.setModel(new DefaultTreeModel(readFolder(userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), new DefaultMutableTreeNode(userAccount))));
                         tempCatalog.delete();
                     }
                 } catch (IOException ignored) {
@@ -485,10 +487,11 @@ public class ClientBrowser extends JFrame {
 
     }
 
-    public static void run(String serverAddress, int port, JFrame sender, String userAccount) {
-        clientBrowser = new ClientBrowser(serverAddress, port, userAccount);
+    public static void run(String serverAddress, int port, JFrame sender, String userAccount, File catalogFile) {
+        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogFile);
         CenterWindow.centerOnWindow(sender, clientBrowser);
         clientBrowser.setVisible(true);
+        catalogFile.deleteOnExit();
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables

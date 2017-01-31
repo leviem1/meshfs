@@ -339,9 +339,10 @@ public class ClientModeConfiguration extends JFrame{
         }
         try{
             connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+            File catalog = File.createTempFile(".catalog", ".json");
             if(!(usernameFinal.equals(""))){
-                FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", ".catalog.json");
-                ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration, usernameFinal);
+                FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".catalog.json", catalog.getAbsolutePath());
+                ClientBrowser.run(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), clientModeConfiguration, usernameFinal, catalog);
                 dispose();
             }
         }catch(IOException ignored){
