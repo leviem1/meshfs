@@ -17,7 +17,7 @@ class DISTAL {
 
     private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String,Long> storageMap , long sizeOfStripe){
 
-        @SuppressWarnings("unchecked") LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
+        LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
 
         //put something in the map to compare against
         sortedMap.put("temp", -1L);
@@ -29,7 +29,7 @@ class DISTAL {
             for (String sortedKey : sortedMap.keySet()){
                 if (storageAmount >= sortedMap.get(sortedKey)){
                     //reorder the map when a storage value is larger than one that is already in the map
-                    @SuppressWarnings("unchecked") LinkedHashMap<String,Long>  reorderStorageMap = (LinkedHashMap<String,Long>) sortedMap.clone();
+                    LinkedHashMap<String,Long>  reorderStorageMap = (LinkedHashMap<String,Long>) sortedMap.clone();
                     sortedMap.clear();
                     for (String reorderKey : reorderStorageMap.keySet()){
                         if (reorderKey.equals(sortedKey)){
