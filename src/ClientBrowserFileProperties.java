@@ -3,6 +3,7 @@ import org.json.simple.JSONObject;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 
 /**
@@ -42,14 +43,33 @@ public class ClientBrowserFileProperties extends JFrame {
         ownerValue.setText(owner);
 
         int pos = locationList.getModel().getSize();
+        int stripes = 0;
+        int wholes = 0;
         for (Object key : itemContents.keySet()) {
             String keyStr = key.toString();
             Object keyValue = itemContents.get(keyStr);
-            if(keyStr.contains("stripe_") || keyStr.contains("whole")){
-                model.add(pos, keyStr + ": " + keyValue);
+            if(keyStr.contains("stripe_")){
+                if(!keyValue.toString().equals("[]")){
+                    stripes += 1;
+                }
             }
-        }
+            else if(keyStr.contains("whole")){
+                if(!keyValue.toString().equals("[]")){
+                    wholes += 1;
+                }
+            }
 
+            /*if(keyStr.contains("stripe_") || keyStr.contains("whole")){
+                if(keyValue.toString().equals("[]")){
+                    model.add(pos, keyStr + ": " + "None");
+                }else{
+                    model.add(pos, keyStr + ": " + keyValue);
+                }
+            }*/
+
+        }
+        model.add(pos, "Stripes: " + stripes);
+        model.add(pos, "Wholes: " + wholes);
     }
 
 
@@ -104,7 +124,7 @@ public class ClientBrowserFileProperties extends JFrame {
                 ownerLbl.setFont(new Font("Arial", Font.PLAIN, ownerLbl.getFont().getSize() + 1));
 
                 //---- locationLbl ----
-                locationLbl.setText("Located On:");
+                locationLbl.setText("File Details:");
                 locationLbl.setFont(new Font("Arial", Font.PLAIN, locationLbl.getFont().getSize() + 1));
 
                 //======== scrollPane1 ========
@@ -112,6 +132,7 @@ public class ClientBrowserFileProperties extends JFrame {
 
                     //---- locationList ----
                     locationList.setFont(new Font("Arial", Font.PLAIN, locationList.getFont().getSize() + 1));
+                    locationList.setEnabled(false);
                     scrollPane1.setViewportView(locationList);
                 }
 
@@ -128,7 +149,7 @@ public class ClientBrowserFileProperties extends JFrame {
                 creationDateValue.setFont(new Font("Arial", Font.PLAIN, creationDateValue.getFont().getSize() + 1));
 
                 //---- ownerValue ----
-                ownerValue.setText("guest");
+                ownerValue.setText("null");
                 ownerValue.setFont(new Font("Arial", Font.PLAIN, ownerValue.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
@@ -138,7 +159,7 @@ public class ClientBrowserFileProperties extends JFrame {
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
+                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addGroup(contentPanelLayout.createParallelGroup()
                                         .addGroup(contentPanelLayout.createSequentialGroup()
@@ -158,7 +179,8 @@ public class ClientBrowserFileProperties extends JFrame {
                                             .addComponent(creationDateLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(creationDateValue)))
-                                    .addContainerGap(148, Short.MAX_VALUE))))
+                                    .addGap(0, 142, Short.MAX_VALUE)))
+                            .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -182,8 +204,7 @@ public class ClientBrowserFileProperties extends JFrame {
                             .addGap(18, 18, 18)
                             .addComponent(locationLbl)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);

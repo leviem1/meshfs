@@ -426,12 +426,18 @@ public class ClientBrowser extends JFrame {
             if(!(JSONManipulator.pullFile(tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/"), path, path.substring(path.lastIndexOf(File.separator)), serverAddress, port))){
                  JOptionPane.showMessageDialog(null, "Download Failed! Please try again later...", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                 statusLbl.setText("Download Failure!");
+                Thread.sleep(1000);
+                statusLbl.setText("");
             }else{
                 JOptionPane.showMessageDialog(null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                 statusLbl.setText("Download Completed!");
+                Thread.sleep(1000);
+                statusLbl.setText("");
             }
         } catch (IOException ignored) {
-        }
+        } catch (InterruptedException e) {
+             e.printStackTrace();
+         }
     }
 
     private void browserBtns(boolean state){
