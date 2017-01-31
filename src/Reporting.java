@@ -123,10 +123,11 @@ public class Reporting {
                 jsonObject.put(reportSetData[0],reportSetData[1]);
             }
         }
-        mainArray.add(reportArray[0]);
-        mainArray.add(jsonObject);
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
         Date dateObj = new Date();
+        jsonObject.put("checkInTimestamp", df.format(dateObj));
+        mainArray.add(reportArray[0]);
+        mainArray.add(jsonObject);
         System.out.println(reportArray[0] + " checked in at " + df.format(dateObj));
         return mainArray;
     }
