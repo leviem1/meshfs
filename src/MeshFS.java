@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 import java.util.Timer;
 
 public class MeshFS {
@@ -68,6 +67,7 @@ public class MeshFS {
                             Long slaveTimeStamp = (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
                             if(currentTimeStamp > slaveTimeStamp + 32000){
                                 newManifest = JSONManipulator.removeItem(newManifest, computer.toString());
+                                System.out.println(computer.toString() + " was removed from the manifest");
                                 break;
                             }
                         }
