@@ -8,8 +8,6 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
 
 
 /**
@@ -284,28 +282,15 @@ public final class FileClient {
                 int br;
                 byte[] data = new byte[4096];
 
-                while (true) {
-                    try {
-                        FileLock fl = fos.getChannel().lock();
-
-                        while ((br = dis.read(data, 0, data.length)) != -1) {
-                            fos.write(data, 0, br);
-                            fos.flush();
-                        }
-
-                        fl.release();
-                        fos.close();
-                        dis.close();
-                        break;
-                    } catch (OverlappingFileLockException ofle) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ie) {
-                            break;
-                        }
-                    }
+                while ((br = dis.read(data, 0, data.length)) != -1) {
+                    fos.write(data, 0, br);
+                    fos.flush();
                 }
             }
+
+            out.close();
+            fos.close();
+            dis.close();
             client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
@@ -327,29 +312,16 @@ public final class FileClient {
                 int br;
                 byte[] data = new byte[4096];
 
-                while (true) {
-                    try {
-                        FileLock fl = fos.getChannel().lock();
-
-                        while ((br = dis.read(data, 0, data.length)) != -1) {
-                            fos.write(data, 0, br);
-                            fos.flush();
-                        }
-
-                        fl.release();
-                        fos.close();
-                        dis.close();
-                        break;
-                    } catch (OverlappingFileLockException ofle) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ie) {
-                            break;
-                        }
-                    }
+                while ((br = dis.read(data, 0, data.length)) != -1) {
+                    fos.write(data, 0, br);
+                    fos.flush();
                 }
+
             }
 
+            out.close();
+            dis.close();
+            fos.close();
             client.close();
         } catch (SocketTimeoutException ste) {
             client.close();

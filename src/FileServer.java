@@ -7,8 +7,6 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.*;
 
-import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
 import java.util.ArrayList;
 
 
@@ -179,7 +177,7 @@ class ServerInit implements Runnable {
         out.println(Reporting.generate() + "\n");
     }
 
-    private void receiveReport(Socket client) throws IOException {
+    synchronized private void receiveReport(Socket client) throws IOException {
         String reportPart;
         String reportFull = "";
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -257,24 +255,9 @@ class ServerInit implements Runnable {
 
         out.println("201");
 
-        while (true) {
-            try {
-                FileLock fl = fos.getChannel().lock();
-
-                while ((br = dis.read(data, 0, data.length)) != -1) {
-                    fos.write(data, 0, br);
-                    fos.flush();
-                }
-
-                fl.release();
-                break;
-            } catch (OverlappingFileLockException ofle) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ie) {
-                    break;
-                }
-            }
+        while ((br = dis.read(data, 0, data.length)) != -1) {
+            fos.write(data, 0, br);
+            fos.flush();
         }
 
         out.close();
@@ -292,24 +275,9 @@ class ServerInit implements Runnable {
         out.println("201");
         JSONManipulator.addToIndex(userAccount, filename + " (uploading)",MeshFS.properties.getProperty("repository")+".catalog.json", userAccount);
 
-        while (true) {
-            try {
-                FileLock fl = fos.getChannel().lock();
-
-                while ((br = dis.read(data, 0, data.length)) != -1) {
-                    fos.write(data, 0, br);
-                    fos.flush();
-                }
-
-                fl.release();
-                break;
-            } catch (OverlappingFileLockException ofle) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ie) {
-                    break;
-                }
-            }
+        while ((br = dis.read(data, 0, data.length)) != -1) {
+            fos.write(data, 0, br);
+            fos.flush();
         }
 
         out.close();

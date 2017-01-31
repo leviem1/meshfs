@@ -1,11 +1,7 @@
 import org.json.simple.parser.JSONParser;
 import org.json.simple.*;
 import org.json.simple.parser.ParseException;
-
 import java.io.*;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -33,31 +29,15 @@ class JSONManipulator {
      * @param filePath    the file path of the file that is to be read.
      */
 
-    static JSONObject getJSONObject(String filePath) {
+    synchronized static JSONObject getJSONObject(String filePath) {
         JSONObject jsonObject = null;
         JSONParser reader = new JSONParser();
 
-        while (true) {
-            try {
-                FileLock fl = new RandomAccessFile(filePath, "rw").getChannel().lock(0L, Long.MAX_VALUE, true);
-                System.out.println("Manifest file unlocked");
-                Object obj = reader.parse(new FileReader(filePath));
-                jsonObject = (JSONObject) obj;
-                fl.release();
-                System.out.println("Manifest file read");
-                break;
-            } catch (OverlappingFileLockException ofle) {
-                System.out.println("Manifest file locked");
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ie) {
-                    break;
-                }
-            } catch (ParseException | IOException e) {
-                System.out.println("Manifest file corrupt");
-                e.printStackTrace();
-                break;
-            }
+        try {
+            Object obj = reader.parse(new FileReader(filePath));
+            jsonObject = (JSONObject) obj;
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
         }
 
         return jsonObject;
@@ -301,27 +281,8 @@ class JSONManipulator {
      *
      */
 
-    static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
-        File file = new File(filePath);
-        FileOutputStream fos = new FileOutputStream(file);
-        while (true) {
-            try {
-                FileLock fl = fos.getChannel().lock();
-                System.out.println(filePath + " file unlocked");
-                fos.write(obj.toJSONString().getBytes());
-                fl.release();
-                fos.close();
-                System.out.println(filePath + " file written");
-                break;
-            } catch (OverlappingFileLockException ofle) {
-                System.out.println(filePath + " file locked");
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ie) {
-                    break;
-                }
-            }
-        }
+    synchronized static void writeJSONObject(String filePath, JSONObject obj) throws IOException {
+        new FileWriter(filePath).write(obj.toJSONString());
     }
 
     /**
