@@ -40,17 +40,21 @@ class JSONManipulator {
         while (true) {
             try {
                 FileLock fl = new RandomAccessFile(filePath, "rw").getChannel().lock(0L, Long.MAX_VALUE, true);
+                System.out.println("Manifest file unlocked");
                 Object obj = reader.parse(new FileReader(filePath));
                 jsonObject = (JSONObject) obj;
                 fl.release();
+                System.out.println("Manifest file read");
                 break;
             } catch (OverlappingFileLockException ofle) {
+                System.out.println("Manifest file locked");
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ie) {
                     break;
                 }
             } catch (ParseException | IOException e) {
+                System.out.println("Manifest file corrupt");
                 e.printStackTrace();
                 break;
             }
@@ -303,11 +307,14 @@ class JSONManipulator {
         while (true) {
             try {
                 FileLock fl = fos.getChannel().lock();
+                System.out.println(filePath + " file unlocked");
                 fos.write(obj.toJSONString().getBytes());
                 fl.release();
                 fos.close();
+                System.out.println(filePath + " file written");
                 break;
             } catch (OverlappingFileLockException ofle) {
+                System.out.println(filePath + " file locked");
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ie) {
