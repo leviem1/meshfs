@@ -284,6 +284,8 @@ final class FileClient {
             }
         } catch (SocketTimeoutException ignored) {
         } finally {
+            input.close();
+            out.close();
             fis.close();
             dos.close();
             client.close();
