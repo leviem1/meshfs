@@ -28,8 +28,7 @@ class Reporting {
       file = new File("/");
     }
 
-    return file.getUsableSpace()
-        - (Long.parseLong(MeshFS.properties.getProperty("minSpace")) * 1073741824L);
+    return file.getUsableSpace() - (Long.parseLong(MeshFS.properties.getProperty("minSpace")) * 1073741824L);
   }
 
   static List<String> getIpAddresses() {
