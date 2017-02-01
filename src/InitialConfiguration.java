@@ -1,183 +1,256 @@
-import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
-/**
- * @author Mark Hedrick
- */
+/** @author Mark Hedrick */
 class InitialConfiguration extends JFrame {
 
-    private static JFrame initialConfiguration;
+  private static JFrame initialConfiguration;
+  private JPanel contentPanel;
+  private JComboBox modeSelectionBox;
+  private JButton backBtn;
+  private JButton okButton;
 
-    private InitialConfiguration() {
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
+  private InitialConfiguration() {
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    setResizable(false);
 
-        if(Reporting.getSystemOS().contains("Windows")){
-            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-        }
-
-        initComponents();
-        frameListeners();
-
-
-        modeSelectionBox.addItem("none");
-
-        modeSelectionBox.addItem("Client Mode");
-
-        modeSelectionBox.addItem("Server Mode");
-
-        okButton.setEnabled(false);
-        modeSelectionBox.requestFocus();
+    if (Reporting.getSystemOS().contains("Windows")) {
+      setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
     }
 
-    private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        JPanel dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        JLabel titleLbl = new JLabel();
-        JLabel modeLbl = new JLabel();
-        modeSelectionBox = new JComboBox();
-        JPanel buttonBar = new JPanel();
-        backBtn = new JButton();
-        okButton = new JButton();
+    initComponents();
+    frameListeners();
 
-        //======== this ========
-        setTitle("MeshFS - Initial Configuration");
-        Container contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
+    modeSelectionBox.addItem("none");
 
-        //======== dialogPane ========
-        {
-            dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+    modeSelectionBox.addItem("Client Mode");
 
-            //======== contentPanel ========
-            {
+    modeSelectionBox.addItem("Server Mode");
 
-                //---- titleLbl ----
-                titleLbl.setText("Mode");
-                titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
-                titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+    okButton.setEnabled(false);
+    modeSelectionBox.requestFocus();
+  }
 
-                //---- modeLbl ----
-                modeLbl.setText("Please select the desired mode of operation:");
-                modeLbl.setFont(new Font("Arial", modeLbl.getFont().getStyle(), modeLbl.getFont().getSize() + 1));
-                modeLbl.setHorizontalAlignment(SwingConstants.CENTER);
+  public static void run(JFrame sender) {
+    initialConfiguration = new InitialConfiguration();
+    CenterWindow.centerOnWindow(sender, initialConfiguration);
+    initialConfiguration.setVisible(true);
+  }
 
-                //---- modeSelectionBox ----
-                modeSelectionBox.setFont(new Font("Arial", modeSelectionBox.getFont().getStyle(), modeSelectionBox.getFont().getSize() + 1));
+  private void initComponents() {
+    // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+    JPanel dialogPane = new JPanel();
+    contentPanel = new JPanel();
+    JLabel titleLbl = new JLabel();
+    JLabel modeLbl = new JLabel();
+    modeSelectionBox = new JComboBox();
+    JPanel buttonBar = new JPanel();
+    backBtn = new JButton();
+    okButton = new JButton();
 
-                GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
-                contentPanel.setLayout(contentPanelLayout);
-                contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addGap(84, 84, 84)
-                            .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(modeLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addContainerGap())
-                );
-                contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addComponent(titleLbl)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(modeLbl)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                            .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                );
-            }
+    //======== this ========
+    setTitle("MeshFS - Initial Configuration");
+    Container contentPane = getContentPane();
+    contentPane.setLayout(new BorderLayout());
 
-            //======== buttonBar ========
-            {
-                buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
-                buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+    //======== dialogPane ========
+    {
+      dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
 
-                //---- backBtn ----
-                backBtn.setText("Back");
-                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
-                buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+      //======== contentPanel ========
+      {
 
-                //---- okButton ----
-                okButton.setText("OK");
-                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
-            }
+        //---- titleLbl ----
+        titleLbl.setText("Mode");
+        titleLbl.setFont(
+            new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+        titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
-            GroupLayout dialogPaneLayout = new GroupLayout(dialogPane);
-            dialogPane.setLayout(dialogPaneLayout);
-            dialogPaneLayout.setHorizontalGroup(
-                dialogPaneLayout.createParallelGroup()
-                    .addGroup(GroupLayout.Alignment.TRAILING, dialogPaneLayout.createSequentialGroup()
-                        .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addGroup(GroupLayout.Alignment.LEADING, dialogPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(buttonBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(contentPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(10, 10, 10))
-            );
-            dialogPaneLayout.setVerticalGroup(
-                dialogPaneLayout.createParallelGroup()
-                    .addGroup(dialogPaneLayout.createSequentialGroup()
-                        .addComponent(contentPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
-            );
-        }
-        contentPane.add(dialogPane, BorderLayout.CENTER);
-        pack();
-        setLocationRelativeTo(getOwner());
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents
+        //---- modeLbl ----
+        modeLbl.setText("Please select the desired mode of operation:");
+        modeLbl.setFont(
+            new Font("Arial", modeLbl.getFont().getStyle(), modeLbl.getFont().getSize() + 1));
+        modeLbl.setHorizontalAlignment(SwingConstants.CENTER);
+
+        //---- modeSelectionBox ----
+        modeSelectionBox.setFont(
+            new Font(
+                "Arial",
+                modeSelectionBox.getFont().getStyle(),
+                modeSelectionBox.getFont().getSize() + 1));
+
+        GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
+        contentPanel.setLayout(contentPanelLayout);
+        contentPanelLayout.setHorizontalGroup(
+            contentPanelLayout
+                .createParallelGroup()
+                .addComponent(
+                    titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(
+                    contentPanelLayout
+                        .createSequentialGroup()
+                        .addGap(84, 84, 84)
+                        .addComponent(
+                            modeSelectionBox,
+                            GroupLayout.PREFERRED_SIZE,
+                            137,
+                            GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(
+                    contentPanelLayout
+                        .createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(
+                            modeLbl,
+                            GroupLayout.DEFAULT_SIZE,
+                            GroupLayout.DEFAULT_SIZE,
+                            Short.MAX_VALUE)
+                        .addContainerGap()));
+        contentPanelLayout.setVerticalGroup(
+            contentPanelLayout
+                .createParallelGroup()
+                .addGroup(
+                    contentPanelLayout
+                        .createSequentialGroup()
+                        .addComponent(titleLbl)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(modeLbl)
+                        .addPreferredGap(
+                            LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                        .addComponent(
+                            modeSelectionBox,
+                            GroupLayout.PREFERRED_SIZE,
+                            GroupLayout.DEFAULT_SIZE,
+                            GroupLayout.PREFERRED_SIZE)));
+      }
+
+      //======== buttonBar ========
+      {
+        buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
+        buttonBar.setLayout(new GridBagLayout());
+        ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+        ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+
+        //---- backBtn ----
+        backBtn.setText("Back");
+        backBtn.setFont(
+            new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
+        buttonBar.add(
+            backBtn,
+            new GridBagConstraints(
+                0,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.CENTER,
+                GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 5),
+                0,
+                0));
+
+        //---- okButton ----
+        okButton.setText("OK");
+        okButton.setFont(
+            new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+        buttonBar.add(
+            okButton,
+            new GridBagConstraints(
+                2,
+                0,
+                1,
+                1,
+                0.0,
+                0.0,
+                GridBagConstraints.CENTER,
+                GridBagConstraints.BOTH,
+                new Insets(0, 0, 0, 0),
+                0,
+                0));
+      }
+
+      GroupLayout dialogPaneLayout = new GroupLayout(dialogPane);
+      dialogPane.setLayout(dialogPaneLayout);
+      dialogPaneLayout.setHorizontalGroup(
+          dialogPaneLayout
+              .createParallelGroup()
+              .addGroup(
+                  GroupLayout.Alignment.TRAILING,
+                  dialogPaneLayout
+                      .createSequentialGroup()
+                      .addGroup(
+                          dialogPaneLayout
+                              .createParallelGroup(GroupLayout.Alignment.TRAILING)
+                              .addGroup(
+                                  GroupLayout.Alignment.LEADING,
+                                  dialogPaneLayout
+                                      .createSequentialGroup()
+                                      .addContainerGap()
+                                      .addComponent(
+                                          buttonBar,
+                                          GroupLayout.DEFAULT_SIZE,
+                                          GroupLayout.DEFAULT_SIZE,
+                                          Short.MAX_VALUE))
+                              .addComponent(
+                                  contentPanel,
+                                  GroupLayout.DEFAULT_SIZE,
+                                  GroupLayout.DEFAULT_SIZE,
+                                  Short.MAX_VALUE))
+                      .addGap(10, 10, 10)));
+      dialogPaneLayout.setVerticalGroup(
+          dialogPaneLayout
+              .createParallelGroup()
+              .addGroup(
+                  dialogPaneLayout
+                      .createSequentialGroup()
+                      .addComponent(
+                          contentPanel,
+                          GroupLayout.PREFERRED_SIZE,
+                          GroupLayout.DEFAULT_SIZE,
+                          GroupLayout.PREFERRED_SIZE)
+                      .addPreferredGap(
+                          LayoutStyle.ComponentPlacement.RELATED,
+                          GroupLayout.DEFAULT_SIZE,
+                          Short.MAX_VALUE)
+                      .addComponent(
+                          buttonBar, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)));
     }
+    contentPane.add(dialogPane, BorderLayout.CENTER);
+    pack();
+    setLocationRelativeTo(getOwner());
+    // JFormDesigner - End of component initialization  //GEN-END:initComponents
+  }
 
-    private void frameListeners(){
-        okButton.addActionListener(e -> onOk());
-        modeSelectionBox.addActionListener(e -> {
-            if(modeSelectionBox.getSelectedItem().toString().equals("none")){
-                okButton.setEnabled(false);
-            }else{
-                okButton.setEnabled(true);
-            }
-            contentPanel.getRootPane().setDefaultButton(okButton);
-            contentPanel.requestFocus();
+  private void frameListeners() {
+    okButton.addActionListener(e -> onOk());
+    modeSelectionBox.addActionListener(
+        e -> {
+          if (modeSelectionBox.getSelectedItem().toString().equals("none")) {
+            okButton.setEnabled(false);
+          } else {
+            okButton.setEnabled(true);
+          }
+          contentPanel.getRootPane().setDefaultButton(okButton);
+          contentPanel.requestFocus();
         });
-        backBtn.addActionListener(e -> {
-            dispose();
-            GreetingsWindow.run(false, initialConfiguration);
+    backBtn.addActionListener(
+        e -> {
+          dispose();
+          GreetingsWindow.run(false, initialConfiguration);
         });
-    }
+  }
 
-    private void onOk() {
-        if(modeSelectionBox.getSelectedItem().toString().equals("Server Mode")){
-            ServerModeConfiguration.run(initialConfiguration);
-            dispose();
-        }
-        else if(modeSelectionBox.getSelectedItem().toString().equals("Client Mode")){
-            ClientModeConfiguration.run(initialConfiguration, "", true);
-            dispose();
-        }
+  private void onOk() {
+    if (modeSelectionBox.getSelectedItem().toString().equals("Server Mode")) {
+      ServerModeConfiguration.run(initialConfiguration);
+      dispose();
+    } else if (modeSelectionBox.getSelectedItem().toString().equals("Client Mode")) {
+      ClientModeConfiguration.run(initialConfiguration, "", true);
+      dispose();
     }
-
-    public static void run(JFrame sender) {
-        initialConfiguration = new InitialConfiguration();
-        CenterWindow.centerOnWindow(sender, initialConfiguration);
-        initialConfiguration.setVisible(true);
-    }
-
-    private JPanel contentPanel;
-    private JComboBox modeSelectionBox;
-    private JButton backBtn;
-    private JButton okButton;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
+  }
+  // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }
