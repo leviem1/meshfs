@@ -61,8 +61,8 @@ class MeshFS {
                         JSONObject manifest = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
                         JSONObject newManifest = manifest;
                         for(Object computer : manifest.keySet()){
-                            Long slaveTimeStamp = (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
-                            if(currentTimeStamp > slaveTimeStamp + 32000){
+                            Long nodeTimeStamp = (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
+                            if(currentTimeStamp > nodeTimeStamp + 32000){
                                 newManifest = JSONManipulator.removeItem(newManifest, computer.toString());
                                 System.out.println(computer.toString() + " was removed from the manifest");
                                 break;

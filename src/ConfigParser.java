@@ -2,10 +2,21 @@ import java.io.*;
 import java.util.Properties;
 
 /**
- * Created by Levi Muniz on 10/29/16.
+ * The ConfigParser class is used to manipulate
+ * the .config.properties file.
+ *
+ * @author Levi Muniz
+ * @version 1.0.0
  */
 
 class ConfigParser {
+
+    /**
+     * This method is used to load the default
+     * values of properties of this program.
+     *
+     * @return the default property values
+     */
 
     static Properties loadDefaultProperties() {
         Properties defaultProperties = new Properties();
@@ -20,6 +31,46 @@ class ConfigParser {
         defaultProperties.setProperty("timeout", "5");
         return defaultProperties;
     }
+
+    /**
+     * This method is used to load the
+     * properties save in .config.properties.
+     *
+     * @return the default property values
+     */
+
+    static Properties loadProperties() {
+
+        Properties properties;
+
+        try {
+            properties = reader();
+            Properties defaultProperties = loadDefaultProperties();
+
+            if (!properties.stringPropertyNames().equals(defaultProperties.stringPropertyNames())) {
+                for (String key : defaultProperties.stringPropertyNames()) {
+                    if (properties.getProperty(key) == null) {
+                        properties.setProperty(key, defaultProperties.getProperty(key));
+                    }
+                }
+
+                write(properties);
+            }
+
+        } catch (IOException io) {
+            properties = loadDefaultProperties();
+            write(properties);
+        }
+
+        return properties;
+    }
+
+    /**
+     * This method is write the set properties
+     * to the .config.properties.
+     *
+     * @param props the properties to write out
+     */
 
     static void write(Properties props) {
         OutputStream output = null;
@@ -52,31 +103,5 @@ class ConfigParser {
         if (prop.getProperty("timeout") == null) prop.setProperty("timeout", "5");
         input.close();
         return prop;
-    }
-
-    static Properties loadProperties() {
-
-        Properties properties;
-
-        try {
-            properties = reader();
-            Properties defaultProperties = loadDefaultProperties();
-
-            if (!properties.stringPropertyNames().equals(defaultProperties.stringPropertyNames())) {
-                for (String key : defaultProperties.stringPropertyNames()) {
-                    if (properties.getProperty(key) == null) {
-                        properties.setProperty(key, defaultProperties.getProperty(key));
-                    }
-                }
-
-                write(properties);
-            }
-
-        } catch (IOException io) {
-            properties = loadDefaultProperties();
-            write(properties);
-        }
-
-        return properties;
     }
 }

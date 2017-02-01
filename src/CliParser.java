@@ -2,8 +2,14 @@ import org.apache.commons.cli.*;
 import java.util.Properties;
 
 /**
- * Created by Levi Muniz on 10/30/16.
+ * The CliParser class allows for the
+ * reading of command line arguments.
+ * Only calling on the class is necessary.
+ *
+ * @author Levi Muniz
+ * @version 1.0.0
  */
+
 class CliParser {
 
     private final Options opt = new Options();

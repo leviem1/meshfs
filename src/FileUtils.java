@@ -2,13 +2,38 @@ import java.io.*;
 import java.util.List;
 
 /**
- * Created by Levi Muniz on 1/12/17.
+ * The FileUtils class handles the
+ * manipulation of files.
+ *
+ * @author Levi Muniz
+ * @version 1.0.0
  */
+
 class FileUtils {
+
+    /**
+     * This method returns the size of a file in bytes.
+     *
+     * @param filePath the path to the file
+     *
+     * @return the size of a file in bytes
+     */
 
     static long getSize(String filePath) {
         return new File(filePath).length();
     }
+
+    /**
+     * This method writes a file depending
+     * on the offset and length of its source.
+     *
+     * @param filePath the path to the source file
+     * @param outFile the path to the output file
+     * @param off the offset of the file to read
+     * @param len the total mount of bytes to read
+     *
+     * @throws IOException on error reading or writing files
+     */
 
     static void writeStripe(String filePath, String outFile, long off, long len) throws IOException {
         int br = 0;
@@ -37,6 +62,16 @@ class FileUtils {
         fos.close();
     }
 
+    /**
+     * This method writes a file with data
+     * from a list of supplied files.
+     *
+     * @param stripes a list of the files to combine
+     * @param outFile the path to the output file
+     *
+     * @throws IOException on error reading or writing files
+     */
+
     static void combineStripes(List<String> stripes, String outFile) throws IOException {
         FileOutputStream fos = new FileOutputStream(outFile);
 
@@ -55,6 +90,14 @@ class FileUtils {
 
         fos.close();
     }
+
+    /**
+     * This method deletes a file.
+     *
+     * @param path path of the file to delete
+     *
+     * @return true on success, false on failure
+     */
 
     static boolean removeFile(String path) {
         return new File(path).delete();

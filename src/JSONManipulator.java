@@ -22,7 +22,9 @@ class JSONManipulator {
     /**
      * This method is returns the JSONObject stored in a file.
      *
-     * @param filePath    the file path of the file that is to be read.
+     * @param filePath the file path of the file that is to be read
+     *
+     * @return JSONObject read from file
      */
 
     synchronized static JSONObject getJSONObject(String filePath) {
@@ -41,11 +43,13 @@ class JSONManipulator {
 
     /**
      * This method is returns a LinkedHashMap of the contents of a folder.
-     * The contents are returned in the format of "itemName", "itemType"
+     * The contents are returned in the format of "itemName", "itemType".
      *
-     * @param jsonObject        the JSONObject that is being read.
-     * @param folderLocation    the virtual path within the catalog file.
-     * @param userAccount       the file path of the file that is to be read.
+     * @param jsonObject        the JSONObject that is being read
+     * @param folderLocation    the virtual path within the catalog file
+     * @param userAccount       the file path of the file that is to be read
+     *
+     * @return a map of the folder's contents
      */
 
     static LinkedHashMap<String,String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, String userAccount){
@@ -87,8 +91,10 @@ class JSONManipulator {
     /**
      * This method deletes the designated item within the JSONObject.
      *
-     * @param jsonObject        the JSONObject that is being read.
-     * @param itemLocation      the virtual path within the JSONObject.
+     * @param jsonObject        the JSONObject that is being read
+     * @param itemLocation      the virtual path within the JSONObject
+     *
+     * @return JSONObject in which the item was removed
      */
 
     static JSONObject removeItem(JSONObject jsonObject, String itemLocation){
@@ -101,22 +107,27 @@ class JSONManipulator {
             for (String folder : folders) {
                 folderToRead = (JSONObject) folderToRead.get(folder);
             }
+        } else {
+            item = itemLocation;
         }
-        else {item = itemLocation;}
         try {
             folderToRead.remove(item);
         }
         catch (Exception e){
             e.printStackTrace();
-        }return jsonObject;
+        }
+
+        return jsonObject;
     }
 
 
     /**
      * This method returns the JSONObject associated with the designated item.
      *
-     * @param jsonObject        the JSONObject that is being read.
-     * @param itemLocation      the virtual path within the JSONObject.
+     * @param jsonObject        the JSONObject that is being read
+     * @param itemLocation      the virtual path within the JSONObject
+     *
+     * @return the JSONObject associated with the designated item
      */
 
     static JSONObject getItemContents(JSONObject jsonObject, String itemLocation){
@@ -131,12 +142,14 @@ class JSONManipulator {
     /**
      * This method copies the given item to the designated path within the JSONObject.
      *
-     * @param jsonObject            The JSONObject that is being read.
-     * @param itemLocation          The source virtual path within the JSONObject.
-     * @param destinationLocation   The destination virtual path within the JSONObject
-     *                              Should not have the name of the item in this path
-     * @param showDate              This determines if the time of the copy should be reflected in the file name
-     * @param newName               What the new file should be called.
+     * @param jsonObject            the JSONObject that is being read
+     * @param itemLocation          the source virtual path within the JSONObject
+     * @param destinationLocation   the destination virtual path within the JSONObject
+     *                              (should not have the name of the item in this path)
+     * @param showDate              this determines if the time of the copy should be reflected in the file name
+     * @param newName               what the new file should be called.
+     *
+     * @return updated JSONObject that the item was read from
      */
 
     static JSONObject copyFile(JSONObject jsonObject, String itemLocation, String destinationLocation, boolean showDate, String newName){
@@ -156,9 +169,12 @@ class JSONManipulator {
     /**
      * This method adds a directory within the designated folder within the JSONObject.
      *
-     * @param jsonObject      the JSONObject that is being read.
-     * @param jsonPath        the virtual path within the JSONObject.
-     * @param directoryName   the name of the new folder.
+     * @param jsonObject      the JSONObject that is being read
+     * @param jsonPath        the virtual path within the JSONObject
+     * @param directoryName   the name of the new folder
+     * @param userAccount     the account to add the folder for
+     *
+     * @return updated JSONObject that the folder was read from
      */
 
     static JSONObject addFolder(JSONObject jsonObject, String jsonPath, String directoryName, String userAccount){
@@ -172,11 +188,13 @@ class JSONManipulator {
     }
 
     /**
-     * This method rename the given item within the JSONObject.
+     * This method renames the given item within the JSONObject.
      *
-     * @param jsonObject      the JSONObject that is being read.
-     * @param itemLocation    the virtual path within the JSONObject.
-     * @param newName         the new name for the file.
+     * @param jsonObject      the JSONObject that is being read
+     * @param itemLocation    the virtual path within the JSONObject
+     * @param newName         the new name for the file
+     *
+     * @return updated JSONObject that the file was read from
      */
 
     static JSONObject renameFile(JSONObject jsonObject, String itemLocation, String newName){
@@ -186,10 +204,12 @@ class JSONManipulator {
     /**
      * This method moves the given item to the designated path within the JSONObject.
      *
-     * @param jsonObject            the JSONObject that is being read.
-     * @param itemLocation          the source virtual path within the JSONObject.
+     * @param jsonObject            the JSONObject that is being read
+     * @param itemLocation          the source virtual path within the JSONObject
      * @param destinationLocation   the destination virtual path within the JSONObject
-     *                              should not have the name of the item in this path
+     *                              (should not have the name of the item in this path)
+     *
+     * @return Updated JSONObject that the file was read from
      */
 
     static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation){
@@ -200,13 +220,13 @@ class JSONManipulator {
     /**
      * This method adds a new file, with all of its properties, to the JSONObject.
      *
-     * @param stripes               The list of computers the store each stripe and whole copy.
-     * @param itemLocation          The source virtual path within the JSONObject.
-     * @param fileName              The name of the file, the way it appears in the file browser.
-     * @param JSONFilePath          The file path of the catalog file.
-     * @param alphanumericName      The name of the file, as it is stored on the slave computers.
-     * @param userAccount           The account name person that uploaded the file.
-     * @param fileSize              The size of the file, in Bytes.
+     * @param stripes               the list of computers the store each stripe and whole copy
+     * @param itemLocation          the source virtual path within the JSONObject
+     * @param fileName              the name of the file, the way it appears in the file browser
+     * @param JSONFilePath          the file path of the catalog file
+     * @param alphanumericName      the name of the file, as it is stored on the node computers
+     * @param userAccount           the account name person that uploaded the file
+     * @param fileSize              the size of the file, in bytes
      */
 
     static void addToIndex(List<List<String>> stripes, String itemLocation, String fileName, String JSONFilePath, String alphanumericName, String userAccount, long fileSize) {
@@ -264,10 +284,10 @@ class JSONManipulator {
     /**
      * This method adds a new file, with all of its properties, to the JSONObject.
      *
-     * @param itemLocation          The source virtual path within the JSONObject.
-     * @param fileName              The name of the file, the way it appears in the file browser.
-     * @param JSONFilePath          The file path of the catalog file.
-     * @param userAccount           The account name person that uploaded the file.
+     * @param itemLocation          the source virtual path within the JSONObject
+     * @param fileName              the name of the file, the way it appears in the file browser
+     * @param JSONFilePath          the file path of the catalog file
+     * @param userAccount           the account name person that uploaded the file
      *
      */
 
@@ -289,9 +309,9 @@ class JSONManipulator {
     /**
      * This method writes out a json file from a JSONObject.
      *
-     * @param filePath      where the json file is to be written to.
-     * @param obj           The JSONObject the is to be written the json file
-     * @throws IOException  if the file cannot be written.
+     * @param filePath      where the json file is to be written to
+     * @param obj           the JSONObject the is to be written the json file
+     * @throws IOException  if the file cannot be written
      *
      */
 
@@ -304,13 +324,15 @@ class JSONManipulator {
     /**
      * This method adds a new file, with all of its properties, to the JSONObject.
      *
-     * @param itemLocation      The source virtual path within the JSONObject.
-     * @param path              Where the download file is to be saved to.
-     * @param outFile           The name that the download file is to be saved as.
-     * @param serverAddress     The address of the the master server
-     * @param port              The port that MeshFS uses
+     * @param itemLocation      the source virtual path within the JSONObject
+     * @param path              where the download file is to be saved to
+     * @param outFile           the name that the download file is to be saved as
+     * @param serverAddress     the address of the the master server
+     * @param port              the port that MeshFS uses
+     * @param catalog           the catalog file to read from
      * @throws IOException if a socket cannot be initialized
      *
+     * @return true on success, false on failure
      */
 
     static boolean pullFile(String itemLocation, String path, String outFile, String serverAddress, int port, File catalog) throws IOException {
@@ -405,17 +427,18 @@ class JSONManipulator {
     }
 
     /**
-     * This method produces a LinkedHashMap that where
-     * each element is comprised of the computers mac
-     * address and is available storage, with all of
+     * This method produces a LinkedHashMap where
+     * each element is comprised of the computers' MAC
+     * address and its available storage, with all of
      * its properties, to the JSONObject.
      *
-     * @param manifestFile The JSONObject that contains the information from the manifest file.
+     * @param manifestFile The JSONObject that contains the information from the manifest file
      *
+     * @return map of computers' properties
      */
 
     static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile){
-        @SuppressWarnings("unchecked") LinkedHashMap<String,Long> storageMap = new LinkedHashMap();
+        LinkedHashMap<String,Long> storageMap = new LinkedHashMap();
         for (Object MACAddress: manifestFile.keySet()){
             storageMap.put(MACAddress.toString(),Long.valueOf((((JSONObject)manifestFile.get(MACAddress)).get("FreeSpace")).toString()));
         }
@@ -425,11 +448,13 @@ class JSONManipulator {
     /**
      * This method copies the given item to the designated path within the JSONObject.
      *
-     * @param jsonObject                The JSONObject that is being read.
-     * @param itemDestinationLocation   The source virtual path within the JSONObject.
-     *                                  The name of the item should not be in this path.
-     * @param fileName                  The destination virtual path within the JSONObject.
-     * @param itemContents              This is the JSONObject the contains all the information about the file.
+     * @param jsonObject                the JSONObject that is being read
+     * @param itemDestinationLocation   the source virtual path within the JSONObject
+     *                                  (the name of the item should not be in this path)
+     * @param fileName                  the destination virtual path within the JSONObject
+     * @param itemContents              this is the JSONObject the contains all the information about the file
+     *
+     * @return JSONObject that item is written to
      */
 
     private static JSONObject putItemInFolder(JSONObject jsonObject, String itemDestinationLocation, String fileName, JSONObject itemContents){
@@ -458,11 +483,13 @@ class JSONManipulator {
     /**
      * This method copies the given item to the designated path within the JSONObject.
      *
-     * @param jsonObject            The JSONObject that is being read.
-     * @param itemLocation          The source virtual path within the JSONObject.
-     * @param destinationLocation   The destination virtual path within the JSONObject
-     *                              Should not have the name of the item in this path
-     * @param newName               What the moved file should be called.
+     * @param jsonObject            the JSONObject that is being read.
+     * @param itemLocation          the source virtual path within the JSONObject
+     * @param destinationLocation   the destination virtual path within the JSONObject
+     *                              (should not have the name of the item in this path)
+     * @param newName               what the moved file should be called
+     *
+     * @return updated JSONObject that item was read from
      */
 
     private static JSONObject moveFile(JSONObject jsonObject, String itemLocation, String destinationLocation, String newName){

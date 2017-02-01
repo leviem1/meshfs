@@ -5,7 +5,6 @@ import java.net.*;
 
 import java.util.ArrayList;
 
-
 /**
  * The FileServer class starts a file server
  * with a variable port, amount of sockets, and
