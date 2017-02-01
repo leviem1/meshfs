@@ -266,7 +266,7 @@ class ClientBrowser extends JFrame {
                 for (Map.Entry<String, String> item : folderMap.entrySet())
                 {
                     if(item.getKey().equals(fileChooser.getSelectedFile().getName())){
-                        JOptionPane.showMessageDialog(null, "File already exists on server!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(clientBrowser, "File already exists on server!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                 }

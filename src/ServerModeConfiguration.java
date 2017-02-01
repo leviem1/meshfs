@@ -14,7 +14,6 @@ import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import com.jgoodies.forms.factories.*;
 
-import static java.lang.String.valueOf;
 import static java.lang.Math.toIntExact;
 /**
  * @author Mark Hedrick
@@ -48,8 +47,8 @@ class ServerModeConfiguration extends JFrame {
         removeUserBtn.setEnabled(false);
         backupConfigBtn.setEnabled(false);
         okButton.setEnabled(false);
-        freeSpaceLbl.setText("(Free Space: " + valueOf(Reporting.getSystemStorage()/1073741824) + " GB)");
-        spaceSldr.setMaximum(toIntExact(Reporting.getSystemStorage()/1073741824)-10);
+        freeSpaceLbl.setText("(Free Space: " + (Reporting.getSystemStorage()/1073741824L) + " GB)");
+        spaceSldr.setMaximum(toIntExact(Reporting.getSystemStorage()/1073741824L)-10);
         spaceSldr.setMinimum(0);
         helpIcon.setIcon(new ImageIcon(MeshFS.class.getResource("help_icon.png")));
         helpIcon.setToolTipText("<html>Selecting this option will designate<br>this computer as the master MeshFS<br>server</html>");
@@ -803,7 +802,7 @@ class ServerModeConfiguration extends JFrame {
             String value = "<html>Username: " + usernameValueField.getText() + "<br>Password: " + password + "</html>";
             int index = userAccountDataList.getModel().getSize();
             if(usernameValueField.getText().equals("guest")){
-                JOptionPane.showMessageDialog(null, "The username \"guest\" is reserved!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(serverModeConfiguration, "The username \"guest\" is reserved!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                 usernameValueField.setText("");
                 passwordValueField.setText("");
                 usernameValueField.requestFocus();
@@ -814,7 +813,7 @@ class ServerModeConfiguration extends JFrame {
                     if (userAccountDataList.getModel().getElementAt(i).toString().substring(userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")+10, userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>")).equals(usernameValueField.getText())) {
                         usernameValueField.setText("");
                         passwordValueField.setText("");
-                        JOptionPane.showMessageDialog(null, "Duplicate users cannot be created!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(serverModeConfiguration, "Duplicate users cannot be created!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     } else if (!(userAccountDataList.getModel().getElementAt(i).toString().equals(value))) {
 
@@ -888,11 +887,11 @@ class ServerModeConfiguration extends JFrame {
                 repoDirectory.mkdirs();
             }
         }catch (Exception z) {
-            JOptionPane.showMessageDialog(null, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(serverModeConfiguration, "There was an error applying the Configuration!", "MeshFS - Error", JOptionPane.WARNING_MESSAGE);
             z.printStackTrace();
         }
         generateAuthObjs();
-        ServerConfigConfirmation.run(this, "<html><font face=\"arial\"><center><b>Master IP:</b> " + masterServerField.getText() + "<br><br><b>Timeout:</b> " + String.valueOf(serverTimeoutField.getText()) + "s<br><br><b>Port:</b> " + String.valueOf(serverPortField.getText()) + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + String.valueOf(numWholeField.getText()) + "/" + String.valueOf(numStripesField.getText()) + "/" + String.valueOf(numStripeCopiesField.getText()) + "<br><br><b>Repository:</b> " + String.valueOf(repoPathField.getText()) + "<br><br><b>Minimum Space:</b> " + String.valueOf(Integer.valueOf(minSpaceField.getText())) + " GB<br><br><b>Server Threads:</b> " + String.valueOf(serverThreadsField.getText()) + "<br><br><b>Accounts:</b><br>" + out + "</center></font></html>", accountsEnc, getConfigProperties());
+        ServerConfigConfirmation.run(this, "<html><font face=\"arial\"><center><b>Master Address:</b> " + masterServerField.getText() + "<br><br><b>Timeout:</b> " + String.valueOf(serverTimeoutField.getText()) + " seconds<br><br><b>Port:</b> " + String.valueOf(serverPortField.getText()) + "<br><br><b>File Copies / Stripes / Striped Copies</b>: " + String.valueOf(numWholeField.getText()) + "/" + String.valueOf(numStripesField.getText()) + "/" + String.valueOf(numStripeCopiesField.getText()) + "<br><br><b>Repository:</b> " + String.valueOf(repoPathField.getText()) + "<br><br><b>Minimum Space:</b> " + String.valueOf(Integer.valueOf(minSpaceField.getText())) + " GB<br><br><b>Network Threads:</b> " + String.valueOf(serverThreadsField.getText()) + "<br><br><b>Accounts:</b><br>" + out + "</center></font></html>", accountsEnc, getConfigProperties());
         dispose();
     }
 
@@ -975,11 +974,11 @@ class ServerModeConfiguration extends JFrame {
                 outputObjects.add(isMasterBox.isSelected());
                 oos.writeObject(outputObjects);
                 oos.flush();
-                JOptionPane.showMessageDialog(null, "Backup Successful!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(serverModeConfiguration, "Backup Successful!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                 oos.close();
                 fos.close();
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Backup Failed!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(serverModeConfiguration, "Backup Failed!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
             }
         }

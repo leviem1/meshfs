@@ -325,7 +325,7 @@ class ClientModeConfiguration extends JFrame{
 
     private void onOk(){
         if(!(FileClient.ping(serverAddressField.getText(), Integer.parseInt(serverPortField.getText())))){
-            JOptionPane.showMessageDialog(null, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(clientModeConfiguration, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setText("");
             serverPortField.setText("5704");
             usernameField.setText("guest");
@@ -367,8 +367,10 @@ class ClientModeConfiguration extends JFrame{
 
     private void connectAsUser(String username, String password){
         try {
-            FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".auth", ".auth");
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(".auth"));
+            File auth = File.createTempFile(".auth", "");
+            auth.deleteOnExit();
+            FileClient.receiveFile(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()), ".auth", auth.getAbsolutePath());
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth.getAbsolutePath()));
             @SuppressWarnings("unchecked") HashMap<String, String> credentials = (HashMap<String, String>)ois.readObject();
             for (HashMap.Entry<String,String> entry : credentials.entrySet()) {
                 String key = entry.getKey();

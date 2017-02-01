@@ -16,6 +16,7 @@ class MoveFileWindow extends JFrame {
     private final int port;
     private final String userAccount;
     private final String fileName;
+    private static JFrame moveFileWindow;
 
     private MoveFileWindow(String fileName, String currentJsonPath, String serverAddress, int port, String userAccount) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -147,7 +148,7 @@ class MoveFileWindow extends JFrame {
             String newJsonPath = tree1.getSelectionPath().toString().substring(1, tree1.getSelectionPath().toString().length()-1).replaceAll("[ ]*, ", "/")+"/";
             try {
                 if(currentJsonPath.equals(newJsonPath.substring(0, newJsonPath.lastIndexOf("/")))){
-                    JOptionPane.showMessageDialog(null, "Cannot move directory to this location!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(moveFileWindow, "Cannot move directory to this location!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                     tree1.setSelectionPath(null);
                     okButton.setEnabled(false);
                     return;
@@ -184,7 +185,7 @@ class MoveFileWindow extends JFrame {
     }
 
     public static void run(String fileName, String filePath, String serverAddress, int port, JFrame sender, String userAccount) {
-        JFrame moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount);
+        moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount);
         CenterWindow.centerOnWindow(sender, moveFileWindow);
         moveFileWindow.setVisible(true);
     }

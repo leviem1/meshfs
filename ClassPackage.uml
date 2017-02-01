@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="1205.0" y="2402.0">com</node>
+    <node x="914.0" y="1582.0">ClientBrowserFileProperties</node>
+    <node x="193.0" y="2402.0">netscape</node>
+    <node x="0.0" y="1088.0">ClientModeConfiguration</node>
+    <node x="1023.0" y="2240.0">FileUtils</node>
+    <node x="2000.0" y="2240.0">toolbarButtonGraphics</node>
+    <node x="1519.0" y="2402.0">sun</node>
+    <node x="442.0" y="1944.0">GreetingsWindow</node>
+    <node x="0.0" y="1582.0">RenameFileWindow</node>
+    <node x="1842.0" y="2240.0">onQuit</node>
+    <node x="1855.0" y="1088.0">MoveFileWindow</node>
+    <node x="718.0" y="2402.0">apple</node>
+    <node x="1514.0" y="2240.0">CenterWindow</node>
+    <node x="1363.0" y="2402.0">java</node>
+    <node x="883.0" y="2402.0">javax</node>
+    <node x="1202.0" y="0.0">ClientBrowser</node>
+    <node x="1303.0" y="2240.0">CliParser</node>
+    <node x="550.0" y="2402.0">javafx</node>
+    <node x="1995.0" y="1944.0">FileServer</node>
+    <node x="1046.0" y="2402.0">junit</node>
+    <node x="381.0" y="2402.0">oracle</node>
+    <node x="1217.0" y="1088.0">JSONManipulator</node>
+    <node x="0.0" y="2240.0">DISTAL</node>
+    <node x="657.0" y="1088.0">ServerInit</node>
+    <node x="1674.0" y="2402.0">org</node>
+    <node x="0.0" y="2402.0">resources</node>
+    <node x="656.0" y="2240.0">ConfigParser</node>
+    <node x="0.0" y="0.0">ServerModeConfiguration</node>
+    <node x="1803.0" y="1582.0">Reporting</node>
+    <node x="2274.0" y="2240.0">META-INF</node>
+    <node x="1827.0" y="2402.0">jdk</node>
+    <node x="1688.0" y="1944.0">MeshFS</node>
+    <node x="1355.0" y="1582.0">FileClient</node>
+    <node x="1305.0" y="1944.0">sendFilesTreading</node>
+    <node x="0.0" y="1944.0">InitialConfiguration</node>
+    <node x="875.0" y="1944.0">ServerConfigConfirmation</node>
+    <node x="467.0" y="1582.0">NewDirectoryWindow</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="0.17951856385148918" x="1211.5" y="1215.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

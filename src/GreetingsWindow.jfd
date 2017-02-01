@@ -10,23 +10,24 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::::362:x, comp titleLbl::::362:x}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp titleLbl:::p::p, space u:::p, comp scrollPane1::::162:x, space :::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp titleLbl::::417:x, comp scrollPane1::l::417:x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp titleLbl:::p::p, space :p:12:p, comp scrollPane1::::223:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "titleLbl"
 						"text": "Welcome to MeshFS"
-						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 7, false )
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 9, false )
 						"horizontalAlignment": 0
 					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTextPane" ) {
 							name: "greetingsPane"
-							"text": "Before using MeshFS, you will need to configure it to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the address of the server that you wish to connect to, as well as any authentication credentials (if required). If you plan on running MeshFS in Server mode, please refer to our Help guide for detailed setup instructions.  Thank you for choosing MeshFS!"
+							"text": "Greetings from the MeshFS Team!\n\nWe would like to introduce to you our latest application:\nMesh File System (MeshFS). \nIn an enterprise environment, it can be very expensive for a company to purchase, setup and maintain a file storage server. Not only is this a problem, but managing such such a server is a challenge that most growing businesses have faced at one time or another.\n\nAlthough it may seem like a daunting task to store your organization's files, our product, MeshFS, simplifies this process in such a way that you can do so using a simple user interface that connects existing technology infrastructure. MeshFS is an application that transfers digital files across an entire computer network. By using MeshFS, you can create a highly efficient file storage cluster with minimal effort or cost. This dynamic file system is also cross platform compatible, meaning that nearly any computer that runs Java will be sufficient. All file manipulation is handled with MeshFS and runs as fast as the present hardware allows! Our program, MeshFS, eliminates the need for your organization to purchase and maintain an expensive file server.\n\n-Thank You from the MeshFS Team."
 							"editable": false
 							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 2, false )
+							"border": new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
 						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
@@ -60,7 +61,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 400, 300 )
+			"size": new java.awt.Dimension( 455, 355 )
 		} )
 	}
 }

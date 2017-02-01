@@ -28,9 +28,9 @@ class ServerConfigConfirmation extends JFrame {
 
         try{
             ServerModeConfiguration.writeConfig(properties);
-            JOptionPane.showMessageDialog(null, "Configuration was saved!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(serverConfigConfirmation, "Configuration was saved!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
         }catch(Exception e){
-            JOptionPane.showMessageDialog(null, "Error when saving configuration!", "MeshFS - Success", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(serverConfigConfirmation, "Error when saving configuration!", "MeshFS - Success", JOptionPane.ERROR_MESSAGE);
         }
 
         initComponents();

@@ -1,6 +1,9 @@
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 
 /**
@@ -28,18 +31,24 @@ class GreetingsWindow extends JFrame {
         if(!runType){
             configBtn.setText("Continue...");
         }
-
+        greetingsPane.setSelectionStart(0);
         dialogPane.getRootPane().setDefaultButton(configBtn);
         configBtn.requestFocus();
+        StyledDocument document = greetingsPane.getStyledDocument();
+        SimpleAttributeSet centerAttribute = new SimpleAttributeSet();
+        StyleConstants.setAlignment(centerAttribute, StyleConstants.ALIGN_CENTER);
+        document.setParagraphAttributes(0, document.getLength(), centerAttribute, false);
+
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         JPanel contentPanel = new JPanel();
         JLabel titleLbl = new JLabel();
         JScrollPane scrollPane1 = new JScrollPane();
-        JTextPane greetingsPane = new JTextPane();
+        greetingsPane = new JTextPane();
         JPanel buttonBar = new JPanel();
         quitButton = new JButton();
         configBtn = new JButton();
@@ -59,16 +68,17 @@ class GreetingsWindow extends JFrame {
 
                 //---- titleLbl ----
                 titleLbl.setText("Welcome to MeshFS");
-                titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 7));
+                titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 9));
                 titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
                 //======== scrollPane1 ========
                 {
 
                     //---- greetingsPane ----
-                    greetingsPane.setText("Before using MeshFS, you will need to configure it to run in either Client or Server mode. If you plan on using MeshFS in Client mode, make sure you know the address of the server that you wish to connect to, as well as any authentication credentials (if required). If you plan on running MeshFS in Server mode, please refer to our Help guide for detailed setup instructions.  Thank you for choosing MeshFS!");
+                    greetingsPane.setText("Greetings from the MeshFS Team!\n\nWe would like to introduce to you our latest application:\nMesh File System (MeshFS). \nIn an enterprise environment, it can be very expensive for a company to purchase, setup and maintain a file storage server. Not only is this a problem, but managing such such a server is a challenge that most growing businesses have faced at one time or another.\n\nAlthough it may seem like a daunting task to store your organization's files, our product, MeshFS, simplifies this process in such a way that you can do so using a simple user interface that connects existing technology infrastructure. MeshFS is an application that transfers digital files across an entire computer network. By using MeshFS, you can create a highly efficient file storage cluster with minimal effort or cost. This dynamic file system is also cross platform compatible, meaning that nearly any computer that runs Java will be sufficient. All file manipulation is handled with MeshFS and runs as fast as the present hardware allows! Our program, MeshFS, eliminates the need for your organization to purchase and maintain an expensive file server.\n\n-Thank You from the MeshFS Team.");
                     greetingsPane.setEditable(false);
                     greetingsPane.setFont(new Font("Arial", greetingsPane.getFont().getStyle(), greetingsPane.getFont().getSize() + 2));
+                    greetingsPane.setBorder(new EmptyBorder(5, 5, 5, 5));
                     scrollPane1.setViewportView(greetingsPane);
                 }
 
@@ -79,8 +89,8 @@ class GreetingsWindow extends JFrame {
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-                                .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
+                                .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
@@ -88,9 +98,8 @@ class GreetingsWindow extends JFrame {
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addComponent(titleLbl)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
-                            .addContainerGap())
+                            .addGap(12, 12, 12)
+                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.NORTH);
@@ -156,7 +165,9 @@ class GreetingsWindow extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
+    private JTextPane greetingsPane;
     private JButton quitButton;
     private JButton configBtn;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

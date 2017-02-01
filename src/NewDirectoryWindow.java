@@ -14,6 +14,7 @@ class NewDirectoryWindow extends JFrame {
     private final String serverAddress;
     private final int port;
     private final String userAccount;
+    private static JFrame newDirectoryWindow;
     private NewDirectoryWindow(String serverAddress, int port, String userAccount) {
         this.serverAddress = serverAddress;
         this.port = port;
@@ -159,7 +160,7 @@ class NewDirectoryWindow extends JFrame {
             for(int i = 0; i < tree1.getModel().getChildCount(tree1.getModel().getRoot()); i++){
                 if(directoryName.equals(tree1.getModel().getChild(tree1.getModel().getRoot(), i).toString())){
                     dirNameTextField.setText("");
-                    JOptionPane.showMessageDialog(null, "Directory already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(newDirectoryWindow, "Directory already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                     dirNameTextField.requestFocus();
                     return;
                 }
@@ -194,7 +195,7 @@ class NewDirectoryWindow extends JFrame {
     }
 
     public static void run(String serverAddress, int port, JFrame sender, String userAccount){
-        JFrame newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, userAccount);
+        newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, userAccount);
         CenterWindow.centerOnWindow(sender, newDirectoryWindow);
         newDirectoryWindow.setVisible(true);
 
