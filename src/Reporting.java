@@ -13,12 +13,31 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * This class is used get system information.
+ *
+ * @author Levi Muniz
+ * @version 1.0.0
+ */
 class Reporting {
 
+    /**
+     * This method is used to get the operating
+     * system's name that the JVM is being run on.
+     *
+     * @return the operating system name
+     */
   static String getSystemOS() {
     return System.getProperty("os.name");
   }
 
+    /**
+     * This method is used to get the operating
+     * system's name that the JVM is being run on.
+     *
+     * @return the number of bytes availible on the disk
+     *         minus the space allocated in .config.properties
+     */
   static long getSystemStorage() {
     String os = System.getProperty("os.name");
     File file;
@@ -31,6 +50,12 @@ class Reporting {
     return file.getUsableSpace() - (Long.parseLong(MeshFS.properties.getProperty("minSpace")) * 1073741824L);
   }
 
+    /**
+     * This method is used to get the IPv4 addresses
+     * of the host machine.
+     *
+     * @return list of IPv4 addresses
+     */
   static List<String> getIpAddresses() {
     List<String> ip = new ArrayList<>();
     try {
@@ -55,6 +80,16 @@ class Reporting {
     return ip;
   }
 
+    /**
+     * This method is used to get the local
+     * date and time of the host machine.
+     *
+     * @return local date and time
+     */
+  static String getSystemDate() {
+    return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+  }
+
   private static long getUptime() {
     return ManagementFactory.getRuntimeMXBean().getUptime();
   }
@@ -65,10 +100,6 @@ class Reporting {
 
   private static String getUserName() {
     return System.getProperty("user.name");
-  }
-
-  static String getSystemDate() {
-    return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
   }
 
   private static String getMacAddress() {
@@ -102,6 +133,12 @@ class Reporting {
     return contents.toString();
   }
 
+    /**
+     * This method is used to generate a string
+     * of system information.
+     *
+     * @return report of system information
+     */
   static String generate() {
     return getMacAddress()
         + "|IP:"
@@ -120,6 +157,14 @@ class Reporting {
         + getRepositoryContents();
   }
 
+    /**
+     * This method is used to convert a
+     * generated string report to a JSONArray.
+     *
+     * @param report the report to convert to JSONArray
+     *
+     * @return JSONArray of report
+     */
   static JSONArray splitter(String report) {
     JSONObject jsonObject = new JSONObject();
     JSONArray mainArray = new JSONArray();
