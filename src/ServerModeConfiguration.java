@@ -84,6 +84,7 @@ class ServerModeConfiguration extends JFrame {
         helpIcon.setIcon(new ImageIcon(MeshFS.class.getResource("help_icon.png")));
         helpIcon.setToolTipText(
                 "<html>Selecting this option will designate<br>this computer as the master MeshFS<br>server</html>");
+        repoPathField.setEnabled(false);
     }
 
     static void writeConfig(Properties properties) {
@@ -1764,8 +1765,7 @@ class ServerModeConfiguration extends JFrame {
             allowGuestBox.setEnabled(true);
             masterServerField.setEnabled(false);
             masterServerField.setText("127.0.0.1");
-            repoPathField.setEnabled(true);
-            browseBtn.setEnabled(false);
+            browseBtn.setEnabled(true);
             spaceSldr.setEnabled(false);
             minSpaceField.setEnabled(false);
             serverSettingPane.addTab("User Accounts", userAccounts);
@@ -1786,7 +1786,6 @@ class ServerModeConfiguration extends JFrame {
             allowGuestBox.setEnabled(false);
             userAccountDataList.removeAll();
             masterServerField.setText("");
-            repoPathField.setEnabled(false);
             browseBtn.setEnabled(true);
             spaceSldr.setEnabled(true);
             minSpaceField.setEnabled(true);

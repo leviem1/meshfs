@@ -60,7 +60,7 @@ class ClientBrowser extends JFrame {
         initComponents();
         frameListeners();
 
-        browserBtns(false);
+        clientBrowserButtonModifier(false);
 
         tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
@@ -468,24 +468,24 @@ class ClientBrowser extends JFrame {
                     Object type = contents.get("type");
                     try {
                         if (node.toString().equals("(no files)")) {
-                            browserBtns(false);
+                            clientBrowserButtonModifier(false);
                             tree1.setSelectionPath(null);
                         } else if (node.toString().equals(userAccount)) {
-                            browserBtns(false);
+                            clientBrowserButtonModifier(false);
                         } else if (type.toString().equals("tempFile")) {
-                            browserBtns(false);
+                            clientBrowserButtonModifier(false);
                             tree1.setSelectionPath(null);
                         } else {
                             if (node.getChildCount() != 0) {
                                 if (!(node.toString().equals(userAccount))) {
-                                    browserBtns(false);
+                                    clientBrowserButtonModifier(false);
                                     removeBtn.setEnabled(true);
                                     renameBtn.setEnabled(true);
                                     duplicateBtn.setEnabled(true);
                                     moveBtn.setEnabled(true);
                                 }
                             } else {
-                                browserBtns(true);
+                                clientBrowserButtonModifier(true);
                                 removeBtn.setEnabled(true);
                                 renameBtn.setEnabled(true);
                                 duplicateBtn.setEnabled(true);
@@ -703,7 +703,7 @@ class ClientBrowser extends JFrame {
         }
     }
 
-    private void browserBtns(boolean state) {
+    private void clientBrowserButtonModifier(boolean state) {
         downloadBtn.setEnabled(state);
         downloadAsBtn.setEnabled(state);
         propertiesBtn.setEnabled(state);
@@ -743,7 +743,7 @@ class ClientBrowser extends JFrame {
                             } else {
                                 FileClient.receiveFile(
                                         serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
-                                browserBtns(false);
+                                clientBrowserButtonModifier(false);
                                 tree1.removeAll();
                                 tree1.setModel(
                                         new DefaultTreeModel(

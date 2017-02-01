@@ -129,7 +129,7 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "backupConfigBtn"
-							"text": "Backup Existing Configuration"
+							"text": "Backup Current Configuration"
 							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
@@ -139,7 +139,7 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "exportDescriptionLbl"
-							"text": "(Backup current configuration options)"
+							"text": "(Backup current configuration settings)"
 							"font": #SwingDerivedFont1
 						} )
 						add( new FormComponent( "com.jformdesigner.designer.wrapper.JGoodiesFormsSeparator" ) {
