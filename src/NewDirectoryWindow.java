@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -19,11 +20,13 @@ class NewDirectoryWindow extends JFrame {
     private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;
+    private File catalogFile;
 
-    private NewDirectoryWindow(String serverAddress, int port, String userAccount) {
+    private NewDirectoryWindow(String serverAddress, int port, String userAccount, File catalogFile) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
+        this.catalogFile = catalogFile;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -38,14 +41,14 @@ class NewDirectoryWindow extends JFrame {
         okButton.setEnabled(false);
     }
 
-    public static void run(String serverAddress, int port, JFrame sender, String userAccount) {
-        newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, userAccount);
+    public static void run(String serverAddress, int port, JFrame sender, String userAccount, File catalogFile) {
+        newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, userAccount, catalogFile);
         CenterWindow.centerOnWindow(sender, newDirectoryWindow);
         newDirectoryWindow.setVisible(true);
     }
 
     private void initComponents() {
-        JSONObject jsonObj = JSONManipulator.getJSONObject(".catalog.json");
+        JSONObject jsonObj = JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode(userAccount);
 
         tree = (readFolder(userAccount, jsonObj, tree));

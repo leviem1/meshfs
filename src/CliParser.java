@@ -105,6 +105,7 @@ class CliParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     private void writeAuth(){

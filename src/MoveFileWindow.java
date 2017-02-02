@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -20,9 +21,10 @@ class MoveFileWindow extends JFrame {
     private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;
+    private File catalogFile;
 
     private MoveFileWindow(
-            String fileName, String currentJsonPath, String serverAddress, int port, String userAccount) {
+            String fileName, String currentJsonPath, String serverAddress, int port, String userAccount, File catalogFile) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -35,6 +37,7 @@ class MoveFileWindow extends JFrame {
         this.port = port;
         this.userAccount = userAccount;
         this.fileName = fileName;
+        this.catalogFile = catalogFile;
 
         initComponents();
         frameListeners();
@@ -52,14 +55,15 @@ class MoveFileWindow extends JFrame {
             String serverAddress,
             int port,
             JFrame sender,
-            String userAccount) {
-        moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount);
+            String userAccount,
+            File catalogFile) {
+        moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount, catalogFile);
         CenterWindow.centerOnWindow(sender, moveFileWindow);
         moveFileWindow.setVisible(true);
     }
 
     private void initComponents() {
-        JSONObject jsonObj = JSONManipulator.getJSONObject(".catalog.json");
+        JSONObject jsonObj = JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode(userAccount);
         tree = (readFolder(userAccount, jsonObj, tree));
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
