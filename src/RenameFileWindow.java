@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -21,9 +22,10 @@ class RenameFileWindow extends JFrame {
     private JTextField newNameValueField;
     private JPanel buttonBar;
     private JButton okButton;
+    private File catalogFile;
 
     private RenameFileWindow(
-            String serverAddress, int port, String jsonObj, String currentName, String userAccount) {
+            String serverAddress, int port, String jsonObj, String currentName, String userAccount, File catalogFile) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -36,6 +38,7 @@ class RenameFileWindow extends JFrame {
         this.jsonObj = jsonObj;
         this.userAccount = userAccount;
         this.originalName = currentName;
+        this.catalogFile = catalogFile;
 
         initComponents();
         frameListeners();
@@ -61,9 +64,10 @@ class RenameFileWindow extends JFrame {
             JFrame sender,
             String jsonObj,
             String currentName,
-            String userAccount) {
+            String userAccount,
+            File catalogFile) {
         JFrame renameFileWindow =
-                new RenameFileWindow(serverAddress, port, jsonObj, currentName, userAccount);
+                new RenameFileWindow(serverAddress, port, jsonObj, currentName, userAccount, catalogFile);
         CenterWindow.centerOnWindow(sender, renameFileWindow);
         renameFileWindow.setVisible(true);
     }
@@ -257,7 +261,7 @@ class RenameFileWindow extends JFrame {
                                         okButton.setEnabled(false);
                                     } else {
                                         String newJsonPath = jsonObj.substring(0, jsonObj.lastIndexOf("/"));
-                                        JSONObject catalogJson = JSONManipulator.getJSONObject(".catalog.json");
+                                        JSONObject catalogJson = JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
                                         Map<String, String> folderMap =
                                                 JSONManipulator.getMapOfFolderContents(
                                                         catalogJson, newJsonPath, userAccount);

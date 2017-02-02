@@ -613,7 +613,8 @@ class ClientBrowser extends JFrame {
                                 serverAddress,
                                 port,
                                 clientBrowser,
-                                userAccount));
+                                userAccount,
+                                catalogFile));
         quitBtn.addActionListener(
                 e -> {
                     dispose();
@@ -622,7 +623,7 @@ class ClientBrowser extends JFrame {
                     System.exit(0);
                 });
         newDirBtn.addActionListener(
-                e -> NewDirectoryWindow.run(serverAddress, port, clientBrowser, userAccount));
+                e -> NewDirectoryWindow.run(serverAddress, port, clientBrowser, userAccount, catalogFile));
         renameBtn.addActionListener(
                 e -> {
                     DefaultMutableTreeNode node =
@@ -634,7 +635,7 @@ class ClientBrowser extends JFrame {
                                     .substring(1, tree1.getSelectionPath().toString().length() - 1)
                                     .replaceAll("[ ]*, ", "/");
                     RenameFileWindow.run(
-                            serverAddress, port, clientBrowser, jsonPath, node.toString(), userAccount);
+                            serverAddress, port, clientBrowser, jsonPath, node.toString(), userAccount, catalogFile);
                 });
         logoutBtn.addActionListener(
                 e -> {
