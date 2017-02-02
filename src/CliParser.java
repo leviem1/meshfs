@@ -1,8 +1,6 @@
 import org.apache.commons.cli.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -49,8 +47,12 @@ class CliParser {
             }
 
             if (cmd.hasOption("nogui")) {
-                startInteractiveAuth();
                 MeshFS.nogui = true;
+                if(!(MeshFS.configure)){
+                    if(interactiveAuth()){
+                        writeAuth();
+                    }
+                }
             }
 
             if (cmd.hasOption("reconfig")) {
@@ -68,7 +70,7 @@ class CliParser {
         System.exit(0);
     }
 
-    private void startInteractiveAuth(){
+    private boolean interactiveAuth(){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         try {
             System.out.println("Do you wish to enable the guest user? (yes/no)");
@@ -78,22 +80,39 @@ class CliParser {
             }
             System.out.println("Do you wish to begin adding users? (yes/no)");
             String addUserResponse = br.readLine();
-            while(addUserResponse.equals("yes")){
-                System.out.println("Username: ");
-                String user = br.readLine();
-                System.out.println("Password: " );
-                String pw = br.readLine();
-                accounts.put(user, pw);
-                System.out.println("Do you wish to add another user? (yes/no)");
-                String continueAdding = br.readLine();
-                if(continueAdding.equals("yes")){
-                    break;
+            if(addUserResponse.equals("yes")){
+                while(true){
+                    System.out.println("Username: ");
+                    String user = br.readLine();
+                    System.out.println("Password: " );
+                    String pw = br.readLine();
+                    accounts.put(user, pw);
+                    System.out.println("Do you wish to add another user? (yes/no)");
+                    String continueAdding = br.readLine();
+                    if(!continueAdding.equals("yes")){
+                        break;
+                    }
+                    for (HashMap.Entry<String, String> userAccount : accounts.entrySet()) {
+                        generateEncryptedAuth(userAccount.getKey(), userAccount.getValue());
+                    }
                 }
                 System.out.println("Users were added successfully!");
-                for (HashMap.Entry<String, String> userAccount : accounts.entrySet()) {
-                    generateEncryptedAuth(userAccount.getKey(), userAccount.getValue());
-                }
+                return true;
+            }else{
+                System.out.println("The server cannot be started without any active user accounts!");
+                return false;
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeAuth(){
+        try {
+            FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(accountsEnc);
+            oos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
