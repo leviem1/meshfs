@@ -17,14 +17,8 @@ import java.util.HashMap;
 class CliParser {
 
     private final Options opt = new Options();
-    private final HashMap<String, String> accounts;
-    private final HashMap<String, String> accountsEnc;
-
 
     CliParser(String[] args) {
-        accounts = new HashMap<>();
-        accountsEnc = new HashMap<>();
-
         opt.addOption("h", "help", false, "Display application's help message.");
         opt.addOption("m", "masterIP", true, "IP of master (if self, use 127.0.0.1 or own IP).");
         opt.addOption(
@@ -73,8 +67,23 @@ class CliParser {
     }
 
     private void addUser(String username) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        HashMap<String, String> accountsEnc = new HashMap<>();
+        char[] password;
+
+        try {
+            System.out.print("Admin Username: ");
+            String adminUsername = br.readLine();
+            char[] adminPassword = System.console().readPassword("New Password:");
+
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        //TODO: add comparative code for existing users w/admin perms
+
         while (true) {
-            char[] password = System.console().readPassword("New Password:");
+            password = System.console().readPassword("New Password:");
             char[] password2 = System.console().readPassword("Retype New Password:");
             if (Arrays.equals(password, password2)) {
                 break;
@@ -82,48 +91,14 @@ class CliParser {
                 System.err.println("Passwords do not match!");
             }
         }
+
+        accountsEnc.put(username, generateEncryptedAuth(username, new String(password)));
+        writeAuth(accountsEnc);
+
         System.exit(0);
     }
 
-    private boolean interactiveAuth(){
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            System.out.println("Do you wish to enable the guest user? (yes/no)");
-            String guest = br.readLine();
-            if(guest.equals("yes")){
-                accounts.put("guest", "guest");
-            }
-            System.out.println("Do you wish to begin adding users? (yes/no)");
-            String addUserResponse = br.readLine();
-            if(addUserResponse.equals("yes")){
-                while(true){
-                    System.out.println("Username: ");
-                    String user = br.readLine();
-                    System.out.println("Password: " );
-                    String pw = br.readLine();
-                    accounts.put(user, pw);
-                    System.out.println("Do you wish to add another user? (yes/no)");
-                    String continueAdding = br.readLine();
-                    if(!continueAdding.equals("yes")){
-                        break;
-                    }
-                    for (HashMap.Entry<String, String> userAccount : accounts.entrySet()) {
-                        generateEncryptedAuth(userAccount.getKey(), userAccount.getValue());
-                    }
-                }
-                System.out.println("Users were added successfully!");
-                return true;
-            }else{
-                System.out.println("The server cannot be started without any active user accounts!");
-                return false;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private void writeAuth(){
+    private void writeAuth(HashMap<String, String> accountsEnc){
         try {
             FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -134,21 +109,25 @@ class CliParser {
         }
     }
 
-    private void generateEncryptedAuth(String username, String password){
-        for (int x = 0; x < username.length() - 1; x = x + 2) {
+    private String generateEncryptedAuth(String username, String password){
+        MessageDigest messageDigest = null;
+
+
+        for (int x = 0; x < username.length() - 1; x += 2) {
             try {
                 password += username.charAt(x);
             } catch (IndexOutOfBoundsException ignored) {
             }
         }
-        MessageDigest messageDigest = null;
+
         try {
             messageDigest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+
         assert messageDigest != null;
         messageDigest.update(password.getBytes(), 0, password.length());
-        accountsEnc.put(username, new BigInteger(1, messageDigest.digest()).toString(256));
+        return new BigInteger(1, messageDigest.digest()).toString(256);
     }
 }
