@@ -14,13 +14,20 @@ class MeshFS {
 
     public static void main(String[] args) {
         boolean isMaster = false;
-        boolean runConfig = !new File(".config.properties").exists();
+        configure = !new File(".config.properties").exists();
 
         properties = ConfigParser.loadProperties();
-        new CliParser(args, properties);
+        new CliParser(args);
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
 
         if (nogui) {
+
+            if(configure){
+                //if(interactiveAuth()){
+                //    writeAuth();
+                //}
+            }
+
             System.setProperty("java.awt.headless", "true");
 
             List<String> possibleIP = Reporting.getIpAddresses();
@@ -157,7 +164,7 @@ class MeshFS {
                         .setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
             }
 
-            if (runConfig || configure) {
+            if (configure) {
                 GreetingsWindow.run(true, null);
             } else {
                 GreetingsWindow.run(false, null);

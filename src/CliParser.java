@@ -4,8 +4,8 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * The CliParser class allows for the reading of command line arguments. Only calling on the class
@@ -21,16 +21,18 @@ class CliParser {
     private final HashMap<String, String> accountsEnc;
 
 
-    CliParser(String[] args, Properties properties) {
+    CliParser(String[] args) {
         accounts = new HashMap<>();
         accountsEnc = new HashMap<>();
 
         opt.addOption("h", "help", false, "Display application's help message.");
         opt.addOption("m", "masterIP", true, "IP of master (if self, use 127.0.0.1 or own IP).");
         opt.addOption(
-                "r", "regenConfig", false, "Regenerate application's default configuration file.");
+                "r", "regenconfig", false, "Regenerate application's default configuration file.");
         opt.addOption("nogui", false, "Run MeshFS without graphical user interface (server mode only)");
         opt.addOption("reconfig", false, "Reconfigure MeshFS graphically");
+        opt.addOption("adduser", true, "Add user interactively");
+
         try {
             CommandLine cmd = (new DefaultParser()).parse(opt, args);
 
@@ -38,21 +40,21 @@ class CliParser {
                 help();
             }
 
+            if (cmd.hasOption("adduser")) {
+                addUser(cmd.getOptionValue("add-user"));
+            }
+
             if (cmd.hasOption("m")) {
-                properties.setProperty("masterIP", cmd.getOptionValue("m"));
+                MeshFS.properties.setProperty("masterIP", cmd.getOptionValue("m"));
             }
 
             if (cmd.hasOption("r")) {
-                ConfigParser.loadDefaultProperties();
+                ConfigParser.write(ConfigParser.loadDefaultProperties());
+                MeshFS.properties = ConfigParser.loadDefaultProperties();
             }
 
             if (cmd.hasOption("nogui")) {
                 MeshFS.nogui = true;
-                if(!(MeshFS.configure)){
-                    if(interactiveAuth()){
-                        writeAuth();
-                    }
-                }
             }
 
             if (cmd.hasOption("reconfig")) {
@@ -67,6 +69,19 @@ class CliParser {
     private void help() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("MeshFS [options]", opt);
+        System.exit(0);
+    }
+
+    private void addUser(String username) {
+        while (true) {
+            char[] password = System.console().readPassword("New Password:");
+            char[] password2 = System.console().readPassword("Retype New Password:");
+            if (Arrays.equals(password, password2)) {
+                break;
+            } else {
+                System.err.println("Passwords do not match!");
+            }
+        }
         System.exit(0);
     }
 
