@@ -16,7 +16,7 @@ import java.util.List;
 class DISTAL {
 
     private static LinkedHashMap<String, Long> valueSorter(
-            LinkedHashMap<String, Long> storageMap, long sizeOfStripe) {
+            LinkedHashMap<String, Long> storageMap) {
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
 
@@ -46,12 +46,6 @@ class DISTAL {
 
             if (!isBroken) {
                 sortedMap.put(key, storageMap.get(key));
-            }
-        }
-        //remove any key, value combination that cannot store a stripe
-        for (String macAddress : sortedMap.keySet()) {
-            if (sortedMap.get(macAddress) < sizeOfStripe) {
-                sortedMap.remove(macAddress);
             }
         }
         return sortedMap;
@@ -94,15 +88,13 @@ class DISTAL {
         try {
             String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
             long sizeOfFile = FileUtils.getSize(uploadFilePath);
-            long sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
+            long sizeOfStripe;
 
             //create a map of the amount of available storage on each computer
             LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFile);
 
             //sort the compStorageMap by descending available storage
-            LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap, sizeOfStripe);
-
-            int numOfComputersUsed = sortedCompStorageMap.size();
+            LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap);
 
             //don't use stripes if a file is less than 4096 byte
             if (sizeOfFile <= 4096L) {
@@ -111,128 +103,86 @@ class DISTAL {
                 numOfStripedCopies = 0;
             }
 
-            //use stripes only when the number of computers available exceeds the number of requested redundancies
-            if (numOfComputersUsed <= numOfStripedCopies + numOfWholeCopies) {
-                numOfWholeCopies = numOfComputersUsed;
-                numOfStripes = 0;
-                numOfStripedCopies = 0;
+            //create a list of computers that can store a whole copy.
+            List<String> computersForWholes = new ArrayList<>();
+
+            while (true) {
+
+                for (String macAddress : sortedCompStorageMap.keySet()) {
+                    if (computersForWholes.size() == numOfWholeCopies){
+                        break;
+                    }
+                    if ((! computersForWholes.contains(macAddress)) && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
+                        computersForWholes.add(macAddress);
+                        sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
+                    }
+
+                }
+                sortedCompStorageMap = valueSorter(sortedCompStorageMap);
+
+                int numOfComputersUsed = sortedCompStorageMap.size();
+
+                //use stripes only when the number of computers available exceeds the number of requested redundancies
+                if (numOfComputersUsed <= numOfStripedCopies + numOfWholeCopies) {
+                    numOfWholeCopies = numOfComputersUsed;
+                    numOfStripes = 0;
+                    numOfStripedCopies = 0;
+                }
+
+                //don't use stripes if there is only one stripe
+                if (numOfStripes == 1) {
+                    numOfWholeCopies += numOfStripedCopies;
+                    numOfStripes = 0;
+                    numOfStripedCopies = 0;
+                }
+
+                //dynamic resigning of number of Wholes by number of computers that are on
+                if (numOfComputersUsed < numOfWholeCopies) {
+                    numOfWholeCopies = numOfComputersUsed;
+                }
+
+                //dynamic resigning of number of Stripes by number of computers that are on
+                if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
+                    numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
+                }
+
+                //define how big each stripe should be
+                try{
+                    sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
+                } catch (Exception e){
+                    sizeOfStripe = 0L;
+                }
+
+                //remove any computer that cannot store a stripe
+                boolean finalComputerCount = true;
+                if (sizeOfStripe != 0L) {
+                    for (String macAddress : sortedCompStorageMap.keySet()) {
+                        if (sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
+                            sortedCompStorageMap.remove(macAddress);
+                            finalComputerCount = false;
+                        }
+                    }
+                }
+
+                //keep dynamically reassigning computers until all listed computers can hold the files that they will be given.
+                if (finalComputerCount){
+                    break;
+                }
             }
 
-            //dynamic resigning of number of Wholes by number of computers that are on
-            if (numOfComputersUsed < numOfWholeCopies) {
-                numOfWholeCopies = numOfComputersUsed;
-            }
-
-            //dynamic resigning of number of Stripes by number of computers that are on
-            if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
-                numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
-            }
-
-            //don't use stripes if there is only one stripe
-            if (numOfStripes == 1) {
-                numOfWholeCopies += numOfStripedCopies;
-                numOfStripes = 0;
-                numOfStripedCopies = 0;
+            //define which computers get stripes
+            List<String> computersForStripes = new ArrayList<>();
+            for (String macAddress : sortedCompStorageMap.keySet()) {
+                if (computersForStripes.size() == numOfStripedCopies * numOfStripes){
+                    break;
+                }
+                computersForStripes.add(macAddress);
             }
 
             //create a unique filename for the uploaded file
-            List<String> computersForWholes = new ArrayList<>();
             JSONObject jsonObj = JSONManipulator.getJSONObject(catalogFileLocation);
             String currentName = jsonObj.get("currentName").toString();
             String newName = incrementName(currentName);
-
-            //determine which computers can hold the full file
-            int stopOfWholes = (-1);
-            for (int computerNumW = 0; computerNumW < numOfWholeCopies; computerNumW++) {
-                String macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumW]);
-                if (sortedCompStorageMap.get(macAddress) >= sizeOfFile
-                        && FileClient.ping(
-                        ((JSONObject) manifestFile.get(macAddress)).get("IP").toString(), portNum)) {
-                    computersForWholes.add(macAddress);
-                } else {
-                    break;
-                }
-                stopOfWholes = computerNumW;
-            }
-
-            //determine which computers can hold a striped file
-            int lastResortComp = 0;
-            int lapNum = 1;
-            List<String> computersForStripes = new ArrayList<>();
-            for (int computerNumS = stopOfWholes + 1;
-                 computerNumS < ((numOfStripes * numOfStripedCopies) + stopOfWholes + 1);
-                 computerNumS++) {
-                String macAddress;
-
-                try {
-                    macAddress = String.valueOf(sortedCompStorageMap.keySet().toArray()[computerNumS]);
-                } catch (Exception e) {
-                    macAddress = "none";
-                }
-
-                if ((!macAddress.equals("none")
-                        && (sortedCompStorageMap.get(macAddress) - (sizeOfStripe * lapNum)) >= sizeOfStripe)
-                        && FileClient.ping(
-                        ((JSONObject) manifestFile.get(macAddress)).get("IP").toString(), portNum)) {
-                    computersForStripes.add(macAddress);
-                } else if (computerNumS != 0) {
-
-                    //find a computer that can hold the stripe, even if one computer gets two stripes
-                    String macAddressNew;
-                    long availableStorage;
-
-                    try {
-                        macAddressNew = String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                        availableStorage = (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
-
-                        if (lastResortComp <= stopOfWholes) {
-                            availableStorage -= sizeOfFile;
-                        }
-                        lastResortComp++;
-                    } catch (Exception e) {
-                        availableStorage = 0L;
-                        macAddressNew = "none";
-                    }
-
-                    if (availableStorage >= sizeOfStripe
-                            && FileClient.ping(
-                            ((JSONObject) manifestFile.get(macAddress)).get("IP").toString(), portNum)) {
-                        computersForStripes.add(macAddressNew);
-                    }
-
-                    //iterate over all the computers again to find a place for the stripe, if a computer has not already been found
-                    else {
-                        lapNum++;
-                        lastResortComp = 0;
-
-                        while (lastResortComp < sortedCompStorageMap.size()) {
-                            macAddressNew =
-                                    String.valueOf(sortedCompStorageMap.keySet().toArray()[lastResortComp]);
-                            availableStorage =
-                                    (sortedCompStorageMap.get(macAddressNew) - (sizeOfStripe * lapNum));
-                            if (lastResortComp <= stopOfWholes) {
-                                availableStorage -= sizeOfFile;
-                            }
-
-                            lastResortComp++;
-
-                            if (availableStorage >= sizeOfStripe
-                                    && FileClient.ping(
-                                    ((JSONObject) manifestFile.get(macAddress)).get("IP").toString(), portNum)) {
-                                computersForStripes.add(macAddressNew);
-                                break;
-                            }
-                        }
-                        if (lastResortComp >= sortedCompStorageMap.size()) {
-                            //no more computers have the storage for a stripe
-                            break;
-                        }
-                    }
-                } else {
-                    System.out.println("There is no storage space that is available for this file.");
-                    break;
-                }
-            }
 
             //create the list that will be used to distribute the wholes and stripes
             List<List<String>> stripes = new ArrayList<>();
@@ -241,15 +191,8 @@ class DISTAL {
             stripes.add(computersForWholes);
 
             //if only computer is available to hold stripes, then do not use stripes.
-            boolean allowStripes = false;
-            for (String computer : computersForStripes) {
-                if (!computer.equals(computersForStripes.get(0))) {
-                    allowStripes = true;
-                    break;
-                }
-            }
 
-            if (allowStripes) {
+            if (numOfStripes != 0) {
                 //create a list for each stripe
                 for (int copy = 0; copy < numOfStripes; copy++) {
                     stripes.add(new ArrayList<>());
@@ -258,41 +201,7 @@ class DISTAL {
                 //balancing the number of computers that each stripe is sent to.
                 for (int copy = 0; copy < numOfStripedCopies; copy++) {
                     for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++) {
-                        try {
-                            int test = 0;
-
-                            while (true) {
-                                test++;
-                                if (test >= (computersForStripes.size() - (copy * numOfStripes) + currentStripe)) {
-                                    break;
-                                }
-
-                                String computerToReceive =
-                                        computersForStripes.get((copy * numOfStripes) + currentStripe);
-
-                                //ensure that no one computer gets two or more of the same stripe
-                                if (stripes.get(currentStripe + 1).size() > 0) {
-                                    boolean isNotBroken = true;
-                                    for (String tempMac : stripes.get(currentStripe + 1)) {
-                                        if (tempMac.equals(computerToReceive)) {
-                                            computersForStripes.add(tempMac);
-                                            computersForStripes.remove((copy * numOfStripes) + currentStripe);
-                                            isNotBroken = false;
-                                            break;
-                                        }
-                                    }
-                                    if (isNotBroken) {
-                                        stripes.get(currentStripe + 1).add(computerToReceive);
-                                        break;
-                                    }
-                                } else {
-                                    stripes.get(currentStripe + 1).add(computerToReceive);
-                                    break;
-                                }
-                            }
-                        } catch (Exception e) {
-                            System.out.println("You are out of Storage!");
-                        }
+                        stripes.get(currentStripe + 1).add(computersForStripes.get((copy * numOfStripes) + currentStripe));
                     }
                 }
             }
