@@ -70,6 +70,7 @@ class ConfigParser {
         try {
             output = new FileOutputStream(".config.properties");
             props.store(output, null);
+            System.out.println("Config file written to " + new File(".config.properties").getAbsolutePath());
         } catch (IOException io) {
             io.printStackTrace();
         } finally {
