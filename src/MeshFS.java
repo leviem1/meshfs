@@ -11,9 +11,9 @@ class MeshFS {
     static FileServer fileServer;
     static boolean nogui = false;
     static boolean configure = false;
+    static boolean isMaster = false;
 
     public static void main(String[] args) {
-        boolean isMaster = false;
         configure = !new File(".config.properties").exists();
 
         properties = ConfigParser.loadProperties();

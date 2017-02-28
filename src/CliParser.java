@@ -34,13 +34,14 @@ class CliParser {
                 help();
             }
 
-            if (cmd.hasOption("adduser")) {
-                addUser(cmd.getOptionValue("add-user"));
-            }
-
             if (cmd.hasOption("m")) {
                 MeshFS.properties.setProperty("masterIP", cmd.getOptionValue("m"));
             }
+
+            if (cmd.hasOption("adduser") && MeshFS.isMaster) {
+                addUser(cmd.getOptionValue("add-user"));
+            }
+
 
             if (cmd.hasOption("r")) {
                 ConfigParser.write(ConfigParser.loadDefaultProperties());
