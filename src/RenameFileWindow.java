@@ -18,11 +18,19 @@ class RenameFileWindow extends JFrame {
     private final String jsonObj;
     private final String userAccount;
     private final String originalName;
+    private File catalogFile;
+
+    //GEN-BEGIN:variables
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel currentNameLbl;
     private JLabel currentNameValue;
+    private JLabel newNameLbl;
     private JTextField newNameValueField;
     private JPanel buttonBar;
+    private JButton cancelBtn;
     private JButton okButton;
-    private File catalogFile;
+    //GEN-END:variables
 
     private RenameFileWindow(
             String serverAddress, int port, String jsonObj, String currentName, String userAccount, File catalogFile) {
@@ -73,15 +81,16 @@ class RenameFileWindow extends JFrame {
     }
 
     private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        JPanel dialogPane = new JPanel();
-        JPanel contentPanel = new JPanel();
-        JLabel currentNameLbl = new JLabel();
+        //GEN-BEGIN:initComponents
+
+        dialogPane = new JPanel();
+        contentPanel = new JPanel();
+        currentNameLbl = new JLabel();
         currentNameValue = new JLabel();
-        JLabel newNameLbl = new JLabel();
+        newNameLbl = new JLabel();
         newNameValueField = new JTextField();
         buttonBar = new JPanel();
-        JButton cancelBtn = new JButton();
+        cancelBtn = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -99,88 +108,49 @@ class RenameFileWindow extends JFrame {
 
                 //---- currentNameLbl ----
                 currentNameLbl.setText("Current Name:");
-                currentNameLbl.setFont(
-                        new Font(
-                                "Arial",
-                                currentNameLbl.getFont().getStyle(),
-                                currentNameLbl.getFont().getSize() + 1));
+                currentNameLbl.setFont(new Font("Arial", currentNameLbl.getFont().getStyle(), currentNameLbl.getFont().getSize() + 1));
 
                 //---- currentNameValue ----
                 currentNameValue.setText("(file name)");
-                currentNameValue.setFont(
-                        new Font(
-                                "Arial",
-                                currentNameValue.getFont().getStyle(),
-                                currentNameValue.getFont().getSize() + 1));
+                currentNameValue.setFont(new Font("Arial", currentNameValue.getFont().getStyle(), currentNameValue.getFont().getSize() + 1));
 
                 //---- newNameLbl ----
                 newNameLbl.setText("New Name:");
-                newNameLbl.setFont(
-                        new Font("Arial", newNameLbl.getFont().getStyle(), newNameLbl.getFont().getSize() + 1));
+                newNameLbl.setFont(new Font("Arial", newNameLbl.getFont().getStyle(), newNameLbl.getFont().getSize() + 1));
 
                 //---- newNameValueField ----
-                newNameValueField.setFont(
-                        new Font(
-                                "Arial",
-                                newNameValueField.getFont().getStyle(),
-                                newNameValueField.getFont().getSize() + 1));
+                newNameValueField.setFont(new Font("Arial", newNameValueField.getFont().getStyle(), newNameValueField.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout
-                                .createParallelGroup()
-                                .addGroup(
-                                        contentPanelLayout
-                                                .createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(
-                                                        contentPanelLayout
-                                                                .createParallelGroup()
-                                                                .addGroup(
-                                                                        contentPanelLayout
-                                                                                .createSequentialGroup()
-                                                                                .addComponent(currentNameLbl)
-                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                                .addComponent(
-                                                                                        currentNameValue,
-                                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                                        231,
-                                                                                        Short.MAX_VALUE))
-                                                                .addGroup(
-                                                                        contentPanelLayout
-                                                                                .createSequentialGroup()
-                                                                                .addComponent(newNameLbl)
-                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                                .addComponent(
-                                                                                        newNameValueField,
-                                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                                        251,
-                                                                                        Short.MAX_VALUE)))
-                                                .addContainerGap()));
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(currentNameLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(currentNameValue, GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(newNameLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(newNameValueField, GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)))
+                            .addContainerGap())
+                );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout
-                                .createParallelGroup()
-                                .addGroup(
-                                        contentPanelLayout
-                                                .createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(
-                                                        contentPanelLayout
-                                                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                                .addComponent(currentNameLbl)
-                                                                .addComponent(currentNameValue))
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(
-                                                        contentPanelLayout
-                                                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                                .addComponent(newNameLbl)
-                                                                .addComponent(
-                                                                        newNameValueField,
-                                                                        GroupLayout.PREFERRED_SIZE,
-                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                        GroupLayout.PREFERRED_SIZE))
-                                                .addContainerGap(5, Short.MAX_VALUE)));
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(currentNameLbl)
+                                .addComponent(currentNameValue))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(newNameLbl)
+                                .addComponent(newNameValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addContainerGap(5, Short.MAX_VALUE))
+                );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -188,53 +158,29 @@ class RenameFileWindow extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
                 //---- cancelBtn ----
                 cancelBtn.setText("Cancel");
-                cancelBtn.setFont(
-                        new Font("Arial", cancelBtn.getFont().getStyle(), cancelBtn.getFont().getSize() + 1));
-                buttonBar.add(
-                        cancelBtn,
-                        new GridBagConstraints(
-                                0,
-                                0,
-                                1,
-                                1,
-                                0.0,
-                                0.0,
-                                GridBagConstraints.CENTER,
-                                GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 5),
-                                0,
-                                0));
+                cancelBtn.setFont(new Font("Arial", cancelBtn.getFont().getStyle(), cancelBtn.getFont().getSize() + 1));
+                buttonBar.add(cancelBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(
-                        new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(
-                        okButton,
-                        new GridBagConstraints(
-                                2,
-                                0,
-                                1,
-                                1,
-                                0.0,
-                                0.0,
-                                GridBagConstraints.CENTER,
-                                GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0),
-                                0,
-                                0));
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(getOwner());
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents
+        //GEN-END:initComponents
     }
 
     private void frameListeners() {
@@ -291,5 +237,4 @@ class RenameFileWindow extends JFrame {
                     dispose();
                 });
     }
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

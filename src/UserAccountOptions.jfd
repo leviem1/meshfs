@@ -1,0 +1,62 @@
+JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"$sizePolicy": 1
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp titleLbl2::l::313:x, comp titleLbl::l:::x, seq {comp buttonBar:::p:309:p, space :0:0:x}, seq {comp changePasswordBtn:::p::p, space ::47:x, comp button1:::p::p}}}}"
+				"$verticalGroup": "par l {seq {comp titleLbl2:::p::p, space s:::p, comp titleLbl:::p::p, space s:::p, par b {comp changePasswordBtn::b:p::p, comp button1::b:p::p}, space ::37:x, comp buttonBar:::p:44:p}}"
+			} ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "titleLbl2"
+					"text": "Account Control Center"
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 9, false )
+					"horizontalAlignment": 0
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "titleLbl"
+					"text": "Welcome <username>!"
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
+					"horizontalAlignment": 0
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0:1.0, 80"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+				} ) {
+					name: "buttonBar"
+					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "closeBtn"
+						"text": "Close"
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 0
+					} )
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "button1"
+					"text": "Delete Account"
+					"font": #SwingDerivedFont0
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "changePasswordBtn"
+					"text": "Change Password"
+					"font": #SwingDerivedFont0
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 345, 245 )
+		} )
+	}
+}

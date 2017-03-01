@@ -26,9 +26,13 @@ class ClientBrowser extends JFrame {
     private final File catalogFile;
     private boolean isLoaded = false;
     private int failureCount;
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JScrollPane scrollPane1;
     private JTree tree1;
+    private JPanel panel1;
     private JButton uploadBtn;
     private JButton downloadBtn;
     private JButton newDirBtn;
@@ -38,9 +42,12 @@ class ClientBrowser extends JFrame {
     private JButton renameBtn;
     private JButton propertiesBtn;
     private JButton removeBtn;
+    private JPanel buttonBar;
     private JButton logoutBtn;
+    private JButton optionsBtn;
     private JLabel statusLbl;
     private JButton quitBtn;
+    //GEN-END:variables
 
     private ClientBrowser(String serverAddress, int port, String userAccount, File catalogFile) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -97,12 +104,13 @@ class ClientBrowser extends JFrame {
             dialogPane.repaint();
             dialogPane.revalidate();
         }
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        //GEN-BEGIN:initComponents
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
-        JPanel contentPanel = new JPanel();
-        JScrollPane scrollPane1 = new JScrollPane();
+        contentPanel = new JPanel();
+        scrollPane1 = new JScrollPane();
         tree1 = new JTree(new DefaultTreeModel(root));
-        JPanel panel1 = new JPanel();
+        panel1 = new JPanel();
         uploadBtn = new JButton();
         downloadBtn = new JButton();
         newDirBtn = new JButton();
@@ -112,8 +120,9 @@ class ClientBrowser extends JFrame {
         renameBtn = new JButton();
         propertiesBtn = new JButton();
         removeBtn = new JButton();
-        JPanel buttonBar = new JPanel();
+        buttonBar = new JPanel();
         logoutBtn = new JButton();
+        optionsBtn = new JButton();
         statusLbl = new JLabel();
         quitBtn = new JButton();
 
@@ -134,8 +143,7 @@ class ClientBrowser extends JFrame {
                 {
 
                     //---- tree1 ----
-                    tree1.setFont(
-                            new Font("Arial", tree1.getFont().getStyle(), tree1.getFont().getSize() + 1));
+                    tree1.setFont(new Font("Arial", tree1.getFont().getStyle(), tree1.getFont().getSize() + 1));
                     scrollPane1.setViewportView(tree1);
                 }
 
@@ -144,197 +152,104 @@ class ClientBrowser extends JFrame {
 
                     //---- uploadBtn ----
                     uploadBtn.setText("Upload...");
-                    uploadBtn.setFont(
-                            new Font("Arial", uploadBtn.getFont().getStyle(), uploadBtn.getFont().getSize() + 1));
+                    uploadBtn.setFont(new Font("Arial", uploadBtn.getFont().getStyle(), uploadBtn.getFont().getSize() + 1));
 
                     //---- downloadBtn ----
                     downloadBtn.setText("Save");
-                    downloadBtn.setFont(
-                            new Font(
-                                    "Arial", downloadBtn.getFont().getStyle(), downloadBtn.getFont().getSize() + 1));
+                    downloadBtn.setFont(new Font("Arial", downloadBtn.getFont().getStyle(), downloadBtn.getFont().getSize() + 1));
 
                     //---- newDirBtn ----
                     newDirBtn.setText("New Folder");
-                    newDirBtn.setFont(
-                            new Font("Arial", newDirBtn.getFont().getStyle(), newDirBtn.getFont().getSize() + 1));
+                    newDirBtn.setFont(new Font("Arial", newDirBtn.getFont().getStyle(), newDirBtn.getFont().getSize() + 1));
 
                     //---- downloadAsBtn ----
                     downloadAsBtn.setText("Save As...");
-                    downloadAsBtn.setFont(
-                            new Font(
-                                    "Arial",
-                                    downloadAsBtn.getFont().getStyle(),
-                                    downloadAsBtn.getFont().getSize() + 1));
+                    downloadAsBtn.setFont(new Font("Arial", downloadAsBtn.getFont().getStyle(), downloadAsBtn.getFont().getSize() + 1));
 
                     //---- moveBtn ----
                     moveBtn.setText("Move...");
-                    moveBtn.setFont(
-                            new Font("Arial", moveBtn.getFont().getStyle(), moveBtn.getFont().getSize() + 1));
+                    moveBtn.setFont(new Font("Arial", moveBtn.getFont().getStyle(), moveBtn.getFont().getSize() + 1));
 
                     //---- duplicateBtn ----
                     duplicateBtn.setText("Duplicate");
-                    duplicateBtn.setFont(
-                            new Font(
-                                    "Arial",
-                                    duplicateBtn.getFont().getStyle(),
-                                    duplicateBtn.getFont().getSize() + 1));
+                    duplicateBtn.setFont(new Font("Arial", duplicateBtn.getFont().getStyle(), duplicateBtn.getFont().getSize() + 1));
 
                     //---- renameBtn ----
                     renameBtn.setText("Rename...");
-                    renameBtn.setFont(
-                            new Font("Arial", renameBtn.getFont().getStyle(), renameBtn.getFont().getSize() + 1));
+                    renameBtn.setFont(new Font("Arial", renameBtn.getFont().getStyle(), renameBtn.getFont().getSize() + 1));
 
                     //---- propertiesBtn ----
                     propertiesBtn.setText("Properties");
-                    propertiesBtn.setFont(
-                            new Font(
-                                    "Arial",
-                                    propertiesBtn.getFont().getStyle(),
-                                    propertiesBtn.getFont().getSize() + 1));
+                    propertiesBtn.setFont(new Font("Arial", propertiesBtn.getFont().getStyle(), propertiesBtn.getFont().getSize() + 1));
 
                     //---- removeBtn ----
                     removeBtn.setText("Remove");
-                    removeBtn.setFont(
-                            new Font("Arial", removeBtn.getFont().getStyle(), removeBtn.getFont().getSize() + 1));
+                    removeBtn.setFont(new Font("Arial", removeBtn.getFont().getStyle(), removeBtn.getFont().getSize() + 1));
 
                     GroupLayout panel1Layout = new GroupLayout(panel1);
                     panel1.setLayout(panel1Layout);
                     panel1Layout.setHorizontalGroup(
-                            panel1Layout
-                                    .createParallelGroup()
-                                    .addGroup(
-                                            panel1Layout
-                                                    .createSequentialGroup()
-                                                    .addContainerGap()
-                                                    .addGroup(
-                                                            panel1Layout
-                                                                    .createParallelGroup()
-                                                                    .addComponent(
-                                                                            propertiesBtn,
-                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                            Short.MAX_VALUE)
-                                                                    .addComponent(
-                                                                            uploadBtn,
-                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                            Short.MAX_VALUE)
-                                                                    .addComponent(
-                                                                            downloadBtn,
-                                                                            GroupLayout.Alignment.TRAILING,
-                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                            Short.MAX_VALUE)
-                                                                    .addGroup(
-                                                                            panel1Layout
-                                                                                    .createSequentialGroup()
-                                                                                    .addGroup(
-                                                                                            panel1Layout
-                                                                                                    .createParallelGroup(
-                                                                                                            GroupLayout.Alignment.TRAILING, false)
-                                                                                                    .addComponent(
-                                                                                                            removeBtn,
-                                                                                                            GroupLayout.Alignment.LEADING,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            Short.MAX_VALUE)
-                                                                                                    .addComponent(
-                                                                                                            newDirBtn,
-                                                                                                            GroupLayout.Alignment.LEADING,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            Short.MAX_VALUE)
-                                                                                                    .addComponent(
-                                                                                                            moveBtn,
-                                                                                                            GroupLayout.Alignment.LEADING,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            Short.MAX_VALUE)
-                                                                                                    .addComponent(
-                                                                                                            downloadAsBtn,
-                                                                                                            GroupLayout.Alignment.LEADING,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            Short.MAX_VALUE)
-                                                                                                    .addComponent(
-                                                                                                            renameBtn,
-                                                                                                            GroupLayout.Alignment.LEADING,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            Short.MAX_VALUE)
-                                                                                                    .addComponent(
-                                                                                                            duplicateBtn,
-                                                                                                            GroupLayout.Alignment.LEADING,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            GroupLayout.DEFAULT_SIZE,
-                                                                                                            Short.MAX_VALUE))
-                                                                                    .addGap(0, 0, Short.MAX_VALUE)))
-                                                    .addContainerGap()));
+                        panel1Layout.createParallelGroup()
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panel1Layout.createParallelGroup()
+                                    .addComponent(propertiesBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(uploadBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(downloadBtn, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                            .addComponent(removeBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(newDirBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(moveBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(downloadAsBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(renameBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(duplicateBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap())
+                    );
                     panel1Layout.setVerticalGroup(
-                            panel1Layout
-                                    .createParallelGroup()
-                                    .addGroup(
-                                            panel1Layout
-                                                    .createSequentialGroup()
-                                                    .addContainerGap()
-                                                    .addComponent(uploadBtn)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(newDirBtn)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(downloadBtn)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(downloadAsBtn)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(moveBtn)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(duplicateBtn)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(renameBtn)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(propertiesBtn)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(removeBtn)
-                                                    .addContainerGap(15, Short.MAX_VALUE)));
+                        panel1Layout.createParallelGroup()
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(uploadBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(newDirBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(downloadBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(downloadAsBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(moveBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(duplicateBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(renameBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(propertiesBtn)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(removeBtn)
+                                .addContainerGap(15, Short.MAX_VALUE))
+                    );
                 }
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout
-                                .createParallelGroup()
-                                .addGroup(
-                                        GroupLayout.Alignment.TRAILING,
-                                        contentPanelLayout
-                                                .createSequentialGroup()
-                                                .addComponent(
-                                                        scrollPane1,
-                                                        GroupLayout.PREFERRED_SIZE,
-                                                        408,
-                                                        GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(
-                                                        panel1,
-                                                        GroupLayout.PREFERRED_SIZE,
-                                                        GroupLayout.DEFAULT_SIZE,
-                                                        GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 408, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout
-                                .createParallelGroup()
-                                .addGroup(
-                                        contentPanelLayout
-                                                .createSequentialGroup()
-                                                .addGroup(
-                                                        contentPanelLayout
-                                                                .createParallelGroup()
-                                                                .addComponent(
-                                                                        scrollPane1, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
-                                                                .addComponent(
-                                                                        panel1,
-                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                        Short.MAX_VALUE))
-                                                .addContainerGap()));
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addContainerGap())
+                );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -342,70 +257,42 @@ class ClientBrowser extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 374, 0};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 374, 0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
 
                 //---- logoutBtn ----
                 logoutBtn.setText("Logout");
-                logoutBtn.setFont(
-                        new Font("Arial", logoutBtn.getFont().getStyle(), logoutBtn.getFont().getSize() + 1));
-                buttonBar.add(
-                        logoutBtn,
-                        new GridBagConstraints(
-                                0,
-                                0,
-                                1,
-                                1,
-                                0.0,
-                                0.0,
-                                GridBagConstraints.CENTER,
-                                GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 5),
-                                0,
-                                0));
+                logoutBtn.setFont(new Font("Arial", logoutBtn.getFont().getStyle(), logoutBtn.getFont().getSize() + 1));
+                buttonBar.add(logoutBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+
+                //---- optionsBtn ----
+                optionsBtn.setText("Options...");
+                optionsBtn.setFont(new Font("Arial", optionsBtn.getFont().getStyle(), optionsBtn.getFont().getSize() + 1));
+                buttonBar.add(optionsBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- statusLbl ----
                 statusLbl.setHorizontalAlignment(SwingConstants.CENTER);
-                buttonBar.add(
-                        statusLbl,
-                        new GridBagConstraints(
-                                1,
-                                0,
-                                1,
-                                1,
-                                0.0,
-                                0.0,
-                                GridBagConstraints.CENTER,
-                                GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 5),
-                                0,
-                                0));
+                buttonBar.add(statusLbl, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- quitBtn ----
                 quitBtn.setText("Quit");
-                quitBtn.setFont(
-                        new Font("Arial", quitBtn.getFont().getStyle(), quitBtn.getFont().getSize() + 1));
-                buttonBar.add(
-                        quitBtn,
-                        new GridBagConstraints(
-                                2,
-                                0,
-                                1,
-                                1,
-                                0.0,
-                                0.0,
-                                GridBagConstraints.CENTER,
-                                GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0),
-                                0,
-                                0));
+                quitBtn.setFont(new Font("Arial", quitBtn.getFont().getStyle(), quitBtn.getFont().getSize() + 1));
+                buttonBar.add(quitBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        pack();
+        setSize(565, 465);
         setLocationRelativeTo(getOwner());
-        // JFormDesigner - End of component initialization  //GEN-END:initComponents
+        //GEN-END:initComponents
         isLoaded = true;
     }
 
@@ -644,6 +531,10 @@ class ClientBrowser extends JFrame {
                     catalogTimer.purge();
                     catalogTimer.cancel();
                 });
+        optionsBtn.addActionListener(
+                e -> {
+                    UserAccountOptions.run(clientBrowser, userAccount);
+                });
     }
 
     private DefaultMutableTreeNode readFolder(
@@ -759,5 +650,4 @@ class ClientBrowser extends JFrame {
                     }
                 });
     }
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
