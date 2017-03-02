@@ -393,8 +393,7 @@ class ServerInit implements Runnable {
 
     private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException, ClassNotFoundException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
-        out.println("201");
-        out.flush();
+
 
         FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
         ObjectInputStream ois = new ObjectInputStream(fis);
@@ -427,8 +426,9 @@ class ServerInit implements Runnable {
                         messageDigest.update(oldPassword.getBytes(), 0, oldPassword.length());
                         String generatedPassword = new BigInteger(1, messageDigest.digest()).toString(256);
                         if(accountPassword.equals(generatedPassword)){
+                            out.println("201");
+                            out.flush();
                             userAccounts.remove(username);
-
                             for (int x = 0; x < username.length() - 1; x = x + 2) {
                                 try {
                                     newPassword += username.charAt(x);
@@ -448,20 +448,15 @@ class ServerInit implements Runnable {
                             ObjectOutputStream oos = new ObjectOutputStream(fos);
                             oos.writeObject(userAccounts);
                             oos.flush();
+                        }else{
+                            out.println("202");
+                            out.flush();
                         }
                     }
-                    //System.out.println("User: " + accountName + " Password: " + accountPassword);
                 }
             }
         }catch(EOFException ignored){
         }
-
-
-
-        //properties = (Properties) importedObjects.get(0);
-
-        //accountsImported = (HashMap<String, String>) importedObjects.get(1);
-        //isMasterBox.setSelected((boolean) importedObjects.get(2));
         ois.close();
         fis.close();
 

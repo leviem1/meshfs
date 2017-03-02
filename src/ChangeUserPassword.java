@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 /*
  * Created by JFormDesigner on Tue Feb 28 20:04:44 MST 2017
  */
@@ -18,11 +20,13 @@ public class ChangeUserPassword extends JFrame {
     private String userAccount;
     private String serverAddress;
     private int port;
+    private static JFrame sender;
 
-    public ChangeUserPassword(String userAccount, String serverAddress, int port) {
+    public ChangeUserPassword(String userAccount, String serverAddress, int port, JFrame sender) {
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
+        this.sender = sender;
 
 
         setTitle("MeshFS - Change User Password");
@@ -47,7 +51,7 @@ public class ChangeUserPassword extends JFrame {
         usernameField = new JTextField();
         newPasswordLbl = new JLabel();
         newPasswordConfirmLbl = new JLabel();
-        label3 = new JLabel();
+        confirmLbl = new JLabel();
         newPasswordField = new JPasswordField();
         newPasswordFieldConfirm = new JPasswordField();
         currPasswordLbl = new JLabel();
@@ -85,10 +89,10 @@ public class ChangeUserPassword extends JFrame {
                 newPasswordConfirmLbl.setText("New Password:");
                 newPasswordConfirmLbl.setFont(new Font("Arial", newPasswordConfirmLbl.getFont().getStyle(), newPasswordConfirmLbl.getFont().getSize() + 1));
 
-                //---- label3 ----
-                label3.setText("(confirm)");
-                label3.setHorizontalAlignment(SwingConstants.CENTER);
-                label3.setFont(new Font("Arial", label3.getFont().getStyle(), label3.getFont().getSize() + 1));
+                //---- confirmLbl ----
+                confirmLbl.setText("(confirm)");
+                confirmLbl.setHorizontalAlignment(SwingConstants.CENTER);
+                confirmLbl.setFont(new Font("Arial", confirmLbl.getFont().getStyle(), confirmLbl.getFont().getSize() + 1));
 
                 //---- newPasswordField ----
                 newPasswordField.setFont(new Font("Arial", newPasswordField.getFont().getStyle(), newPasswordField.getFont().getSize() + 1));
@@ -117,14 +121,14 @@ public class ChangeUserPassword extends JFrame {
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addComponent(currPasswordLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(currPasswordField, GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE))
+                                    .addComponent(currPasswordField, GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addComponent(newPasswordLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(newPasswordField, GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(confirmLbl, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(newPasswordConfirmLbl))
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(newPasswordFieldConfirm, GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)))
@@ -150,8 +154,8 @@ public class ChangeUserPassword extends JFrame {
                                 .addComponent(newPasswordConfirmLbl)
                                 .addComponent(newPasswordFieldConfirm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(label3)
-                            .addContainerGap(29, Short.MAX_VALUE))
+                            .addComponent(confirmLbl)
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -166,6 +170,7 @@ public class ChangeUserPassword extends JFrame {
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+                okButton.setEnabled(false);
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -187,6 +192,65 @@ public class ChangeUserPassword extends JFrame {
     private void frameListeners() {
         okButton.addActionListener(
                 e -> onOk());
+
+        currPasswordField.getDocument().addDocumentListener(
+                        new DocumentListener() {
+
+                            public void changedUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void removeUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void insertUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void changed() {
+                                checkFields();
+                            }
+                        });
+        newPasswordField.getDocument().addDocumentListener(
+                        new DocumentListener() {
+
+                            public void changedUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void removeUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void insertUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void changed() {
+                                checkFields();
+                            }
+                        });
+        newPasswordFieldConfirm.getDocument().addDocumentListener(
+                        new DocumentListener() {
+
+                            public void changedUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void removeUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void insertUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void changed() {
+                                checkFields();
+                            }
+                        });
+
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
@@ -197,7 +261,7 @@ public class ChangeUserPassword extends JFrame {
     private JTextField usernameField;
     private JLabel newPasswordLbl;
     private JLabel newPasswordConfirmLbl;
-    private JLabel label3;
+    private JLabel confirmLbl;
     private JPasswordField newPasswordField;
     private JPasswordField newPasswordFieldConfirm;
     private JLabel currPasswordLbl;
@@ -207,8 +271,8 @@ public class ChangeUserPassword extends JFrame {
     private JLabel titleLbl2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public static void run(JFrame sender, String userAccount, String serverAddress, int port) {
-        changeUserPassword = new ChangeUserPassword(userAccount, serverAddress, port);
+    public static void run(JFrame sender, String userAccount, String serverAddress, int port, JFrame parentSender) {
+        changeUserPassword = new ChangeUserPassword(userAccount, serverAddress, port, parentSender);
         CenterWindow.centerOnWindow(sender, changeUserPassword);
         changeUserPassword.setVisible(true);
     }
@@ -216,12 +280,35 @@ public class ChangeUserPassword extends JFrame {
     public void onOk(){
         if(String.valueOf(newPasswordField.getPassword()).equals(String.valueOf(newPasswordFieldConfirm.getPassword()))){
             try {
-                FileClient.changePassword(serverAddress, port, userAccount, String.valueOf(currPasswordField.getPassword()), String.valueOf(newPasswordFieldConfirm.getPassword()));
+                if(FileClient.changePassword(serverAddress, port, userAccount, String.valueOf(currPasswordField.getPassword()), String.valueOf(newPasswordFieldConfirm.getPassword()))){
+                    JOptionPane.showMessageDialog(changeUserPassword,"Password Updated Successfully!", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+                    sender.dispose();
+                    ClientModeConfiguration.run(changeUserPassword, serverAddress, true);
+                }else{
+                    JOptionPane.showMessageDialog(changeUserPassword,"Current Password is Incorrect!", "MeshFS - Failure", JOptionPane.ERROR_MESSAGE);
+                    currPasswordField.setText("");
+                    newPasswordField.setText("");
+                    newPasswordFieldConfirm.setText("");
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }else{
-            JOptionPane.showMessageDialog(changeUserPassword, "New Password Mismatch", "MeshFS - Error!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(changeUserPassword, "Password Mismatch", "MeshFS - Error!", JOptionPane.ERROR_MESSAGE);
+            newPasswordField.setText("");
+            newPasswordFieldConfirm.setText("");
+        }
+    }
+
+    private void checkFields(){
+        if(currPasswordField.getPassword().length != 0 && newPasswordField.getPassword().length != 0 && newPasswordFieldConfirm.getPassword().length != 0){
+            okButton.setEnabled(true);
+            buttonBar.getRootPane().setDefaultButton(okButton);
+        }else{
+            okButton.setEnabled(false);
+
         }
     }
 }

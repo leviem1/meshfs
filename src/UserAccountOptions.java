@@ -16,11 +16,13 @@ public class UserAccountOptions extends JFrame {
     private String userAccount;
     private String serverAddress;
     private int port;
+    private JFrame parentSender;
 
-    public UserAccountOptions(String userAccount, String serverAddress, int port) {
+    public UserAccountOptions(String userAccount, String serverAddress, int port, JFrame parentSender) {
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
+        this.parentSender = parentSender;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -126,7 +128,8 @@ public class UserAccountOptions extends JFrame {
     private void frameListeners() {
         changePasswordBtn.addActionListener(
                 e -> {
-                    ChangeUserPassword.run(userAccountOptions, userAccount, serverAddress, port);
+                    ChangeUserPassword.run(userAccountOptions, userAccount, serverAddress, port, parentSender);
+                    dispose();
                 });
     }
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
@@ -141,7 +144,7 @@ public class UserAccountOptions extends JFrame {
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
     public static void run(JFrame sender, String userAccount, String serverAddress, int port) {
-        userAccountOptions = new UserAccountOptions(userAccount, serverAddress, port);
+        userAccountOptions = new UserAccountOptions(userAccount, serverAddress, port, sender);
         CenterWindow.centerOnWindow(sender, userAccountOptions);
         userAccountOptions.setVisible(true);
     }

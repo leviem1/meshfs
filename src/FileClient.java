@@ -421,23 +421,22 @@ final class FileClient {
         return uuid;
     }
 
-    static String changePassword(String serverAddress, int port, String username, String oldPassword, String newPassword) throws IOException {
+    static boolean changePassword(String serverAddress, int port, String username, String oldPassword, String newPassword) throws IOException {
         String response;
-        String uuid = "";
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try {
             out.println("111|" + username + "|"+ oldPassword + "|" + newPassword +"\n");
-            uuid = input.readLine();
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
+                return false;
             }
             client.close();
         } catch (SocketTimeoutException ste) {
             client.close();
         }
-        return uuid;
+        return true;
     }
 }
