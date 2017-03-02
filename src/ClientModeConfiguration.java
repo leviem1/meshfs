@@ -21,6 +21,7 @@ class ClientModeConfiguration extends JFrame {
     private static JFrame clientModeConfiguration;
     private final boolean runType;
     private String usernameFinal = "";
+    private String uuid = "";
     //GEN-BEGIN:variables
     private JPanel dialogPane;
     private JPanel contentPanel;
@@ -381,19 +382,20 @@ class ClientModeConfiguration extends JFrame {
         }
         try {
             connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+            uuid = FileClient.getServerUUID(serverAddressField.getText(), Integer.valueOf(serverPortField.getText()));
             File catalog = File.createTempFile(".catalog", ".json");
             if (!(usernameFinal.equals(""))) {
                 FileClient.receiveFile(
                         serverAddressField.getText(),
                         Integer.parseInt(serverPortField.getText()),
                         ".catalog.json",
-                        catalog.getAbsolutePath());
+                        catalog.getAbsolutePath(), uuid);
                 ClientBrowser.run(
                         serverAddressField.getText(),
                         Integer.parseInt(serverPortField.getText()),
                         clientModeConfiguration,
                         usernameFinal,
-                        catalog);
+                        catalog, uuid);
                 dispose();
             }
         } catch (IOException ignored) {
@@ -421,10 +423,9 @@ class ClientModeConfiguration extends JFrame {
         try {
             File auth = File.createTempFile(".auth", "");
             auth.deleteOnExit();
-            FileClient.receiveFile(
+            FileClient.receiveAuthFile(
                     serverAddressField.getText(),
                     Integer.parseInt(serverPortField.getText()),
-                    ".auth",
                     auth.getAbsolutePath());
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth.getAbsolutePath()));
             @SuppressWarnings("unchecked")

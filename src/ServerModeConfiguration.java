@@ -1074,7 +1074,7 @@ class ServerModeConfiguration extends JFrame {
                         + out
                         + "</center></font></html>",
                 accountsEnc,
-                getConfigProperties());
+                getConfigProperties(), isMasterBox.isSelected());
         dispose();
     }
 
@@ -1202,6 +1202,7 @@ class ServerModeConfiguration extends JFrame {
         configProperties.setProperty("repository", String.valueOf(repoPathField.getText()));
         configProperties.setProperty("serverThreads", String.valueOf(serverThreadsField.getText()));
         configProperties.setProperty("timeout", String.valueOf(serverTimeoutField.getText()));
+        configProperties.setProperty("uuid", MeshFS.properties.getProperty("uuid"));
         return configProperties;
     }
 

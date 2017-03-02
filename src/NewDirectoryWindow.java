@@ -17,6 +17,7 @@ class NewDirectoryWindow extends JFrame {
     private final int port;
     private final String userAccount;
     private File catalogFile;
+    private final String uuid;
 
     //GEN-BEGIN:variables
     private JPanel dialogPane;
@@ -30,11 +31,12 @@ class NewDirectoryWindow extends JFrame {
     private JButton okButton;
     //GEN-END:variables
 
-    private NewDirectoryWindow(String serverAddress, int port, String userAccount, File catalogFile) {
+    private NewDirectoryWindow(String serverAddress, int port, String userAccount, File catalogFile, String uuid) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
         this.catalogFile = catalogFile;
+        this.uuid = uuid;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -49,8 +51,8 @@ class NewDirectoryWindow extends JFrame {
         okButton.setEnabled(false);
     }
 
-    public static void run(String serverAddress, int port, JFrame sender, String userAccount, File catalogFile) {
-        newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, userAccount, catalogFile);
+    public static void run(String serverAddress, int port, JFrame sender, String userAccount, File catalogFile, String uuid) {
+        newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, userAccount, catalogFile, uuid);
         CenterWindow.centerOnWindow(sender, newDirectoryWindow);
         newDirectoryWindow.setVisible(true);
     }
@@ -203,7 +205,7 @@ class NewDirectoryWindow extends JFrame {
                         }
                     }
                     try {
-                        FileClient.addFolder(serverAddress, port, newFolderPath, directoryName, userAccount);
+                        FileClient.addFolder(serverAddress, port, newFolderPath, directoryName, userAccount, uuid);
                     } catch (IOException ignored) {
 
                     }

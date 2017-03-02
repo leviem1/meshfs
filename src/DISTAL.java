@@ -358,7 +358,7 @@ class sendFilesTreading implements Runnable {
                                                 MeshFS.properties.getProperty("repository")
                                                         + File.separator
                                                         + outName
-                                                        + "_w");
+                                                        + "_w", MeshFS.properties.getProperty("remoteUUID"));
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
@@ -388,7 +388,7 @@ class sendFilesTreading implements Runnable {
                                                         + File.separator
                                                         + outName
                                                         + "_s"
-                                                        + stripe);
+                                                        + stripe, MeshFS.properties.getProperty("remoteUUID"));
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
@@ -417,7 +417,7 @@ class sendFilesTreading implements Runnable {
                                                         + File.separator
                                                         + outName
                                                         + "_s"
-                                                        + stripe);
+                                                        + stripe, MeshFS.properties.getProperty("remoteUUID"));
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.valueOf(MeshFS.properties.getProperty("portNumber")));

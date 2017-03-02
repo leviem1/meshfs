@@ -19,6 +19,7 @@ class RenameFileWindow extends JFrame {
     private final String userAccount;
     private final String originalName;
     private File catalogFile;
+    private final String uuid;
 
     //GEN-BEGIN:variables
     private JPanel dialogPane;
@@ -33,7 +34,7 @@ class RenameFileWindow extends JFrame {
     //GEN-END:variables
 
     private RenameFileWindow(
-            String serverAddress, int port, String jsonObj, String currentName, String userAccount, File catalogFile) {
+            String serverAddress, int port, String jsonObj, String currentName, String userAccount, File catalogFile, String uuid) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -47,6 +48,7 @@ class RenameFileWindow extends JFrame {
         this.userAccount = userAccount;
         this.originalName = currentName;
         this.catalogFile = catalogFile;
+        this.uuid = uuid;
 
         initComponents();
         frameListeners();
@@ -73,9 +75,10 @@ class RenameFileWindow extends JFrame {
             String jsonObj,
             String currentName,
             String userAccount,
-            File catalogFile) {
+            File catalogFile,
+            String uuid) {
         JFrame renameFileWindow =
-                new RenameFileWindow(serverAddress, port, jsonObj, currentName, userAccount, catalogFile);
+                new RenameFileWindow(serverAddress, port, jsonObj, currentName, userAccount, catalogFile, uuid);
         CenterWindow.centerOnWindow(sender, renameFileWindow);
         renameFileWindow.setVisible(true);
     }
@@ -230,7 +233,7 @@ class RenameFileWindow extends JFrame {
         okButton.addActionListener(
                 e -> {
                     try {
-                        FileClient.renameFile(serverAddress, port, jsonObj, newNameValueField.getText());
+                        FileClient.renameFile(serverAddress, port, jsonObj, newNameValueField.getText(), uuid);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }

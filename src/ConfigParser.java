@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.Properties;
+import java.util.UUID;
 
 /**
  * The ConfigParser class is used to manipulate the .config.properties file.
@@ -25,6 +26,7 @@ class ConfigParser {
         defaultProperties.setProperty("repository", ("repo" + File.separator));
         defaultProperties.setProperty("serverThreads", "16");
         defaultProperties.setProperty("timeout", "5");
+        defaultProperties.setProperty("uuid", UUID.randomUUID().toString());
         return defaultProperties;
     }
 
@@ -70,7 +72,6 @@ class ConfigParser {
         try {
             output = new FileOutputStream(".config.properties");
             props.store(output, null);
-            System.out.println("Config file written to " + new File(".config.properties").getAbsolutePath());
         } catch (IOException io) {
             io.printStackTrace();
         } finally {

@@ -1,4 +1,7 @@
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import javax.swing.*;
 import javax.swing.border.*;
 /*
@@ -13,8 +16,15 @@ import javax.swing.border.*;
 public class ChangeUserPassword extends JFrame {
     private static JFrame changeUserPassword;
     private String userAccount;
-    public ChangeUserPassword(String userAccount) {
+    private String serverAddress;
+    private int port;
+
+    public ChangeUserPassword(String userAccount, String serverAddress, int port) {
         this.userAccount = userAccount;
+        this.serverAddress = serverAddress;
+        this.port = port;
+
+
         setTitle("MeshFS - Change User Password");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -24,6 +34,7 @@ public class ChangeUserPassword extends JFrame {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
         initComponents();
+        frameListeners();
         usernameField.setText(userAccount);
     }
 
@@ -34,11 +45,13 @@ public class ChangeUserPassword extends JFrame {
         contentPanel = new JPanel();
         usernameLbl = new JLabel();
         usernameField = new JTextField();
-        passwordLbl = new JLabel();
-        passwordConfirmLbl = new JLabel();
+        newPasswordLbl = new JLabel();
+        newPasswordConfirmLbl = new JLabel();
         label3 = new JLabel();
-        passwordField = new JPasswordField();
-        passwordFieldConfirm = new JPasswordField();
+        newPasswordField = new JPasswordField();
+        newPasswordFieldConfirm = new JPasswordField();
+        currPasswordLbl = new JLabel();
+        currPasswordField = new JPasswordField();
         buttonBar = new JPanel();
         okButton = new JButton();
         titleLbl2 = new JLabel();
@@ -64,24 +77,31 @@ public class ChangeUserPassword extends JFrame {
                 usernameField.setEnabled(false);
                 usernameField.setFont(new Font("Arial", usernameField.getFont().getStyle(), usernameField.getFont().getSize() + 1));
 
-                //---- passwordLbl ----
-                passwordLbl.setText("Password:");
-                passwordLbl.setFont(new Font("Arial", passwordLbl.getFont().getStyle(), passwordLbl.getFont().getSize() + 1));
+                //---- newPasswordLbl ----
+                newPasswordLbl.setText("New Password:");
+                newPasswordLbl.setFont(new Font("Arial", newPasswordLbl.getFont().getStyle(), newPasswordLbl.getFont().getSize() + 1));
 
-                //---- passwordConfirmLbl ----
-                passwordConfirmLbl.setText("Password:");
-                passwordConfirmLbl.setFont(new Font("Arial", passwordConfirmLbl.getFont().getStyle(), passwordConfirmLbl.getFont().getSize() + 1));
+                //---- newPasswordConfirmLbl ----
+                newPasswordConfirmLbl.setText("New Password:");
+                newPasswordConfirmLbl.setFont(new Font("Arial", newPasswordConfirmLbl.getFont().getStyle(), newPasswordConfirmLbl.getFont().getSize() + 1));
 
                 //---- label3 ----
                 label3.setText("(confirm)");
                 label3.setHorizontalAlignment(SwingConstants.CENTER);
                 label3.setFont(new Font("Arial", label3.getFont().getStyle(), label3.getFont().getSize() + 1));
 
-                //---- passwordField ----
-                passwordField.setFont(new Font("Arial", passwordField.getFont().getStyle(), passwordField.getFont().getSize() + 1));
+                //---- newPasswordField ----
+                newPasswordField.setFont(new Font("Arial", newPasswordField.getFont().getStyle(), newPasswordField.getFont().getSize() + 1));
 
-                //---- passwordFieldConfirm ----
-                passwordFieldConfirm.setFont(new Font("Arial", passwordFieldConfirm.getFont().getStyle(), passwordFieldConfirm.getFont().getSize() + 1));
+                //---- newPasswordFieldConfirm ----
+                newPasswordFieldConfirm.setFont(new Font("Arial", newPasswordFieldConfirm.getFont().getStyle(), newPasswordFieldConfirm.getFont().getSize() + 1));
+
+                //---- currPasswordLbl ----
+                currPasswordLbl.setText("Current Password:");
+                currPasswordLbl.setFont(new Font("Arial", currPasswordLbl.getFont().getStyle(), currPasswordLbl.getFont().getSize() + 1));
+
+                //---- currPasswordField ----
+                currPasswordField.setFont(new Font("Arial", currPasswordField.getFont().getStyle(), currPasswordField.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -93,17 +113,21 @@ public class ChangeUserPassword extends JFrame {
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addComponent(usernameLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(usernameField))
+                                    .addComponent(usernameField, GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(label3, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(passwordConfirmLbl, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(currPasswordLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(passwordFieldConfirm, GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE))
+                                    .addComponent(currPasswordField, GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE))
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(passwordLbl)
+                                    .addComponent(newPasswordLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(passwordField, GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)))
+                                    .addComponent(newPasswordField, GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 98, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(newPasswordConfirmLbl))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(newPasswordFieldConfirm, GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
@@ -115,15 +139,19 @@ public class ChangeUserPassword extends JFrame {
                                 .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(passwordLbl)
-                                .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(14, 14, 14)
+                                .addComponent(currPasswordLbl)
+                                .addComponent(currPasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addComponent(newPasswordLbl)
+                                .addComponent(newPasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(passwordConfirmLbl)
-                                .addComponent(passwordFieldConfirm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addGap(9, 9, 9)
+                                .addComponent(newPasswordConfirmLbl)
+                                .addComponent(newPasswordFieldConfirm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(label3)
-                            .addContainerGap(47, Short.MAX_VALUE))
+                            .addContainerGap(29, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -156,25 +184,44 @@ public class ChangeUserPassword extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
+    private void frameListeners() {
+        okButton.addActionListener(
+                e -> onOk());
+    }
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel usernameLbl;
     private JTextField usernameField;
-    private JLabel passwordLbl;
-    private JLabel passwordConfirmLbl;
+    private JLabel newPasswordLbl;
+    private JLabel newPasswordConfirmLbl;
     private JLabel label3;
-    private JPasswordField passwordField;
-    private JPasswordField passwordFieldConfirm;
+    private JPasswordField newPasswordField;
+    private JPasswordField newPasswordFieldConfirm;
+    private JLabel currPasswordLbl;
+    private JPasswordField currPasswordField;
     private JPanel buttonBar;
     private JButton okButton;
     private JLabel titleLbl2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public static void run(JFrame sender, String userAccount) {
-        changeUserPassword = new ChangeUserPassword(userAccount);
+    public static void run(JFrame sender, String userAccount, String serverAddress, int port) {
+        changeUserPassword = new ChangeUserPassword(userAccount, serverAddress, port);
         CenterWindow.centerOnWindow(sender, changeUserPassword);
         changeUserPassword.setVisible(true);
+    }
+
+    public void onOk(){
+        if(String.valueOf(newPasswordField.getPassword()).equals(String.valueOf(newPasswordFieldConfirm.getPassword()))){
+            try {
+                FileClient.changePassword(serverAddress, port, userAccount, String.valueOf(currPasswordField.getPassword()), String.valueOf(newPasswordFieldConfirm.getPassword()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else{
+            JOptionPane.showMessageDialog(changeUserPassword, "New Password Mismatch", "MeshFS - Error!", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

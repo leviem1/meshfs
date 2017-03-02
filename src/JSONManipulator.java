@@ -335,12 +335,13 @@ class JSONManipulator {
       String outFile,
       String serverAddress,
       int port,
-      File catalog)
+      File catalog,
+      String uuid)
       throws IOException {
     String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
     File tempManifest = File.createTempFile(".manifest", ".json");
     tempManifest.deleteOnExit();
-    FileClient.receiveFile(serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath());
+    FileClient.receiveFile(serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath(), uuid);
     JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
     String[] folders = itemLocation.split("/");
     JSONObject itemToRead = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
@@ -376,7 +377,7 @@ class JSONManipulator {
                               IPAddress,
                               port,
                               fileNameWNum,
-                              outFileDir + File.separator + "." + fileNameWNum);
+                              outFileDir + File.separator + "." + fileNameWNum, uuid);
                         } catch (IOException ioe) {
                           ioe.printStackTrace();
                         }
@@ -408,7 +409,7 @@ class JSONManipulator {
               .contains(fileNameW)) {
             String IPAddress = ((JSONObject) compInfoFile.get(MACAddress)).get("IP").toString();
             FileClient.receiveFile(
-                IPAddress, port, fileNameW, outFileDir + File.separator + "." + outFile);
+                IPAddress, port, fileNameW, outFileDir + File.separator + "." + outFile, uuid);
             new File(outFileDir + File.separator + "." + outFile)
                 .renameTo(new File(outFileDir + File.separator + outFile));
             cantContinue = false;

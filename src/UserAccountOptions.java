@@ -14,8 +14,14 @@ import com.jgoodies.forms.factories.*;
 public class UserAccountOptions extends JFrame {
     private static JFrame userAccountOptions;
     private String userAccount;
-    public UserAccountOptions(String userAccount) {
+    private String serverAddress;
+    private int port;
+
+    public UserAccountOptions(String userAccount, String serverAddress, int port) {
         this.userAccount = userAccount;
+        this.serverAddress = serverAddress;
+        this.port = port;
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -120,7 +126,7 @@ public class UserAccountOptions extends JFrame {
     private void frameListeners() {
         changePasswordBtn.addActionListener(
                 e -> {
-                    ChangeUserPassword.run(userAccountOptions, userAccount);
+                    ChangeUserPassword.run(userAccountOptions, userAccount, serverAddress, port);
                 });
     }
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
@@ -134,8 +140,8 @@ public class UserAccountOptions extends JFrame {
     private JButton changePasswordBtn;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public static void run(JFrame sender, String userAccount) {
-        userAccountOptions = new UserAccountOptions(userAccount);
+    public static void run(JFrame sender, String userAccount, String serverAddress, int port) {
+        userAccountOptions = new UserAccountOptions(userAccount, serverAddress, port);
         CenterWindow.centerOnWindow(sender, userAccountOptions);
         userAccountOptions.setVisible(true);
     }

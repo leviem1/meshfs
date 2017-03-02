@@ -2,8 +2,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * The FileServer class starts a file server with a variable port, amount of sockets, and timeout.
@@ -100,31 +105,27 @@ class ServerInit implements Runnable {
                 String[] requestParts = request.trim().split("\\|");
                 switch (requestParts[0]) {
                     case "101": //101:Get file
-                        sendFile(requestParts[1], out);
+                        sendFile(requestParts[1], requestParts[2], out);
 
                         break;
                     case "102": //102:Post file
-                        if (requestParts.length == 3) {
-                            receiveFile(requestParts[1], requestParts[2], out);
-                        } else {
-                            receiveFile(requestParts[1], out);
-                        }
+                        receiveFile(requestParts[1], requestParts[2], out);
 
                         break;
                     case "103": //103:Move file (virtual only)
-                        moveFile(requestParts[1], requestParts[2], out);
+                        moveFile(requestParts[1], requestParts[2], requestParts[3], out);
 
                         break;
                     case "104": //104:Copy file (virtual only)
-                        duplicateFile(requestParts[1], out);
+                        duplicateFile(requestParts[1], requestParts[2], out);
 
                         break;
                     case "105": //105:Delete file (virtual and physical)
-                        deleteFile(requestParts[1], out);
+                        deleteFile(requestParts[1], requestParts[2], out);
 
                         break;
                     case "106": //106:Make directory (virtual only)
-                        createDirectory(requestParts[1], requestParts[2], out, requestParts[3]);
+                        createDirectory(requestParts[1], requestParts[2], out, requestParts[3], requestParts[4]);
 
                         break;
                     case "107": //107:Get report
@@ -140,9 +141,25 @@ class ServerInit implements Runnable {
 
                         break;
                     case "110": //110:Rename File (virtual only)
-                        renameFile(requestParts[1], requestParts[2], out);
+                        renameFile(requestParts[1], requestParts[2], requestParts[3], out);
 
                         break;
+
+                    case "111": //111:Change Password
+                        changePassword(requestParts[1], requestParts[2], requestParts[3], out);
+
+                        break;
+
+                    case "112": //112:Get Master UUID
+                        getServerUUID(out);
+
+                        break;
+
+                    case "113": //113:Send Auth Info
+                        sendAuthInfo(out);
+
+                        break;
+
                     default:
                         badRequest(out, request);
                         break;
@@ -194,10 +211,15 @@ class ServerInit implements Runnable {
                 MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
-    private void moveFile(String currentPath, String newPath, Socket client) throws IOException {
+    private void moveFile(String currentPath, String newPath, String uuid, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
+
+        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+            return;
+        }
+
         JSONObject jsonObj =
                 JSONManipulator.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -206,10 +228,14 @@ class ServerInit implements Runnable {
                 JSONManipulator.moveFile(jsonObj, currentPath, newPath));
     }
 
-    private void deleteFile(String jsonPath, Socket client) throws IOException {
+    private void deleteFile(String jsonPath, String uuid, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
+
+        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+            return;
+        }
 
         JSONObject jsonObj =
                 JSONManipulator.getJSONObject(
@@ -219,10 +245,15 @@ class ServerInit implements Runnable {
                 JSONManipulator.removeItem(jsonObj, jsonPath));
     }
 
-    private void duplicateFile(String currentPath, Socket client) throws IOException {
+    private void duplicateFile(String currentPath, String uuid, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
+
+        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+            return;
+        }
+
         JSONObject jsonObj =
                 JSONManipulator.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -236,7 +267,7 @@ class ServerInit implements Runnable {
                         currentPath.substring(currentPath.lastIndexOf("/") + 1)));
     }
 
-    private void sendFile(String filename, Socket client) throws IOException {
+    private void sendFile(String filename, String uuid, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
@@ -245,6 +276,10 @@ class ServerInit implements Runnable {
                 new FileInputStream(MeshFS.properties.getProperty("repository") + filename);
 
         out.println("201");
+
+        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+            return;
+        }
 
         while ((br = fis.read(data, 0, data.length)) != -1) {
             dos.write(data, 0, br);
@@ -256,7 +291,7 @@ class ServerInit implements Runnable {
         dos.close();
     }
 
-    private void receiveFile(String filename, Socket client) throws IOException {
+    private void receiveFile(String filename, String uuid, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -265,6 +300,10 @@ class ServerInit implements Runnable {
                 new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
         out.println("201");
+
+        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+            return;
+        }
 
         while ((br = dis.read(data, 0, data.length)) != -1) {
             fos.write(data, 0, br);
@@ -276,7 +315,7 @@ class ServerInit implements Runnable {
         dis.close();
     }
 
-    private void receiveFile(String filename, String userAccount, Socket client) throws IOException {
+    private void receiveFile(String filename, String userAccount, String uuid, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -285,6 +324,11 @@ class ServerInit implements Runnable {
                 new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
         out.println("201");
+
+        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+            return;
+        }
+
         JSONManipulator.addToIndex(
                 userAccount,
                 filename + " (uploading)",
@@ -312,10 +356,15 @@ class ServerInit implements Runnable {
     }
 
     private void createDirectory(
-            String directoryPath, String directoryName, Socket client, String userAccount)
+            String directoryPath, String directoryName, Socket client, String userAccount, String uuid)
             throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
+
+        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+            return;
+        }
+
         out.flush();
         JSONObject jsonObj =
                 JSONManipulator.getJSONObject(
@@ -325,10 +374,14 @@ class ServerInit implements Runnable {
                 JSONManipulator.addFolder(jsonObj, directoryPath, directoryName, userAccount));
     }
 
-    private void renameFile(String jsonPath, String newName, Socket client) throws IOException {
+    private void renameFile(String jsonPath, String newName, String uuid, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
+
+        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+            return;
+        }
 
         JSONObject jsonObj =
                 JSONManipulator.getJSONObject(
@@ -336,6 +389,109 @@ class ServerInit implements Runnable {
         JSONManipulator.writeJSONObject(
                 MeshFS.properties.getProperty("repository") + ".catalog.json",
                 JSONManipulator.renameFile(jsonObj, jsonPath, newName));
+    }
+
+    private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException, ClassNotFoundException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println("201");
+        out.flush();
+
+        FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+
+        HashMap<String, String> userAccounts = new HashMap<>();
+
+        try{
+            userAccounts = (HashMap) ois.readObject();
+            fis.close();
+            ois.close();
+            for(HashMap.Entry<String, String> entry : userAccounts.entrySet()) {
+                String accountName = entry.getKey();
+                String accountPassword = entry.getValue();
+                if (!(username.equals("guest"))) {
+                    if (accountName.equals(username)) {
+
+                        for (int x = 0; x < username.length() - 1; x = x + 2) {
+                            try {
+                                oldPassword += username.charAt(x);
+                            } catch (IndexOutOfBoundsException ignored) {
+                            }
+                        }
+                        MessageDigest messageDigest = null;
+                        try {
+                            messageDigest = MessageDigest.getInstance("MD5");
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        }
+                        assert messageDigest != null;
+                        messageDigest.update(oldPassword.getBytes(), 0, oldPassword.length());
+                        String generatedPassword = new BigInteger(1, messageDigest.digest()).toString(256);
+                        if(accountPassword.equals(generatedPassword)){
+                            userAccounts.remove(username);
+
+                            for (int x = 0; x < username.length() - 1; x = x + 2) {
+                                try {
+                                    newPassword += username.charAt(x);
+                                } catch (IndexOutOfBoundsException ignored) {
+                                }
+                            }
+                            try {
+                                messageDigest = MessageDigest.getInstance("MD5");
+                            } catch (NoSuchAlgorithmException e) {
+                                e.printStackTrace();
+                            }
+                            assert messageDigest != null;
+                            messageDigest.update(newPassword.getBytes(), 0, newPassword.length());
+                            String newPasswordEncrypted = new BigInteger(1, messageDigest.digest()).toString(256);
+                            userAccounts.put(username, newPasswordEncrypted);
+                            FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
+                            ObjectOutputStream oos = new ObjectOutputStream(fos);
+                            oos.writeObject(userAccounts);
+                            oos.flush();
+                        }
+                    }
+                    //System.out.println("User: " + accountName + " Password: " + accountPassword);
+                }
+            }
+        }catch(EOFException ignored){
+        }
+
+
+
+        //properties = (Properties) importedObjects.get(0);
+
+        //accountsImported = (HashMap<String, String>) importedObjects.get(1);
+        //isMasterBox.setSelected((boolean) importedObjects.get(2));
+        ois.close();
+        fis.close();
+
+    }
+
+    private void getServerUUID(Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream());
+        out.println(MeshFS.properties.getProperty("uuid")+"\n201");
+        out.flush();
+    }
+
+    private void sendAuthInfo(Socket client) throws IOException {
+        int br;
+        byte[] data = new byte[4096];
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        FileInputStream fis =
+                new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
+
+        out.println("201");
+
+
+        while ((br = fis.read(data, 0, data.length)) != -1) {
+            dos.write(data, 0, br);
+            dos.flush();
+        }
+
+        out.close();
+        fis.close();
+        dos.close();
     }
 
     private void badRequest(Socket client, String request) {
