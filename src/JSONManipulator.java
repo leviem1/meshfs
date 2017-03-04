@@ -341,7 +341,8 @@ class JSONManipulator {
     String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
     File tempManifest = File.createTempFile(".manifest", ".json");
     tempManifest.deleteOnExit();
-    FileClient.receiveFile(serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath(), uuid);
+    FileClient.receiveFile(
+        serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath(), uuid);
     JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
     String[] folders = itemLocation.split("/");
     JSONObject itemToRead = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
@@ -377,7 +378,8 @@ class JSONManipulator {
                               IPAddress,
                               port,
                               fileNameWNum,
-                              outFileDir + File.separator + "." + fileNameWNum, uuid);
+                              outFileDir + File.separator + "." + fileNameWNum,
+                              uuid);
                         } catch (IOException ioe) {
                           ioe.printStackTrace();
                         }
