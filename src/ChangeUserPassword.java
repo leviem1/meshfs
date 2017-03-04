@@ -7,12 +7,9 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-/*
- * Created by JFormDesigner on Tue Feb 28 20:04:44 MST 2017
- */
 
 /**
- * @author User #1
+ * @author Mark Hedrick
  */
 class ChangeUserPassword extends JFrame {
     private static JFrame changeUserPassword;
@@ -20,8 +17,8 @@ class ChangeUserPassword extends JFrame {
     private String userAccount;
     private String serverAddress;
     private int port;
+
     //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel usernameLbl;
