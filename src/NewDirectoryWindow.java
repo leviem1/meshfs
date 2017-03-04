@@ -2,7 +2,10 @@ import org.json.simple.JSONObject;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +47,7 @@ class NewDirectoryWindow extends JFrame {
         frameListeners();
 
         okButton.setEnabled(false);
+        tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
     public static void run(
@@ -215,23 +219,27 @@ class NewDirectoryWindow extends JFrame {
 
     private void frameListeners() {
         tree1.addTreeSelectionListener(
-                e -> {
-                    DefaultMutableTreeNode node =
-                            (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                    if (node != null) {
-                        okButton.setEnabled(true);
-                    }
-                    buttonBar.getRootPane().setDefaultButton(okButton);
-                    try {
-                        assert node != null;
-                        if (node.getChildCount() == 0) {
-                            if (!(node.toString().equals(userAccount))) {
-                                tree1.setSelectionPath(null);
+                e -> checkDirectoryName());
+        dirNameTextField
+                .getDocument()
+                .addDocumentListener(
+                        new DocumentListener() {
+                            public void changedUpdate(DocumentEvent e) {
+                                changed();
                             }
-                        }
-                    } catch (NullPointerException ignored) {
-                    }
-                });
+
+                            public void removeUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void insertUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void changed() {
+                                checkDirectoryName();
+                            }
+                        });
         okButton.addActionListener(
                 e -> {
                     String newFolderPath =
@@ -252,6 +260,7 @@ class NewDirectoryWindow extends JFrame {
                                     "MeshFS - Error",
                                     JOptionPane.ERROR_MESSAGE);
                             dirNameTextField.requestFocus();
+                            tree1.setSelectionPath(null);
                             return;
                         }
                     }
@@ -284,5 +293,27 @@ class NewDirectoryWindow extends JFrame {
             }
         }
         return branch;
+    }
+
+    private void checkDirectoryName(){
+        DefaultMutableTreeNode node =
+                (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+        if (node != null) {
+            if(!(dirNameTextField.getText().isEmpty())){
+                okButton.setEnabled(true);
+            }else{
+                okButton.setEnabled(false);
+            }
+        }
+        buttonBar.getRootPane().setDefaultButton(okButton);
+        try {
+            assert node != null;
+            if (node.getChildCount() == 0) {
+                if (!(node.toString().equals(userAccount))) {
+                    tree1.setSelectionPath(null);
+                }
+            }
+        } catch (NullPointerException ignored) {
+        }
     }
 }

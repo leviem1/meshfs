@@ -23,14 +23,22 @@ class ClientModeConfiguration extends JFrame {
     private String usernameFinal = "";
 
     //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel serverAddressLbl;
+    private JLabel serverPortLbl;
+    private JLabel passwordLbl;
     private JTextField serverAddressField;
     private JFormattedTextField serverPortField;
     private JPasswordField passwordField;
+    private JLabel usernameLbl;
     private JTextField usernameField;
     private JCheckBox bindAnonymouslyCheckBox;
     private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
+    private JLabel titleLbl;
     //GEN-END:variables
 
     private ClientModeConfiguration(String serverAddress, boolean runType) {
@@ -47,11 +55,6 @@ class ClientModeConfiguration extends JFrame {
         frameListeners();
 
         serverAddressField.setText(serverAddress);
-        if (serverAddress.equals("")) {
-            okButton.setEnabled(false);
-        } else {
-            okButton.setEnabled(true);
-        }
     }
 
     public static void run(JFrame sender, String serverAddress, boolean runType) {
@@ -68,23 +71,22 @@ class ClientModeConfiguration extends JFrame {
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setGroupingUsed(false);
         //GEN-BEGIN:initComponents
-
-        JPanel dialogPane = new JPanel();
-        JPanel contentPanel = new JPanel();
-        JLabel serverAddressLbl = new JLabel();
-        JLabel serverPortLbl = new JLabel();
-        JLabel passwordLbl = new JLabel();
+        // Generated using JFormDesigner non-commercial license
+        dialogPane = new JPanel();
+        contentPanel = new JPanel();
+        serverAddressLbl = new JLabel();
+        serverPortLbl = new JLabel();
+        passwordLbl = new JLabel();
         serverAddressField = new JTextField();
         serverPortField = new JFormattedTextField(numberFormat);
         passwordField = new JPasswordField();
-        JLabel usernameLbl = new JLabel();
+        usernameLbl = new JLabel();
         usernameField = new JTextField();
         bindAnonymouslyCheckBox = new JCheckBox();
-        JLabel bindAnonLbl = new JLabel();
         buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
-        JLabel titleLbl = new JLabel();
+        titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Client Configuration");
@@ -101,176 +103,87 @@ class ClientModeConfiguration extends JFrame {
 
                 //---- serverAddressLbl ----
                 serverAddressLbl.setText("Master Address:");
-                serverAddressLbl.setFont(
-                        new Font(
-                                "Arial",
-                                serverAddressLbl.getFont().getStyle() & ~Font.ITALIC,
-                                serverAddressLbl.getFont().getSize() + 1));
+                serverAddressLbl.setFont(new Font("Arial", serverAddressLbl.getFont().getStyle() & ~Font.ITALIC, serverAddressLbl.getFont().getSize() + 1));
 
                 //---- serverPortLbl ----
                 serverPortLbl.setText("Server Port:");
-                serverPortLbl.setFont(
-                        new Font(
-                                "Arial",
-                                serverPortLbl.getFont().getStyle() & ~Font.ITALIC,
-                                serverPortLbl.getFont().getSize() + 1));
+                serverPortLbl.setFont(new Font("Arial", serverPortLbl.getFont().getStyle() & ~Font.ITALIC, serverPortLbl.getFont().getSize() + 1));
 
                 //---- passwordLbl ----
                 passwordLbl.setText("Password:");
-                passwordLbl.setFont(
-                        new Font(
-                                "Arial",
-                                passwordLbl.getFont().getStyle() & ~Font.ITALIC,
-                                passwordLbl.getFont().getSize() + 1));
+                passwordLbl.setFont(new Font("Arial", passwordLbl.getFont().getStyle() & ~Font.ITALIC, passwordLbl.getFont().getSize() + 1));
 
                 //---- serverAddressField ----
-                serverAddressField.setFont(
-                        new Font(
-                                "Arial",
-                                serverAddressField.getFont().getStyle() & ~Font.ITALIC,
-                                serverAddressField.getFont().getSize() + 1));
+                serverAddressField.setFont(new Font("Arial", serverAddressField.getFont().getStyle() & ~Font.ITALIC, serverAddressField.getFont().getSize() + 1));
 
                 //---- serverPortField ----
-                serverPortField.setFont(
-                        new Font(
-                                "Arial",
-                                serverPortField.getFont().getStyle() & ~Font.ITALIC,
-                                serverPortField.getFont().getSize() + 1));
+                serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle() & ~Font.ITALIC, serverPortField.getFont().getSize() + 1));
                 serverPortField.setText("5704");
 
                 //---- passwordField ----
-                passwordField.setFont(
-                        new Font(
-                                "Arial",
-                                passwordField.getFont().getStyle() & ~Font.ITALIC,
-                                passwordField.getFont().getSize() + 1));
+                passwordField.setFont(new Font("Arial", passwordField.getFont().getStyle() & ~Font.ITALIC, passwordField.getFont().getSize() + 1));
 
                 //---- usernameLbl ----
                 usernameLbl.setText("Username:");
-                usernameLbl.setFont(
-                        new Font(
-                                "Arial",
-                                usernameLbl.getFont().getStyle() & ~Font.ITALIC,
-                                usernameLbl.getFont().getSize() + 1));
+                usernameLbl.setFont(new Font("Arial", usernameLbl.getFont().getStyle() & ~Font.ITALIC, usernameLbl.getFont().getSize() + 1));
 
                 //---- usernameField ----
-                usernameField.setFont(
-                        new Font(
-                                "Arial",
-                                usernameField.getFont().getStyle() & ~Font.ITALIC,
-                                usernameField.getFont().getSize() + 1));
+                usernameField.setFont(new Font("Arial", usernameField.getFont().getStyle() & ~Font.ITALIC, usernameField.getFont().getSize() + 1));
 
-                //---- bindAnonLbl ----
-                bindAnonLbl.setText("Bind as Guest:");
-                bindAnonLbl.setFont(
-                        new Font(
-                                "Arial",
-                                bindAnonLbl.getFont().getStyle() & ~Font.ITALIC,
-                                bindAnonLbl.getFont().getSize() + 1));
+                //---- bindAnonymouslyCheckBox ----
+                bindAnonymouslyCheckBox.setText("Login as Guest");
+                bindAnonymouslyCheckBox.setFont(new Font("Arial", bindAnonymouslyCheckBox.getFont().getStyle(), bindAnonymouslyCheckBox.getFont().getSize() + 1));
+                bindAnonymouslyCheckBox.setHorizontalAlignment(SwingConstants.LEFT);
+                bindAnonymouslyCheckBox.setHorizontalTextPosition(SwingConstants.LEADING);
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout
-                                .createParallelGroup()
-                                .addGroup(
-                                        contentPanelLayout
-                                                .createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(
-                                                        contentPanelLayout
-                                                                .createParallelGroup()
-                                                                .addGroup(
-                                                                        GroupLayout.Alignment.TRAILING,
-                                                                        contentPanelLayout
-                                                                                .createSequentialGroup()
-                                                                                .addComponent(serverAddressLbl)
-                                                                                .addGap(12, 12, 12)
-                                                                                .addComponent(serverAddressField)
-                                                                                .addGap(13, 13, 13)
-                                                                                .addComponent(serverPortLbl)
-                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                .addComponent(
-                                                                                        serverPortField,
-                                                                                        GroupLayout.PREFERRED_SIZE,
-                                                                                        56,
-                                                                                        GroupLayout.PREFERRED_SIZE))
-                                                                .addGroup(
-                                                                        contentPanelLayout
-                                                                                .createSequentialGroup()
-                                                                                .addGroup(
-                                                                                        contentPanelLayout
-                                                                                                .createParallelGroup(
-                                                                                                        GroupLayout.Alignment.TRAILING, false)
-                                                                                                .addGroup(
-                                                                                                        GroupLayout.Alignment.LEADING,
-                                                                                                        contentPanelLayout
-                                                                                                                .createSequentialGroup()
-                                                                                                                .addComponent(passwordLbl)
-                                                                                                                .addPreferredGap(
-                                                                                                                        LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                .addComponent(passwordField))
-                                                                                                .addGroup(
-                                                                                                        contentPanelLayout
-                                                                                                                .createSequentialGroup()
-                                                                                                                .addComponent(usernameLbl)
-                                                                                                                .addPreferredGap(
-                                                                                                                        LayoutStyle.ComponentPlacement.RELATED)
-                                                                                                                .addComponent(
-                                                                                                                        usernameField,
-                                                                                                                        GroupLayout.PREFERRED_SIZE,
-                                                                                                                        216,
-                                                                                                                        GroupLayout.PREFERRED_SIZE)))
-                                                                                .addGap(12, 12, 12)
-                                                                                .addComponent(bindAnonLbl)
-                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                                .addComponent(bindAnonymouslyCheckBox)
-                                                                                .addContainerGap(12, Short.MAX_VALUE)))));
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(serverAddressLbl)
+                                    .addGap(12, 12, 12)
+                                    .addComponent(serverAddressField)
+                                    .addGap(13, 13, 13)
+                                    .addComponent(serverPortLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(GroupLayout.Alignment.LEADING, contentPanelLayout.createSequentialGroup()
+                                            .addComponent(passwordLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(passwordField))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(usernameLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE)))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                                    .addComponent(bindAnonymouslyCheckBox))))
+                );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout
-                                .createParallelGroup()
-                                .addGroup(
-                                        contentPanelLayout
-                                                .createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(
-                                                        contentPanelLayout
-                                                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                                .addComponent(
-                                                                        serverPortField,
-                                                                        GroupLayout.PREFERRED_SIZE,
-                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                        GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(serverPortLbl)
-                                                                .addComponent(
-                                                                        serverAddressField,
-                                                                        GroupLayout.PREFERRED_SIZE,
-                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                        GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(serverAddressLbl))
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(
-                                                        contentPanelLayout
-                                                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                                .addComponent(usernameLbl)
-                                                                .addComponent(
-                                                                        usernameField,
-                                                                        GroupLayout.PREFERRED_SIZE,
-                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                        GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(bindAnonLbl)
-                                                                .addComponent(bindAnonymouslyCheckBox))
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addGroup(
-                                                        contentPanelLayout
-                                                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                                .addComponent(passwordLbl)
-                                                                .addComponent(
-                                                                        passwordField,
-                                                                        GroupLayout.PREFERRED_SIZE,
-                                                                        GroupLayout.DEFAULT_SIZE,
-                                                                        GroupLayout.PREFERRED_SIZE))
-                                                .addContainerGap(14, Short.MAX_VALUE)));
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(serverPortLbl)
+                                .addComponent(serverAddressField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(serverAddressLbl))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(usernameLbl)
+                                .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(bindAnonymouslyCheckBox))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(passwordLbl)
+                                .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addContainerGap(14, Short.MAX_VALUE))
+                );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -278,59 +191,29 @@ class ClientModeConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
-                backBtn.setFont(
-                        new Font(
-                                "Arial",
-                                backBtn.getFont().getStyle() & ~Font.ITALIC,
-                                backBtn.getFont().getSize() + 1));
-                buttonBar.add(
-                        backBtn,
-                        new GridBagConstraints(
-                                0,
-                                0,
-                                1,
-                                1,
-                                0.0,
-                                0.0,
-                                GridBagConstraints.CENTER,
-                                GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 5),
-                                0,
-                                0));
+                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle() & ~Font.ITALIC, backBtn.getFont().getSize() + 1));
+                buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("Connect");
-                okButton.setFont(
-                        new Font(
-                                "Arial",
-                                okButton.getFont().getStyle() & ~Font.ITALIC,
-                                okButton.getFont().getSize() + 1));
-                buttonBar.add(
-                        okButton,
-                        new GridBagConstraints(
-                                2,
-                                0,
-                                1,
-                                1,
-                                0.0,
-                                0.0,
-                                GridBagConstraints.CENTER,
-                                GridBagConstraints.BOTH,
-                                new Insets(0, 0, 0, 0),
-                                0,
-                                0));
+                okButton.setFont(new Font("Arial", okButton.getFont().getStyle() & ~Font.ITALIC, okButton.getFont().getSize() + 1));
+                okButton.setEnabled(false);
+                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
             //---- titleLbl ----
             titleLbl.setText("Client Connection Settings");
-            titleLbl.setFont(
-                    new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
             titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
@@ -352,119 +235,16 @@ class ClientModeConfiguration extends JFrame {
                 });
         serverAddressField
                 .getDocument()
-                .addDocumentListener(
-                        new DocumentListener() {
-
-                            public void changedUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void removeUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void insertUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void changed() {
-                                if (!(bindAnonymouslyCheckBox.isSelected())) {
-                                    if (usernameField.getText().isEmpty()) {
-                                        return;
-                                    }
-                                    if (passwordField.getPassword().length == 0) {
-                                        return;
-                                    }
-                                }
-                                if (!(checkFields(serverAddressField))) {
-                                    okButton.setEnabled(false);
-                                } else {
-                                    okButton.setEnabled(true);
-                                    buttonBar.getRootPane().setDefaultButton(okButton);
-                                }
-                            }
-                        });
+                .addDocumentListener(clientConnectionSettingsListener);
         serverPortField
                 .getDocument()
-                .addDocumentListener(
-                        new DocumentListener() {
-
-                            public void changedUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void removeUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void insertUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void changed() {
-                                if (serverPortField.getText().isEmpty()) {
-                                    okButton.setEnabled(false);
-                                } else {
-                                    okButton.setEnabled(true);
-                                }
-                            }
-                        });
+                .addDocumentListener(clientConnectionSettingsListener);
         passwordField
                 .getDocument()
-                .addDocumentListener(
-                        new DocumentListener() {
-
-                            public void changedUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void removeUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void insertUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void changed() {
-                                if (serverAddressField.getText().isEmpty() || serverPortField.getText().isEmpty()) {
-                                    return;
-                                }
-                                if (passwordField.getPassword().length == 0) {
-                                    okButton.setEnabled(false);
-                                } else {
-                                    okButton.setEnabled(true);
-                                }
-                            }
-                        });
+                .addDocumentListener(clientConnectionSettingsListener);
         usernameField
                 .getDocument()
-                .addDocumentListener(
-                        new DocumentListener() {
-
-                            public void changedUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void removeUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void insertUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void changed() {
-                                if (serverAddressField.getText().isEmpty() || serverPortField.getText().isEmpty()) {
-                                    return;
-                                }
-                                if (!(checkFields(usernameField))) {
-                                    okButton.setEnabled(false);
-                                } else {
-                                    okButton.setEnabled(true);
-                                }
-                            }
-                        });
+                .addDocumentListener(clientConnectionSettingsListener);
         backBtn.addActionListener(
                 e -> {
                     if (runType) {
@@ -476,6 +256,41 @@ class ClientModeConfiguration extends JFrame {
                     dispose();
                 });
     }
+    DocumentListener clientConnectionSettingsListener =  new DocumentListener() {
+
+        public void changedUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        public void removeUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        public void insertUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        private void changed() {
+            if(!(serverAddressField.getText().isEmpty())){
+                if(!(serverPortField.getText().isEmpty())) {
+                    if (!(usernameField.getText().isEmpty())) {
+                        if (!(String.valueOf(passwordField.getPassword()).isEmpty())) {
+                            okButton.setEnabled(true);
+                            buttonBar.getRootPane().setDefaultButton(okButton);
+                        }else{
+                            okButton.setEnabled(false);
+                        }
+                    }else{
+                        okButton.setEnabled(false);
+                    }
+                }else{
+                    okButton.setEnabled(false);
+                }
+            }else{
+                okButton.setEnabled(false);
+            }
+        }
+    };
 
     private void onOk() {
         if (!(FileClient.ping(
@@ -509,7 +324,7 @@ class ClientModeConfiguration extends JFrame {
                         clientModeConfiguration,
                         usernameFinal,
                         catalog,
-                        uuid);
+                        uuid, runType);
                 dispose();
             }
         } catch (IOException ignored) {
@@ -531,6 +346,7 @@ class ClientModeConfiguration extends JFrame {
             usernameField.setEnabled(true);
             passwordField.setEnabled(true);
         }
+
     }
 
     private void connectAsUser(String username, String password) {
@@ -577,7 +393,4 @@ class ClientModeConfiguration extends JFrame {
         }
     }
 
-    private boolean checkFields(JTextField field) {
-        return !field.getText().isEmpty();
-    }
 }

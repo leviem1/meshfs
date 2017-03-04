@@ -10,7 +10,7 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp label1::::362:x, comp configValuesPane:::::x, seq l {comp serverIdentifierLbl:::p::p, space :::p, comp serverIdentifierField::::278:x}}, space :::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp label1::::362:x, comp configValuesPane:::::x, seq l {comp serverIdentifierLbl:::p::p, space :::p, comp serverIdentifierField::::272:x}}, space :::p}}"
 					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space u:::p, comp configValuesPane:::p:174:p, space :::p, par b {comp serverIdentifierLbl::b:p::p, comp serverIdentifierField::b:p::p}, space :::x}}"
 				} ) {
 					name: "contentPanel"
@@ -28,7 +28,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "serverIdentifierLbl"
-						"text": "Server UUID:"
+						"text": "Master ID:"
 						"font": &SwingDerivedFont1 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
@@ -79,4 +79,3 @@ new FormModel {
 		} )
 	}
 }
-

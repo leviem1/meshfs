@@ -12,6 +12,7 @@ class UserAccountOptions extends JFrame {
     private String serverAddress;
     private int port;
     private JFrame parentSender;
+    private boolean previousRunType;
 
     //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
@@ -25,11 +26,12 @@ class UserAccountOptions extends JFrame {
     //GEN-END:variables
 
     private UserAccountOptions(
-            String userAccount, String serverAddress, int port, JFrame parentSender) {
+            String userAccount, String serverAddress, int port, JFrame parentSender, boolean previousRunType) {
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
         this.parentSender = parentSender;
+        this.previousRunType = previousRunType;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -48,8 +50,8 @@ class UserAccountOptions extends JFrame {
         }
     }
 
-    public static void run(JFrame sender, String userAccount, String serverAddress, int port) {
-        userAccountOptions = new UserAccountOptions(userAccount, serverAddress, port, sender);
+    public static void run(JFrame sender, String userAccount, String serverAddress, int port, boolean previousRunType) {
+        userAccountOptions = new UserAccountOptions(userAccount, serverAddress, port, sender, previousRunType);
         CenterWindow.centerOnWindow(sender, userAccountOptions);
         userAccountOptions.setVisible(true);
     }
@@ -147,7 +149,7 @@ class UserAccountOptions extends JFrame {
         changePasswordBtn.addActionListener(
                 e -> {
                     ChangeUserPassword.run(
-                            userAccountOptions, userAccount, serverAddress, port, parentSender);
+                            userAccountOptions, userAccount, serverAddress, port, parentSender, previousRunType);
                     dispose();
                 });
 
@@ -158,6 +160,9 @@ class UserAccountOptions extends JFrame {
                     if (confirmResult == 0) {
                         try {
                             FileClient.deleteAccount(serverAddress, port, userAccount);
+                            dispose();
+                            parentSender.dispose();
+                            ClientModeConfiguration.run(userAccountOptions, serverAddress, previousRunType);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }

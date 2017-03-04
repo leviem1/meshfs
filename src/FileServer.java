@@ -515,7 +515,7 @@ class ServerInit implements Runnable {
         ois.close();
         for (HashMap.Entry<String, String> entry : userAccounts.entrySet()) {
             String accountName = entry.getKey();
-            if (!(username.equals("guest"))) {
+            if (!(accountName.equals("guest"))) {
                 if (accountName.equals(username)) {
                     out.println("201");
                     out.flush();

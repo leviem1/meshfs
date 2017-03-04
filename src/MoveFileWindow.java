@@ -3,6 +3,7 @@ import org.json.simple.JSONObject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +62,8 @@ class MoveFileWindow extends JFrame {
         }
 
         setTitle("Move - " + fileName);
+
+        tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
     public static void run(

@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.5.1.342" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -25,7 +25,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "modeLbl"
-						"text": "Please select the desired mode of operation:"
+						"text": "Please select the mode of operation:"
 						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 						"horizontalAlignment": 0
 					} )
@@ -64,5 +64,3 @@ new FormModel {
 		} )
 	}
 }
-
-
