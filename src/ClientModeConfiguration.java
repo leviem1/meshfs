@@ -494,7 +494,7 @@ class ClientModeConfiguration extends JFrame {
             connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
             String uuid =
                     FileClient.getServerUUID(
-                            serverAddressField.getText(), Integer.valueOf(serverPortField.getText()));
+                            serverAddressField.getText(), Integer.parseInt(serverPortField.getText()));
             File catalog = File.createTempFile(".catalog", ".json");
             if (!(usernameFinal.equals(""))) {
                 FileClient.receiveFile(

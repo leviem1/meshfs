@@ -123,9 +123,9 @@ class MeshFS {
             try {
                 fileServer = new FileServer();
                 fileServer.startServer(
-                        Integer.valueOf(properties.getProperty("portNumber")),
-                        Integer.valueOf(properties.getProperty("serverThreads")),
-                        Integer.valueOf(properties.getProperty("timeout")) * 1000);
+                        Integer.parseInt(properties.getProperty("portNumber")),
+                        Integer.parseInt(properties.getProperty("serverThreads")),
+                        Integer.parseInt(properties.getProperty("timeout")) * 1000);
             } catch (IOException e) {
                 boolean serverStarted = false;
 

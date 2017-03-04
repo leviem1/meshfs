@@ -74,7 +74,6 @@ class DISTAL {
         String manifestFileLocation = MeshFS.properties.getProperty("repository") + ".manifest.json";
         JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.getProperty("repository") + ".catalog.json";
-        int portNum = Integer.valueOf(MeshFS.properties.getProperty("portNumber"));
 
         //make the JTree show that the file is being distributed
         JSONManipulator.addToIndex(
@@ -356,7 +355,7 @@ class sendFilesThreading implements Runnable {
                                     try {
                                         FileClient.sendFile(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.valueOf(MeshFS.properties.getProperty("portNumber")),
+                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")),
                                                 MeshFS.properties.getProperty("repository")
                                                         + File.separator
                                                         + outName
@@ -364,7 +363,7 @@ class sendFilesThreading implements Runnable {
                                                 MeshFS.properties.getProperty("remoteUUID"));
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
+                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
                                     } catch (IOException ioe) {
                                         ioe.printStackTrace();
                                     }
@@ -386,7 +385,7 @@ class sendFilesThreading implements Runnable {
                                     try {
                                         FileClient.sendFile(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.valueOf(MeshFS.properties.getProperty("portNumber")),
+                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")),
                                                 MeshFS.properties.getProperty("repository")
                                                         + File.separator
                                                         + outName
@@ -395,7 +394,7 @@ class sendFilesThreading implements Runnable {
                                                 MeshFS.properties.getProperty("remoteUUID"));
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
+                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
                                     } catch (IOException ioe) {
                                         ioe.printStackTrace();
                                     }
@@ -416,7 +415,7 @@ class sendFilesThreading implements Runnable {
                                     try {
                                         FileClient.sendFile(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.valueOf(MeshFS.properties.getProperty("portNumber")),
+                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")),
                                                 MeshFS.properties.getProperty("repository")
                                                         + File.separator
                                                         + outName
@@ -425,7 +424,7 @@ class sendFilesThreading implements Runnable {
                                                 MeshFS.properties.getProperty("remoteUUID"));
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
+                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
                                     } catch (IOException ioe) {
                                         ioe.printStackTrace();
                                     }

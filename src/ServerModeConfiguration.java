@@ -1533,7 +1533,7 @@ class ServerModeConfiguration extends JFrame {
                         + "<br><br><b>Repository:</b> "
                         + String.valueOf(repoPathField.getText())
                         + "<br><br><b>Minimum Space:</b> "
-                        + String.valueOf(Integer.valueOf(minSpaceField.getText()))
+                        + String.valueOf(Integer.parseInt(minSpaceField.getText()))
                         + " GB<br><br><b>Network Threads:</b> "
                         + String.valueOf(serverThreadsField.getText())
                         + "<br><br><b>Accounts:</b><br>"
