@@ -7,8 +7,8 @@ new FormModel {
 			name: "this"
 			"$sizePolicy": 1
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {comp titleLbl2::l::313:x, comp titleLbl::l:::x, seq {comp buttonBar:::p:309:p, space :0:0:x}, seq {comp changePasswordBtn:::p::p, space ::47:x, comp button1:::p::p}}}}"
-				"$verticalGroup": "par l {seq {comp titleLbl2:::p::p, space s:::p, comp titleLbl:::p::p, space s:::p, par b {comp changePasswordBtn::b:p::p, comp button1::b:p::p}, space ::37:x, comp buttonBar:::p:44:p}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {comp titleLbl2::l::313:x, comp titleLbl::l:::x, seq {comp buttonBar:::p:309:p, space :0:0:x}}}, seq {comp changePasswordBtn:::p::p, space ::47:x, comp deleteAccount:::p::p}}"
+				"$verticalGroup": "par l {seq {comp titleLbl2:::p::p, space s:::p, comp titleLbl:::p::p, space s:::p, par b {comp deleteAccount::b:p::p, comp changePasswordBtn::b:p::p}, space ::36:x, comp buttonBar:::p:44:p}}"
 			} ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -42,7 +42,7 @@ new FormModel {
 					} )
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "button1"
+					name: "deleteAccount"
 					"text": "Delete Account"
 					"font": #SwingDerivedFont0
 				} )

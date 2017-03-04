@@ -439,4 +439,22 @@ final class FileClient {
         }
         return true;
     }
+
+    static void deleteAccount(String serverAddress, int port, String userAccount) throws IOException {
+        String response;
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        try {
+            out.println("114|" + userAccount + "\n");
+            if (!(response = input.readLine().trim()).equals("201")) {
+                System.err.println(response);
+            }
+            client.close();
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+    }
+
 }
