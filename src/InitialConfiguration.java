@@ -8,8 +8,8 @@ import java.awt.*;
 class InitialConfiguration extends JFrame {
 
     private static JFrame initialConfiguration;
-    //GEN-BEGIN:variables
 
+    //GEN-BEGIN:variables
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel titleLbl;
@@ -49,7 +49,7 @@ class InitialConfiguration extends JFrame {
 
     private void initComponents() {
         //GEN-BEGIN:initComponents
-
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         titleLbl = new JLabel();
@@ -73,83 +73,159 @@ class InitialConfiguration extends JFrame {
 
                 //---- titleLbl ----
                 titleLbl.setText("Mode");
-                titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+                titleLbl.setFont(
+                        new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
                 titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
                 //---- modeLbl ----
                 modeLbl.setText("Please select the desired mode of operation:");
-                modeLbl.setFont(new Font("Arial", modeLbl.getFont().getStyle(), modeLbl.getFont().getSize() + 1));
+                modeLbl.setFont(
+                        new Font("Arial", modeLbl.getFont().getStyle(), modeLbl.getFont().getSize() + 1));
                 modeLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
                 //---- modeSelectionBox ----
-                modeSelectionBox.setFont(new Font("Arial", modeSelectionBox.getFont().getStyle(), modeSelectionBox.getFont().getSize() + 1));
+                modeSelectionBox.setFont(
+                        new Font(
+                                "Arial",
+                                modeSelectionBox.getFont().getStyle(),
+                                modeSelectionBox.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addGap(84, 84, 84)
-                            .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(modeLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addContainerGap())
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addComponent(
+                                        titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addGap(84, 84, 84)
+                                                .addComponent(
+                                                        modeSelectionBox,
+                                                        GroupLayout.PREFERRED_SIZE,
+                                                        137,
+                                                        GroupLayout.PREFERRED_SIZE)
+                                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(
+                                                        modeLbl,
+                                                        GroupLayout.DEFAULT_SIZE,
+                                                        GroupLayout.DEFAULT_SIZE,
+                                                        Short.MAX_VALUE)
+                                                .addContainerGap()));
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addComponent(titleLbl)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(modeLbl)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                            .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addComponent(titleLbl)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(modeLbl)
+                                                .addPreferredGap(
+                                                        LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                                .addComponent(
+                                                        modeSelectionBox,
+                                                        GroupLayout.PREFERRED_SIZE,
+                                                        GroupLayout.DEFAULT_SIZE,
+                                                        GroupLayout.PREFERRED_SIZE)));
             }
 
             //======== buttonBar ========
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 1.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
-                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
-                buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                backBtn.setFont(
+                        new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
+                buttonBar.add(
+                        backBtn,
+                        new GridBagConstraints(
+                                0,
+                                0,
+                                1,
+                                1,
+                                0.0,
+                                0.0,
+                                GridBagConstraints.CENTER,
+                                GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 5),
+                                0,
+                                0));
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                okButton.setFont(
+                        new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+                buttonBar.add(
+                        okButton,
+                        new GridBagConstraints(
+                                2,
+                                0,
+                                1,
+                                1,
+                                0.0,
+                                0.0,
+                                GridBagConstraints.CENTER,
+                                GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0),
+                                0,
+                                0));
             }
 
             GroupLayout dialogPaneLayout = new GroupLayout(dialogPane);
             dialogPane.setLayout(dialogPaneLayout);
             dialogPaneLayout.setHorizontalGroup(
-                dialogPaneLayout.createParallelGroup()
-                    .addGroup(GroupLayout.Alignment.TRAILING, dialogPaneLayout.createSequentialGroup()
-                        .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addGroup(GroupLayout.Alignment.LEADING, dialogPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(buttonBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(contentPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(10, 10, 10))
-            );
+                    dialogPaneLayout
+                            .createParallelGroup()
+                            .addGroup(
+                                    GroupLayout.Alignment.TRAILING,
+                                    dialogPaneLayout
+                                            .createSequentialGroup()
+                                            .addGroup(
+                                                    dialogPaneLayout
+                                                            .createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                            .addGroup(
+                                                                    GroupLayout.Alignment.LEADING,
+                                                                    dialogPaneLayout
+                                                                            .createSequentialGroup()
+                                                                            .addContainerGap()
+                                                                            .addComponent(
+                                                                                    buttonBar,
+                                                                                    GroupLayout.DEFAULT_SIZE,
+                                                                                    GroupLayout.DEFAULT_SIZE,
+                                                                                    Short.MAX_VALUE))
+                                                            .addComponent(
+                                                                    contentPanel,
+                                                                    GroupLayout.DEFAULT_SIZE,
+                                                                    GroupLayout.DEFAULT_SIZE,
+                                                                    Short.MAX_VALUE))
+                                            .addGap(10, 10, 10)));
             dialogPaneLayout.setVerticalGroup(
-                dialogPaneLayout.createParallelGroup()
-                    .addGroup(dialogPaneLayout.createSequentialGroup()
-                        .addComponent(contentPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
-            );
+                    dialogPaneLayout
+                            .createParallelGroup()
+                            .addGroup(
+                                    dialogPaneLayout
+                                            .createSequentialGroup()
+                                            .addComponent(
+                                                    contentPanel,
+                                                    GroupLayout.PREFERRED_SIZE,
+                                                    GroupLayout.DEFAULT_SIZE,
+                                                    GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(
+                                                    LayoutStyle.ComponentPlacement.RELATED,
+                                                    GroupLayout.DEFAULT_SIZE,
+                                                    Short.MAX_VALUE)
+                                            .addComponent(
+                                                    buttonBar, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)));
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
@@ -185,5 +261,4 @@ class InitialConfiguration extends JFrame {
             dispose();
         }
     }
-
 }

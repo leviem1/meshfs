@@ -15,8 +15,7 @@ import java.util.List;
  */
 class DISTAL {
 
-    private static LinkedHashMap<String, Long> valueSorter(
-            LinkedHashMap<String, Long> storageMap) {
+    private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String, Long> storageMap) {
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
 
@@ -109,14 +108,15 @@ class DISTAL {
             while (true) {
 
                 for (String macAddress : sortedCompStorageMap.keySet()) {
-                    if (computersForWholes.size() == numOfWholeCopies){
+                    if (computersForWholes.size() == numOfWholeCopies) {
                         break;
                     }
-                    if ((! computersForWholes.contains(macAddress)) && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
+                    if ((!computersForWholes.contains(macAddress))
+                            && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
                         computersForWholes.add(macAddress);
-                        sortedCompStorageMap.replace(macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
+                        sortedCompStorageMap.replace(
+                                macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
                     }
-
                 }
                 sortedCompStorageMap = valueSorter(sortedCompStorageMap);
 
@@ -147,9 +147,9 @@ class DISTAL {
                 }
 
                 //define how big each stripe should be
-                try{
+                try {
                     sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
-                } catch (Exception e){
+                } catch (Exception e) {
                     sizeOfStripe = 0L;
                 }
 
@@ -165,7 +165,7 @@ class DISTAL {
                 }
 
                 //keep dynamically reassigning computers until all listed computers can hold the files that they will be given.
-                if (finalComputerCount){
+                if (finalComputerCount) {
                     break;
                 }
             }
@@ -173,7 +173,7 @@ class DISTAL {
             //define which computers get stripes
             List<String> computersForStripes = new ArrayList<>();
             for (String macAddress : sortedCompStorageMap.keySet()) {
-                if (computersForStripes.size() == numOfStripedCopies * numOfStripes){
+                if (computersForStripes.size() == numOfStripedCopies * numOfStripes) {
                     break;
                 }
                 computersForStripes.add(macAddress);
@@ -201,7 +201,9 @@ class DISTAL {
                 //balancing the number of computers that each stripe is sent to.
                 for (int copy = 0; copy < numOfStripedCopies; copy++) {
                     for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++) {
-                        stripes.get(currentStripe + 1).add(computersForStripes.get((copy * numOfStripes) + currentStripe));
+                        stripes
+                                .get(currentStripe + 1)
+                                .add(computersForStripes.get((copy * numOfStripes) + currentStripe));
                     }
                 }
             }
@@ -288,7 +290,7 @@ class DISTAL {
         for (int stripe = -1; stripe < (stripes.size() - 1); stripe++) {
             parentThreads.add(
                     new Thread(
-                            new sendFilesTreading(
+                            new sendFilesThreading(
                                     sizeOfStripe,
                                     fileSize,
                                     sourceFileLocation,
@@ -316,7 +318,7 @@ class DISTAL {
     }
 }
 
-class sendFilesTreading implements Runnable {
+class sendFilesThreading implements Runnable {
     private final long sizeOfStripe;
     private final long fileSize;
     private final String sourceFileLocation;
@@ -325,7 +327,7 @@ class sendFilesTreading implements Runnable {
     private final int stripe;
     private final String outName;
 
-    sendFilesTreading(
+    sendFilesThreading(
             long sizeOfStripe,
             long fileSize,
             String sourceFileLocation,
@@ -358,7 +360,8 @@ class sendFilesTreading implements Runnable {
                                                 MeshFS.properties.getProperty("repository")
                                                         + File.separator
                                                         + outName
-                                                        + "_w", MeshFS.properties.getProperty("remoteUUID"));
+                                                        + "_w",
+                                                MeshFS.properties.getProperty("remoteUUID"));
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
@@ -388,7 +391,8 @@ class sendFilesTreading implements Runnable {
                                                         + File.separator
                                                         + outName
                                                         + "_s"
-                                                        + stripe, MeshFS.properties.getProperty("remoteUUID"));
+                                                        + stripe,
+                                                MeshFS.properties.getProperty("remoteUUID"));
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.valueOf(MeshFS.properties.getProperty("portNumber")));
@@ -417,7 +421,8 @@ class sendFilesTreading implements Runnable {
                                                         + File.separator
                                                         + outName
                                                         + "_s"
-                                                        + stripe, MeshFS.properties.getProperty("remoteUUID"));
+                                                        + stripe,
+                                                MeshFS.properties.getProperty("remoteUUID"));
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.valueOf(MeshFS.properties.getProperty("portNumber")));

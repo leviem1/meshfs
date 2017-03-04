@@ -16,22 +16,17 @@ class NewDirectoryWindow extends JFrame {
     private final String serverAddress;
     private final int port;
     private final String userAccount;
-    private File catalogFile;
     private final String uuid;
-
+    private File catalogFile;
     //GEN-BEGIN:variables
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel dirNameLbl;
     private JTextField dirNameTextField;
-    private JLabel label2;
-    private JScrollPane scrollPane1;
     private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;
     //GEN-END:variables
 
-    private NewDirectoryWindow(String serverAddress, int port, String userAccount, File catalogFile, String uuid) {
+    private NewDirectoryWindow(
+            String serverAddress, int port, String userAccount, File catalogFile, String uuid) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
@@ -51,8 +46,15 @@ class NewDirectoryWindow extends JFrame {
         okButton.setEnabled(false);
     }
 
-    public static void run(String serverAddress, int port, JFrame sender, String userAccount, File catalogFile, String uuid) {
-        newDirectoryWindow = new NewDirectoryWindow(serverAddress, port, userAccount, catalogFile, uuid);
+    public static void run(
+            String serverAddress,
+            int port,
+            JFrame sender,
+            String userAccount,
+            File catalogFile,
+            String uuid) {
+        newDirectoryWindow =
+                new NewDirectoryWindow(serverAddress, port, userAccount, catalogFile, uuid);
         CenterWindow.centerOnWindow(sender, newDirectoryWindow);
         newDirectoryWindow.setVisible(true);
     }
@@ -64,12 +66,12 @@ class NewDirectoryWindow extends JFrame {
         tree = (readFolder(userAccount, jsonObj, tree));
         //GEN-BEGIN:initComponents
 
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        dirNameLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel dirNameLbl = new JLabel();
         dirNameTextField = new JTextField();
-        label2 = new JLabel();
-        scrollPane1 = new JScrollPane();
+        JLabel label2 = new JLabel();
+        JScrollPane scrollPane1 = new JScrollPane();
         tree1 = new JTree(tree);
         buttonBar = new JPanel();
         okButton = new JButton();
@@ -89,54 +91,91 @@ class NewDirectoryWindow extends JFrame {
 
                 //---- dirNameLbl ----
                 dirNameLbl.setText("Directory Name:");
-                dirNameLbl.setFont(new Font("Arial", dirNameLbl.getFont().getStyle(), dirNameLbl.getFont().getSize() + 1));
+                dirNameLbl.setFont(
+                        new Font("Arial", dirNameLbl.getFont().getStyle(), dirNameLbl.getFont().getSize() + 1));
 
                 //---- dirNameTextField ----
-                dirNameTextField.setFont(new Font("Arial", dirNameTextField.getFont().getStyle(), dirNameTextField.getFont().getSize() + 1));
+                dirNameTextField.setFont(
+                        new Font(
+                                "Arial",
+                                dirNameTextField.getFont().getStyle(),
+                                dirNameTextField.getFont().getSize() + 1));
 
                 //---- label2 ----
                 label2.setText("Parent Folder");
-                label2.setFont(new Font("Arial", label2.getFont().getStyle(), label2.getFont().getSize() + 1));
+                label2.setFont(
+                        new Font("Arial", label2.getFont().getStyle(), label2.getFont().getSize() + 1));
 
                 //======== scrollPane1 ========
                 {
 
                     //---- tree1 ----
-                    tree1.setFont(new Font("Arial", tree1.getFont().getStyle(), tree1.getFont().getSize() + 1));
+                    tree1.setFont(
+                            new Font("Arial", tree1.getFont().getStyle(), tree1.getFont().getSize() + 1));
                     scrollPane1.setViewportView(tree1);
                 }
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(dirNameLbl)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(dirNameTextField))
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(label2)
-                                    .addGap(0, 0, Short.MAX_VALUE))
-                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                                    .addGap(0, 0, Short.MAX_VALUE)
-                                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 362, GroupLayout.PREFERRED_SIZE)))
-                            .addContainerGap())
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addContainerGap()
+                                                .addGroup(
+                                                        contentPanelLayout
+                                                                .createParallelGroup()
+                                                                .addGroup(
+                                                                        contentPanelLayout
+                                                                                .createSequentialGroup()
+                                                                                .addComponent(dirNameLbl)
+                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                .addComponent(dirNameTextField))
+                                                                .addGroup(
+                                                                        contentPanelLayout
+                                                                                .createSequentialGroup()
+                                                                                .addComponent(label2)
+                                                                                .addGap(0, 0, Short.MAX_VALUE))
+                                                                .addGroup(
+                                                                        GroupLayout.Alignment.TRAILING,
+                                                                        contentPanelLayout
+                                                                                .createSequentialGroup()
+                                                                                .addGap(0, 0, Short.MAX_VALUE)
+                                                                                .addComponent(
+                                                                                        scrollPane1,
+                                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                                        362,
+                                                                                        GroupLayout.PREFERRED_SIZE)))
+                                                .addContainerGap()));
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(dirNameLbl)
-                                .addComponent(dirNameTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(label2)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE))
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addContainerGap()
+                                                .addGroup(
+                                                        contentPanelLayout
+                                                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                                .addComponent(dirNameLbl)
+                                                                .addComponent(
+                                                                        dirNameTextField,
+                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                        GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(label2)
+                                                .addPreferredGap(
+                                                        LayoutStyle.ComponentPlacement.RELATED,
+                                                        GroupLayout.DEFAULT_SIZE,
+                                                        Short.MAX_VALUE)
+                                                .addComponent(
+                                                        scrollPane1,
+                                                        GroupLayout.PREFERRED_SIZE,
+                                                        196,
+                                                        GroupLayout.PREFERRED_SIZE)));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -144,15 +183,27 @@ class NewDirectoryWindow extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                okButton.setFont(
+                        new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+                buttonBar.add(
+                        okButton,
+                        new GridBagConstraints(
+                                1,
+                                0,
+                                1,
+                                1,
+                                0.0,
+                                0.0,
+                                GridBagConstraints.CENTER,
+                                GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0),
+                                0,
+                                0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -205,7 +256,8 @@ class NewDirectoryWindow extends JFrame {
                         }
                     }
                     try {
-                        FileClient.addFolder(serverAddress, port, newFolderPath, directoryName, userAccount, uuid);
+                        FileClient.addFolder(
+                                serverAddress, port, newFolderPath, directoryName, userAccount, uuid);
                     } catch (IOException ignored) {
 
                     }

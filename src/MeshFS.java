@@ -22,7 +22,7 @@ class MeshFS {
 
         if (nogui) {
 
-            if(configure){
+            if (configure) {
                 //if(interactiveAuth()){
                 //    writeAuth();
                 //}

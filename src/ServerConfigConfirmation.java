@@ -1,5 +1,3 @@
-import javafx.scene.shape.Mesh;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -20,23 +18,18 @@ import java.util.Properties;
 class ServerConfigConfirmation extends JFrame {
     private static JFrame serverConfigConfirmation;
     private final HashMap accountDetails;
-    private Properties properties;
+
     //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel label1;
-    private JScrollPane configValuesPane;
+    private Properties properties;
     private JTextPane configValues;
     private JLabel serverIdentifierLbl;
     private JTextField serverIdentifierField;
-    private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
-    private JLabel titleLbl;
     //GEN-END:variables
 
-    private ServerConfigConfirmation(String content, HashMap accountDetails, Properties properties, boolean isMaster) {
+    private ServerConfigConfirmation(
+            String content, HashMap accountDetails, Properties properties, boolean isMaster) {
         this.properties = properties;
         this.accountDetails = accountDetails;
 
@@ -50,7 +43,7 @@ class ServerConfigConfirmation extends JFrame {
         initComponents();
         frameListeners();
 
-        if(isMaster){
+        if (isMaster) {
             serverIdentifierField.setEnabled(false);
             serverIdentifierLbl.setEnabled(false);
         }
@@ -61,8 +54,13 @@ class ServerConfigConfirmation extends JFrame {
     }
 
     public static void run(
-            JFrame sender, String content, HashMap accountDetails, Properties properties, boolean isMaster) {
-        serverConfigConfirmation = new ServerConfigConfirmation(content, accountDetails, properties, isMaster);
+            JFrame sender,
+            String content,
+            HashMap accountDetails,
+            Properties properties,
+            boolean isMaster) {
+        serverConfigConfirmation =
+                new ServerConfigConfirmation(content, accountDetails, properties, isMaster);
         CenterWindow.centerOnWindow(sender, serverConfigConfirmation);
         serverConfigConfirmation.setVisible(true);
     }
@@ -70,17 +68,17 @@ class ServerConfigConfirmation extends JFrame {
     private void initComponents() {
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        label1 = new JLabel();
-        configValuesPane = new JScrollPane();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel label1 = new JLabel();
+        JScrollPane configValuesPane = new JScrollPane();
         configValues = new JTextPane();
         serverIdentifierLbl = new JLabel();
         serverIdentifierField = new JTextField();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Server Configuration Confirmation");
@@ -98,7 +96,8 @@ class ServerConfigConfirmation extends JFrame {
                 //---- label1 ----
                 label1.setText("Confirm the following values before the server launches:");
                 label1.setHorizontalAlignment(SwingConstants.CENTER);
-                label1.setFont(new Font("Arial", label1.getFont().getStyle(), label1.getFont().getSize() + 1));
+                label1.setFont(
+                        new Font("Arial", label1.getFont().getStyle(), label1.getFont().getSize() + 1));
 
                 //======== configValuesPane ========
                 {
@@ -107,39 +106,70 @@ class ServerConfigConfirmation extends JFrame {
 
                 //---- serverIdentifierLbl ----
                 serverIdentifierLbl.setText("Server UUID:");
-                serverIdentifierLbl.setFont(new Font("Arial", serverIdentifierLbl.getFont().getStyle(), serverIdentifierLbl.getFont().getSize() + 1));
+                serverIdentifierLbl.setFont(
+                        new Font(
+                                "Arial",
+                                serverIdentifierLbl.getFont().getStyle(),
+                                serverIdentifierLbl.getFont().getSize() + 1));
 
                 //---- serverIdentifierField ----
-                serverIdentifierField.setFont(new Font("Arial", serverIdentifierField.getFont().getStyle(), serverIdentifierField.getFont().getSize() + 1));
+                serverIdentifierField.setFont(
+                        new Font(
+                                "Arial",
+                                serverIdentifierField.getFont().getStyle(),
+                                serverIdentifierField.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(label1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-                                .addComponent(configValuesPane)
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(serverIdentifierLbl)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(serverIdentifierField, GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)))
-                            .addContainerGap())
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addContainerGap()
+                                                .addGroup(
+                                                        contentPanelLayout
+                                                                .createParallelGroup()
+                                                                .addComponent(
+                                                                        label1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                                                                .addComponent(configValuesPane)
+                                                                .addGroup(
+                                                                        contentPanelLayout
+                                                                                .createSequentialGroup()
+                                                                                .addComponent(serverIdentifierLbl)
+                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                                                .addComponent(
+                                                                                        serverIdentifierField,
+                                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                                        278,
+                                                                                        Short.MAX_VALUE)))
+                                                .addContainerGap()));
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(label1)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(configValuesPane, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(serverIdentifierLbl)
-                                .addComponent(serverIdentifierField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(label1)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(
+                                                        configValuesPane,
+                                                        GroupLayout.PREFERRED_SIZE,
+                                                        174,
+                                                        GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addGroup(
+                                                        contentPanelLayout
+                                                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                                .addComponent(serverIdentifierLbl)
+                                                                .addComponent(
+                                                                        serverIdentifierField,
+                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                        GroupLayout.PREFERRED_SIZE))
+                                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -147,28 +177,53 @@ class ServerConfigConfirmation extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 1.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
-                backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
-                buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                backBtn.setFont(
+                        new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
+                buttonBar.add(
+                        backBtn,
+                        new GridBagConstraints(
+                                0,
+                                0,
+                                1,
+                                1,
+                                0.0,
+                                0.0,
+                                GridBagConstraints.CENTER,
+                                GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 5),
+                                0,
+                                0));
 
                 //---- okButton ----
                 okButton.setText("Launch Server");
-                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                okButton.setFont(
+                        new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+                buttonBar.add(
+                        okButton,
+                        new GridBagConstraints(
+                                2,
+                                0,
+                                1,
+                                1,
+                                0.0,
+                                0.0,
+                                GridBagConstraints.CENTER,
+                                GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0),
+                                0,
+                                0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
             //---- titleLbl ----
             titleLbl.setText("Config Parameters");
-            titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setFont(
+                    new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
             titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
@@ -210,12 +265,11 @@ class ServerConfigConfirmation extends JFrame {
                             }
 
                             public void changed() {
-                                if(serverIdentifierField.getText().isEmpty()){
+                                if (serverIdentifierField.getText().isEmpty()) {
                                     okButton.setEnabled(false);
-                                }else if (!serverIdentifierField.getText().isEmpty()){
+                                } else if (!serverIdentifierField.getText().isEmpty()) {
                                     okButton.setEnabled(true);
                                 }
-
                             }
                         });
     }

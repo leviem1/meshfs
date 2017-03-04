@@ -8,7 +8,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * The FileServer class starts a file server with a variable port, amount of sockets, and timeout.
@@ -125,7 +124,8 @@ class ServerInit implements Runnable {
 
                         break;
                     case "106": //106:Make directory (virtual only)
-                        createDirectory(requestParts[1], requestParts[2], out, requestParts[3], requestParts[4]);
+                        createDirectory(
+                                requestParts[1], requestParts[2], out, requestParts[3], requestParts[4]);
 
                         break;
                     case "107": //107:Get report
@@ -164,6 +164,7 @@ class ServerInit implements Runnable {
                         deleteAccount(requestParts[1], out);
 
                         break;
+
                     default:
                         badRequest(out, request);
                         break;
@@ -215,12 +216,13 @@ class ServerInit implements Runnable {
                 MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
-    private void moveFile(String currentPath, String newPath, String uuid, Socket client) throws IOException {
+    private void moveFile(String currentPath, String newPath, String uuid, Socket client)
+            throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
 
-        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+        if (!MeshFS.properties.getProperty("uuid").equals(uuid)) {
             return;
         }
 
@@ -237,7 +239,7 @@ class ServerInit implements Runnable {
         out.println("201");
         out.flush();
 
-        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+        if (!MeshFS.properties.getProperty("uuid").equals(uuid)) {
             return;
         }
 
@@ -254,7 +256,7 @@ class ServerInit implements Runnable {
         out.println("201");
         out.flush();
 
-        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+        if (!MeshFS.properties.getProperty("uuid").equals(uuid)) {
             return;
         }
 
@@ -281,7 +283,7 @@ class ServerInit implements Runnable {
 
         out.println("201");
 
-        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+        if (!MeshFS.properties.getProperty("uuid").equals(uuid)) {
             return;
         }
 
@@ -305,7 +307,7 @@ class ServerInit implements Runnable {
 
         out.println("201");
 
-        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+        if (!MeshFS.properties.getProperty("uuid").equals(uuid)) {
             return;
         }
 
@@ -319,7 +321,8 @@ class ServerInit implements Runnable {
         dis.close();
     }
 
-    private void receiveFile(String filename, String userAccount, String uuid, Socket client) throws IOException {
+    private void receiveFile(String filename, String userAccount, String uuid, Socket client)
+            throws IOException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -329,7 +332,7 @@ class ServerInit implements Runnable {
 
         out.println("201");
 
-        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+        if (!MeshFS.properties.getProperty("uuid").equals(uuid)) {
             return;
         }
 
@@ -365,7 +368,7 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
 
-        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+        if (!MeshFS.properties.getProperty("uuid").equals(uuid)) {
             return;
         }
 
@@ -378,12 +381,13 @@ class ServerInit implements Runnable {
                 JSONManipulator.addFolder(jsonObj, directoryPath, directoryName, userAccount));
     }
 
-    private void renameFile(String jsonPath, String newName, String uuid, Socket client) throws IOException {
+    private void renameFile(String jsonPath, String newName, String uuid, Socket client)
+            throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
 
-        if(!MeshFS.properties.getProperty("uuid").equals(uuid)){
+        if (!MeshFS.properties.getProperty("uuid").equals(uuid)) {
             return;
         }
 
@@ -395,16 +399,22 @@ class ServerInit implements Runnable {
                 JSONManipulator.renameFile(jsonObj, jsonPath, newName));
     }
 
-    private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException, ClassNotFoundException {
+    private void changePassword(
+            String username, String oldPassword, String newPassword, Socket client)
+            throws IOException, ClassNotFoundException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
-        FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
+
+        FileInputStream fis =
+                new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
         ObjectInputStream ois = new ObjectInputStream(fis);
+
         HashMap<String, String> userAccounts;
-        try{
+
+        try {
             userAccounts = (HashMap) ois.readObject();
             fis.close();
             ois.close();
-            for(HashMap.Entry<String, String> entry : userAccounts.entrySet()) {
+            for (HashMap.Entry<String, String> entry : userAccounts.entrySet()) {
                 String accountName = entry.getKey();
                 String accountPassword = entry.getValue();
                 if (!(username.equals("guest"))) {
@@ -425,7 +435,7 @@ class ServerInit implements Runnable {
                         assert messageDigest != null;
                         messageDigest.update(oldPassword.getBytes(), 0, oldPassword.length());
                         String generatedPassword = new BigInteger(1, messageDigest.digest()).toString(256);
-                        if(accountPassword.equals(generatedPassword)){
+                        if (accountPassword.equals(generatedPassword)) {
                             out.println("201");
                             out.flush();
                             userAccounts.remove(username);
@@ -444,32 +454,34 @@ class ServerInit implements Runnable {
                             messageDigest.update(newPassword.getBytes(), 0, newPassword.length());
                             String newPasswordEncrypted = new BigInteger(1, messageDigest.digest()).toString(256);
                             userAccounts.put(username, newPasswordEncrypted);
-                            FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
+                            FileOutputStream fos =
+                                    new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
                             ObjectOutputStream oos = new ObjectOutputStream(fos);
                             oos.writeObject(userAccounts);
                             oos.flush();
                             fos.close();
                             fos.flush();
-                        }else{
+
+                        } else {
                             out.println("202");
                             out.flush();
                         }
                     }
-                }else{
+                } else {
                     out.println("202");
                     out.flush();
+
                 }
             }
-        }catch(EOFException ignored){
+        } catch (EOFException ignored) {
         }
         ois.close();
         fis.close();
-
     }
 
     private void getServerUUID(Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
-        out.println(MeshFS.properties.getProperty("uuid")+"\n201");
+        out.println(MeshFS.properties.getProperty("uuid") + "\n201");
         out.flush();
     }
 
@@ -483,7 +495,6 @@ class ServerInit implements Runnable {
 
         out.println("201");
 
-
         while ((br = fis.read(data, 0, data.length)) != -1) {
             dos.write(data, 0, br);
             dos.flush();
@@ -494,17 +505,6 @@ class ServerInit implements Runnable {
         dos.close();
     }
 
-    private void badRequest(Socket client, String request) {
-        try {
-            if (client.isClosed()) return;
-            PrintWriter out = new PrintWriter(client.getOutputStream());
-            out.println("202\nBad request:\n\n" + request);
-            out.flush();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
-
     private void deleteAccount(String username, Socket client) throws IOException, ClassNotFoundException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
@@ -513,7 +513,7 @@ class ServerInit implements Runnable {
         userAccounts = (HashMap) ois.readObject();
         fis.close();
         ois.close();
-        for(HashMap.Entry<String, String> entry : userAccounts.entrySet()) {
+        for (HashMap.Entry<String, String> entry : userAccounts.entrySet()) {
             String accountName = entry.getKey();
             if (!(username.equals("guest"))) {
                 if (accountName.equals(username)) {
@@ -533,6 +533,17 @@ class ServerInit implements Runnable {
         }
     }
 
+
+    private void badRequest(Socket client, String request) {
+        try {
+            if (client.isClosed()) return;
+            PrintWriter out = new PrintWriter(client.getOutputStream());
+            out.println("202\nBad request:\n\n" + request);
+            out.flush();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
 
     public void run() {
         while (!Thread.interrupted()) {

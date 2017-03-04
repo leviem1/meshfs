@@ -1,25 +1,31 @@
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
-import javax.swing.*;
-import javax.swing.border.*;
-import com.jgoodies.forms.factories.*;
-/*
- * Created by JFormDesigner on Tue Feb 28 13:20:55 MST 2017
- */
-
-
 
 /**
- * @author User #1
+ * @author Mark Hedrick
  */
-public class UserAccountOptions extends JFrame {
+class UserAccountOptions extends JFrame {
     private static JFrame userAccountOptions;
     private String userAccount;
     private String serverAddress;
     private int port;
     private JFrame parentSender;
 
-    public UserAccountOptions(String userAccount, String serverAddress, int port, JFrame parentSender) {
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JLabel titleLbl2;
+    private JLabel titleLbl;
+    private JPanel buttonBar;
+    private JButton closeBtn;
+    private JButton deleteAccount;
+    private JButton changePasswordBtn;
+    //GEN-END:variables
+
+    private UserAccountOptions(
+            String userAccount, String serverAddress, int port, JFrame parentSender) {
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
@@ -33,8 +39,19 @@ public class UserAccountOptions extends JFrame {
         }
         initComponents();
         frameListeners();
-        titleLbl.setText("Welcome " + userAccount.substring(0,1).toUpperCase() + userAccount.substring(1) + "!");
+        titleLbl.setText(
+                "Welcome " + userAccount.substring(0, 1).toUpperCase() + userAccount.substring(1) + "!");
         setTitle("MeshFS - Account Options");
+        if (userAccount.equals("guest")) {
+            changePasswordBtn.setEnabled(false);
+            changePasswordBtn.setToolTipText("Changing the guest password is not allowed");
+        }
+    }
+
+    public static void run(JFrame sender, String userAccount, String serverAddress, int port) {
+        userAccountOptions = new UserAccountOptions(userAccount, serverAddress, port, sender);
+        CenterWindow.centerOnWindow(sender, userAccountOptions);
+        userAccountOptions.setVisible(true);
     }
 
     private void initComponents() {
@@ -70,15 +87,15 @@ public class UserAccountOptions extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0};
 
                 //---- closeBtn ----
                 closeBtn.setText("Close");
                 closeBtn.setFont(new Font("Arial", closeBtn.getFont().getStyle(), closeBtn.getFont().getSize() + 1));
                 buttonBar.add(closeBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
 
             //---- deleteAccount ----
@@ -92,32 +109,32 @@ public class UserAccountOptions extends JFrame {
             GroupLayout dialogPaneLayout = new GroupLayout(dialogPane);
             dialogPane.setLayout(dialogPaneLayout);
             dialogPaneLayout.setHorizontalGroup(
-                dialogPaneLayout.createParallelGroup()
-                    .addGroup(dialogPaneLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(dialogPaneLayout.createParallelGroup()
-                            .addComponent(titleLbl2, GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                            .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    dialogPaneLayout.createParallelGroup()
                             .addGroup(dialogPaneLayout.createSequentialGroup()
-                                .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(dialogPaneLayout.createSequentialGroup()
-                        .addComponent(changePasswordBtn)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
-                        .addComponent(deleteAccount))
+                                    .addContainerGap()
+                                    .addGroup(dialogPaneLayout.createParallelGroup()
+                                            .addComponent(titleLbl2, GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                                            .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addGroup(dialogPaneLayout.createSequentialGroup()
+                                                    .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(0, 0, Short.MAX_VALUE))
+                                            .addGroup(dialogPaneLayout.createSequentialGroup()
+                                                    .addComponent(changePasswordBtn)
+                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
+                                                    .addComponent(deleteAccount))))
             );
             dialogPaneLayout.setVerticalGroup(
-                dialogPaneLayout.createParallelGroup()
-                    .addGroup(dialogPaneLayout.createSequentialGroup()
-                        .addComponent(titleLbl2)
-                        .addGap(18, 18, 18)
-                        .addComponent(titleLbl)
-                        .addGap(18, 18, 18)
-                        .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(deleteAccount)
-                            .addComponent(changePasswordBtn))
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                        .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
+                    dialogPaneLayout.createParallelGroup()
+                            .addGroup(dialogPaneLayout.createSequentialGroup()
+                                    .addComponent(titleLbl2)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(titleLbl)
+                                    .addGap(18, 18, 18)
+                                    .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(changePasswordBtn)
+                                            .addComponent(deleteAccount))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                                    .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
             );
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
@@ -129,7 +146,8 @@ public class UserAccountOptions extends JFrame {
     private void frameListeners() {
         changePasswordBtn.addActionListener(
                 e -> {
-                    ChangeUserPassword.run(userAccountOptions, userAccount, serverAddress, port, parentSender);
+                    ChangeUserPassword.run(
+                            userAccountOptions, userAccount, serverAddress, port, parentSender);
                     dispose();
                 });
 
@@ -137,7 +155,7 @@ public class UserAccountOptions extends JFrame {
                 e -> {
                     int confirmBtn = JOptionPane.YES_NO_OPTION;
                     int confirmResult = JOptionPane.showConfirmDialog(this, "Are you sure you wish to delete your account?", "MeshFS - Delete Account", confirmBtn);
-                    if(confirmResult == 0) {
+                    if (confirmResult == 0) {
                         try {
                             FileClient.deleteAccount(serverAddress, port, userAccount);
                         } catch (IOException e1) {
@@ -147,21 +165,7 @@ public class UserAccountOptions extends JFrame {
                         dispose();
                     }
                 });
-    }
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JLabel titleLbl2;
-    private JLabel titleLbl;
-    private JPanel buttonBar;
-    private JButton closeBtn;
-    private JButton deleteAccount;
-    private JButton changePasswordBtn;
-    // JFormDesigner - End of variables declaration  //GEN-END:variables
 
-    public static void run(JFrame sender, String userAccount, String serverAddress, int port) {
-        userAccountOptions = new UserAccountOptions(userAccount, serverAddress, port, sender);
-        CenterWindow.centerOnWindow(sender, userAccountOptions);
-        userAccountOptions.setVisible(true);
+        closeBtn.addActionListener(e -> dispose());
     }
 }

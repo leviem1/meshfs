@@ -42,7 +42,6 @@ class CliParser {
                 addUser(cmd.getOptionValue("add-user"));
             }
 
-
             if (cmd.hasOption("r")) {
                 ConfigParser.write(ConfigParser.loadDefaultProperties());
                 MeshFS.properties = ConfigParser.loadDefaultProperties();
@@ -99,9 +98,10 @@ class CliParser {
         System.exit(0);
     }
 
-    private void writeAuth(HashMap<String, String> accountsEnc){
+    private void writeAuth(HashMap<String, String> accountsEnc) {
         try {
-            FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
+            FileOutputStream fos =
+                    new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(accountsEnc);
             oos.flush();
@@ -110,9 +110,8 @@ class CliParser {
         }
     }
 
-    private String generateEncryptedAuth(String username, String password){
+    private String generateEncryptedAuth(String username, String password) {
         MessageDigest messageDigest = null;
-
 
         for (int x = 0; x < username.length() - 1; x += 2) {
             try {
