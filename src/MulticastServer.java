@@ -1,4 +1,3 @@
-import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -66,7 +65,9 @@ class MulticastServerInit implements Runnable {
             DatagramPacket dp = new DatagramPacket(data, data.length);
             try {
                 socket.receive(dp);
-                processRequest(new String(dp.getData()).trim());
+                if (!dp.getAddress().equals(InetAddress.getByName(Reporting.getIpAddresses().get(0)))) {
+                    processRequest(new String(dp.getData()).trim());
+                }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
