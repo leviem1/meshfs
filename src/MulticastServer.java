@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -44,13 +45,28 @@ class MulticastServerInit implements Runnable {
         this.socket = socket;
     }
 
+    private void evaluateMaster (String ip, String port) {
+        if ((!MeshFS.isMaster) && (!ip.equals(MeshFS.properties.getProperty("masterIP"))) && (!FileClient.ping(MeshFS.properties.getProperty("masterIP"), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) && (FileClient.ping(ip, Integer.parseInt(port))))) {
+            MeshFS.properties.setProperty("masterIP", ip);
+            MeshFS.properties.setProperty("portNumber", port);
+        }
+    }
+
+    private void processRequest(String request) {
+        String[] requestParts = request.split("\\|");
+
+        if (requestParts[0].equals("151")) {
+            evaluateMaster(requestParts[1], requestParts[2]);
+        }
+    }
+
     public void run() {
         while(!Thread.interrupted()) {
             byte data[] = new byte[4096];
             DatagramPacket dp = new DatagramPacket(data, data.length);
             try {
                 socket.receive(dp);
-                System.out.println(new String(dp.getData()));
+                processRequest(new String(dp.getData()).trim());
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
