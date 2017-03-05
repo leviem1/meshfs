@@ -22,9 +22,12 @@ class ConfigParser {
         defaultProperties.setProperty("minSpace", "0");
         defaultProperties.setProperty("masterIP", "127.0.0.1");
         defaultProperties.setProperty("portNumber", "5704");
+        defaultProperties.setProperty("multicastGroup", "239.91.93.42");
+        defaultProperties.setProperty("multicastPort", "5703");
         defaultProperties.setProperty("repository", ("repo" + File.separator));
         defaultProperties.setProperty("serverThreads", "16");
         defaultProperties.setProperty("timeout", "5");
+
         return defaultProperties;
     }
 
