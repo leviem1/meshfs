@@ -1,5 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,20 +18,29 @@ import java.util.Properties;
 class ServerConfigConfirmation extends JFrame {
     private static JFrame serverConfigConfirmation;
     private final HashMap accountDetails;
-    //GEN-BEGIN:variables
+    private Properties properties;
 
+
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel label1;
     private JScrollPane configValuesPane;
     private JTextPane configValues;
+    private JLabel serverIdentifierLbl;
+    private JTextField serverIdentifierField;
     private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
     private JLabel titleLbl;
     //GEN-END:variables
 
-    private ServerConfigConfirmation(String content, HashMap accountDetails, Properties properties) {
+    private ServerConfigConfirmation(
+            String content, HashMap accountDetails, Properties properties, boolean isMaster) {
+        this.properties = properties;
+        this.accountDetails = accountDetails;
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -37,25 +48,14 @@ class ServerConfigConfirmation extends JFrame {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
 
-        this.accountDetails = accountDetails;
-
-        try {
-            ServerModeConfiguration.writeConfig(properties);
-            JOptionPane.showMessageDialog(
-                    serverConfigConfirmation,
-                    "Configuration was saved!",
-                    "MeshFS - Success",
-                    JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    serverConfigConfirmation,
-                    "Error when saving configuration!",
-                    "MeshFS - Success",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-
         initComponents();
         frameListeners();
+
+        if (isMaster) {
+            serverIdentifierField.setEnabled(false);
+            serverIdentifierLbl.setEnabled(false);
+            serverIdentifierField.setText(MeshFS.properties.getProperty("uuid"));
+        }
 
         configValues.setContentType("text/html");
         configValues.setText(content);
@@ -63,20 +63,27 @@ class ServerConfigConfirmation extends JFrame {
     }
 
     public static void run(
-            JFrame sender, String content, HashMap accountDetails, Properties properties) {
-        serverConfigConfirmation = new ServerConfigConfirmation(content, accountDetails, properties);
+            JFrame sender,
+            String content,
+            HashMap accountDetails,
+            Properties properties,
+            boolean isMaster) {
+        serverConfigConfirmation =
+                new ServerConfigConfirmation(content, accountDetails, properties, isMaster);
         CenterWindow.centerOnWindow(sender, serverConfigConfirmation);
         serverConfigConfirmation.setVisible(true);
     }
 
     private void initComponents() {
         //GEN-BEGIN:initComponents
-
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         label1 = new JLabel();
         configValuesPane = new JScrollPane();
         configValues = new JTextPane();
+        serverIdentifierLbl = new JLabel();
+        serverIdentifierField = new JTextField();
         buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
@@ -105,6 +112,13 @@ class ServerConfigConfirmation extends JFrame {
                     configValuesPane.setViewportView(configValues);
                 }
 
+                //---- serverIdentifierLbl ----
+                serverIdentifierLbl.setText("Master ID:");
+                serverIdentifierLbl.setFont(new Font("Arial", serverIdentifierLbl.getFont().getStyle(), serverIdentifierLbl.getFont().getSize() + 1));
+
+                //---- serverIdentifierField ----
+                serverIdentifierField.setFont(new Font("Arial", serverIdentifierField.getFont().getStyle(), serverIdentifierField.getFont().getSize() + 1));
+
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
@@ -113,7 +127,11 @@ class ServerConfigConfirmation extends JFrame {
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
                                 .addComponent(label1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-                                .addComponent(configValuesPane, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE))
+                                .addComponent(configValuesPane)
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(serverIdentifierLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(serverIdentifierField, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)))
                             .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
@@ -123,6 +141,10 @@ class ServerConfigConfirmation extends JFrame {
                             .addComponent(label1)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(configValuesPane, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(serverIdentifierLbl)
+                                .addComponent(serverIdentifierField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
@@ -176,9 +198,50 @@ class ServerConfigConfirmation extends JFrame {
                     ServerModeConfiguration.run(serverConfigConfirmation);
                     dispose();
                 });
+
+        serverIdentifierField
+                .getDocument()
+                .addDocumentListener(
+                        new DocumentListener() {
+
+                            public void changedUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void removeUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void insertUpdate(DocumentEvent e) {
+                                changed();
+                            }
+
+                            public void changed() {
+                                if (serverIdentifierField.getText().isEmpty()) {
+                                    okButton.setEnabled(false);
+                                } else if (!serverIdentifierField.getText().isEmpty()) {
+                                    okButton.setEnabled(true);
+                                }
+                            }
+                        });
     }
 
     private void onOk() throws IOException {
+        properties.setProperty("remoteUUID", serverIdentifierField.getText());
+        try {
+            ServerModeConfiguration.writeConfig(properties);
+            JOptionPane.showMessageDialog(
+                    serverConfigConfirmation,
+                    "Configuration was saved!",
+                    "MeshFS - Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    serverConfigConfirmation,
+                    "Error when saving configuration!",
+                    "MeshFS - Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
         FileOutputStream fos =
                 new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
         ObjectOutputStream oos = new ObjectOutputStream(fos);

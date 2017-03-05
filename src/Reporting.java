@@ -3,7 +3,10 @@ import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
-import java.net.*;
+import java.net.Inet4Address;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
@@ -19,8 +22,7 @@ import java.util.*;
 class Reporting {
 
     /**
-     * This method is used to get the operating
-     * system's name that the JVM is being run on.
+     * This method is used to get the operating system's name that the JVM is being run on.
      *
      * @return the operating system name
      */
@@ -29,11 +31,10 @@ class Reporting {
     }
 
     /**
-     * This method is used to get the operating
-     * system's name that the JVM is being run on.
+     * This method is used to get the operating system's name that the JVM is being run on.
      *
-     * @return the number of bytes availible on the disk
-     * minus the space allocated in .config.properties
+     * @return the number of bytes availible on the disk minus the space allocated in
+     * .config.properties
      */
     static long getSystemStorage() {
         String os = System.getProperty("os.name");
@@ -44,12 +45,12 @@ class Reporting {
             file = new File("/");
         }
 
-        return file.getUsableSpace() - (Long.parseLong(MeshFS.properties.getProperty("minSpace")) * 1073741824L);
+        return file.getUsableSpace()
+                - (Long.parseLong(MeshFS.properties.getProperty("minSpace")) * 1073741824L);
     }
 
     /**
-     * This method is used to get the IPv4 addresses
-     * of the host machine.
+     * This method is used to get the IPv4 addresses of the host machine.
      *
      * @return list of IPv4 addresses
      */
@@ -78,8 +79,7 @@ class Reporting {
     }
 
     /**
-     * This method is used to get the local
-     * date and time of the host machine.
+     * This method is used to get the local date and time of the host machine.
      *
      * @return local date and time
      */
@@ -131,8 +131,7 @@ class Reporting {
     }
 
     /**
-     * This method is used to generate a string
-     * of system information.
+     * This method is used to generate a string of system information.
      *
      * @return report of system information
      */
@@ -155,8 +154,7 @@ class Reporting {
     }
 
     /**
-     * This method is used to convert a
-     * generated string report to a JSONArray.
+     * This method is used to convert a generated string report to a JSONArray.
      *
      * @param report the report to convert to JSONArray
      * @return JSONArray of report

@@ -8,8 +8,9 @@ import java.awt.*;
 class InitialConfiguration extends JFrame {
 
     private static JFrame initialConfiguration;
-    //GEN-BEGIN:variables
 
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel titleLbl;
@@ -49,7 +50,7 @@ class InitialConfiguration extends JFrame {
 
     private void initComponents() {
         //GEN-BEGIN:initComponents
-
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         titleLbl = new JLabel();
@@ -77,7 +78,7 @@ class InitialConfiguration extends JFrame {
                 titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
                 //---- modeLbl ----
-                modeLbl.setText("Please select the desired mode of operation:");
+                modeLbl.setText("Please select the mode of operation:");
                 modeLbl.setFont(new Font("Arial", modeLbl.getFont().getStyle(), modeLbl.getFont().getSize() + 1));
                 modeLbl.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -185,5 +186,4 @@ class InitialConfiguration extends JFrame {
             dispose();
         }
     }
-
 }

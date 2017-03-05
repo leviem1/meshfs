@@ -21,7 +21,9 @@ class ClientModeConfiguration extends JFrame {
     private static JFrame clientModeConfiguration;
     private final boolean runType;
     private String usernameFinal = "";
+
     //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel serverAddressLbl;
@@ -33,7 +35,6 @@ class ClientModeConfiguration extends JFrame {
     private JLabel usernameLbl;
     private JTextField usernameField;
     private JCheckBox bindAnonymouslyCheckBox;
-    private JLabel bindAnonLbl;
     private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
@@ -54,11 +55,6 @@ class ClientModeConfiguration extends JFrame {
         frameListeners();
 
         serverAddressField.setText(serverAddress);
-        if (serverAddress.equals("")) {
-            okButton.setEnabled(false);
-        } else {
-            okButton.setEnabled(true);
-        }
     }
 
     public static void run(JFrame sender, String serverAddress, boolean runType) {
@@ -75,7 +71,7 @@ class ClientModeConfiguration extends JFrame {
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setGroupingUsed(false);
         //GEN-BEGIN:initComponents
-
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         serverAddressLbl = new JLabel();
@@ -87,7 +83,6 @@ class ClientModeConfiguration extends JFrame {
         usernameLbl = new JLabel();
         usernameField = new JTextField();
         bindAnonymouslyCheckBox = new JCheckBox();
-        bindAnonLbl = new JLabel();
         buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
@@ -135,9 +130,11 @@ class ClientModeConfiguration extends JFrame {
                 //---- usernameField ----
                 usernameField.setFont(new Font("Arial", usernameField.getFont().getStyle() & ~Font.ITALIC, usernameField.getFont().getSize() + 1));
 
-                //---- bindAnonLbl ----
-                bindAnonLbl.setText("Bind as Guest:");
-                bindAnonLbl.setFont(new Font("Arial", bindAnonLbl.getFont().getStyle() & ~Font.ITALIC, bindAnonLbl.getFont().getSize() + 1));
+                //---- bindAnonymouslyCheckBox ----
+                bindAnonymouslyCheckBox.setText("Login as Guest");
+                bindAnonymouslyCheckBox.setFont(new Font("Arial", bindAnonymouslyCheckBox.getFont().getStyle(), bindAnonymouslyCheckBox.getFont().getSize() + 1));
+                bindAnonymouslyCheckBox.setHorizontalAlignment(SwingConstants.LEFT);
+                bindAnonymouslyCheckBox.setHorizontalTextPosition(SwingConstants.LEADING);
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -146,7 +143,7 @@ class ClientModeConfiguration extends JFrame {
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
                             .addGroup(contentPanelLayout.createParallelGroup()
-                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addComponent(serverAddressLbl)
                                     .addGap(12, 12, 12)
                                     .addComponent(serverAddressField)
@@ -164,11 +161,8 @@ class ClientModeConfiguration extends JFrame {
                                             .addComponent(usernameLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE)))
-                                    .addGap(12, 12, 12)
-                                    .addComponent(bindAnonLbl)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(bindAnonymouslyCheckBox)
-                                    .addContainerGap(12, Short.MAX_VALUE))))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                                    .addComponent(bindAnonymouslyCheckBox))))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -183,7 +177,6 @@ class ClientModeConfiguration extends JFrame {
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(usernameLbl)
                                 .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(bindAnonLbl)
                                 .addComponent(bindAnonymouslyCheckBox))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -211,6 +204,7 @@ class ClientModeConfiguration extends JFrame {
                 //---- okButton ----
                 okButton.setText("Connect");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle() & ~Font.ITALIC, okButton.getFont().getSize() + 1));
+                okButton.setEnabled(false);
                 buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -241,119 +235,16 @@ class ClientModeConfiguration extends JFrame {
                 });
         serverAddressField
                 .getDocument()
-                .addDocumentListener(
-                        new DocumentListener() {
-
-                            public void changedUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void removeUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void insertUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void changed() {
-                                if (!(bindAnonymouslyCheckBox.isSelected())) {
-                                    if (usernameField.getText().isEmpty()) {
-                                        return;
-                                    }
-                                    if (passwordField.getPassword().length == 0) {
-                                        return;
-                                    }
-                                }
-                                if (!(checkFields(serverAddressField))) {
-                                    okButton.setEnabled(false);
-                                } else {
-                                    okButton.setEnabled(true);
-                                    buttonBar.getRootPane().setDefaultButton(okButton);
-                                }
-                            }
-                        });
+                .addDocumentListener(clientConnectionSettingsListener);
         serverPortField
                 .getDocument()
-                .addDocumentListener(
-                        new DocumentListener() {
-
-                            public void changedUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void removeUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void insertUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void changed() {
-                                if (serverPortField.getText().isEmpty()) {
-                                    okButton.setEnabled(false);
-                                } else {
-                                    okButton.setEnabled(true);
-                                }
-                            }
-                        });
+                .addDocumentListener(clientConnectionSettingsListener);
         passwordField
                 .getDocument()
-                .addDocumentListener(
-                        new DocumentListener() {
-
-                            public void changedUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void removeUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void insertUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void changed() {
-                                if (serverAddressField.getText().isEmpty() || serverPortField.getText().isEmpty()) {
-                                    return;
-                                }
-                                if (passwordField.getPassword().length == 0) {
-                                    okButton.setEnabled(false);
-                                } else {
-                                    okButton.setEnabled(true);
-                                }
-                            }
-                        });
+                .addDocumentListener(clientConnectionSettingsListener);
         usernameField
                 .getDocument()
-                .addDocumentListener(
-                        new DocumentListener() {
-
-                            public void changedUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void removeUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void insertUpdate(DocumentEvent e) {
-                                changed();
-                            }
-
-                            public void changed() {
-                                if (serverAddressField.getText().isEmpty() || serverPortField.getText().isEmpty()) {
-                                    return;
-                                }
-                                if (!(checkFields(usernameField))) {
-                                    okButton.setEnabled(false);
-                                } else {
-                                    okButton.setEnabled(true);
-                                }
-                            }
-                        });
+                .addDocumentListener(clientConnectionSettingsListener);
         backBtn.addActionListener(
                 e -> {
                     if (runType) {
@@ -365,6 +256,41 @@ class ClientModeConfiguration extends JFrame {
                     dispose();
                 });
     }
+    DocumentListener clientConnectionSettingsListener =  new DocumentListener() {
+
+        public void changedUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        public void removeUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        public void insertUpdate(DocumentEvent e) {
+            changed();
+        }
+
+        private void changed() {
+            if(!(serverAddressField.getText().isEmpty())){
+                if(!(serverPortField.getText().isEmpty())) {
+                    if (!(usernameField.getText().isEmpty())) {
+                        if (!(String.valueOf(passwordField.getPassword()).isEmpty())) {
+                            okButton.setEnabled(true);
+                            buttonBar.getRootPane().setDefaultButton(okButton);
+                        }else{
+                            okButton.setEnabled(false);
+                        }
+                    }else{
+                        okButton.setEnabled(false);
+                    }
+                }else{
+                    okButton.setEnabled(false);
+                }
+            }else{
+                okButton.setEnabled(false);
+            }
+        }
+    };
 
     private void onOk() {
         if (!(FileClient.ping(
@@ -381,19 +307,24 @@ class ClientModeConfiguration extends JFrame {
         }
         try {
             connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+            String uuid =
+                    FileClient.getServerUUID(
+                            serverAddressField.getText(), Integer.parseInt(serverPortField.getText()));
             File catalog = File.createTempFile(".catalog", ".json");
             if (!(usernameFinal.equals(""))) {
                 FileClient.receiveFile(
                         serverAddressField.getText(),
                         Integer.parseInt(serverPortField.getText()),
                         ".catalog.json",
-                        catalog.getAbsolutePath());
+                        catalog.getAbsolutePath(),
+                        uuid);
                 ClientBrowser.run(
                         serverAddressField.getText(),
                         Integer.parseInt(serverPortField.getText()),
                         clientModeConfiguration,
                         usernameFinal,
-                        catalog);
+                        catalog,
+                        uuid, runType);
                 dispose();
             }
         } catch (IOException ignored) {
@@ -415,16 +346,16 @@ class ClientModeConfiguration extends JFrame {
             usernameField.setEnabled(true);
             passwordField.setEnabled(true);
         }
+
     }
 
     private void connectAsUser(String username, String password) {
         try {
             File auth = File.createTempFile(".auth", "");
             auth.deleteOnExit();
-            FileClient.receiveFile(
+            FileClient.receiveAuthFile(
                     serverAddressField.getText(),
                     Integer.parseInt(serverPortField.getText()),
-                    ".auth",
                     auth.getAbsolutePath());
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth.getAbsolutePath()));
             @SuppressWarnings("unchecked")
@@ -462,7 +393,4 @@ class ClientModeConfiguration extends JFrame {
         }
     }
 
-    private boolean checkFields(JTextField field) {
-        return !field.getText().isEmpty();
-    }
 }

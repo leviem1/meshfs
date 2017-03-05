@@ -113,7 +113,8 @@ final class FileClient {
      * @param currFile      the file to duplicate
      * @throws IOException on error connecting
      */
-    static void duplicateFile(String serverAddress, int port, String currFile) throws IOException {
+    static void duplicateFile(String serverAddress, int port, String currFile, String uuid)
+            throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -121,7 +122,7 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("104|" + currFile + "\n");
+            out.println("104|" + currFile + "|" + uuid + "\n");
 
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
@@ -142,7 +143,8 @@ final class FileClient {
      * @param newName       the name to set the JSONObject to
      * @throws IOException on error connecting
      */
-    static void renameFile(String serverAddress, int port, String jsonObj, String newName)
+    static void renameFile(
+            String serverAddress, int port, String jsonObj, String newName, String uuid)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -151,7 +153,7 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("110|" + jsonObj + "|" + newName + "\n");
+            out.println("110|" + jsonObj + "|" + newName + "|" + uuid + "\n");
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
             }
@@ -171,7 +173,8 @@ final class FileClient {
      * @param destFile      the location that the file is to be moved to
      * @throws IOException on error connecting
      */
-    static void moveFile(String serverAddress, int port, String currFile, String destFile)
+    static void moveFile(
+            String serverAddress, int port, String currFile, String destFile, String uuid)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -180,7 +183,7 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("103|" + currFile + "|" + destFile + "\n");
+            out.println("103|" + currFile + "|" + destFile + "|" + uuid + "\n");
 
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
@@ -200,14 +203,15 @@ final class FileClient {
      * @param currFile      the file to be deleted
      * @throws IOException on error connecting
      */
-    static void deleteFile(String serverAddress, int port, String currFile) throws IOException {
+    static void deleteFile(String serverAddress, int port, String currFile, String uuid)
+            throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try {
-            out.println("105|" + currFile + "\n");
+            out.println("105|" + currFile + "|" + uuid + "\n");
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
             }
@@ -233,7 +237,8 @@ final class FileClient {
             int port,
             String directoryPath,
             String directoryName,
-            String userAccount)
+            String userAccount,
+            String uuid)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -242,7 +247,8 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("106|" + directoryPath + "|" + directoryName + "|" + userAccount + "\n");
+            out.println(
+                    "106|" + directoryPath + "|" + directoryName + "|" + userAccount + "|" + uuid + "\n");
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
             }
@@ -261,7 +267,8 @@ final class FileClient {
      * @param filepath      the location of the file to send
      * @throws IOException on error connecting
      */
-    static void sendFile(String serverAddress, int port, String filepath) throws IOException {
+    static void sendFile(String serverAddress, int port, String filepath, String uuid)
+            throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -300,7 +307,8 @@ final class FileClient {
      * @param userAccount   the account to add the file for
      * @throws IOException on error connecting
      */
-    static void sendFile(String serverAddress, int port, String filepath, String userAccount)
+    static void sendFile(
+            String serverAddress, int port, String filepath, String userAccount, String uuid)
             throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -310,7 +318,7 @@ final class FileClient {
         FileInputStream fis = new FileInputStream(filepath);
 
         try {
-            out.println("102|" + (new File(filepath)).getName() + "|" + userAccount + "\n");
+            out.println("102|" + (new File(filepath)).getName() + "|" + userAccount + "|" + uuid + "\n");
 
             if (input.readLine().trim().equals("201")) {
                 int br;
@@ -341,7 +349,8 @@ final class FileClient {
      * @throws IOException on error connecting or writing file
      */
     @SuppressWarnings("deprecation")
-    static void receiveFile(String serverAddress, int port, String fileName, String fileOut)
+    static void receiveFile(
+            String serverAddress, int port, String fileName, String fileOut, String uuid)
             throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -350,7 +359,7 @@ final class FileClient {
         FileOutputStream fos = new FileOutputStream(fileOut);
 
         try {
-            out.println("101|" + fileName + "\n");
+            out.println("101|" + fileName + "|" + uuid + "\n");
 
             if (dis.readLine().trim().equals("201")) {
                 int br;
@@ -366,6 +375,92 @@ final class FileClient {
             out.close();
             dis.close();
             fos.close();
+            client.close();
+        }
+    }
+
+    static void receiveAuthFile(String serverAddress, int port, String fileOut) throws IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        DataInputStream dis = new DataInputStream(client.getInputStream());
+        FileOutputStream fos = new FileOutputStream(fileOut);
+
+        try {
+            out.println("113|\n");
+
+            if (dis.readLine().trim().equals("201")) {
+                int br;
+                byte[] data = new byte[4096];
+
+                while ((br = dis.read(data, 0, data.length)) != -1) {
+                    fos.write(data, 0, br);
+                    fos.flush();
+                }
+            }
+        } catch (SocketTimeoutException ignored) {
+        } finally {
+            out.close();
+            dis.close();
+            fos.close();
+            client.close();
+        }
+    }
+
+    static String getServerUUID(String serverAddress, int port) throws IOException {
+        String response;
+        String uuid = "";
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        try {
+            out.println("112|\n");
+            uuid = input.readLine();
+            if (!(response = input.readLine().trim()).equals("201")) {
+                System.err.println(response);
+            }
+            client.close();
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+        return uuid;
+    }
+
+    static boolean changePassword(
+            String serverAddress, int port, String username, String oldPassword, String newPassword)
+            throws IOException {
+        String response;
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        try {
+            out.println("111|" + username + "|" + oldPassword + "|" + newPassword + "\n");
+            if (!(response = input.readLine().trim()).equals("201")) {
+                System.err.println(response);
+                return false;
+            }
+            client.close();
+        } catch (SocketTimeoutException ste) {
+            client.close();
+        }
+        return true;
+    }
+
+    static void deleteAccount(String serverAddress, int port, String userAccount) throws IOException {
+        String response;
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        try {
+            out.println("114|" + userAccount + "\n");
+            if (!(response = input.readLine().trim()).equals("201")) {
+                System.err.println(response);
+            }
+            client.close();
+        } catch (SocketTimeoutException ste) {
             client.close();
         }
     }

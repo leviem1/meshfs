@@ -3,6 +3,7 @@ import org.json.simple.JSONObject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -18,9 +19,9 @@ class MoveFileWindow extends JFrame {
     private final int port;
     private final String userAccount;
     private final String fileName;
+    private final String uuid;
     private File catalogFile;
     //GEN-BEGIN:variables
-
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JScrollPane scrollPane1;
@@ -31,7 +32,13 @@ class MoveFileWindow extends JFrame {
     //GEN-END:variables
 
     private MoveFileWindow(
-            String fileName, String currentJsonPath, String serverAddress, int port, String userAccount, File catalogFile) {
+            String fileName,
+            String currentJsonPath,
+            String serverAddress,
+            int port,
+            String userAccount,
+            File catalogFile,
+            String uuid) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -45,6 +52,7 @@ class MoveFileWindow extends JFrame {
         this.userAccount = userAccount;
         this.fileName = fileName;
         this.catalogFile = catalogFile;
+        this.uuid = uuid;
 
         initComponents();
         frameListeners();
@@ -54,6 +62,8 @@ class MoveFileWindow extends JFrame {
         }
 
         setTitle("Move - " + fileName);
+
+        tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
     public static void run(
@@ -63,8 +73,10 @@ class MoveFileWindow extends JFrame {
             int port,
             JFrame sender,
             String userAccount,
-            File catalogFile) {
-        moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount, catalogFile);
+            File catalogFile,
+            String uuid) {
+        moveFileWindow =
+                new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount, catalogFile, uuid);
         CenterWindow.centerOnWindow(sender, moveFileWindow);
         moveFileWindow.setVisible(true);
     }
@@ -74,7 +86,7 @@ class MoveFileWindow extends JFrame {
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode(userAccount);
         tree = (readFolder(userAccount, jsonObj, tree));
         //GEN-BEGIN:initComponents
-
+        // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         scrollPane1 = new JScrollPane();
@@ -100,26 +112,35 @@ class MoveFileWindow extends JFrame {
                 {
 
                     //---- tree1 ----
-                    tree1.setFont(new Font("Arial", tree1.getFont().getStyle(), tree1.getFont().getSize() + 1));
+                    tree1.setFont(
+                            new Font("Arial", tree1.getFont().getStyle(), tree1.getFont().getSize() + 1));
                     scrollPane1.setViewportView(tree1);
                 }
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-                            .addContainerGap())
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                                                .addContainerGap()));
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(
+                                                        scrollPane1,
+                                                        GroupLayout.PREFERRED_SIZE,
+                                                        200,
+                                                        GroupLayout.PREFERRED_SIZE)
+                                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -127,21 +148,34 @@ class MoveFileWindow extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                okButton.setFont(
+                        new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+                buttonBar.add(
+                        okButton,
+                        new GridBagConstraints(
+                                1,
+                                0,
+                                1,
+                                1,
+                                0.0,
+                                0.0,
+                                GridBagConstraints.CENTER,
+                                GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0),
+                                0,
+                                0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
             //---- label1 ----
             label1.setText("Select a location to move the selected file to:");
-            label1.setFont(new Font("Arial", label1.getFont().getStyle(), label1.getFont().getSize() + 1));
+            label1.setFont(
+                    new Font("Arial", label1.getFont().getStyle(), label1.getFont().getSize() + 1));
             dialogPane.add(label1, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
@@ -192,7 +226,7 @@ class MoveFileWindow extends JFrame {
                             okButton.setEnabled(false);
                             return;
                         }
-                        FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
+                        FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath, uuid);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -223,5 +257,4 @@ class MoveFileWindow extends JFrame {
         }
         return branch;
     }
-
 }

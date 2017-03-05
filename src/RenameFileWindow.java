@@ -18,22 +18,23 @@ class RenameFileWindow extends JFrame {
     private final String jsonObj;
     private final String userAccount;
     private final String originalName;
+    private final String uuid;
     private File catalogFile;
-
     //GEN-BEGIN:variables
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel currentNameLbl;
     private JLabel currentNameValue;
-    private JLabel newNameLbl;
     private JTextField newNameValueField;
     private JPanel buttonBar;
-    private JButton cancelBtn;
     private JButton okButton;
     //GEN-END:variables
 
     private RenameFileWindow(
-            String serverAddress, int port, String jsonObj, String currentName, String userAccount, File catalogFile) {
+            String serverAddress,
+            int port,
+            String jsonObj,
+            String currentName,
+            String userAccount,
+            File catalogFile,
+            String uuid) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -47,6 +48,7 @@ class RenameFileWindow extends JFrame {
         this.userAccount = userAccount;
         this.originalName = currentName;
         this.catalogFile = catalogFile;
+        this.uuid = uuid;
 
         initComponents();
         frameListeners();
@@ -73,9 +75,11 @@ class RenameFileWindow extends JFrame {
             String jsonObj,
             String currentName,
             String userAccount,
-            File catalogFile) {
+            File catalogFile,
+            String uuid) {
         JFrame renameFileWindow =
-                new RenameFileWindow(serverAddress, port, jsonObj, currentName, userAccount, catalogFile);
+                new RenameFileWindow(
+                        serverAddress, port, jsonObj, currentName, userAccount, catalogFile, uuid);
         CenterWindow.centerOnWindow(sender, renameFileWindow);
         renameFileWindow.setVisible(true);
     }
@@ -83,14 +87,14 @@ class RenameFileWindow extends JFrame {
     private void initComponents() {
         //GEN-BEGIN:initComponents
 
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        currentNameLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel currentNameLbl = new JLabel();
         currentNameValue = new JLabel();
-        newNameLbl = new JLabel();
+        JLabel newNameLbl = new JLabel();
         newNameValueField = new JTextField();
         buttonBar = new JPanel();
-        cancelBtn = new JButton();
+        JButton cancelBtn = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -108,49 +112,88 @@ class RenameFileWindow extends JFrame {
 
                 //---- currentNameLbl ----
                 currentNameLbl.setText("Current Name:");
-                currentNameLbl.setFont(new Font("Arial", currentNameLbl.getFont().getStyle(), currentNameLbl.getFont().getSize() + 1));
+                currentNameLbl.setFont(
+                        new Font(
+                                "Arial",
+                                currentNameLbl.getFont().getStyle(),
+                                currentNameLbl.getFont().getSize() + 1));
 
                 //---- currentNameValue ----
                 currentNameValue.setText("(file name)");
-                currentNameValue.setFont(new Font("Arial", currentNameValue.getFont().getStyle(), currentNameValue.getFont().getSize() + 1));
+                currentNameValue.setFont(
+                        new Font(
+                                "Arial",
+                                currentNameValue.getFont().getStyle(),
+                                currentNameValue.getFont().getSize() + 1));
 
                 //---- newNameLbl ----
                 newNameLbl.setText("New Name:");
-                newNameLbl.setFont(new Font("Arial", newNameLbl.getFont().getStyle(), newNameLbl.getFont().getSize() + 1));
+                newNameLbl.setFont(
+                        new Font("Arial", newNameLbl.getFont().getStyle(), newNameLbl.getFont().getSize() + 1));
 
                 //---- newNameValueField ----
-                newNameValueField.setFont(new Font("Arial", newNameValueField.getFont().getStyle(), newNameValueField.getFont().getSize() + 1));
+                newNameValueField.setFont(
+                        new Font(
+                                "Arial",
+                                newNameValueField.getFont().getStyle(),
+                                newNameValueField.getFont().getSize() + 1));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(currentNameLbl)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(currentNameValue, GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(newNameLbl)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(newNameValueField, GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)))
-                            .addContainerGap())
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addContainerGap()
+                                                .addGroup(
+                                                        contentPanelLayout
+                                                                .createParallelGroup()
+                                                                .addGroup(
+                                                                        contentPanelLayout
+                                                                                .createSequentialGroup()
+                                                                                .addComponent(currentNameLbl)
+                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                .addComponent(
+                                                                                        currentNameValue,
+                                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                                        231,
+                                                                                        Short.MAX_VALUE))
+                                                                .addGroup(
+                                                                        contentPanelLayout
+                                                                                .createSequentialGroup()
+                                                                                .addComponent(newNameLbl)
+                                                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                .addComponent(
+                                                                                        newNameValueField,
+                                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                                        251,
+                                                                                        Short.MAX_VALUE)))
+                                                .addContainerGap()));
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(currentNameLbl)
-                                .addComponent(currentNameValue))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(newNameLbl)
-                                .addComponent(newNameValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(5, Short.MAX_VALUE))
-                );
+                        contentPanelLayout
+                                .createParallelGroup()
+                                .addGroup(
+                                        contentPanelLayout
+                                                .createSequentialGroup()
+                                                .addContainerGap()
+                                                .addGroup(
+                                                        contentPanelLayout
+                                                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                                .addComponent(currentNameLbl)
+                                                                .addComponent(currentNameValue))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(
+                                                        contentPanelLayout
+                                                                .createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                                .addComponent(newNameLbl)
+                                                                .addComponent(
+                                                                        newNameValueField,
+                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                        GroupLayout.PREFERRED_SIZE))
+                                                .addContainerGap(5, Short.MAX_VALUE)));
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
 
@@ -158,22 +201,46 @@ class RenameFileWindow extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 1.0, 0.0};
 
                 //---- cancelBtn ----
                 cancelBtn.setText("Cancel");
-                cancelBtn.setFont(new Font("Arial", cancelBtn.getFont().getStyle(), cancelBtn.getFont().getSize() + 1));
-                buttonBar.add(cancelBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                cancelBtn.setFont(
+                        new Font("Arial", cancelBtn.getFont().getStyle(), cancelBtn.getFont().getSize() + 1));
+                buttonBar.add(
+                        cancelBtn,
+                        new GridBagConstraints(
+                                0,
+                                0,
+                                1,
+                                1,
+                                0.0,
+                                0.0,
+                                GridBagConstraints.CENTER,
+                                GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 5),
+                                0,
+                                0));
 
                 //---- okButton ----
                 okButton.setText("OK");
-                okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                okButton.setFont(
+                        new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
+                buttonBar.add(
+                        okButton,
+                        new GridBagConstraints(
+                                2,
+                                0,
+                                1,
+                                1,
+                                0.0,
+                                0.0,
+                                GridBagConstraints.CENTER,
+                                GridBagConstraints.BOTH,
+                                new Insets(0, 0, 0, 0),
+                                0,
+                                0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -207,7 +274,8 @@ class RenameFileWindow extends JFrame {
                                         okButton.setEnabled(false);
                                     } else {
                                         String newJsonPath = jsonObj.substring(0, jsonObj.lastIndexOf("/"));
-                                        JSONObject catalogJson = JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
+                                        JSONObject catalogJson =
+                                                JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
                                         Map<String, String> folderMap =
                                                 JSONManipulator.getMapOfFolderContents(
                                                         catalogJson, newJsonPath, userAccount);
@@ -230,7 +298,7 @@ class RenameFileWindow extends JFrame {
         okButton.addActionListener(
                 e -> {
                     try {
-                        FileClient.renameFile(serverAddress, port, jsonObj, newNameValueField.getText());
+                        FileClient.renameFile(serverAddress, port, jsonObj, newNameValueField.getText(), uuid);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
