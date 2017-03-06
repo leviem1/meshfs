@@ -108,10 +108,17 @@ class ClientBrowser extends JFrame {
                     serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath(), uuid);
         } catch (IOException ignored) {
         }
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(userAccount);
-        TreeNode root =
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+        DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("root/" + userAccount);
+        DefaultMutableTreeNode sharedNode = new DefaultMutableTreeNode("root/Shared");
+        DefaultMutableTreeNode userRoot =
                 (readFolder(
-                        userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), rootNode));
+                        userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), userNode));
+        DefaultMutableTreeNode sharedRoot =
+                (readFolder(
+                        userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), sharedNode));
+        root.add(userRoot);
+        root.add(sharedRoot);
 
         if (isLoaded) {
             dialogPane.repaint();

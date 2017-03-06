@@ -75,7 +75,7 @@ class JSONManipulator {
         for (Object key : folderToRead.keySet()) {
             String keyStr = key.toString();
             try {
-                if ((((JSONObject) folderToRead.get(keyStr)).get("owner")).toString().equals(userAccount)) {
+                if (((((JSONObject) folderToRead.get(keyStr)).get("owner")).toString().equals(userAccount)) || (((JSONArray)(((JSONObject) folderToRead.get(keyStr)).get("users"))).contains(userAccount))){
                     String type = (((JSONObject) folderToRead.get(keyStr)).get("type")).toString();
                     contents.put(keyStr, type);
                 }
@@ -459,6 +459,45 @@ class JSONManipulator {
         }
         return storageMap;
     }
+
+    static JSONObject shareFolder(JSONObject jsonObject, String itemLocation, List<String> userNames){
+        jsonObject = moveFile(jsonObject, itemLocation, "root/Shared");
+        String[] folders = itemLocation.split("/");
+        JSONObject folderToRead = jsonObject;
+        for (String folder : folders) {
+            folderToRead = (JSONObject) folderToRead.get(folder);
+        }
+        folderToRead.put("users", folderToRead.get("owner"));
+        return addUsers(jsonObject, itemLocation, userNames);
+    }
+
+    static JSONObject addUsers(JSONObject jsonObject, String itemLocation, List<String> userNames){
+        String[] folders = itemLocation.split("/");
+        JSONObject folderToRead = jsonObject;
+        for (String folder : folders) {
+            folderToRead = (JSONObject) folderToRead.get(folder);
+        }
+        JSONArray userArray = ((JSONArray) folderToRead.get("users"));
+        for (String username : userNames) {
+            userArray.add(username);
+        }
+        folderToRead.replace("users", userArray);
+
+        return jsonObject;
+    }
+
+    static JSONObject removeUsers(JSONObject jsonObject, String itemLocation, List<String> userNames){
+        String[] folders = itemLocation.split("/");
+        JSONObject folderToRead = jsonObject;
+        for (String folder : folders) {
+            folderToRead = (JSONObject) folderToRead.get(folder);
+        }
+        for (String username : userNames){
+            ((JSONArray) folderToRead.get("users")).remove(username);
+        }
+        return jsonObject;
+    }
+
 
     /**
      * This method copies the given item to the designated path within the JSONObject.

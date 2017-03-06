@@ -356,9 +356,9 @@ class ServerInit implements Runnable {
                 JSONManipulator.removeItem(
                         JSONManipulator.getJSONObject(
                                 MeshFS.properties.getProperty("repository") + ".catalog.json"),
-                        userAccount + "/" + filename + " (uploading)"));
+                        "root/Users/" + userAccount + "/" + filename + " (uploading)"));
 
-        Thread distributor = new Thread(() -> DISTAL.distributor(filename, userAccount));
+        Thread distributor = new Thread(() -> DISTAL.distributor(filename, "root/Users/" + userAccount));
         distributor.start();
     }
 

@@ -54,6 +54,12 @@ class MeshFS {
                     JSONObject newCatalog = new JSONObject();
 
                     newCatalog.put("currentName", "0000000000000000");
+                    JSONObject newRoot = new JSONObject();
+                    JSONObject folder = new JSONObject();
+                    folder.put("type", "directory");
+                    newRoot.put("Users", folder);
+                    newRoot.put("Shared", folder);
+                    newCatalog.put("root", newRoot);
                     try {
                         JSONManipulator.writeJSONObject(
                                 properties.getProperty("repository") + ".catalog.json", newCatalog);
