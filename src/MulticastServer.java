@@ -1,8 +1,7 @@
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created by Levi Muniz on 3/1/17.
@@ -39,6 +38,7 @@ class MulticastServer {
 class MulticastServerInit implements Runnable {
 
     private final DatagramSocket socket;
+    private Set<InetAddress> reportedDown = new LinkedHashSet<>();
 
     MulticastServerInit(DatagramSocket socket) {
         this.socket = socket;
@@ -51,11 +51,18 @@ class MulticastServerInit implements Runnable {
         }
     }
 
-    private void processRequest(String request) {
+    private void masterDownRecord(InetAddress address) {
+        reportedDown.add(address);
+        //TODO: Get count of total ip's in manifest
+    }
+
+    private void processRequest(String request, DatagramPacket dp) {
         String[] requestParts = request.split("\\|");
 
         if (requestParts[0].equals("151")) {
             evaluateMaster(requestParts[1], requestParts[2]);
+        } else if (requestParts[0].equals("152")) {
+            masterDownRecord(dp.getAddress());
         }
     }
 
@@ -66,7 +73,7 @@ class MulticastServerInit implements Runnable {
             try {
                 socket.receive(dp);
                 if (!dp.getAddress().equals(InetAddress.getByName(Reporting.getIpAddresses().get(0)))) {
-                    processRequest(new String(dp.getData()).trim());
+                    processRequest(new String(dp.getData()).trim(), dp);
                 }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
