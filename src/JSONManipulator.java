@@ -41,6 +41,13 @@ class JSONManipulator {
         return jsonObject;
     }
 
+    static String catalogStringFixer(String itemLocationString){
+        if ((! (itemLocationString.substring(0,itemLocationString.indexOf("/"))).equals("root/Users")) && (! (itemLocationString.substring(0,itemLocationString.indexOf("/"))).equals("root/Shared"))){
+            itemLocationString = itemLocationString.substring(0,itemLocationString.indexOf("/") + 1) + "Users/" + itemLocationString.substring(itemLocationString.indexOf("/",1));
+        }
+        return itemLocationString;
+    }
+
     /**
      * This method is returns a LinkedHashMap of the contents of a folder. The contents are returned
      * in the format of "itemName", "itemType".
@@ -74,16 +81,18 @@ class JSONManipulator {
         LinkedHashMap<String, String> contents = new LinkedHashMap<>();
         for (Object key : folderToRead.keySet()) {
             String keyStr = key.toString();
-            try {
-                if (((((JSONObject) folderToRead.get(keyStr)).get("owner")).toString().equals(userAccount)) || (((JSONArray)(((JSONObject) folderToRead.get(keyStr)).get("users"))).contains(userAccount))){
-                    String type = (((JSONObject) folderToRead.get(keyStr)).get("type")).toString();
-                    contents.put(keyStr, type);
-                }
-            } catch (Exception ignored) {
+            if (userAccount.equals(null) || ((((JSONObject) folderToRead.get(keyStr)).get("owner")).toString().equals(userAccount)) || (((JSONArray)(((JSONObject) folderToRead.get(keyStr)).get("users"))).contains(userAccount))){
+                String type = (((JSONObject) folderToRead.get(keyStr)).get("type")).toString();
+                contents.put(keyStr, type);
             }
         }
 
         return contents;
+    }
+
+    static LinkedHashMap<String, String> getMapOfFolderContents(
+            JSONObject jsonObject, String folderLocation) {
+        return getMapOfFolderContents(jsonObject, folderLocation, null);
     }
 
     /**
@@ -477,12 +486,15 @@ class JSONManipulator {
         for (String folder : folders) {
             folderToRead = (JSONObject) folderToRead.get(folder);
         }
-        JSONArray userArray = ((JSONArray) folderToRead.get("users"));
         for (String username : userNames) {
-            userArray.add(username);
+            ((JSONArray) folderToRead.get("users")).add(username);
         }
-        folderToRead.replace("users", userArray);
-
+        if (folderToRead.get("type").toString().equals("directory")){
+            LinkedHashMap<String, String> children = getMapOfFolderContents(jsonObject,itemLocation);
+            for (String childName : children.keySet()) {
+                jsonObject = addUsers(jsonObject,itemLocation + "/" + childName, userNames);
+            }
+        }
         return jsonObject;
     }
 
@@ -492,10 +504,23 @@ class JSONManipulator {
         for (String folder : folders) {
             folderToRead = (JSONObject) folderToRead.get(folder);
         }
-        for (String username : userNames){
+        for (String username : userNames) {
             ((JSONArray) folderToRead.get("users")).remove(username);
         }
+        if (folderToRead.get("type").toString().equals("directory")){
+            LinkedHashMap<String, String> children = getMapOfFolderContents(jsonObject,itemLocation);
+            for (String childName : children.keySet()) {
+                jsonObject = removeUsers(jsonObject,itemLocation + "/" + childName, userNames);
+            }
+        }
         return jsonObject;
+    }
+
+    static JSONObject deleteUsers(JSONObject jsonObject, List<String> users){
+        for (String user : users) {
+            ((JSONObject) ((JSONObject) jsonObject.get("root")).get("User")).remove(user);
+        }
+        return removeUsers(jsonObject, "root/Shared", users);
     }
 
 
