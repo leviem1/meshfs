@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.time.Instant;
 
 /**
  * The FileClient class handles connecting to other servers in the cluster
@@ -14,29 +15,28 @@ import java.net.SocketTimeoutException;
 final class FileClient {
 
     /**
-     * This method is used to ping a server.
+     * This method is used to ping a server and report latency.
      *
      * @param serverAddress the IP address of the server to connect to
      * @param port          the port of the server to connect to
-     * @return true on success, false on failure
+     * @return latency in milliseconds, -1 if cannot connect
      */
-    static boolean ping(String serverAddress, int port) {
+    static int ping(String serverAddress, int port) {
         try {
             Socket client = new Socket(serverAddress, port);
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            out.println(MeshFS.properties.getProperty("uuid") + "|109\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|109|" + String.valueOf(Instant.now().toEpochMilli()) + "\n");
 
             if (input.readLine().trim().equals("201")) {
-                client.close();
-                return true;
+                return Integer.parseInt(input.readLine());
             } else {
                 client.close();
-                return false;
+                return -1;
             }
         } catch (IOException ioe) {
-            return false;
+            return -1;
         }
     }
 

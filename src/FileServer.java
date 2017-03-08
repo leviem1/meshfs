@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.net.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -112,7 +113,7 @@ class ServerInit implements Runnable {
 
                         break;
                     case "102": //102:Post file
-                        if (requestParts.length == 3) {
+                        if (requestParts.length == 4) {
                             receiveFile(requestParts[2], requestParts[3], out);
                         } else {
                             receiveFile(requestParts[2], out);
@@ -145,7 +146,7 @@ class ServerInit implements Runnable {
 
                         break;
                     case "109": //109:Ping
-                        ping(out);
+                        ping(requestParts[2], out);
 
                         break;
                     case "110": //110:Rename File (virtual only)
@@ -184,10 +185,10 @@ class ServerInit implements Runnable {
         }
     }
 
-    private void ping(Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
+    private void ping(String epochTime, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         out.println("201");
-        out.flush();
+        out.println(String.valueOf(Instant.now().toEpochMilli() - Long.valueOf(epochTime)) + "\n");
     }
 
     private void sendReport(Socket client) throws IOException {
@@ -456,9 +457,9 @@ class ServerInit implements Runnable {
     }
 
     private void getServerUUID(Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
-        out.println(MeshFS.properties.getProperty("uuid") + "\n201");
-        out.flush();
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        out.println("201");
+        out.println(MeshFS.properties.getProperty("uuid"));
     }
 
     private void sendAuthInfo(Socket client) throws IOException {
