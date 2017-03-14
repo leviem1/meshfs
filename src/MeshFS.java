@@ -105,11 +105,12 @@ class MeshFS {
                             public void run() {
                                 if (FileClient.ping(
                                         properties.getProperty("masterIP"),
-                                        Integer.parseInt(properties.getProperty("portNumber")))) {
+                                        Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
                                     try {
                                         FileClient.sendReport(
                                                 properties.getProperty("masterIP"),
                                                 Integer.parseInt(properties.getProperty("portNumber")));
+                                        //TODO: FileClient.receiveFile() manifest and catalog backups
                                     } catch (IOException ioe) {
                                         ioe.printStackTrace();
                                     }
@@ -136,7 +137,7 @@ class MeshFS {
                 boolean serverStarted = false;
 
                 for (String iFace : possibleIP) {
-                    if (FileClient.ping(iFace, Integer.parseInt(properties.getProperty("portNumber")))) {
+                    if (FileClient.ping(iFace, Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
                         serverStarted = true;
                         break;
                     }

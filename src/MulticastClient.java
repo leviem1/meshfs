@@ -22,4 +22,13 @@ class MulticastClient {
         socket.send(new DatagramPacket(request, request.length, InetAddress.getByName(groupAddress), port));
         socket.close();
     }
+
+    static void castVote(String groupAddress, int port, String vote) throws IOException {
+        byte[] request = ("153|" + vote).getBytes();
+
+        MulticastSocket socket = new MulticastSocket(port);
+        socket.setBroadcast(true);
+        socket.send(new DatagramPacket(request, request.length, InetAddress.getByName(groupAddress), port));
+        socket.close();
+    }
 }

@@ -15,7 +15,7 @@ import java.util.List;
  */
 class DISTAL {
 
-    private static LinkedHashMap<String, Long> valueSorter(LinkedHashMap<String, Long> storageMap) {
+    private static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> storageMap) {
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
 
@@ -92,7 +92,7 @@ class DISTAL {
             LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFile);
 
             //sort the compStorageMap by descending available storage
-            LinkedHashMap<String, Long> sortedCompStorageMap = valueSorter(compStorageMap);
+            LinkedHashMap<String, Long> sortedCompStorageMap = sortMapByValue(compStorageMap);
 
             //don't use stripes if a file is less than 4096 byte
             if (sizeOfFile <= 4096L) {
@@ -117,7 +117,7 @@ class DISTAL {
                                 macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
                     }
                 }
-                sortedCompStorageMap = valueSorter(sortedCompStorageMap);
+                sortedCompStorageMap = sortMapByValue(sortedCompStorageMap);
 
                 int numOfComputersUsed = sortedCompStorageMap.size();
 
