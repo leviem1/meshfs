@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.time.Instant;
 
 /**
  * The FileClient class handles connecting to other servers in the cluster
@@ -14,29 +15,28 @@ import java.net.SocketTimeoutException;
 final class FileClient {
 
     /**
-     * This method is used to ping a server.
+     * This method is used to ping a server and report latency.
      *
      * @param serverAddress the IP address of the server to connect to
      * @param port          the port of the server to connect to
-     * @return true on success, false on failure
+     * @return latency in milliseconds, -1 if cannot connect
      */
-    static boolean ping(String serverAddress, int port) {
+    static int ping(String serverAddress, int port) {
         try {
             Socket client = new Socket(serverAddress, port);
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            out.println("109\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|109|" + String.valueOf(Instant.now().toEpochMilli()) + "\n");
 
             if (input.readLine().trim().equals("201")) {
-                client.close();
-                return true;
+                return Integer.parseInt(input.readLine());
             } else {
                 client.close();
-                return false;
+                return -1;
             }
         } catch (IOException ioe) {
-            return false;
+            return -1;
         }
     }
 
@@ -54,7 +54,7 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("108\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|108\n");
 
             if (input.readLine().trim().equals("201")) {
                 out.println(Reporting.generate() + "\n");
@@ -80,7 +80,7 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
-        out.println("107\n");
+        out.println(MeshFS.properties.getProperty("uuid") + "|107\n");
 
         if (input.readLine().trim().equals("201")) {
             while (true) {
@@ -113,7 +113,7 @@ final class FileClient {
      * @param currFile      the file to duplicate
      * @throws IOException on error connecting
      */
-    static void duplicateFile(String serverAddress, int port, String currFile, String uuid)
+    static void duplicateFile(String serverAddress, int port, String currFile)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -122,7 +122,7 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("104|" + currFile + "|" + uuid + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|104|" + currFile + "\n");
 
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
@@ -144,7 +144,7 @@ final class FileClient {
      * @throws IOException on error connecting
      */
     static void renameFile(
-            String serverAddress, int port, String jsonObj, String newName, String uuid)
+            String serverAddress, int port, String jsonObj, String newName)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -153,7 +153,7 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("110|" + jsonObj + "|" + newName + "|" + uuid + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|110|" + jsonObj + "|" + newName + "\n");
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
             }
@@ -174,7 +174,7 @@ final class FileClient {
      * @throws IOException on error connecting
      */
     static void moveFile(
-            String serverAddress, int port, String currFile, String destFile, String uuid)
+            String serverAddress, int port, String currFile, String destFile)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -183,7 +183,7 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
         try {
-            out.println("103|" + currFile + "|" + destFile + "|" + uuid + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|103|" + currFile + "|" + destFile + "\n");
 
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
@@ -203,7 +203,7 @@ final class FileClient {
      * @param currFile      the file to be deleted
      * @throws IOException on error connecting
      */
-    static void deleteFile(String serverAddress, int port, String currFile, String uuid)
+    static void deleteFile(String serverAddress, int port, String currFile)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -211,7 +211,7 @@ final class FileClient {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try {
-            out.println("105|" + currFile + "|" + uuid + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|105|" + currFile + "\n");
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
             }
@@ -237,8 +237,7 @@ final class FileClient {
             int port,
             String directoryPath,
             String directoryName,
-            String userAccount,
-            String uuid)
+            String userAccount)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -248,7 +247,7 @@ final class FileClient {
 
         try {
             out.println(
-                    "106|" + directoryPath + "|" + directoryName + "|" + userAccount + "|" + uuid + "\n");
+                    MeshFS.properties.getProperty("uuid") + "|106|" + directoryPath + "|" + directoryName + "|" + userAccount + "\n");
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
             }
@@ -267,7 +266,7 @@ final class FileClient {
      * @param filepath      the location of the file to send
      * @throws IOException on error connecting
      */
-    static void sendFile(String serverAddress, int port, String filepath, String uuid)
+    static void sendFile(String serverAddress, int port, String filepath)
             throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -277,7 +276,7 @@ final class FileClient {
         FileInputStream fis = new FileInputStream(filepath);
 
         try {
-            out.println("102|" + (new File(filepath)).getName() + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|102|" + (new File(filepath)).getName() + "\n");
 
             if (input.readLine().trim().equals("201")) {
                 int br;
@@ -308,7 +307,7 @@ final class FileClient {
      * @throws IOException on error connecting
      */
     static void sendFile(
-            String serverAddress, int port, String filepath, String userAccount, String uuid)
+            String serverAddress, int port, String filepath, String userAccount)
             throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -318,7 +317,7 @@ final class FileClient {
         FileInputStream fis = new FileInputStream(filepath);
 
         try {
-            out.println("102|" + (new File(filepath)).getName() + "|" + userAccount + "|" + uuid + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|102|" + (new File(filepath)).getName() + "|" + userAccount + "\n");
 
             if (input.readLine().trim().equals("201")) {
                 int br;
@@ -350,7 +349,7 @@ final class FileClient {
      */
     @SuppressWarnings("deprecation")
     static void receiveFile(
-            String serverAddress, int port, String fileName, String fileOut, String uuid)
+            String serverAddress, int port, String fileName, String fileOut)
             throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
@@ -359,7 +358,7 @@ final class FileClient {
         FileOutputStream fos = new FileOutputStream(fileOut);
 
         try {
-            out.println("101|" + fileName + "|" + uuid + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|101|" + fileName + "\n");
 
             if (dis.readLine().trim().equals("201")) {
                 int br;
@@ -387,7 +386,7 @@ final class FileClient {
         FileOutputStream fos = new FileOutputStream(fileOut);
 
         try {
-            out.println("113|\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|113\n");
 
             if (dis.readLine().trim().equals("201")) {
                 int br;
@@ -408,6 +407,9 @@ final class FileClient {
     }
 
     static String getServerUUID(String serverAddress, int port) throws IOException {
+        //TODO: Fix shit code, learn how it works before trying to fuck with this.
+
+        /*
         String response;
         String uuid = "";
         Socket client = new Socket(serverAddress, port);
@@ -425,6 +427,8 @@ final class FileClient {
             client.close();
         }
         return uuid;
+        */
+        return "Shitty code doesn't work";
     }
 
     static boolean changePassword(
@@ -436,7 +440,7 @@ final class FileClient {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try {
-            out.println("111|" + username + "|" + oldPassword + "|" + newPassword + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|111|" + username + "|" + oldPassword + "|" + newPassword + "\n");
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
                 return false;
@@ -455,7 +459,7 @@ final class FileClient {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try {
-            out.println("114|" + userAccount + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|114|" + userAccount + "\n");
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
             }
