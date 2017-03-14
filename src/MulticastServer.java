@@ -58,49 +58,50 @@ class MulticastServerInit implements Runnable {
         reportedDown.add(address);
         if ((reportedDown.size() > JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest").size() / 2) && !masterDown) {
             masterDown = true;
+            LinkedHashMap<String, Integer> speeds = new LinkedHashMap();
+            LinkedHashMap<String, Integer> sortedSpeeds = new LinkedHashMap();
+            sortedSpeeds.put("temp", -1);
+
+            JSONObject manifestFile = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest");
+
+            for (Object MACAddress : manifestFile.keySet()) {
+                if (Long.parseLong((((JSONObject) manifestFile.get(MACAddress)).get("FreeSpace")).toString()) > 21474836480L) {
+                    speeds.put((((JSONObject) manifestFile.get(MACAddress)).get("IP")).toString(), FileClient.ping((((JSONObject) manifestFile.get(MACAddress)).get("IP")).toString(), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))));
+                }
+            }
+
+            for (String key : speeds.keySet()) {
+                Integer latency = speeds.get(key);
+                boolean isBroken = false;
+                if (latency == -1) {continue;}
+                for (String sortedKey : sortedSpeeds.keySet()) {
+                    if (latency <= sortedSpeeds.get(sortedKey)) {
+                        LinkedHashMap<String, Integer> reorderStorageMap = (LinkedHashMap<String, Integer>) sortedSpeeds.clone();
+                        sortedSpeeds.clear();
+                        for (String reorderKey : reorderStorageMap.keySet()) {
+                            if (reorderKey.equals(sortedKey)) {
+                                sortedSpeeds.put(key, latency);
+                            }
+                            sortedSpeeds.put(reorderKey, reorderStorageMap.get(reorderKey));
+                        }
+                        isBroken = true;
+                        break;
+                    }
+                }
+
+                if (!isBroken) {
+                    sortedSpeeds.put(key, speeds.get(key));
+                }
+            }
+
+            sortedSpeeds.remove("temp");
+            String idealMaster = sortedSpeeds.entrySet().iterator().next().getKey();
+
             TimerTask voteCaster = new TimerTask() {
                 @Override
                 public void run() {
-                    LinkedHashMap<String, Integer> speeds = new LinkedHashMap();
-                    LinkedHashMap<String, Integer> sortedSpeeds = new LinkedHashMap();
-                    sortedSpeeds.put("temp", -1);
-
-                    JSONObject manifestFile = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest");
-
-                    for (Object MACAddress : manifestFile.keySet()) {
-                        if (Long.parseLong((((JSONObject) manifestFile.get(MACAddress)).get("FreeSpace")).toString()) > 21474836480L) {
-                            speeds.put((((JSONObject) manifestFile.get(MACAddress)).get("IP")).toString(), FileClient.ping((((JSONObject) manifestFile.get(MACAddress)).get("IP")).toString(), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))));
-                        }
-                    }
-
-                    for (String key : speeds.keySet()) {
-                        Integer latency = speeds.get(key);
-                        boolean isBroken = false;
-                        if (latency == -1) {continue;}
-                        for (String sortedKey : sortedSpeeds.keySet()) {
-                            if (latency <= sortedSpeeds.get(sortedKey)) {
-                                LinkedHashMap<String, Integer> reorderStorageMap = (LinkedHashMap<String, Integer>) sortedSpeeds.clone();
-                                sortedSpeeds.clear();
-                                for (String reorderKey : reorderStorageMap.keySet()) {
-                                    if (reorderKey.equals(sortedKey)) {
-                                        sortedSpeeds.put(key, latency);
-                                    }
-                                    sortedSpeeds.put(reorderKey, reorderStorageMap.get(reorderKey));
-                                }
-                                isBroken = true;
-                                break;
-                            }
-                        }
-
-                        if (!isBroken) {
-                            sortedSpeeds.put(key, speeds.get(key));
-                        }
-                    }
-
-                    sortedSpeeds.remove("temp");
-
                     try {
-                        MulticastClient.castVote(MeshFS.properties.getProperty("multicastGroup"), Integer.parseInt(MeshFS.properties.getProperty("multicastPort")), sortedSpeeds.entrySet().iterator().next().getKey());
+                        MulticastClient.castVote(MeshFS.properties.getProperty("multicastGroup"), Integer.parseInt(MeshFS.properties.getProperty("multicastPort")), idealMaster);
                     } catch (IOException ignored) {
                     }
                 }
