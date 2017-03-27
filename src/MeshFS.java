@@ -13,6 +13,7 @@ class MeshFS {
     static boolean configure = false;
     static boolean isMaster = false;
 
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         configure = !new File(".config.properties").exists();
 
@@ -49,6 +50,16 @@ class MeshFS {
                         new File(MeshFS.properties.getProperty("repository") + ".manifest.json");
                 manifestFile.delete();
                 File catalog = new File(properties.getProperty("repository") + ".catalog.json");
+
+                TimerTask discoveryBroadcast = new TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            MulticastClient.notifyClients(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
+                        } catch (IOException ignored) {
+                        }
+                    }
+                };
 
                 if (!catalog.exists()) {
                     JSONObject newCatalog = new JSONObject();

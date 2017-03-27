@@ -57,6 +57,8 @@ class JSONManipulator {
      * @param userAccount    the file path of the file that is to be read
      * @return a map of the folder's contents
      */
+
+    @SuppressWarnings("unchecked")
     static LinkedHashMap<String, String> getMapOfFolderContents(
             JSONObject jsonObject, String folderLocation, String userAccount) {
         if (folderLocation.equals(userAccount)) {
@@ -184,6 +186,8 @@ class JSONManipulator {
      * @param userAccount   the account to add the folder for
      * @return updated JSONObject that the folder was read from
      */
+
+    @SuppressWarnings("unchecked")
     static JSONObject addFolder(
             JSONObject jsonObject, String jsonPath, String directoryName, String userAccount) {
         JSONObject type = new JSONObject();
@@ -237,6 +241,8 @@ class JSONManipulator {
      * @param userAccount      the account name person that uploaded the file
      * @param fileSize         the size of the file, in bytes
      */
+
+    @SuppressWarnings("unchecked")
     static void addToIndex(
             List<List<String>> stripes,
             String itemLocation,
@@ -297,6 +303,8 @@ class JSONManipulator {
      * @param JSONFilePath the file path of the catalog file
      * @param userAccount  the account name person that uploaded the file
      */
+
+    @SuppressWarnings("unchecked")
     static void addToIndex(
             String itemLocation, String fileName, String JSONFilePath, String userAccount) {
         JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
@@ -459,6 +467,8 @@ class JSONManipulator {
      * @param manifestFile The JSONObject that contains the information from the manifest file
      * @return map of computers' properties
      */
+
+    @SuppressWarnings("unchecked")
     static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile) {
         LinkedHashMap<String, Long> storageMap = new LinkedHashMap();
         for (Object MACAddress : manifestFile.keySet()) {
@@ -469,6 +479,7 @@ class JSONManipulator {
         return storageMap;
     }
 
+    @SuppressWarnings("unchecked")
     static JSONObject shareFolder(JSONObject jsonObject, String itemLocation, List<String> userNames){
         jsonObject = moveFile(jsonObject, itemLocation, "root/Shared");
         String[] folders = itemLocation.split("/");
@@ -480,6 +491,7 @@ class JSONManipulator {
         return addUsers(jsonObject, itemLocation, userNames);
     }
 
+    @SuppressWarnings("unchecked")
     static JSONObject addUsers(JSONObject jsonObject, String itemLocation, List<String> userNames){
         String[] folders = itemLocation.split("/");
         JSONObject folderToRead = jsonObject;
@@ -534,6 +546,8 @@ class JSONManipulator {
      * @param itemContents            this is the JSONObject the contains all the information about the file
      * @return JSONObject that item is written to
      */
+
+    @SuppressWarnings("unchecked")
     private static JSONObject putItemInFolder(
             JSONObject jsonObject,
             String itemDestinationLocation,

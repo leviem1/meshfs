@@ -203,7 +203,21 @@ final class FileClient {
      * @param currFile      the file to be deleted
      * @throws IOException on error connecting
      */
-    static void deleteFile(String serverAddress, int port, String currFile)
+
+    static void deleteFile(String serverAddress, int port, String currFile, String uuid) throws IOException {
+        deleteFile(serverAddress, port, currFile, uuid, false);
+    }
+
+    /**
+     * This method is used to request file deletion from the catalog or disk.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port          the port of the server to connect to
+     * @param currFile      the file to be deleted
+     * @param physical      if true, delete the physical file. false to delete reference to file
+     * @throws IOException on error connecting
+     */
+    static void deleteFile(String serverAddress, int port, String currFile, String uuid, boolean physical)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
@@ -211,7 +225,7 @@ final class FileClient {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try {
-            out.println(MeshFS.properties.getProperty("uuid") + "|105|" + currFile + "\n");
+            out.println(MeshFS.properties.getProperty("uuid") + "|105|" + currFile + "|" + physical + "\n");
             if (!(response = input.readLine().trim()).equals("201")) {
                 System.err.println(response);
             }

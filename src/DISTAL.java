@@ -15,6 +15,7 @@ import java.util.List;
  */
 class DISTAL {
 
+    @SuppressWarnings("unchecked")
     private static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> storageMap) {
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
