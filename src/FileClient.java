@@ -204,8 +204,8 @@ final class FileClient {
      * @throws IOException on error connecting
      */
 
-    static void deleteFile(String serverAddress, int port, String currFile, String uuid) throws IOException {
-        deleteFile(serverAddress, port, currFile, uuid, false);
+    static void deleteFile(String serverAddress, int port, String currFile) throws IOException {
+        deleteFile(serverAddress, port, currFile, false);
     }
 
     /**
@@ -217,7 +217,7 @@ final class FileClient {
      * @param physical      if true, delete the physical file. false to delete reference to file
      * @throws IOException on error connecting
      */
-    static void deleteFile(String serverAddress, int port, String currFile, String uuid, boolean physical)
+    static void deleteFile(String serverAddress, int port, String currFile, boolean physical)
             throws IOException {
         String response;
         Socket client = new Socket(serverAddress, port);

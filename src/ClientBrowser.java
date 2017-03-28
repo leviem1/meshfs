@@ -490,7 +490,7 @@ class ClientBrowser extends JFrame {
                                     .substring(1, tree1.getSelectionPath().toString().length() - 1)
                                     .replaceAll("[ ]*, ", "/");
                     try {
-                        FileClient.deleteFile(serverAddress, port, jsonPath, uuid);
+                        FileClient.deleteFile(serverAddress, port, jsonPath);
                         catalogCheck();
                     } catch (IOException ignored) {
                     }
@@ -504,7 +504,7 @@ class ClientBrowser extends JFrame {
                                     .substring(1, tree1.getSelectionPath().toString().length() - 1)
                                     .replaceAll("[ ]*, ", "/");
                     try {
-                        FileClient.duplicateFile(serverAddress, port, jsonPath, uuid);
+                        FileClient.duplicateFile(serverAddress, port, jsonPath);
                         catalogCheck();
                     } catch (IOException ignored) {
                     }
@@ -651,7 +651,7 @@ class ClientBrowser extends JFrame {
                             tempCatalog.deleteOnExit();
                             try {
                                 FileClient.receiveFile(
-                                        serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath(), uuid);
+                                        serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath());
                             } catch (Exception e) {
                                 failureCount += 1;
                             }
@@ -664,7 +664,7 @@ class ClientBrowser extends JFrame {
                                 tempCatalog.delete();
                             } else {
                                 FileClient.receiveFile(
-                                        serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath(), uuid);
+                                        serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
                                 clientBrowserButtonModifier(false);
                                 tree1.removeAll();
                                 tree1.setModel(
