@@ -5,6 +5,9 @@ import java.net.*;
  * Created by Levi Muniz on 3/1/17.
  */
 class MulticastClient {
+
+    private MulticastClient() {}
+
     static void notifyClients(String groupAddress, int port) throws IOException {
         byte[] request = ("151|" +  Reporting.getIpAddresses().get(0) + "|" + MeshFS.properties.getProperty("portNumber")).getBytes();
 

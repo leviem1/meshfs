@@ -9,6 +9,8 @@ import java.awt.*;
  */
 final class CenterWindow {
 
+    private CenterWindow() {}
+
     /**
      * This method is used to center a window to the middle of the screen.
      *

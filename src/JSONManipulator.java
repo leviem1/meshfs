@@ -21,6 +21,8 @@ import java.util.*;
  */
 class JSONManipulator {
 
+    private JSONManipulator() {}
+
     /**
      * This method is returns the JSONObject stored in a file.
      *

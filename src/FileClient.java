@@ -14,6 +14,8 @@ import java.time.Instant;
  */
 final class FileClient {
 
+    private FileClient() {}
+
     /**
      * This method is used to ping a server and report latency.
      *
