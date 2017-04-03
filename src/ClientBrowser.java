@@ -24,7 +24,6 @@ class ClientBrowser extends JFrame {
     private final String userAccount;
     private final Timer catalogTimer;
     private final File catalogFile;
-    private final String uuid;
     private boolean isLoaded = false;
     private int failureCount;
     private boolean previousRunType;
@@ -53,7 +52,7 @@ class ClientBrowser extends JFrame {
     //GEN-END:variables
 
     private ClientBrowser(
-            String serverAddress, int port, String userAccount, File catalogFile, String uuid, boolean previousRunType) {
+            String serverAddress, int port, String userAccount, File catalogFile, boolean previousRunType) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
@@ -65,7 +64,6 @@ class ClientBrowser extends JFrame {
         this.port = port;
         this.userAccount = userAccount;
         this.catalogFile = catalogFile;
-        this.uuid = uuid;
         this.previousRunType = previousRunType;
 
         catalogTimer = new java.util.Timer();
@@ -94,9 +92,8 @@ class ClientBrowser extends JFrame {
             JFrame sender,
             String userAccount,
             File catalogFile,
-            String uuid,
             boolean previousRunType) {
-        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogFile, uuid, previousRunType);
+        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogFile, previousRunType);
         CenterWindow.centerOnWindow(sender, clientBrowser);
         clientBrowser.setVisible(true);
         catalogFile.deleteOnExit();
@@ -105,7 +102,7 @@ class ClientBrowser extends JFrame {
     private void initComponents() {
         try {
             FileClient.receiveFile(
-                    serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath(), uuid);
+                    serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
         } catch (IOException ignored) {
         }
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
@@ -350,8 +347,7 @@ class ClientBrowser extends JFrame {
                                                         serverAddress,
                                                         port,
                                                         fileChooser.getSelectedFile().getPath(),
-                                                        userAccount,
-                                                        uuid);
+                                                        userAccount);
                                             } catch (IOException ignored) {
                                             }
                                         });
@@ -522,8 +518,7 @@ class ClientBrowser extends JFrame {
                                 port,
                                 clientBrowser,
                                 userAccount,
-                                catalogFile,
-                                uuid));
+                                catalogFile));
         quitBtn.addActionListener(
                 e -> {
                     dispose();
@@ -534,7 +529,7 @@ class ClientBrowser extends JFrame {
         newDirBtn.addActionListener(
                 e ->
                         NewDirectoryWindow.run(
-                                serverAddress, port, clientBrowser, userAccount, catalogFile, uuid));
+                                serverAddress, port, clientBrowser, userAccount, catalogFile));
         renameBtn.addActionListener(
                 e -> {
                     DefaultMutableTreeNode node =
@@ -552,8 +547,7 @@ class ClientBrowser extends JFrame {
                             jsonPath,
                             node.toString(),
                             userAccount,
-                            catalogFile,
-                            uuid);
+                            catalogFile);
                 });
         logoutBtn.addActionListener(
                 e -> {
@@ -602,8 +596,7 @@ class ClientBrowser extends JFrame {
                     path.substring(path.lastIndexOf(File.separator)),
                     serverAddress,
                     port,
-                    catalogFile,
-                    uuid))) {
+                    catalogFile))) {
                 JOptionPane.showMessageDialog(
                         null,
                         "Download Failed! Please try again later...",

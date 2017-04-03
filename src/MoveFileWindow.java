@@ -19,7 +19,6 @@ class MoveFileWindow extends JFrame {
     private final int port;
     private final String userAccount;
     private final String fileName;
-    private final String uuid;
     private File catalogFile;
     //GEN-BEGIN:variables
     private JPanel dialogPane;
@@ -37,8 +36,7 @@ class MoveFileWindow extends JFrame {
             String serverAddress,
             int port,
             String userAccount,
-            File catalogFile,
-            String uuid) {
+            File catalogFile) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -52,7 +50,6 @@ class MoveFileWindow extends JFrame {
         this.userAccount = userAccount;
         this.fileName = fileName;
         this.catalogFile = catalogFile;
-        this.uuid = uuid;
 
         initComponents();
         frameListeners();
@@ -73,10 +70,9 @@ class MoveFileWindow extends JFrame {
             int port,
             JFrame sender,
             String userAccount,
-            File catalogFile,
-            String uuid) {
+            File catalogFile) {
         moveFileWindow =
-                new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount, catalogFile, uuid);
+                new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount, catalogFile);
         CenterWindow.centerOnWindow(sender, moveFileWindow);
         moveFileWindow.setVisible(true);
     }
@@ -226,7 +222,7 @@ class MoveFileWindow extends JFrame {
                             okButton.setEnabled(false);
                             return;
                         }
-                        FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath, uuid);
+                        FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }

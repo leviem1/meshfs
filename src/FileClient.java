@@ -352,6 +352,22 @@ final class FileClient {
         }
     }
 
+
+    /**
+     * This method is used to request to download a file from the server.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port          the port of the server to connect to
+     * @param fileName      the name of the file that is requested and
+     *                      name to be used to write as in repo
+     * @throws IOException on error connecting or writing file
+     */
+    static void receiveFile(
+            String serverAddress, int port, String fileName)
+            throws IOException {
+        receiveFile(serverAddress, port, fileName, MeshFS.properties.getProperty("repository") + fileName);
+    }
+
     /**
      * This method is used to request to download a file from the server.
      *
@@ -392,6 +408,7 @@ final class FileClient {
         }
     }
 
+    @SuppressWarnings("deprecation")
     static void receiveAuthFile(String serverAddress, int port, String fileOut) throws IOException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);

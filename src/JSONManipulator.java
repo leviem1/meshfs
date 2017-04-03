@@ -352,14 +352,13 @@ class JSONManipulator {
             String outFile,
             String serverAddress,
             int port,
-            File catalog,
-            String uuid)
+            File catalog)
             throws IOException {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
         tempManifest.deleteOnExit();
         FileClient.receiveFile(
-                serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath(), uuid);
+                serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath());
         JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
         String[] folders = itemLocation.split("/");
         JSONObject itemToRead = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
@@ -395,8 +394,7 @@ class JSONManipulator {
                                                             IPAddress,
                                                             port,
                                                             fileNameWNum,
-                                                            outFileDir + File.separator + "." + fileNameWNum,
-                                                            uuid);
+                                                            outFileDir + File.separator + "." + fileNameWNum);
                                                 } catch (IOException ioe) {
                                                     ioe.printStackTrace();
                                                 }
@@ -428,7 +426,7 @@ class JSONManipulator {
                             .contains(fileNameW)) {
                         String IPAddress = ((JSONObject) compInfoFile.get(MACAddress)).get("IP").toString();
                         FileClient.receiveFile(
-                                IPAddress, port, fileNameW, outFileDir + File.separator + "." + outFile, uuid);
+                                IPAddress, port, fileNameW, outFileDir + File.separator + "." + outFile);
                         new File(outFileDir + File.separator + "." + outFile)
                                 .renameTo(new File(outFileDir + File.separator + outFile));
                         cantContinue = false;

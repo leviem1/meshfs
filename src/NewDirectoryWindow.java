@@ -19,7 +19,6 @@ class NewDirectoryWindow extends JFrame {
     private final String serverAddress;
     private final int port;
     private final String userAccount;
-    private final String uuid;
     private File catalogFile;
     //GEN-BEGIN:variables
     private JTextField dirNameTextField;
@@ -29,12 +28,11 @@ class NewDirectoryWindow extends JFrame {
     //GEN-END:variables
 
     private NewDirectoryWindow(
-            String serverAddress, int port, String userAccount, File catalogFile, String uuid) {
+            String serverAddress, int port, String userAccount, File catalogFile) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
         this.catalogFile = catalogFile;
-        this.uuid = uuid;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -55,10 +53,9 @@ class NewDirectoryWindow extends JFrame {
             int port,
             JFrame sender,
             String userAccount,
-            File catalogFile,
-            String uuid) {
+            File catalogFile) {
         newDirectoryWindow =
-                new NewDirectoryWindow(serverAddress, port, userAccount, catalogFile, uuid);
+                new NewDirectoryWindow(serverAddress, port, userAccount, catalogFile);
         CenterWindow.centerOnWindow(sender, newDirectoryWindow);
         newDirectoryWindow.setVisible(true);
     }
@@ -266,7 +263,7 @@ class NewDirectoryWindow extends JFrame {
                     }
                     try {
                         FileClient.addFolder(
-                                serverAddress, port, newFolderPath, directoryName, userAccount, uuid);
+                                serverAddress, port, newFolderPath, directoryName, userAccount);
                     } catch (IOException ignored) {
 
                     }

@@ -293,8 +293,8 @@ class ClientModeConfiguration extends JFrame {
     };
 
     private void onOk() {
-        if (!(FileClient.ping(
-                serverAddressField.getText(), Integer.parseInt(serverPortField.getText())))) {
+        if ((FileClient.ping(
+                serverAddressField.getText(), Integer.parseInt(serverPortField.getText())) > -1)) {
             JOptionPane.showMessageDialog(
                     clientModeConfiguration, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setText("");
@@ -307,24 +307,20 @@ class ClientModeConfiguration extends JFrame {
         }
         try {
             connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
-            String uuid =
-                    FileClient.getServerUUID(
-                            serverAddressField.getText(), Integer.parseInt(serverPortField.getText()));
             File catalog = File.createTempFile(".catalog", ".json");
             if (!(usernameFinal.equals(""))) {
                 FileClient.receiveFile(
                         serverAddressField.getText(),
                         Integer.parseInt(serverPortField.getText()),
                         ".catalog.json",
-                        catalog.getAbsolutePath(),
-                        uuid);
+                        catalog.getAbsolutePath());
                 ClientBrowser.run(
                         serverAddressField.getText(),
                         Integer.parseInt(serverPortField.getText()),
                         clientModeConfiguration,
                         usernameFinal,
                         catalog,
-                        uuid, runType);
+                        runType);
                 dispose();
             }
         } catch (IOException ignored) {

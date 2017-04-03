@@ -61,12 +61,15 @@ class MeshFS {
                     }
                 };
 
+                Timer discoveryBroadcastTimer = new Timer();
+                discoveryBroadcastTimer.scheduleAtFixedRate(discoveryBroadcast, 0, 3000);
+
                 if (!catalog.exists()) {
                     JSONObject newCatalog = new JSONObject();
+                    JSONObject folder = new JSONObject();
+                    JSONObject newRoot = new JSONObject();
 
                     newCatalog.put("currentName", "0000000000000000");
-                    JSONObject newRoot = new JSONObject();
-                    JSONObject folder = new JSONObject();
                     folder.put("type", "directory");
                     newRoot.put("Users", folder);
                     newRoot.put("Shared", folder);
@@ -77,6 +80,7 @@ class MeshFS {
                     } catch (IOException ignored) {
                     }
                 }
+
                 TimerTask manifestCheck =
                         new TimerTask() {
                             @Override
@@ -121,7 +125,8 @@ class MeshFS {
                                         FileClient.sendReport(
                                                 properties.getProperty("masterIP"),
                                                 Integer.parseInt(properties.getProperty("portNumber")));
-                                        //TODO: FileClient.receiveFile() manifest and catalog backups
+                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest");
+                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog");
                                     } catch (IOException ioe) {
                                         ioe.printStackTrace();
                                     }

@@ -54,6 +54,7 @@ class MulticastServerInit implements Runnable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void masterDownRecord(InetAddress address) {
         reportedDown.add(address);
         if ((reportedDown.size() > JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest").size() / 2) && !masterDown) {
@@ -111,13 +112,23 @@ class MulticastServerInit implements Runnable {
         }
     }
 
+    private void recordVote(String ip, String vote) {
+
+    }
+
     private void processRequest(String request, DatagramPacket dp) {
         String[] requestParts = request.split("\\|");
 
-        if (requestParts[0].equals("151")) {
-            evaluateMaster(requestParts[1], requestParts[2]);
-        } else if (requestParts[0].equals("152")) {
-            masterDownRecord(dp.getAddress());
+        switch (requestParts[0]) {
+            case "151":
+                evaluateMaster(requestParts[1], requestParts[2]);
+                break;
+            case "152":
+                masterDownRecord(dp.getAddress());
+                break;
+            case "153":
+                recordVote(dp.getAddress().toString(), requestParts[1]);
+                break;
         }
     }
 
