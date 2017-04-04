@@ -105,7 +105,7 @@ class ClientBrowser extends JFrame {
     private void initComponents() {
         try {
             FileClient.receiveFile(
-                    serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath(), uuid);
+                    serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
         } catch (IOException ignored) {
         }
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
@@ -350,8 +350,7 @@ class ClientBrowser extends JFrame {
                                                         serverAddress,
                                                         port,
                                                         fileChooser.getSelectedFile().getPath(),
-                                                        userAccount,
-                                                        uuid);
+                                                        userAccount);
                                             } catch (IOException ignored) {
                                             }
                                         });
@@ -466,12 +465,13 @@ class ClientBrowser extends JFrame {
                                     .toString()
                                     .substring(1, tree1.getSelectionPath().toString().length() - 1)
                                     .replaceAll("[ ]*, ", "/");
-                    JSONObject fileProperties =
-                            JSONManipulator.getItemContents(
-                                    JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), jsonPath);
-                    Object fileSize = fileProperties.get("fileSize");
-                    Object creationDate = fileProperties.get("creationDate");
+                    JSONObject jsonObject = JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
+                    JSONObject fileProperties = JSONManipulator.getItemContents(jsonObject, jsonPath);
                     Object owner = fileProperties.get("owner");
+                    JSONObject fileInfo = JSONManipulator.getItemContents(jsonObject, "fileInfo/" + fileProperties.get("fileName").toString());
+                    Object fileSize = fileInfo.get("fileSize");
+                    Object creationDate = fileInfo.get("creationDate");
+
 
                     ClientBrowserFileProperties.run(
                             node.toString(),
@@ -504,7 +504,7 @@ class ClientBrowser extends JFrame {
                                     .substring(1, tree1.getSelectionPath().toString().length() - 1)
                                     .replaceAll("[ ]*, ", "/");
                     try {
-                        FileClient.duplicateFile(serverAddress, port, jsonPath, uuid);
+                        FileClient.duplicateFile(serverAddress, port, jsonPath);
                         catalogCheck();
                     } catch (IOException ignored) {
                     }
@@ -602,8 +602,7 @@ class ClientBrowser extends JFrame {
                     path.substring(path.lastIndexOf(File.separator)),
                     serverAddress,
                     port,
-                    catalogFile,
-                    uuid))) {
+                    catalogFile))) {
                 JOptionPane.showMessageDialog(
                         null,
                         "Download Failed! Please try again later...",
@@ -651,7 +650,7 @@ class ClientBrowser extends JFrame {
                             tempCatalog.deleteOnExit();
                             try {
                                 FileClient.receiveFile(
-                                        serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath(), uuid);
+                                        serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath());
                             } catch (Exception e) {
                                 failureCount += 1;
                             }
@@ -664,7 +663,7 @@ class ClientBrowser extends JFrame {
                                 tempCatalog.delete();
                             } else {
                                 FileClient.receiveFile(
-                                        serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath(), uuid);
+                                        serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
                                 clientBrowserButtonModifier(false);
                                 tree1.removeAll();
                                 tree1.setModel(

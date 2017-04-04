@@ -1,3 +1,4 @@
+import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -42,7 +43,7 @@ class JSONManipulator {
     }
 
     static String catalogStringFixer(String itemLocationString){
-        if ((! (itemLocationString.substring(0,itemLocationString.indexOf("/"))).equals("root/Users")) && (! (itemLocationString.substring(0,itemLocationString.indexOf("/"))).equals("root/Shared"))){
+        if ((! (itemLocationString.substring(0,itemLocationString.indexOf("/",1))).equals("root/Users")) && (! (itemLocationString.substring(0,itemLocationString.indexOf("/",1))).equals("root/Shared"))){
             itemLocationString = itemLocationString.substring(0,itemLocationString.indexOf("/") + 1) + "Users/" + itemLocationString.substring(itemLocationString.indexOf("/",1));
         }
         return itemLocationString;
@@ -61,23 +62,26 @@ class JSONManipulator {
     @SuppressWarnings("unchecked")
     static LinkedHashMap<String, String> getMapOfFolderContents(
             JSONObject jsonObject, String folderLocation, String userAccount) {
+
         if (folderLocation.equals(userAccount)) {
             folderLocation += "/";
         }
         String[] Tree = folderLocation.split("/");
         JSONObject folderToRead = jsonObject;
-        JSONObject folderToReadNew;
-        for (String folder : Tree) {
-            folderToReadNew = (JSONObject) folderToRead.get(folder);
-            if (folderToReadNew == null) {
-                JSONObject folderCreator = new JSONObject();
+        if (!folderLocation.equals(null)) {
+            JSONObject folderToReadNew;
+            for (String folder : Tree) {
+                folderToReadNew = (JSONObject) folderToRead.get(folder);
+                if (folderToReadNew == null) {
+                    JSONObject folderCreator = new JSONObject();
 
-                folderCreator.put("type", "directory");
+                    folderCreator.put("type", "directory");
 
-                folderToRead.put(folder, folderCreator);
-                folderToRead = (JSONObject) folderToRead.get(folder);
-            } else {
-                folderToRead = folderToReadNew;
+                    folderToRead.put(folder, folderCreator);
+                    folderToRead = (JSONObject) folderToRead.get(folder);
+                } else {
+                    folderToRead = folderToReadNew;
+                }
             }
         }
         LinkedHashMap<String, String> contents = new LinkedHashMap<>();
@@ -117,10 +121,16 @@ class JSONManipulator {
         } else {
             item = itemLocation;
         }
-        try {
-            folderToRead.remove(item);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        List<String> filesToRemove = smartRemove(folderToRead);
+        folderToRead.remove(item);
+        for (String fileName : filesToRemove){
+            ((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).replace(
+                    "references",
+                    Integer.valueOf(((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).get("references").toString()) - 1);
+            if (Integer.valueOf(((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).get("references").toString()) < 1){
+                // actually delete file
+            }
         }
 
         return jsonObject;
@@ -153,13 +163,44 @@ class JSONManipulator {
      * @param newName             what the new file should be called.
      * @return updated JSONObject that the item was read from
      */
+
     static JSONObject copyFile(
             JSONObject jsonObject,
             String itemLocation,
             String destinationLocation,
             boolean showDate,
-            String newName) {
+            String newName){
+        return copyFile(jsonObject,itemLocation, destinationLocation, showDate, newName, true);
+    }
+
+    private static JSONObject copyFile(
+            JSONObject jsonObject,
+            String itemLocation,
+            String destinationLocation,
+            boolean showDate,
+            String newName,
+            boolean smartCopy) {
         JSONObject itemContents = getItemContents(jsonObject, itemLocation);
+
+        if (smartCopy){
+            JSONObject destinationInfo = getItemContents(jsonObject,destinationLocation);
+            String owner = destinationInfo.get("owner").toString();
+            JSONArray users;
+
+            try{
+                users = (JSONArray) destinationInfo.get("users");
+            }
+            catch (Exception e){
+                users = null;
+            }
+            Pair<JSONObject, List<String>> info = smartCopy(itemContents, owner, users);
+            itemContents = info.getKey();
+            for (String fileName : info.getValue()){
+                ((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).replace(
+                        "references",
+                        Integer.valueOf((((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).get("references").toString())) + 1);
+            }
+        }
 
         if (showDate) {
             DateFormat df = new SimpleDateFormat("h:mm:ss a");
@@ -256,20 +297,18 @@ class JSONManipulator {
 
         jsonFile.replace("currentName", alphanumericName);
 
+        JSONObject objChildInfo = new JSONObject();
         JSONObject objChild = new JSONObject();
         JSONArray ipArray = new JSONArray();
 
         for (int stripe = 0; stripe < stripes.size(); stripe++) {
-            for (int copy = 0; copy < (stripes.get(stripe)).size(); copy++) {
-
-                ipArray.add(stripes.get(stripe).get(copy));
-            }
+            ipArray.addAll(stripes.get(stripe));
             if (stripe == 0) {
 
-                objChild.put("whole", ipArray.clone());
+                objChildInfo.put("whole", ipArray.clone());
             } else {
 
-                objChild.put("stripe" + "_" + String.valueOf(stripe - 1), ipArray.clone());
+                objChildInfo.put("stripe" + "_" + String.valueOf(stripe - 1), ipArray.clone());
             }
             ipArray.clear();
         }
@@ -282,11 +321,14 @@ class JSONManipulator {
 
         objChild.put("fileName", alphanumericName);
 
-        objChild.put("fileSize", humanReadableByteCount(fileSize));
+        objChildInfo.put("fileSize", humanReadableByteCount(fileSize));
 
-        objChild.put("creationDate", creationDate);
+        objChildInfo.put("creationDate", creationDate);
 
-        jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName, objChild);
+        objChildInfo.put("references", 1);
+
+        jsonFile = putItemInFolder(jsonFile, itemLocation, fileName, objChild);
+        jsonFile = putItemInFolder(jsonFile, "fileInfo", alphanumericName, objChildInfo);
 
         try {
             writeJSONObject(JSONFilePath, jsonFile);
@@ -352,33 +394,31 @@ class JSONManipulator {
             String outFile,
             String serverAddress,
             int port,
-            File catalog,
-            String uuid)
+            File catalog)
             throws IOException {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
         tempManifest.deleteOnExit();
         FileClient.receiveFile(
-                serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath(), uuid);
+                serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath());
         JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
         String[] folders = itemLocation.split("/");
-        JSONObject itemToRead = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
+        JSONObject jsonObject = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
         List<String> stripeNames = new ArrayList<>();
         List<Thread> childThreads = new ArrayList<>();
         boolean wholeNecessary = true;
 
-        for (String folder : folders) {
-            itemToRead = (JSONObject) itemToRead.get(folder);
-        }
+        JSONObject itemToRead = getItemContents(jsonObject, itemLocation);
 
         String fileName = itemToRead.get("fileName").toString();
+        JSONObject fileInfo = getItemContents(jsonObject, "fileInfo/" + fileName);
 
-        for (Object stripe : itemToRead.keySet()) {
+        for (Object stripe : fileInfo.keySet()) {
             if (stripe.toString().contains("stripe")) {
                 wholeNecessary = false;
                 String fileNameWNum =
                         fileName + "_s" + stripe.toString().substring(stripe.toString().lastIndexOf("_") + 1);
-                JSONArray compsWithStripe = (JSONArray) itemToRead.get(stripe);
+                JSONArray compsWithStripe = (JSONArray) fileInfo.get(stripe);
                 boolean cantContinue = true;
 
                 for (Object MACAddress : compsWithStripe) {
@@ -395,8 +435,7 @@ class JSONManipulator {
                                                             IPAddress,
                                                             port,
                                                             fileNameWNum,
-                                                            outFileDir + File.separator + "." + fileNameWNum,
-                                                            uuid);
+                                                            outFileDir + File.separator + "." + fileNameWNum);
                                                 } catch (IOException ioe) {
                                                     ioe.printStackTrace();
                                                 }
@@ -419,7 +458,7 @@ class JSONManipulator {
         }
         if (wholeNecessary) {
             String fileNameW = fileName + "_w";
-            JSONArray compsWithWhole = (JSONArray) itemToRead.get("whole");
+            JSONArray compsWithWhole = (JSONArray) fileInfo.get("whole");
             boolean cantContinue = true;
 
             for (Object MACAddress : compsWithWhole) {
@@ -428,7 +467,7 @@ class JSONManipulator {
                             .contains(fileNameW)) {
                         String IPAddress = ((JSONObject) compInfoFile.get(MACAddress)).get("IP").toString();
                         FileClient.receiveFile(
-                                IPAddress, port, fileNameW, outFileDir + File.separator + "." + outFile, uuid);
+                                IPAddress, port, fileNameW, outFileDir + File.separator + "." + outFile);
                         new File(outFileDir + File.separator + "." + outFile)
                                 .renameTo(new File(outFileDir + File.separator + outFile));
                         cantContinue = false;
@@ -586,7 +625,7 @@ class JSONManipulator {
      */
     private static JSONObject moveFile(
             JSONObject jsonObject, String itemLocation, String destinationLocation, String newName) {
-        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false, newName);
+        jsonObject = copyFile(jsonObject, itemLocation, destinationLocation, false, newName, false);
         jsonObject = removeItem(jsonObject, itemLocation);
         return jsonObject;
     }
@@ -613,5 +652,45 @@ class JSONManipulator {
             unsorted.add(name + String.valueOf(number));
         }
         return unsorted;
+    }
+
+    private static Pair<JSONObject, List<String>> smartCopy(JSONObject itemToChange, String owner, JSONArray users){
+        itemToChange.replace("owner", owner);
+        if (users == null){
+            itemToChange.remove("users");
+        }
+        else{
+            itemToChange.put("users", users);
+        }
+
+        List<String> copiedFiles = new ArrayList<>();
+
+        if (itemToChange.get("type").toString().equals("directory")){
+            LinkedHashMap<String, String> children = getMapOfFolderContents(itemToChange,null);
+            for (String childName : children.keySet()) {
+                Pair<JSONObject, List<String>> copyInfo = smartCopy((JSONObject) itemToChange.get(childName), owner, users);
+                itemToChange.replace(childName, copyInfo.getKey());
+                copiedFiles.addAll(copyInfo.getValue());
+            }
+        }
+        else if (itemToChange.get("type").toString().equals("file")){
+            copiedFiles.add(itemToChange.get("fileName").toString());
+        }
+        return new Pair<>(itemToChange, copiedFiles);
+    }
+
+    private static List<String> smartRemove(JSONObject itemToRemove){
+        List<String> removedFiles = new ArrayList<>();
+
+        if (itemToRemove.get("type").toString().equals("directory")){
+            LinkedHashMap<String, String> children = getMapOfFolderContents(itemToRemove,null);
+            for (String childName : children.keySet()) {
+                removedFiles.addAll(smartRemove((JSONObject) itemToRemove.get(childName)));
+            }
+        }
+        else if (itemToRemove.get("type").toString().equals("file")){
+            removedFiles.add(itemToRemove.get("fileName").toString());
+        }
+        return removedFiles;
     }
 }
