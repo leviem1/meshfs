@@ -124,12 +124,24 @@ class JSONManipulator {
 
         List<String> filesToRemove = smartRemove(folderToRead);
         folderToRead.remove(item);
+        JSONObject manifest = getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         for (String fileName : filesToRemove){
             ((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).replace(
                     "references",
                     Integer.valueOf(((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).get("references").toString()) - 1);
             if (Integer.valueOf(((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).get("references").toString()) < 1){
                 // actually delete file
+                JSONObject fileInfo = getItemContents(jsonObject, "fileInfo/" + fileName);
+                for (Object infoKey : fileInfo.keySet()){
+                    if (infoKey.toString().contains("_")){
+                        for (Object MACAddress : (JSONArray) fileInfo.get(infoKey)){
+                            try{
+                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(),Integer.valueOf(MeshFS.properties.getProperty("portNumber")),infoKey.toString(),true);
+                            }catch (IOException ignored){}
+                        }
+                    }
+                }
+                ((JSONObject) jsonObject.get("fileInfo")).remove(fileName);
             }
         }
 
