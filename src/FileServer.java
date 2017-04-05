@@ -129,7 +129,7 @@ class ServerInit implements Runnable {
 
                         break;
                     case "105": //105:Delete file (virtual and physical)
-                        deleteFile(requestParts[2], out);
+                        deleteFile(requestParts[2], Boolean.parseBoolean(requestParts[3]), out);
 
                         break;
                     case "106": //106:Make directory (virtual only)
@@ -239,17 +239,21 @@ class ServerInit implements Runnable {
                 JSONManipulator.moveFile(jsonObj, currentPath, newPath));
     }
 
-    private void deleteFile(String jsonPath, Socket client) throws IOException {
+    private void deleteFile(String filePath, boolean physical, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
 
-        JSONObject jsonObj =
-                JSONManipulator.getJSONObject(
-                        MeshFS.properties.getProperty("repository") + ".catalog.json");
-        JSONManipulator.writeJSONObject(
-                MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONManipulator.removeItem(jsonObj, jsonPath));
+        if (physical) {
+            FileUtils.removeFile(filePath);
+        } else {
+            JSONObject jsonObj =
+                    JSONManipulator.getJSONObject(
+                            MeshFS.properties.getProperty("repository") + ".catalog.json");
+            JSONManipulator.writeJSONObject(
+                    MeshFS.properties.getProperty("repository") + ".catalog.json",
+                    JSONManipulator.removeItem(jsonObj, filePath));
+        }
     }
 
     private void duplicateFile(String currentPath, Socket client) throws IOException {
