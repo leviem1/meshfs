@@ -12,6 +12,8 @@ import java.util.List;
  */
 class FileUtils {
 
+    private FileUtils() {}
+
     /**
      * This method returns the size of a file in bytes.
      *

@@ -10,6 +10,8 @@ import java.util.UUID;
  */
 class ConfigParser {
 
+    private ConfigParser() {}
+
     /**
      * This method is used to load the default values of properties of this program.
      *

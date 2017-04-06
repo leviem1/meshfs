@@ -11,6 +11,7 @@ import java.util.*;
 class MulticastServer {
     private Thread mcast;
     private MulticastSocket socket;
+    private Timer checkMastersTimer;
 
     void startServer(String groupAddress, int port) throws IOException {
         InetAddress group = InetAddress.getByName(groupAddress);
@@ -21,6 +22,20 @@ class MulticastServer {
         System.out.println("Multicast server initialized...");
         mcast.start();
         System.out.println("Multicast server started!");
+
+        TimerTask checkMasters = new TimerTask() {
+            @Override
+            public void run() {
+                for (String address : MulticastServerInit.foundMasters) {
+                    if (FileClient.ping(address, Integer.parseInt(MeshFS.properties.getProperty("port"))) == -1) {
+                        MulticastServerInit.foundMasters.remove(address);
+                    }
+                }
+            }
+        };
+
+        checkMastersTimer = new Timer();
+        checkMastersTimer.scheduleAtFixedRate(checkMasters, 0, 1000);
     }
 
     void stopServer() {
@@ -32,25 +47,34 @@ class MulticastServer {
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
+            checkMastersTimer.cancel();
         }
+    }
+
+    List<String> getFoundMasters() {
+        return MulticastServerInit.foundMasters;
     }
 }
 
+@SuppressWarnings("unchecked")
 class MulticastServerInit implements Runnable {
 
     private final DatagramSocket socket;
     private Set<InetAddress> reportedDown = new LinkedHashSet<>();
     private Timer voteCastScheduler = new Timer();
     private boolean masterDown = false;
+    static List<String> foundMasters = new ArrayList();
 
     MulticastServerInit(DatagramSocket socket) {
         this.socket = socket;
     }
 
     private void evaluateMaster(String ip, String port) {
-        if ((!MeshFS.isMaster) && (!ip.equals(MeshFS.properties.getProperty("masterIP"))) && !(FileClient.ping(MeshFS.properties.getProperty("masterIP"), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) > -1) && (FileClient.ping(ip, Integer.parseInt(port)) > -1)) {
+        if ((MeshFS.nogui) && (!MeshFS.isMaster) && (!ip.equals(MeshFS.properties.getProperty("masterIP"))) && !(FileClient.ping(MeshFS.properties.getProperty("masterIP"), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) > -1) && (FileClient.ping(ip, Integer.parseInt(port)) > -1)) {
             MeshFS.properties.setProperty("masterIP", ip);
             MeshFS.properties.setProperty("portNumber", port);
+        } else if ((!MeshFS.nogui) && (FileClient.ping(ip, Integer.parseInt(port)) > -1)) {
+            foundMasters.add(ip);
         }
     }
 
@@ -111,13 +135,23 @@ class MulticastServerInit implements Runnable {
         }
     }
 
+    private void recordVote(String ip, String vote) {
+
+    }
+
     private void processRequest(String request, DatagramPacket dp) {
         String[] requestParts = request.split("\\|");
 
-        if (requestParts[0].equals("151")) {
-            evaluateMaster(requestParts[1], requestParts[2]);
-        } else if (requestParts[0].equals("152")) {
-            masterDownRecord(dp.getAddress());
+        switch (requestParts[0]) {
+            case "151":
+                evaluateMaster(requestParts[1], requestParts[2]);
+                break;
+            case "152":
+                masterDownRecord(dp.getAddress());
+                break;
+            case "153":
+                recordVote(dp.getAddress().toString(), requestParts[1]);
+                break;
         }
     }
 

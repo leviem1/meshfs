@@ -4,10 +4,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -21,6 +18,8 @@ import java.util.*;
  * @version 1.0.0
  */
 class JSONManipulator {
+
+    private JSONManipulator() {}
 
     /**
      * This method is returns the JSONObject stored in a file.
@@ -43,8 +42,7 @@ class JSONManipulator {
     }
 
     static String catalogStringFixer(String itemLocationString){
-        if ((! (itemLocationString.substring(0,itemLocationString.indexOf("/",1))).equals("root/Users")) && (! (itemLocationString.substring(0,itemLocationString.indexOf("/",1))).equals("root/Shared"))){
-            itemLocationString = itemLocationString.substring(0,itemLocationString.indexOf("/") + 1) + "Users/" + itemLocationString.substring(itemLocationString.indexOf("/",1));
+        if ((! (itemLocationString.substring(0,itemLocationString.indexOf("/",1))).equals("root/Users")) && (! (itemLocationString.substring(0,itemLocationString.indexOf("/",1))).equals("root/Shared"))){            itemLocationString = itemLocationString.substring(0,itemLocationString.indexOf("/") + 1) + "Users/" + itemLocationString.substring(itemLocationString.indexOf("/",1));
         }
         return itemLocationString;
     }
@@ -62,7 +60,6 @@ class JSONManipulator {
     @SuppressWarnings("unchecked")
     static LinkedHashMap<String, String> getMapOfFolderContents(
             JSONObject jsonObject, String folderLocation, String userAccount) {
-
         if (folderLocation.equals(userAccount)) {
             folderLocation += "/";
         }
@@ -137,8 +134,7 @@ class JSONManipulator {
                         for (Object MACAddress : (JSONArray) fileInfo.get(infoKey)){
                             try{
                                 FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(),Integer.valueOf(MeshFS.properties.getProperty("portNumber")),infoKey.toString(),true);
-                            }catch (IOException ignored){}
-                        }
+                            }catch (IOException ignored){}                        }
                     }
                 }
                 ((JSONObject) jsonObject.get("fileInfo")).remove(fileName);
@@ -175,16 +171,14 @@ class JSONManipulator {
      * @param newName             what the new file should be called.
      * @return updated JSONObject that the item was read from
      */
-
     static JSONObject copyFile(
             JSONObject jsonObject,
             String itemLocation,
             String destinationLocation,
             boolean showDate,
-            String newName){
-        return copyFile(jsonObject,itemLocation, destinationLocation, showDate, newName, true);
+            String newName) {
+        return copyFile(jsonObject, itemLocation, destinationLocation, showDate, newName, true);
     }
-
     private static JSONObject copyFile(
             JSONObject jsonObject,
             String itemLocation,
@@ -705,4 +699,5 @@ class JSONManipulator {
         }
         return removedFiles;
     }
+
 }
