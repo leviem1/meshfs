@@ -12,6 +12,7 @@ class MeshFS {
     static boolean nogui = false;
     static boolean configure = false;
     static boolean isMaster = false;
+    static MulticastServer multicastServer;
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
@@ -19,6 +20,12 @@ class MeshFS {
 
         properties = ConfigParser.loadProperties();
         new CliParser(args);
+        multicastServer = new MulticastServer();
+        try {
+            multicastServer.startServer(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
 
         if (nogui) {
@@ -204,5 +211,6 @@ class onQuit implements Runnable {
         if (MeshFS.nogui) {
             MeshFS.fileServer.stopServer();
         }
+        MeshFS.multicastServer.stopServer();
     }
 }
