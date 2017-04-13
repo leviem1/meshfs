@@ -70,10 +70,7 @@ class MulticastServerInit implements Runnable {
     }
 
     private void evaluateMaster(String ip, String port) {
-        if ((MeshFS.nogui) && (!MeshFS.isMaster) && (!ip.equals(MeshFS.properties.getProperty("masterIP"))) && !(FileClient.ping(MeshFS.properties.getProperty("masterIP"), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) > -1) && (FileClient.ping(ip, Integer.parseInt(port)) > -1)) {
-            MeshFS.properties.setProperty("masterIP", ip);
-            MeshFS.properties.setProperty("portNumber", port);
-        } else if ((!MeshFS.nogui) && (FileClient.ping(ip, Integer.parseInt(port)) > -1)) {
+        if ((!MeshFS.nogui) && (FileClient.ping(ip, Integer.parseInt(port)) > -1)) {
             foundMasters.add(ip);
         }
     }
