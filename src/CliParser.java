@@ -26,16 +26,13 @@ class CliParser {
         opt.addOption("nogui", false, "Run MeshFS without graphical user interface (server mode only)");
         opt.addOption("reconfig", false, "Reconfigure MeshFS graphically");
         opt.addOption("adduser", true, "Add user interactively");
+        opt.addOption("u", "uuid", true, "Add user interactively");
 
         try {
             CommandLine cmd = (new DefaultParser()).parse(opt, args);
 
             if (cmd.hasOption("h")) {
                 help();
-            }
-
-            if (cmd.hasOption("m")) {
-                MeshFS.properties.setProperty("masterIP", cmd.getOptionValue("m"));
             }
 
             if (cmd.hasOption("adduser") && MeshFS.isMaster) {
@@ -47,12 +44,20 @@ class CliParser {
                 MeshFS.properties = ConfigParser.loadDefaultProperties();
             }
 
+            if (cmd.hasOption("m")) {
+                MeshFS.properties.setProperty("masterIP", cmd.getOptionValue("m"));
+            }
+
             if (cmd.hasOption("nogui")) {
                 MeshFS.nogui = true;
             }
 
             if (cmd.hasOption("reconfig")) {
                 MeshFS.configure = true;
+            }
+
+            if (cmd.hasOption("u")) {
+                MeshFS.properties.setProperty("uuid", cmd.getOptionValue("u"));
             }
 
         } catch (ParseException e) {
