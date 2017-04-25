@@ -109,7 +109,11 @@ class ServerInit implements Runnable {
                 }
                 switch (requestParts[1]) {
                     case "101": //101:Get file
-                        sendFile(requestParts[2], out);
+                        try {
+                            sendFile(requestParts[2], out);
+                        } catch (FileNotFoundException ignored) {
+                            out.close();
+                        }
 
                         break;
                     case "102": //102:Post file
@@ -165,7 +169,11 @@ class ServerInit implements Runnable {
                         break;
 
                     case "113": //113:Send Auth Info
-                        sendAuthInfo(out);
+                        try {
+                            sendAuthInfo(out);
+                        } catch (FileNotFoundException ignored) {
+                            out.close();
+                        }
 
                         break;
 
