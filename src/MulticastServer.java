@@ -161,6 +161,7 @@ class MulticastServerInit implements Runnable {
                 if (!dp.getAddress().equals(InetAddress.getByName(Reporting.getIpAddresses().get(0)))) {
                     processRequest(new String(dp.getData()).trim(), dp);
                 }
+            } catch (SocketTimeoutException | SocketException ignored) {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }

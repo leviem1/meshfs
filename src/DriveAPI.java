@@ -9,11 +9,10 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.*;
-import com.google.api.services.drive.model.*;
 import com.google.api.services.drive.model.File;
 
 import java.io.*;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Created by Levi Muniz on 4/20/17.
@@ -26,7 +25,7 @@ import java.util.Collections;
  * @version 1.0.0
  */
 
-public class DriveAPI {
+class DriveAPI {
 
     private static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport) throws Exception {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSONFactory, new InputStreamReader(MeshFS.class.getResourceAsStream("/client_id.json")));
@@ -77,12 +76,14 @@ public class DriveAPI {
         downloader.download(new GenericUrl(uploadedFile.getDownloadUrl()), out);
     }
 
-    static FileList listFiles() throws Exception {
+    static List<File> listFiles() throws Exception {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Credential credential = authorize(JSONFactory, httpTransport);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
-        return drive.files().list().setQ("trashed = false and mimeType != 'application/vnd.google-apps.folder'").execute();
+        List<File> files = new ArrayList<>();
+        files.addAll(drive.files().list().setQ("trashed = false and mimeType != 'application/vnd.google-apps.folder'").execute().getItems());
+        return files;
     }
 }
 
