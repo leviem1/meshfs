@@ -10,11 +10,9 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.*;
 import com.google.api.services.drive.model.*;
+import com.google.api.services.drive.model.File;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Collections;
 
 /**
@@ -32,8 +30,12 @@ public class DriveAPI {
 
     private static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport) throws Exception {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSONFactory, new InputStreamReader(MeshFS.class.getResourceAsStream("/client_id.json")));
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSONFactory, clientSecrets, Collections.singleton(DriveScopes.DRIVE_FILE)).setDataStoreFactory(new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/MeshFS"))).build();
+        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSONFactory, clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/MeshFS"))).build();
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+    }
+
+    static void unauthorize() {
+        FileUtils.removeFile(System.getProperty("user.home") + java.io.File.separator + ".store/MeshFS/StoredCredential");
     }
 
     static File uploadFile(java.io.File filePath, String type) throws Exception {
@@ -80,7 +82,7 @@ public class DriveAPI {
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Credential credential = authorize(JSONFactory, httpTransport);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
-        return drive.files().list().setQ("trashed = false").execute();
+        return drive.files().list().setQ("trashed = false and mimeType != 'application/vnd.google-apps.folder'").execute();
     }
 }
 
