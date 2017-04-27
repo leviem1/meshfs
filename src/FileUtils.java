@@ -1,7 +1,5 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.security.MessageDigest;
 import java.util.List;
 
 /**
@@ -94,5 +92,26 @@ class FileUtils {
      */
     static boolean removeFile(String path) {
         return new File(path).delete();
+    }
+
+    static String getMD5Hash(String path) throws Exception {
+        int br;
+        MessageDigest md = MessageDigest.getInstance("SHA1");
+        FileInputStream fis = new FileInputStream(path);
+        byte[] data = new byte[1024];
+
+        while ((br = fis.read(data, 0, data.length)) != -1) {
+            md.update(data, 0, br);
+        }
+
+        byte[] mdData = md.digest();
+
+        StringBuffer hash = new StringBuffer("");
+
+        for (int i = 0; i < mdData.length; i++) {
+            hash.append(Integer.toString((mdData[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        return hash.toString();
     }
 }
