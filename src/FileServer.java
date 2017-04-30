@@ -63,7 +63,7 @@ class FileServer {
             for (Thread socket : sockets) {
                 try {
                     socket.join();
-                } catch (Exception e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -104,7 +104,7 @@ class ServerInit implements Runnable {
             try {
                 String[] requestParts = request.trim().split("\\|");
                 if (!requestParts[0].equals(MeshFS.properties.getProperty("uuid"))) {
-                    badRequest(out, request);
+                    badRequest(out, request, "Incorrect UUID");
                     return;
                 }
                 switch (requestParts[1]) {
@@ -183,11 +183,11 @@ class ServerInit implements Runnable {
                         break;
 
                     default:
-                        badRequest(out, request);
+                        badRequest(out, request, "Invalid Request");
                         break;
                 }
             } catch (Exception e) {
-                badRequest(out, request);
+                badRequest(out, request, e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -523,11 +523,11 @@ class ServerInit implements Runnable {
     }
 
 
-    private void badRequest(Socket client, String request) {
+    private void badRequest(Socket client, String request, String message) {
         try {
             if (client.isClosed()) return;
             PrintWriter out = new PrintWriter(client.getOutputStream());
-            out.println("202\nBad request:\n\n" + request);
+            out.println("202\nBad request:" + request + "\n\n" + message);
             out.flush();
         } catch (IOException ioe) {
             ioe.printStackTrace();

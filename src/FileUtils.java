@@ -1,5 +1,6 @@
 import java.io.*;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -94,7 +95,7 @@ class FileUtils {
         return new File(path).delete();
     }
 
-    static String getMD5Hash(String path) throws Exception {
+    static String getMD5Hash(String path) throws IOException, NoSuchAlgorithmException {
         int br;
         MessageDigest md = MessageDigest.getInstance("SHA1");
         FileInputStream fis = new FileInputStream(path);
@@ -113,5 +114,9 @@ class FileUtils {
         }
 
         return hash.toString();
+    }
+
+    static long getModificationDate(String path) {
+        return new File(path).lastModified();
     }
 }

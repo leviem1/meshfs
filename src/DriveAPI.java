@@ -12,11 +12,9 @@ import com.google.api.services.drive.*;
 import com.google.api.services.drive.model.File;
 
 import java.io.*;
+import java.security.GeneralSecurityException;
 import java.util.*;
 
-/**
- * Created by Levi Muniz on 4/20/17.
- */
 
 /**
  * This class is used to hook into Google Drive
@@ -27,7 +25,7 @@ import java.util.*;
 
 class DriveAPI {
 
-    private static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport) throws Exception {
+    private static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport) throws IOException {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSONFactory, new InputStreamReader(MeshFS.class.getResourceAsStream("/client_id.json")));
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSONFactory, clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/MeshFS"))).build();
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
@@ -37,7 +35,7 @@ class DriveAPI {
         FileUtils.removeFile(System.getProperty("user.home") + java.io.File.separator + ".store/MeshFS/StoredCredential");
     }
 
-    static File uploadFile(java.io.File filePath, String type) throws Exception {
+    static File uploadFile(java.io.File filePath, String type) throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Credential credential = authorize(JSONFactory, httpTransport);
@@ -54,7 +52,7 @@ class DriveAPI {
         return insert.execute();
     }
 
-    static void downloadFile(String fileID) throws Exception {
+    static void downloadFile(String fileID) throws IOException, GeneralSecurityException {
 
         java.io.File parentDir = new java.io.File(System.getProperty("user.home") + java.io.File.separator + "Downloads" + java.io.File.separator);
         if (!parentDir.exists() && !parentDir.mkdirs()) {
