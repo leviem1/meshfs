@@ -4,8 +4,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * The CliParser class allows for the reading of command line arguments. Only calling on the class
@@ -16,7 +15,7 @@ import java.util.HashMap;
  */
 class CliParser {
 
-    private final Options opt = new Options();
+    final Options opt = new Options();
 
     CliParser(String[] args) {
         opt.addOption("h", "help", false, "Display application's help message.");
@@ -26,17 +25,13 @@ class CliParser {
         opt.addOption("nogui", false, "Run MeshFS without graphical user interface (server mode only)");
         opt.addOption("reconfig", false, "Reconfigure MeshFS graphically");
         opt.addOption("adduser", true, "Add user interactively");
-        opt.addOption("u", "uuid", true, "Add user interactively");
+        opt.addOption("u", "uuid", true, "Set UUID value for server to server communication");
 
         try {
             CommandLine cmd = (new DefaultParser()).parse(opt, args);
 
             if (cmd.hasOption("h")) {
                 help();
-            }
-
-            if (cmd.hasOption("adduser") && MeshFS.isMaster) {
-                addUser(cmd.getOptionValue("add-user"));
             }
 
             if (cmd.hasOption("r")) {
@@ -60,6 +55,14 @@ class CliParser {
                 MeshFS.properties.setProperty("uuid", cmd.getOptionValue("u"));
             }
 
+            if (cmd.hasOption("adduser") && MeshFS.isMaster) {
+                try {
+                    addUser(cmd.getOptionValue("adduser"));
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
         } catch (ParseException e) {
             help();
         }
@@ -71,36 +74,93 @@ class CliParser {
         System.exit(0);
     }
 
-    private void addUser(String username) {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        HashMap<String, String> accountsEnc = new HashMap<>();
-        char[] password;
 
-        try {
-            System.out.print("Admin Username: ");
-            String adminUsername = br.readLine();
-            char[] adminPassword = System.console().readPassword("New Password:");
+    void addUser() {
 
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        Scanner input = new Scanner(System.in);
+
+        HashMap accounts = new HashMap<String, String>();
+        while(true) {
+            System.out.print("Username: ");
+            String username = input.nextLine();
+            System.out.print("Password: ");
+            char[] password = System.console().readPassword();
+            System.out.print("Retype Password: ");
+            char[] password2 = System.console().readPassword();
+
+            if(!Arrays.equals(password, password2)){
+                System.out.println("Passwords do not match!");
+                break;
+
+            }
+
+            String pass = new String(password);
+
+            for (int x = 0; x < username.length() - 1; x += 2) {
+                try {
+                    pass += username.charAt(x);
+                } catch (IndexOutOfBoundsException ignored) {
+                }
+            }
+
+            MessageDigest messageDigest = null;
+            try {
+                messageDigest = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            assert messageDigest != null;
+            messageDigest.update(pass.getBytes(), 0, pass.length());
+            accounts.put(username, generateEncryptedAuth(username, pass));
+            writeAuth(accounts);
+
+            System.out.println("User Added!");
+            System.out.println("Add another user? [y/N]");
+            String response = input.nextLine();
+
+            if(response.isEmpty() || response.toLowerCase().equals("n")){
+                break;
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void addUser(String username) throws IOException, ClassNotFoundException {
+        char[] password = System.console().readPassword();
+        System.out.print("Retype Password: ");
+        char[] password2 = System.console().readPassword();
+
+        if(!Arrays.equals(password, password2)){
+            System.out.println("Passwords do not match!");
+            return;
         }
 
-        //TODO: add comparative code for existing users w/admin perms
+        String pass = new String(password);
 
-        while (true) {
-            password = System.console().readPassword("New Password:");
-            char[] password2 = System.console().readPassword("Retype New Password:");
-            if (Arrays.equals(password, password2)) {
-                break;
-            } else {
-                System.err.println("Passwords do not match!");
+        FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+
+        HashMap<String, String> accounts;
+        accounts = (HashMap) ois.readObject();
+
+        for (int x = 0; x < username.length() - 1; x += 2) {
+            try {
+                pass += username.charAt(x);
+            } catch (IndexOutOfBoundsException ignored) {
             }
         }
 
-        accountsEnc.put(username, generateEncryptedAuth(username, new String(password)));
-        writeAuth(accountsEnc);
+        MessageDigest messageDigest = null;
+        try {
+            messageDigest = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        assert messageDigest != null;
+        messageDigest.update(pass.getBytes(), 0, pass.length());
+        accounts.put(username, generateEncryptedAuth(username, pass));
+        writeAuth(accounts);
 
-        System.exit(0);
     }
 
     private void writeAuth(HashMap<String, String> accountsEnc) {

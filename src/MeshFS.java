@@ -19,7 +19,7 @@ class MeshFS {
         configure = !new File(".config.properties").exists();
 
         properties = ConfigParser.loadProperties();
-        new CliParser(args);
+        CliParser cliParser = new CliParser(args);
         multicastServer = new MulticastServer();
         try {
             multicastServer.startServer(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
@@ -29,13 +29,6 @@ class MeshFS {
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
 
         if (nogui) {
-
-            if (configure) {
-                //if(interactiveAuth()){
-                //    writeAuth();
-                //}
-            }
-
             System.setProperty("java.awt.headless", "true");
 
             List<String> possibleIP = Reporting.getIpAddresses();
@@ -53,6 +46,9 @@ class MeshFS {
             }
 
             if (isMaster) {
+                if (configure && !cliParser.opt.hasOption("adduser")) {
+                    cliParser.addUser();
+                }
                 File manifestFile =
                         new File(MeshFS.properties.getProperty("repository") + ".manifest.json");
                 manifestFile.delete();
