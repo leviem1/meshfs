@@ -16,6 +16,7 @@ import java.util.*;
 class CliParser {
 
     final Options opt = new Options();
+    CommandLine cmd;
 
     CliParser(String[] args) {
         opt.addOption("h", "help", false, "Display application's help message.");
@@ -25,10 +26,13 @@ class CliParser {
         opt.addOption("nogui", false, "Run MeshFS without graphical user interface (server mode only)");
         opt.addOption("reconfig", false, "Reconfigure MeshFS graphically");
         opt.addOption("adduser", true, "Add user interactively");
+        opt.addOption("deluser", true, "Remove user interactively");
+        opt.addOption("changepass", true, "Update user credentials interactively");
+
         opt.addOption("u", "uuid", true, "Set UUID value for server to server communication");
 
         try {
-            CommandLine cmd = (new DefaultParser()).parse(opt, args);
+            cmd = (new DefaultParser()).parse(opt, args);
 
             if (cmd.hasOption("h")) {
                 help();
@@ -55,12 +59,20 @@ class CliParser {
                 MeshFS.properties.setProperty("uuid", cmd.getOptionValue("u"));
             }
 
-            if (cmd.hasOption("adduser") && MeshFS.isMaster) {
+            if (cmd.hasOption("adduser")) {
                 try {
                     addUser(cmd.getOptionValue("adduser"));
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
+            }
+
+            if (cmd.hasOption("deluser")) {
+                removeUser(cmd.getOptionValue("deluser"));
+            }
+
+            if (cmd.hasOption("changepass")) {
+                updateAccount(cmd.getOptionValue("changepass"));
             }
 
         } catch (ParseException e) {
@@ -76,43 +88,18 @@ class CliParser {
 
 
     void addUser() {
-
         Scanner input = new Scanner(System.in);
-
-        HashMap accounts = new HashMap<String, String>();
         while(true) {
             System.out.print("Username: ");
-            String username = input.nextLine();
-            System.out.print("Password: ");
-            char[] password = System.console().readPassword();
-            System.out.print("Retype Password: ");
-            char[] password2 = System.console().readPassword();
+            String username = new Scanner(System.in).nextLine();
 
-            if(!Arrays.equals(password, password2)){
-                System.out.println("Passwords do not match!");
-                break;
-
-            }
-
-            String pass = new String(password);
-
-            for (int x = 0; x < username.length() - 1; x += 2) {
-                try {
-                    pass += username.charAt(x);
-                } catch (IndexOutOfBoundsException ignored) {
-                }
-            }
-
-            MessageDigest messageDigest = null;
             try {
-                messageDigest = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
+                addUser(username);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            assert messageDigest != null;
-            messageDigest.update(pass.getBytes(), 0, pass.length());
-            accounts.put(username, generateEncryptedAuth(username, pass));
-            writeAuth(accounts);
 
             System.out.println("User Added!");
             System.out.println("Add another user? [y/N]");
@@ -125,43 +112,80 @@ class CliParser {
     }
 
     @SuppressWarnings("unchecked")
-    private void addUser(String username) throws IOException, ClassNotFoundException {
+    void addUser(String username) throws IOException, ClassNotFoundException {
+        if(username.equals("guest")){
+            System.out.print("The user guest is reserved for MeshFS.");
+            System.exit(1);
+        }
+        System.out.print("Enter Password for " + username + ": ");
         char[] password = System.console().readPassword();
         System.out.print("Retype Password: ");
         char[] password2 = System.console().readPassword();
 
         if(!Arrays.equals(password, password2)){
             System.out.println("Passwords do not match!");
+            addUser(username);
             return;
         }
 
         String pass = new String(password);
 
-        FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
-        ObjectInputStream ois = new ObjectInputStream(fis);
-
+        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
         HashMap<String, String> accounts;
-        accounts = (HashMap) ois.readObject();
 
-        for (int x = 0; x < username.length() - 1; x += 2) {
-            try {
-                pass += username.charAt(x);
-            } catch (IndexOutOfBoundsException ignored) {
+        if(auth.exists()) {
+            FileInputStream fis = new FileInputStream(auth);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+
+            accounts = (HashMap) ois.readObject();
+            for (HashMap.Entry<String, String> entry : accounts.entrySet()) {
+                String un = entry.getKey();
+                if(username.equals(un)){
+                    System.out.println("User already exists!");
+                    System.out.println("Quitting!");
+                    return;
+                }
             }
+        }else{
+            accounts = new HashMap<>();
         }
 
-        MessageDigest messageDigest = null;
-        try {
-            messageDigest = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        assert messageDigest != null;
-        messageDigest.update(pass.getBytes(), 0, pass.length());
-        accounts.put(username, generateEncryptedAuth(username, pass));
+        accounts.put(username, generateEncryptedAuth(username.toLowerCase(), pass));
         writeAuth(accounts);
 
     }
+
+
+    void removeUser(String username) {
+        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
+        HashMap<String, String> accounts;
+        if (auth.exists()) {
+            try {
+                FileInputStream fis = new FileInputStream(auth);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                accounts = (HashMap) ois.readObject();
+                fis.close();
+                ois.close();
+                accounts.remove(username);
+                writeAuth(accounts);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    void updateAccount(String username){
+        removeUser(username);
+        try {
+            addUser(username);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     private void writeAuth(HashMap<String, String> accountsEnc) {
         try {

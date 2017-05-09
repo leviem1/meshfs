@@ -16,18 +16,18 @@ class MeshFS {
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
+        //check if we already have a config file
         configure = !new File(".config.properties").exists();
-
+        //load and check for properties
         properties = ConfigParser.loadProperties();
         CliParser cliParser = new CliParser(args);
+        Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
         multicastServer = new MulticastServer();
         try {
             multicastServer.startServer(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
-
         if (nogui) {
             System.setProperty("java.awt.headless", "true");
 
@@ -46,11 +46,11 @@ class MeshFS {
             }
 
             if (isMaster) {
-                if (configure && !cliParser.opt.hasOption("adduser")) {
+                if (configure && !cliParser.cmd.hasOption("adduser")) {
+                    System.out.println("Starting Interactive Authentication Configurator");
                     cliParser.addUser();
                 }
-                File manifestFile =
-                        new File(MeshFS.properties.getProperty("repository") + ".manifest.json");
+                File manifestFile = new File(MeshFS.properties.getProperty("repository") + ".manifest.json");
                 manifestFile.delete();
                 File catalog = new File(properties.getProperty("repository") + ".catalog.json");
 
