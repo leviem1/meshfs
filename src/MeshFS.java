@@ -204,9 +204,16 @@ class MeshFS {
 
 class onQuit implements Runnable {
     public void run() {
-        if (MeshFS.nogui) {
-            MeshFS.fileServer.stopServer();
-        }
-        MeshFS.multicastServer.stopServer();
-    }
+        try {
+            if (MeshFS.nogui) {
+                MeshFS.fileServer.stopServer();
+            }
+        } catch (NullPointerException ignored) {}
+
+        try {
+            MeshFS.multicastServer.stopServer();
+        } catch (NullPointerException ignored) {}
+
+        DriveAPI.unauthorize();
+
 }
