@@ -1,3 +1,4 @@
+import javafx.scene.shape.Mesh;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -103,11 +104,14 @@ class ServerInit implements Runnable {
         if (request != null) {
             try {
                 String[] requestParts = request.trim().split("\\|");
-                if (!requestParts[0].equals(MeshFS.properties.getProperty("uuid"))) {
-                    badRequest(out, request, "Incorrect UUID");
-                    return;
+                int pos = 0;
+                if(!requestParts[0].equals("109") && !requestParts[0].equals("113")){
+                    pos = 1;
+                    if (!requestParts[0].equals(MeshFS.properties.getProperty("uuid"))){
+                        return;
+                    }
                 }
-                switch (requestParts[1]) {
+                switch (requestParts[pos]) {
                     case "101": //101:Get file
                         try {
                             sendFile(requestParts[2], out);
@@ -150,7 +154,7 @@ class ServerInit implements Runnable {
 
                         break;
                     case "109": //109:Ping
-                        ping(requestParts[2], out);
+                        ping(requestParts[1], out);
 
                         break;
                     case "110": //110:Rename File (virtual only)
@@ -170,7 +174,7 @@ class ServerInit implements Runnable {
 
                     case "113": //113:Send Auth Info
                         try {
-                            sendAuthInfo(out);
+                            sendAuthInfo(requestParts[1], requestParts[2], out);
                         } catch (FileNotFoundException ignored) {
                             out.close();
                         }
@@ -474,23 +478,35 @@ class ServerInit implements Runnable {
         out.println(MeshFS.properties.getProperty("uuid"));
     }
 
-    private void sendAuthInfo(Socket client) throws IOException {
-        int br;
-        byte[] data = new byte[4096];
+    private void sendAuthInfo(String username, String password, Socket client) throws IOException {
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        FileInputStream fis =
-                new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
-
-        out.println("201");
-
-        while ((br = fis.read(data, 0, data.length)) != -1) {
-            dos.write(data, 0, br);
-            dos.flush();
+        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
+        FileInputStream fis = new FileInputStream(auth);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        HashMap<String, String> accounts = null;
+        try {
+            accounts = (HashMap) ois.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-
-        out.close();
+        if(auth.exists()) {
+            for (HashMap.Entry<String, String> entry : accounts.entrySet()) {
+                String un = entry.getKey();
+                String pw = entry.getValue();
+                if(username.equals(un)){
+                    if(password.equals(pw)){
+                        out.println("201");
+                        out.println(MeshFS.properties.getProperty("uuid")+ "\n");
+                    }
+                }
+            }
+        }else{
+            out.println("-1" + "\n");
+        }
         fis.close();
+        ois.close();
+        out.close();
         dos.close();
     }
 
