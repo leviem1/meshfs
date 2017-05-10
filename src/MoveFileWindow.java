@@ -222,7 +222,11 @@ class MoveFileWindow extends JFrame {
                             okButton.setEnabled(false);
                             return;
                         }
-                        FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
+                        try {
+                            FileClient.moveFile(serverAddress, port, currentJsonPath, newJsonPath);
+                        } catch (MalformedRequestException e1) {
+                            e1.printStackTrace();
+                        }
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }

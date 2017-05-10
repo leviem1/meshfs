@@ -104,6 +104,10 @@ class ServerInit implements Runnable {
             try {
                 String[] requestParts = request.trim().split("\\|");
 
+                /*for(String x : requestParts){
+                    System.out.println(x);
+                }*/
+
                 if (!(requestParts[0].equals("109") || requestParts[0].equals("113")) && (!requestParts[1].equals(MeshFS.properties.getProperty("uuid")))){
                     return;
                 }
@@ -165,7 +169,7 @@ class ServerInit implements Runnable {
                         break;
 
                     case "113": //113:Send Auth Info
-                        sendAuthInfo(requestParts[2], requestParts[3], out);
+                        sendAuthInfo(requestParts[1], requestParts[2], out);
 
                         break;
 
@@ -482,15 +486,14 @@ class ServerInit implements Runnable {
             for (HashMap.Entry<String, String> entry : accounts.entrySet()) {
                 String un = entry.getKey();
                 String pw = entry.getValue();
-                if(username.equals(un)){
-                    if(password.equals(pw)){
+                if(username.toLowerCase().trim().equals(un) && password.trim().equals(pw)){
                         out.println("201");
                         out.println(MeshFS.properties.getProperty("uuid")+ "\n");
-                    }
                 }
             }
+            out.println("202\n");
         }else{
-            out.println("-1" + "\n");
+            out.println("202\n");
         }
         fis.close();
         ois.close();

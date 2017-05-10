@@ -104,6 +104,8 @@ class ClientBrowser extends JFrame {
             FileClient.receiveFile(
                     serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
         } catch (IOException ignored) {
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
         }
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("root/" + userAccount);
@@ -349,6 +351,8 @@ class ClientBrowser extends JFrame {
                                                         fileChooser.getSelectedFile().getPath(),
                                                         userAccount);
                                             } catch (IOException ignored) {
+                                            } catch (MalformedRequestException e1) {
+                                                e1.printStackTrace();
                                             }
                                         });
                         upload.start();
@@ -490,6 +494,8 @@ class ClientBrowser extends JFrame {
                         FileClient.deleteFile(serverAddress, port, jsonPath);
                         catalogCheck();
                     } catch (IOException ignored) {
+                    } catch (MalformedRequestException e1) {
+                        e1.printStackTrace();
                     }
                 });
         duplicateBtn.addActionListener(
@@ -504,6 +510,8 @@ class ClientBrowser extends JFrame {
                         FileClient.duplicateFile(serverAddress, port, jsonPath);
                         catalogCheck();
                     } catch (IOException ignored) {
+                    } catch (MalformedRequestException e1) {
+                        e1.printStackTrace();
                     }
                 });
         moveBtn.addActionListener(
@@ -670,6 +678,8 @@ class ClientBrowser extends JFrame {
                                 tempCatalog.delete();
                             }
                         } catch (IOException ignored) {
+                        } catch (MalformedRequestException e) {
+                            e.printStackTrace();
                         }
                     }
                 });

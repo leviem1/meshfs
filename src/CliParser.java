@@ -150,7 +150,7 @@ class CliParser {
             accounts = new HashMap<>();
         }
 
-        accounts.put(username, generateEncryptedAuth(username.toLowerCase(), pass));
+        accounts.put(username, Crypt.generateEncryptedAuth(username.toLowerCase(), pass));
         writeAuth(accounts);
 
     }
@@ -199,24 +199,4 @@ class CliParser {
         }
     }
 
-    private String generateEncryptedAuth(String username, String password) {
-        MessageDigest messageDigest = null;
-
-        for (int x = 0; x < username.length() - 1; x += 2) {
-            try {
-                password += username.charAt(x);
-            } catch (IndexOutOfBoundsException ignored) {
-            }
-        }
-
-        try {
-            messageDigest = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        assert messageDigest != null;
-        messageDigest.update(password.getBytes(), 0, password.length());
-        return new BigInteger(1, messageDigest.digest()).toString(256);
-    }
 }

@@ -163,7 +163,7 @@ class UserAccountOptions extends JFrame {
                             dispose();
                             parentSender.dispose();
                             ClientModeConfiguration.run(userAccountOptions, serverAddress, previousRunType);
-                        } catch (IOException e1) {
+                        } catch (IOException | MalformedRequestException e1) {
                             e1.printStackTrace();
                         }
                     } else {

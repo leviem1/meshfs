@@ -354,17 +354,25 @@ class sendFilesThreading implements Runnable {
                         new Thread(
                                 () -> {
                                     try {
-                                        FileClient.sendFile(
-                                                (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")),
-                                                MeshFS.properties.getProperty("repository")
-                                                        + File.separator
-                                                        + outName
-                                                        + "_w",
-                                                MeshFS.properties.getProperty("remoteUUID"));
-                                        FileClient.receiveReport(
-                                                (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
+                                        try {
+                                            FileClient.sendFile(
+                                                    (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
+                                                    Integer.parseInt(MeshFS.properties.getProperty("portNumber")),
+                                                    MeshFS.properties.getProperty("repository")
+                                                            + File.separator
+                                                            + outName
+                                                            + "_w",
+                                                    MeshFS.properties.getProperty("remoteUUID"));
+                                        } catch (MalformedRequestException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
+                                            FileClient.receiveReport(
+                                                    (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
+                                                    Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
+                                        } catch (MalformedRequestException e) {
+                                            e.printStackTrace();
+                                        }
                                     } catch (IOException ioe) {
                                         ioe.printStackTrace();
                                     }
@@ -398,6 +406,8 @@ class sendFilesThreading implements Runnable {
                                                 Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
                                     } catch (IOException ioe) {
                                         ioe.printStackTrace();
+                                    } catch (MalformedRequestException e) {
+                                        e.printStackTrace();
                                     }
                                 });
                 childThreads.add(child);
@@ -428,6 +438,8 @@ class sendFilesThreading implements Runnable {
                                                 Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
                                     } catch (IOException ioe) {
                                         ioe.printStackTrace();
+                                    } catch (MalformedRequestException e) {
+                                        e.printStackTrace();
                                     }
                                 });
 

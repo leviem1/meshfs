@@ -401,9 +401,11 @@ final class FileClient {
                 return -1;
             }
 
+            String response = input.readLine();
             client.close();
-            return Integer.parseInt(input.readLine());
+            return Integer.parseInt(response);
         } catch (IOException ioe) {
+            ioe.printStackTrace();
             return -1;
         }
     }
@@ -518,7 +520,8 @@ final class FileClient {
         }
     }
 
-    static String loginAsUser(String serverAddress, int port, String username, String password) throws IOException {
+    static String loginAsUser(String serverAddress, int port, String username, String password) throws IOException, MalformedRequestException {
+        String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -526,14 +529,14 @@ final class FileClient {
         String uuid;
         out.println("113|" + username + "|" + password + "\n");
 
-        if (input.readLine().trim().equals("201")) {
-            uuid = input.readLine();
-            uuid = uuid.trim();
+        if ((input.readLine().trim()).equals("202")) {
             client.close();
-            return uuid;
-        }else{
             return "-1";
         }
+        uuid = input.readLine().trim();
+        System.out.println("UUID received: " + uuid);
+        client.close();
+        return uuid;
     }
 
     static void deleteAccount(String serverAddress, int port, String userAccount) throws IOException, MalformedRequestException {

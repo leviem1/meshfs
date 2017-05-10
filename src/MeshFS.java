@@ -133,7 +133,7 @@ class MeshFS {
                                                 Integer.parseInt(properties.getProperty("portNumber")));
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest");
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog");
-                                    } catch (IOException ioe) {
+                                    } catch (IOException | MalformedRequestException ioe) {
                                         ioe.printStackTrace();
                                     }
                                 }

@@ -293,8 +293,8 @@ class ClientModeConfiguration extends JFrame {
     };
 
     private void onOk() {
-        if ((FileClient.ping(
-                serverAddressField.getText(), Integer.parseInt(serverPortField.getText())) == -1)) {
+        int pingTime = FileClient.ping(serverAddressField.getText(), Integer.parseInt(serverPortField.getText()));
+        if (pingTime == -1) {
             JOptionPane.showMessageDialog(
                     clientModeConfiguration, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setText("");
@@ -335,6 +335,8 @@ class ClientModeConfiguration extends JFrame {
                 dispose();
             }
         } catch (IOException ignored) {
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
         }
     }
 
@@ -358,27 +360,13 @@ class ClientModeConfiguration extends JFrame {
 
     private String connectAsUser(String username, String password) {
         try {
-            for (int i = 0; i < username.length() - 1; i = i + 2) {
-                try {
-                    password += username.charAt(i);
-                } catch (IndexOutOfBoundsException ignored) {
-                }
-            }
-            MessageDigest messageDigest = null;
-            try {
-                messageDigest = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-            assert messageDigest != null;
-            messageDigest.update(password.getBytes(), 0, password.length());
             String uuid = FileClient.loginAsUser(
                     serverAddressField.getText(),
                     Integer.parseInt(serverPortField.getText()),
                     username,
-                    new BigInteger(1, messageDigest.digest()).toString(128));
+                    Crypt.generateEncryptedAuth(username, password));
             return uuid;
-        } catch (IOException e) {
+        } catch (IOException | MalformedRequestException e) {
             e.printStackTrace();
         }
         return "-1";
