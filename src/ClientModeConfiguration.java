@@ -294,7 +294,7 @@ class ClientModeConfiguration extends JFrame {
 
     private void onOk() {
         if ((FileClient.ping(
-                serverAddressField.getText(), Integer.parseInt(serverPortField.getText())) > -1)) {
+                serverAddressField.getText(), Integer.parseInt(serverPortField.getText())) == -1)) {
             JOptionPane.showMessageDialog(
                     clientModeConfiguration, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setText("");
@@ -306,7 +306,18 @@ class ClientModeConfiguration extends JFrame {
             return;
         }
         try {
-            connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+            String uuid = connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+            System.out.println(uuid);
+            if(uuid.equals("-1")){
+                System.out.println("Error!");
+                JOptionPane.showMessageDialog(
+                        clientModeConfiguration, "Login Failure!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                usernameField.requestFocus();
+                usernameField.setText("");
+                passwordField.setText("");
+                usernameField.setEnabled(true);
+                passwordField.setEnabled(true);
+            }
             File catalog = File.createTempFile(".catalog", ".json");
             if (!(usernameFinal.equals(""))) {
                 FileClient.receiveFile(
@@ -345,48 +356,32 @@ class ClientModeConfiguration extends JFrame {
 
     }
 
-    private void connectAsUser(String username, String password) {
+    private String connectAsUser(String username, String password) {
         try {
-            File auth = File.createTempFile(".auth", "");
-            auth.deleteOnExit();
-            FileClient.receiveAuthFile(
-                    serverAddressField.getText(),
-                    Integer.parseInt(serverPortField.getText()),
-                    auth.getAbsolutePath());
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth.getAbsolutePath()));
-            @SuppressWarnings("unchecked")
-            HashMap<String, String> credentials = (HashMap<String, String>) ois.readObject();
-            for (HashMap.Entry<String, String> entry : credentials.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                if (key.equals(username)) {
-                    for (int i = 0; i < username.length() - 1; i = i + 2) {
-                        try {
-                            password += username.charAt(i);
-                        } catch (IndexOutOfBoundsException ignored) {
-                        }
-                    }
-                    MessageDigest messageDigest = null;
-                    try {
-                        messageDigest = MessageDigest.getInstance("MD5");
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-                    assert messageDigest != null;
-                    messageDigest.update(password.getBytes(), 0, password.length());
-                    String enc = new BigInteger(1, messageDigest.digest()).toString(128);
-                    if (!(value.equals(enc))) {
-                        return;
-                    } else if (value.equals(enc)) {
-                        usernameFinal = username;
-                        return;
-                    }
+            for (int i = 0; i < username.length() - 1; i = i + 2) {
+                try {
+                    password += username.charAt(i);
+                } catch (IndexOutOfBoundsException ignored) {
                 }
             }
-            ois.close();
-        } catch (IOException | ClassNotFoundException e) {
+            MessageDigest messageDigest = null;
+            try {
+                messageDigest = MessageDigest.getInstance("MD5");
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            assert messageDigest != null;
+            messageDigest.update(password.getBytes(), 0, password.length());
+            String uuid = FileClient.loginAsUser(
+                    serverAddressField.getText(),
+                    Integer.parseInt(serverPortField.getText()),
+                    username,
+                    new BigInteger(1, messageDigest.digest()).toString(128));
+            return uuid;
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        return "-1";
     }
 
 }

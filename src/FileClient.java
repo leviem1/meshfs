@@ -29,7 +29,7 @@ final class FileClient {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            out.println(MeshFS.properties.getProperty("uuid") + "|109|" + String.valueOf(Instant.now().toEpochMilli()) + "\n");
+            out.println("109|" + String.valueOf(Instant.now().toEpochMilli()) + "\n");
 
             if (input.readLine().trim().equals("201")) {
                 return Integer.parseInt(input.readLine());
@@ -436,6 +436,24 @@ final class FileClient {
             dis.close();
             fos.close();
             client.close();
+        }
+    }
+
+    static String loginAsUser(String serverAddress, int port, String username, String password) throws IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        String uuid;
+        out.println("113" + "|" + username + "|" + password + "\n");
+
+        if (input.readLine().trim().equals("201")) {
+            uuid = input.readLine();
+            uuid = uuid.trim();
+            client.close();
+            return uuid;
+        }else{
+            return "-1";
         }
     }
 
