@@ -1,4 +1,3 @@
-import javafx.scene.shape.Mesh;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -104,20 +103,13 @@ class ServerInit implements Runnable {
         if (request != null) {
             try {
                 String[] requestParts = request.trim().split("\\|");
-                int pos = 0;
-                if(!requestParts[0].equals("109") && !requestParts[0].equals("113")){
-                    pos = 1;
-                    if (!requestParts[0].equals(MeshFS.properties.getProperty("uuid"))){
-                        return;
-                    }
+
+                if (!(requestParts[0].equals("109") || requestParts[0].equals("113")) && (!requestParts[1].equals(MeshFS.properties.getProperty("uuid")))){
+                    return;
                 }
-                switch (requestParts[pos]) {
+                switch (requestParts[0]) {
                     case "101": //101:Get file
-                        try {
-                            sendFile(requestParts[2], out);
-                        } catch (FileNotFoundException ignored) {
-                            out.close();
-                        }
+                        sendFile(requestParts[2], out);
 
                         break;
                     case "102": //102:Post file
@@ -173,15 +165,11 @@ class ServerInit implements Runnable {
                         break;
 
                     case "113": //113:Send Auth Info
-                        try {
-                            sendAuthInfo(requestParts[1], requestParts[2], out);
-                        } catch (FileNotFoundException ignored) {
-                            out.close();
-                        }
+                        sendAuthInfo(requestParts[2], requestParts[3], out);
 
                         break;
 
-                    case "114": //114:Send Auth Info
+                    case "114": //114:Delete Account
                         deleteAccount(requestParts[1], out);
 
                         break;
