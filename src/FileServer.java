@@ -527,7 +527,7 @@ class ServerInit implements Runnable {
         try {
             if (client.isClosed()) return;
             PrintWriter out = new PrintWriter(client.getOutputStream());
-            out.println("202\nBad request:" + request + "\n\n" + message);
+            out.println(request + "|" + message);
             out.flush();
         } catch (IOException ioe) {
             ioe.printStackTrace();
