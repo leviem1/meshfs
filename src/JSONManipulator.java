@@ -82,9 +82,10 @@ class JSONManipulator {
             }
         }
         LinkedHashMap<String, String> contents = new LinkedHashMap<>();
+
         for (Object key : folderToRead.keySet()) {
             String keyStr = key.toString();
-            if (userAccount.equals(null) || ((((JSONObject) folderToRead.get(keyStr)).get("owner")).toString().equals(userAccount)) || (((JSONArray)(((JSONObject) folderToRead.get(keyStr)).get("users"))).contains(userAccount))){
+            if ((((JSONArray)(((JSONObject) folderToRead.get(keyStr)).get("users"))).contains(userAccount)) || userAccount.equals("admin")){
                 String type = (((JSONObject) folderToRead.get(keyStr)).get("type")).toString();
                 contents.put(keyStr, type);
             }
@@ -119,16 +120,13 @@ class JSONManipulator {
             item = itemLocation;
         }
 
-        List<String> filesToRemove = smartRemove(folderToRead);
+        List<JSONObject> filesToRemove = smartRemove(folderToRead);
         folderToRead.remove(item);
         JSONObject manifest = getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
-        for (String fileName : filesToRemove){
-            ((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).replace(
-                    "references",
-                    Integer.valueOf(((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).get("references").toString()) - 1);
-            if (Integer.valueOf(((JSONObject) (((JSONObject) jsonObject.get("fileInfo")).get(fileName))).get("references").toString()) < 1){
+        for (JSONObject fileName : filesToRemove){
+            if (!jsonObject.toString().contains(fileName.keySet().toArray()[0].toString())){
                 // actually delete file
-                JSONObject fileInfo = getItemContents(jsonObject, "fileInfo/" + fileName);
+                JSONObject fileInfo = (JSONObject) fileName.get(fileName.keySet().toArray()[0]);
                 for (Object infoKey : fileInfo.keySet()){
                     if (infoKey.toString().contains("_")){
                         for (Object MACAddress : (JSONArray) fileInfo.get(infoKey)){
@@ -577,7 +575,42 @@ class JSONManipulator {
         for (String user : users) {
             ((JSONObject) ((JSONObject) jsonObject.get("root")).get("User")).remove(user);
         }
-        return removeUsers(jsonObject, "root/Shared", users);
+        return removeGroups(jsonObject, "root/Shared", users);
+    }
+
+
+
+    static void addUsersToGroup(List<String> users, String group){
+        JSONObject jsonObject = getJSONObject(MeshFS.properties.getProperty("repository") + ".groups");
+        for (String user : users){
+            ((JSONArray) jsonObject.get(user)).add(group);
+        }
+        try {writeJSONObject(MeshFS.properties.getProperty("repository") + ".groups", jsonObject);}
+        catch (IOException e){e.printStackTrace();}
+    }
+
+    static void createUsers(List<String> users){
+        JSONObject jsonObject = getJSONObject(MeshFS.properties.getProperty("repository") + ".groups");
+        JSONArray groups = new JSONArray();
+        for (String user : users){
+            groups.add(user);
+            jsonObject.put(user, groups);
+            groups.clear();
+        }
+        try {writeJSONObject(MeshFS.properties.getProperty("repository") + ".groups", jsonObject);}
+        catch (IOException e){e.printStackTrace();}
+    }
+
+    static void deleteGroups(List<String> groups){
+        JSONObject groupJsonObject = getJSONObject(MeshFS.properties.getProperty("repository") + ".groups");
+        for (Object user : groupJsonObject.keySet()){
+            ((JSONArray) groupJsonObject.get(user)).removeAll(groups);
+        }
+
+
+
+        try {writeJSONObject(MeshFS.properties.getProperty("repository") + ".groups", groupJsonObject);}
+        catch (IOException e){e.printStackTrace();}
     }
 
 
