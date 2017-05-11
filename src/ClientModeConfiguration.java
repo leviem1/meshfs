@@ -37,6 +37,7 @@ class ClientModeConfiguration extends JFrame {
     private JCheckBox bindAnonymouslyCheckBox;
     private JPanel buttonBar;
     private JButton backBtn;
+    private JButton discoveryBtn;
     private JButton okButton;
     private JLabel titleLbl;
     //GEN-END:variables
@@ -85,6 +86,7 @@ class ClientModeConfiguration extends JFrame {
         bindAnonymouslyCheckBox = new JCheckBox();
         buttonBar = new JPanel();
         backBtn = new JButton();
+        discoveryBtn = new JButton();
         okButton = new JButton();
         titleLbl = new JLabel();
 
@@ -191,8 +193,8 @@ class ClientModeConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
@@ -201,11 +203,18 @@ class ClientModeConfiguration extends JFrame {
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
+                //---- discoveryBtn ----
+                discoveryBtn.setText("Discovery...");
+                discoveryBtn.setFont(new Font("Arial", discoveryBtn.getFont().getStyle() & ~Font.ITALIC, discoveryBtn.getFont().getSize() + 1));
+                buttonBar.add(discoveryBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+
                 //---- okButton ----
                 okButton.setText("Connect");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle() & ~Font.ITALIC, okButton.getFont().getSize() + 1));
                 okButton.setEnabled(false);
-                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -254,6 +263,11 @@ class ClientModeConfiguration extends JFrame {
                     }
 
                     dispose();
+                });
+        discoveryBtn.addActionListener(
+                e -> {
+                    //
+                    System.out.println(MeshFS.multicastServer.getFoundMasters());
                 });
     }
     DocumentListener clientConnectionSettingsListener =  new DocumentListener() {
@@ -366,6 +380,7 @@ class ClientModeConfiguration extends JFrame {
                     username,
                     Crypt.generateEncryptedAuth(username, password));
             return uuid;
+
         } catch (IOException | MalformedRequestException e) {
             e.printStackTrace();
         }

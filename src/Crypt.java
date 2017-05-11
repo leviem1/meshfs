@@ -27,4 +27,9 @@ class Crypt {
         return new BigInteger(1, messageDigest.digest()).toString(256);
     }
 
+    private String generateFileKey(String username, String password, String uuid){
+        generateEncryptedAuth(password, password);
+        return "x";
+    }
+
 }
