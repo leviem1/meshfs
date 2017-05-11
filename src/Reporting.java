@@ -35,7 +35,7 @@ class Reporting {
     /**
      * This method is used to get the operating system's name that the JVM is being run on.
      *
-     * @return the number of bytes availible on the disk minus the space allocated in
+     * @return the number of bytes available on the disk minus the space allocated in
      * .config.properties
      */
     static long getSystemStorage() {
@@ -161,6 +161,7 @@ class Reporting {
      * @param report the report to convert to JSONArray
      * @return JSONArray of report
      */
+    @SuppressWarnings("unchecked")
     static JSONArray splitter(String report) {
         JSONObject jsonObject = new JSONObject();
         JSONArray mainArray = new JSONArray();
