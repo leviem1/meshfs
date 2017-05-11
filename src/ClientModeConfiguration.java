@@ -2,16 +2,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
-import java.util.HashMap;
 
 /**
  * @author Mark Hedrick
@@ -29,12 +25,12 @@ class ClientModeConfiguration extends JFrame {
     private JLabel serverAddressLbl;
     private JLabel serverPortLbl;
     private JLabel passwordLbl;
-    private JTextField serverAddressField;
     private JFormattedTextField serverPortField;
     private JPasswordField passwordField;
     private JLabel usernameLbl;
     private JTextField usernameField;
     private JCheckBox bindAnonymouslyCheckBox;
+    private JComboBox serverAddressField;
     private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
@@ -54,7 +50,8 @@ class ClientModeConfiguration extends JFrame {
         initComponents();
         frameListeners();
 
-        serverAddressField.setText(serverAddress);
+        serverAddressField.setSelectedItem(serverAddress);
+        serverAddressField.setModel(new DefaultComboBoxModel(MeshFS.multicastServer.getFoundMasters().toArray()));
     }
 
     public static void run(JFrame sender, String serverAddress, boolean runType) {
@@ -77,12 +74,12 @@ class ClientModeConfiguration extends JFrame {
         serverAddressLbl = new JLabel();
         serverPortLbl = new JLabel();
         passwordLbl = new JLabel();
-        serverAddressField = new JTextField();
         serverPortField = new JFormattedTextField(numberFormat);
         passwordField = new JPasswordField();
         usernameLbl = new JLabel();
         usernameField = new JTextField();
         bindAnonymouslyCheckBox = new JCheckBox();
+        serverAddressField = new JComboBox();
         buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
@@ -113,9 +110,6 @@ class ClientModeConfiguration extends JFrame {
                 passwordLbl.setText("Password:");
                 passwordLbl.setFont(new Font("Arial", passwordLbl.getFont().getStyle() & ~Font.ITALIC, passwordLbl.getFont().getSize() + 1));
 
-                //---- serverAddressField ----
-                serverAddressField.setFont(new Font("Arial", serverAddressField.getFont().getStyle() & ~Font.ITALIC, serverAddressField.getFont().getSize() + 1));
-
                 //---- serverPortField ----
                 serverPortField.setFont(new Font("Arial", serverPortField.getFont().getStyle() & ~Font.ITALIC, serverPortField.getFont().getSize() + 1));
                 serverPortField.setText("5704");
@@ -136,6 +130,10 @@ class ClientModeConfiguration extends JFrame {
                 bindAnonymouslyCheckBox.setHorizontalAlignment(SwingConstants.LEFT);
                 bindAnonymouslyCheckBox.setHorizontalTextPosition(SwingConstants.LEADING);
 
+                //---- serverAddressField ----
+                serverAddressField.setEditable(true);
+                serverAddressField.setFont(new Font("Arial", serverAddressField.getFont().getStyle(), serverAddressField.getFont().getSize() + 1));
+
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
@@ -145,9 +143,9 @@ class ClientModeConfiguration extends JFrame {
                             .addGroup(contentPanelLayout.createParallelGroup()
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addComponent(serverAddressLbl)
-                                    .addGap(12, 12, 12)
-                                    .addComponent(serverAddressField)
-                                    .addGap(13, 13, 13)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(serverAddressField, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(serverPortLbl)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE))
@@ -161,7 +159,7 @@ class ClientModeConfiguration extends JFrame {
                                             .addComponent(usernameLbl)
                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, 216, GroupLayout.PREFERRED_SIZE)))
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(bindAnonymouslyCheckBox))))
                 );
                 contentPanelLayout.setVerticalGroup(
@@ -171,8 +169,8 @@ class ClientModeConfiguration extends JFrame {
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(serverPortField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(serverPortLbl)
-                                .addComponent(serverAddressField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(serverAddressLbl))
+                                .addComponent(serverAddressLbl)
+                                .addComponent(serverAddressField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(usernameLbl)
@@ -182,7 +180,7 @@ class ClientModeConfiguration extends JFrame {
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(passwordLbl)
                                 .addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(14, Short.MAX_VALUE))
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -191,8 +189,8 @@ class ClientModeConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
@@ -205,7 +203,7 @@ class ClientModeConfiguration extends JFrame {
                 okButton.setText("Connect");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle() & ~Font.ITALIC, okButton.getFont().getSize() + 1));
                 okButton.setEnabled(false);
-                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -233,9 +231,23 @@ class ClientModeConfiguration extends JFrame {
                         bindAnonymously(false);
                     }
                 });
-        serverAddressField
+        ((JTextField)serverAddressField
+                .getEditor()
+                .getEditorComponent())
                 .getDocument()
                 .addDocumentListener(clientConnectionSettingsListener);
+        serverAddressField.addPopupMenuListener(new PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                serverAddressField.setModel(new DefaultComboBoxModel(MeshFS.multicastServer.getFoundMasters().toArray()));
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+
+            @Override
+            public void popupMenuCanceled(PopupMenuEvent e) {}
+        });
         serverPortField
                 .getDocument()
                 .addDocumentListener(clientConnectionSettingsListener);
@@ -256,6 +268,7 @@ class ClientModeConfiguration extends JFrame {
                     dispose();
                 });
     }
+
     DocumentListener clientConnectionSettingsListener =  new DocumentListener() {
 
         public void changedUpdate(DocumentEvent e) {
@@ -271,7 +284,7 @@ class ClientModeConfiguration extends JFrame {
         }
 
         private void changed() {
-            if(!(serverAddressField.getText().isEmpty())){
+            if(!(serverAddressField.getSelectedItem().toString().isEmpty())){
                 if(!(serverPortField.getText().isEmpty())) {
                     if (!(usernameField.getText().isEmpty())) {
                         if (!(String.valueOf(passwordField.getPassword()).isEmpty())) {
@@ -293,11 +306,11 @@ class ClientModeConfiguration extends JFrame {
     };
 
     private void onOk() {
-        if ((FileClient.ping(
-                serverAddressField.getText(), Integer.parseInt(serverPortField.getText())) > -1)) {
+        int pingTime = FileClient.ping(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()));
+        if (pingTime == -1) {
             JOptionPane.showMessageDialog(
                     clientModeConfiguration, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-            serverAddressField.setText("");
+            serverAddressField.setSelectedItem("");
             serverPortField.setText("5704");
             usernameField.setText("guest");
             passwordField.setText("guest");
@@ -306,16 +319,27 @@ class ClientModeConfiguration extends JFrame {
             return;
         }
         try {
-            connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+            String uuid = connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+            System.out.println(uuid);
+            if(uuid.equals("-1")){
+                System.out.println("Error!");
+                JOptionPane.showMessageDialog(
+                        clientModeConfiguration, "Login Failure!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                usernameField.requestFocus();
+                usernameField.setText("");
+                passwordField.setText("");
+                usernameField.setEnabled(true);
+                passwordField.setEnabled(true);
+            }
             File catalog = File.createTempFile(".catalog", ".json");
             if (!(usernameFinal.equals(""))) {
                 FileClient.receiveFile(
-                        serverAddressField.getText(),
+                        serverAddressField.getSelectedItem().toString(),
                         Integer.parseInt(serverPortField.getText()),
                         ".catalog.json",
                         catalog.getAbsolutePath());
                 ClientBrowser.run(
-                        serverAddressField.getText(),
+                        serverAddressField.getSelectedItem().toString(),
                         Integer.parseInt(serverPortField.getText()),
                         clientModeConfiguration,
                         usernameFinal,
@@ -324,6 +348,8 @@ class ClientModeConfiguration extends JFrame {
                 dispose();
             }
         } catch (IOException ignored) {
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
         }
     }
 
@@ -345,48 +371,19 @@ class ClientModeConfiguration extends JFrame {
 
     }
 
-    private void connectAsUser(String username, String password) {
+    private String connectAsUser(String username, String password) {
         try {
-            File auth = File.createTempFile(".auth", "");
-            auth.deleteOnExit();
-            FileClient.receiveAuthFile(
-                    serverAddressField.getText(),
+            String uuid = FileClient.loginAsUser(
+                    serverAddressField.getSelectedItem().toString(),
                     Integer.parseInt(serverPortField.getText()),
-                    auth.getAbsolutePath());
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth.getAbsolutePath()));
-            @SuppressWarnings("unchecked")
-            HashMap<String, String> credentials = (HashMap<String, String>) ois.readObject();
-            for (HashMap.Entry<String, String> entry : credentials.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                if (key.equals(username)) {
-                    for (int i = 0; i < username.length() - 1; i = i + 2) {
-                        try {
-                            password += username.charAt(i);
-                        } catch (IndexOutOfBoundsException ignored) {
-                        }
-                    }
-                    MessageDigest messageDigest = null;
-                    try {
-                        messageDigest = MessageDigest.getInstance("MD5");
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-                    assert messageDigest != null;
-                    messageDigest.update(password.getBytes(), 0, password.length());
-                    String enc = new BigInteger(1, messageDigest.digest()).toString(128);
-                    if (!(value.equals(enc))) {
-                        return;
-                    } else if (value.equals(enc)) {
-                        usernameFinal = username;
-                        return;
-                    }
-                }
-            }
-            ois.close();
-        } catch (IOException | ClassNotFoundException e) {
+                    username,
+                    Crypt.generateEncryptedAuth(username, password));
+            return uuid;
+
+        } catch (IOException | MalformedRequestException e) {
             e.printStackTrace();
         }
+        return "-1";
     }
 
 }

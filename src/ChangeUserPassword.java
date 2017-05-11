@@ -5,7 +5,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -280,35 +279,31 @@ class ChangeUserPassword extends JFrame {
     private void onOk() {
         if (String.valueOf(newPasswordField.getPassword())
                 .equals(String.valueOf(newPasswordFieldConfirm.getPassword()))) {
-            try {
-                if (FileClient.changePassword(
-                        serverAddress,
-                        port,
-                        userAccount,
-                        String.valueOf(currPasswordField.getPassword()),
-                        String.valueOf(newPasswordFieldConfirm.getPassword()))) {
-                    JOptionPane.showMessageDialog(
-                            changeUserPassword,
-                            "Password Updated Successfully!",
-                            "MeshFS - Success",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
-                    sender.dispose();
-                    ClientModeConfiguration.run(changeUserPassword, serverAddress, previousRunType);
-                } else {
-                    JOptionPane.showMessageDialog(
-                            changeUserPassword,
-                            "Current Password is Incorrect!",
-                            "MeshFS - Failure",
-                            JOptionPane.ERROR_MESSAGE);
-                    currPasswordField.setText("");
-                    newPasswordField.setText("");
-                    newPasswordFieldConfirm.setText("");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (/*FileClient.changePassword(
+                    serverAddress,
+                    port,
+                    userAccount,
+                    String.valueOf(currPasswordField.getPassword()),
+                    String.valueOf(newPasswordFieldConfirm.getPassword()))*/true) {
+                JOptionPane.showMessageDialog(
+                        changeUserPassword,
+                        "Password Updated Successfully!",
+                        "MeshFS - Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+                sender.dispose();
+                ClientModeConfiguration.run(changeUserPassword, serverAddress, previousRunType);
+            } else {
+                JOptionPane.showMessageDialog(
+                        changeUserPassword,
+                        "Current Password is Incorrect!",
+                        "MeshFS - Failure",
+                        JOptionPane.ERROR_MESSAGE);
+                currPasswordField.setText("");
+                newPasswordField.setText("");
+                newPasswordFieldConfirm.setText("");
             }
+
         } else {
             JOptionPane.showMessageDialog(
                     changeUserPassword, "Password Mismatch", "MeshFS - Error!", JOptionPane.ERROR_MESSAGE);

@@ -63,7 +63,7 @@ class FileServer {
             for (Thread socket : sockets) {
                 try {
                     socket.join();
-                } catch (Exception e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -103,11 +103,15 @@ class ServerInit implements Runnable {
         if (request != null) {
             try {
                 String[] requestParts = request.trim().split("\\|");
-                if (!requestParts[0].equals(MeshFS.properties.getProperty("uuid"))) {
-                    badRequest(out, request);
+
+                /*for(String x : requestParts){
+                    System.out.println(x);
+                }*/
+
+                if (!(requestParts[0].equals("109") || requestParts[0].equals("113")) && (!requestParts[1].equals(MeshFS.properties.getProperty("uuid")))){
                     return;
                 }
-                switch (requestParts[1]) {
+                switch (requestParts[0]) {
                     case "101": //101:Get file
                         sendFile(requestParts[2], out);
 
@@ -146,7 +150,7 @@ class ServerInit implements Runnable {
 
                         break;
                     case "109": //109:Ping
-                        ping(requestParts[2], out);
+                        ping(requestParts[1], out);
 
                         break;
                     case "110": //110:Rename File (virtual only)
@@ -165,21 +169,21 @@ class ServerInit implements Runnable {
                         break;
 
                     case "113": //113:Send Auth Info
-                        sendAuthInfo(out);
+                        sendAuthInfo(requestParts[1], requestParts[2], out);
 
                         break;
 
-                    case "114": //114:Send Auth Info
+                    case "114": //114:Delete Account
                         deleteAccount(requestParts[1], out);
 
                         break;
 
                     default:
-                        badRequest(out, request);
+                        badRequest(out, request, "Invalid Request");
                         break;
                 }
             } catch (Exception e) {
-                badRequest(out, request);
+                badRequest(out, request, e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -466,23 +470,34 @@ class ServerInit implements Runnable {
         out.println(MeshFS.properties.getProperty("uuid"));
     }
 
-    private void sendAuthInfo(Socket client) throws IOException {
-        int br;
-        byte[] data = new byte[4096];
+    private void sendAuthInfo(String username, String password, Socket client) throws IOException {
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        FileInputStream fis =
-                new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
-
-        out.println("201");
-
-        while ((br = fis.read(data, 0, data.length)) != -1) {
-            dos.write(data, 0, br);
-            dos.flush();
+        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
+        FileInputStream fis = new FileInputStream(auth);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        HashMap<String, String> accounts = null;
+        try {
+            accounts = (HashMap) ois.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-
-        out.close();
+        if(auth.exists()) {
+            for (HashMap.Entry<String, String> entry : accounts.entrySet()) {
+                String un = entry.getKey();
+                String pw = entry.getValue();
+                if(username.toLowerCase().trim().equals(un) && password.trim().equals(pw)){
+                        out.println("201");
+                        out.println(MeshFS.properties.getProperty("uuid")+ "\n");
+                }
+            }
+            out.println("202\n");
+        }else{
+            out.println("202\n");
+        }
         fis.close();
+        ois.close();
+        out.close();
         dos.close();
     }
 
@@ -515,11 +530,11 @@ class ServerInit implements Runnable {
     }
 
 
-    private void badRequest(Socket client, String request) {
+    private void badRequest(Socket client, String request, String message) {
         try {
             if (client.isClosed()) return;
             PrintWriter out = new PrintWriter(client.getOutputStream());
-            out.println("202\nBad request:\n\n" + request);
+            out.println(request + ";" + message);
             out.flush();
         } catch (IOException ioe) {
             ioe.printStackTrace();

@@ -7,6 +7,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -238,7 +239,7 @@ class NewDirectoryWindow extends JFrame {
                             }
                         });
         okButton.addActionListener(
-                e -> {
+                (ActionEvent e) -> {
                     String newFolderPath =
                             (tree1
                                     .getSelectionPath()
@@ -266,6 +267,8 @@ class NewDirectoryWindow extends JFrame {
                                 serverAddress, port, newFolderPath, directoryName, userAccount);
                     } catch (IOException ignored) {
 
+                    } catch (MalformedRequestException e1) {
+                        e1.printStackTrace();
                     }
                     dispose();
                 });

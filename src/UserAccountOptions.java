@@ -23,6 +23,7 @@ class UserAccountOptions extends JFrame {
     private JButton closeBtn;
     private JButton deleteAccount;
     private JButton changePasswordBtn;
+    private JButton googleAccountBtn;
     //GEN-END:variables
 
     private UserAccountOptions(
@@ -66,10 +67,10 @@ class UserAccountOptions extends JFrame {
         closeBtn = new JButton();
         deleteAccount = new JButton();
         changePasswordBtn = new JButton();
+        googleAccountBtn = new JButton();
 
         //======== this ========
         Container contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
 
         //======== dialogPane ========
         {
@@ -89,15 +90,15 @@ class UserAccountOptions extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
 
                 //---- closeBtn ----
                 closeBtn.setText("Close");
                 closeBtn.setFont(new Font("Arial", closeBtn.getFont().getStyle(), closeBtn.getFont().getSize() + 1));
                 buttonBar.add(closeBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
 
             //---- deleteAccount ----
@@ -108,39 +109,66 @@ class UserAccountOptions extends JFrame {
             changePasswordBtn.setText("Change Password");
             changePasswordBtn.setFont(new Font("Arial", changePasswordBtn.getFont().getStyle(), changePasswordBtn.getFont().getSize() + 1));
 
+            //---- googleAccountBtn ----
+            googleAccountBtn.setText("Link Google Account...");
+            googleAccountBtn.setFont(new Font("Arial", googleAccountBtn.getFont().getStyle(), googleAccountBtn.getFont().getSize() + 1));
+
             GroupLayout dialogPaneLayout = new GroupLayout(dialogPane);
             dialogPane.setLayout(dialogPaneLayout);
             dialogPaneLayout.setHorizontalGroup(
-                    dialogPaneLayout.createParallelGroup()
+                dialogPaneLayout.createParallelGroup()
+                    .addGroup(dialogPaneLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(dialogPaneLayout.createParallelGroup()
                             .addGroup(dialogPaneLayout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addGroup(dialogPaneLayout.createParallelGroup()
-                                            .addComponent(titleLbl2, GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                                            .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addGroup(dialogPaneLayout.createSequentialGroup()
-                                                    .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
-                                                    .addGap(0, 0, Short.MAX_VALUE))
-                                            .addGroup(dialogPaneLayout.createSequentialGroup()
-                                                    .addComponent(changePasswordBtn)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
-                                                    .addComponent(deleteAccount))))
+                                .addGroup(dialogPaneLayout.createParallelGroup()
+                                    .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(dialogPaneLayout.createSequentialGroup()
+                                            .addComponent(changePasswordBtn)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(deleteAccount)))
+                                    .addComponent(googleAccountBtn))
+                                .addGap(0, 51, Short.MAX_VALUE))
+                            .addGroup(GroupLayout.Alignment.TRAILING, dialogPaneLayout.createSequentialGroup()
+                                .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                    .addComponent(titleLbl, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+                                    .addComponent(titleLbl2, GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
+                                .addGap(49, 49, 49))))
             );
             dialogPaneLayout.setVerticalGroup(
-                    dialogPaneLayout.createParallelGroup()
-                            .addGroup(dialogPaneLayout.createSequentialGroup()
-                                    .addComponent(titleLbl2)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(titleLbl)
-                                    .addGap(18, 18, 18)
-                                    .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                            .addComponent(changePasswordBtn)
-                                            .addComponent(deleteAccount))
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                                    .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
+                dialogPaneLayout.createParallelGroup()
+                    .addGroup(dialogPaneLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(titleLbl2)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(titleLbl)
+                        .addGap(24, 24, 24)
+                        .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(changePasswordBtn)
+                            .addComponent(deleteAccount))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(googleAccountBtn)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                        .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
             );
         }
-        contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(345, 245);
+
+        GroupLayout contentPaneLayout = new GroupLayout(contentPane);
+        contentPane.setLayout(contentPaneLayout);
+        contentPaneLayout.setHorizontalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addComponent(dialogPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE))
+        );
+        contentPaneLayout.setVerticalGroup(
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addComponent(dialogPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE))
+        );
+        setSize(350, 255);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
@@ -163,7 +191,7 @@ class UserAccountOptions extends JFrame {
                             dispose();
                             parentSender.dispose();
                             ClientModeConfiguration.run(userAccountOptions, serverAddress, previousRunType);
-                        } catch (IOException e1) {
+                        } catch (IOException | MalformedRequestException e1) {
                             e1.printStackTrace();
                         }
                     } else {

@@ -16,26 +16,20 @@ class MeshFS {
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
+        System.setProperty("java.net.preferIPv4Stack" , "true");
+        //check if we already have a config file
         configure = !new File(".config.properties").exists();
-
+        //load and check for properties
         properties = ConfigParser.loadProperties();
-        new CliParser(args);
+        CliParser cliParser = new CliParser(args);
+        Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
         multicastServer = new MulticastServer();
         try {
             multicastServer.startServer(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
-
         if (nogui) {
-
-            if (configure) {
-                //if(interactiveAuth()){
-                //    writeAuth();
-                //}
-            }
-
             System.setProperty("java.awt.headless", "true");
 
             List<String> possibleIP = Reporting.getIpAddresses();
@@ -53,8 +47,11 @@ class MeshFS {
             }
 
             if (isMaster) {
-                File manifestFile =
-                        new File(MeshFS.properties.getProperty("repository") + ".manifest.json");
+                if (configure && !cliParser.cmd.hasOption("adduser")) {
+                    System.out.println("Starting Interactive Authentication Configurator");
+                    cliParser.addUser();
+                }
+                File manifestFile = new File(MeshFS.properties.getProperty("repository") + ".manifest.json");
                 manifestFile.delete();
                 File catalog = new File(properties.getProperty("repository") + ".catalog.json");
 
@@ -137,7 +134,7 @@ class MeshFS {
                                                 Integer.parseInt(properties.getProperty("portNumber")));
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest");
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog");
-                                    } catch (IOException ioe) {
+                                    } catch (IOException | MalformedRequestException ioe) {
                                         ioe.printStackTrace();
                                     }
                                 }
@@ -208,9 +205,19 @@ class MeshFS {
 
 class onQuit implements Runnable {
     public void run() {
-        if (MeshFS.nogui) {
-            MeshFS.fileServer.stopServer();
+        try {
+            if (MeshFS.nogui) {
+                MeshFS.fileServer.stopServer();
+            }
+        } catch (NullPointerException ignored) {
         }
-        MeshFS.multicastServer.stopServer();
+
+        try {
+            MeshFS.multicastServer.stopServer();
+        } catch (NullPointerException ignored) {
+        }
+
+        DriveAPI.unauthorize();
+
     }
 }

@@ -4,7 +4,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -132,7 +135,10 @@ class JSONManipulator {
                         for (Object MACAddress : (JSONArray) fileInfo.get(infoKey)){
                             try{
                                 FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(),Integer.valueOf(MeshFS.properties.getProperty("portNumber")),infoKey.toString(),true);
-                            }catch (IOException ignored){}                        }
+                            }catch (IOException ignored){} catch (MalformedRequestException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
                 ((JSONObject) jsonObject.get("fileInfo")).remove(fileName);
@@ -403,8 +409,12 @@ class JSONManipulator {
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
         tempManifest.deleteOnExit();
-        FileClient.receiveFile(
-                serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath());
+        try {
+            FileClient.receiveFile(
+                    serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath());
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
+        }
         JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
         String[] folders = itemLocation.split("/");
         JSONObject jsonObject = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
@@ -442,6 +452,8 @@ class JSONManipulator {
                                                             outFileDir + File.separator + "." + fileNameWNum);
                                                 } catch (IOException ioe) {
                                                     ioe.printStackTrace();
+                                                } catch (MalformedRequestException e) {
+                                                    e.printStackTrace();
                                                 }
                                             });
 
@@ -470,8 +482,12 @@ class JSONManipulator {
                     if (((JSONArray) (((JSONObject) compInfoFile.get(MACAddress)).get("RepoContents")))
                             .contains(fileNameW)) {
                         String IPAddress = ((JSONObject) compInfoFile.get(MACAddress)).get("IP").toString();
-                        FileClient.receiveFile(
-                                IPAddress, port, fileNameW, outFileDir + File.separator + "." + outFile);
+                        try {
+                            FileClient.receiveFile(
+                                    IPAddress, port, fileNameW, outFileDir + File.separator + "." + outFile);
+                        } catch (MalformedRequestException e) {
+                            e.printStackTrace();
+                        }
                         new File(outFileDir + File.separator + "." + outFile)
                                 .renameTo(new File(outFileDir + File.separator + outFile));
                         cantContinue = false;

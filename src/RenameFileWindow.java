@@ -297,6 +297,8 @@ class RenameFileWindow extends JFrame {
                         FileClient.renameFile(serverAddress, port, jsonObj, newNameValueField.getText());
                     } catch (IOException e1) {
                         e1.printStackTrace();
+                    } catch (MalformedRequestException e1) {
+                        e1.printStackTrace();
                     }
                     dispose();
                 });
