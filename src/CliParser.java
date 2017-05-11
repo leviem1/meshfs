@@ -113,6 +113,7 @@ class CliParser {
 
     @SuppressWarnings("unchecked")
     void addUser(String username) throws IOException, ClassNotFoundException {
+        username = username.toLowerCase();
         if(username.equals("guest")){
             System.out.print("The user guest is reserved for MeshFS.");
             System.exit(1);
@@ -152,11 +153,10 @@ class CliParser {
 
         accounts.put(username, Crypt.generateEncryptedAuth(username.toLowerCase(), pass));
         writeAuth(accounts);
-
     }
 
-
     void removeUser(String username) {
+        username = username.toLowerCase();
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
         HashMap<String, String> accounts;
         if (auth.exists()) {
@@ -166,26 +166,29 @@ class CliParser {
                 accounts = (HashMap) ois.readObject();
                 fis.close();
                 ois.close();
+                if(!accounts.containsKey(username)){
+                    System.out.println("User " + username + " does not exist!");
+                    System.exit(1);
+                }
                 accounts.remove(username);
                 writeAuth(accounts);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
+        System.exit(0);
     }
 
     void updateAccount(String username){
+        username = username.toLowerCase();
         removeUser(username);
         try {
             addUser(username);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        System.exit(0);
     }
-
-
 
     private void writeAuth(HashMap<String, String> accountsEnc) {
         try {

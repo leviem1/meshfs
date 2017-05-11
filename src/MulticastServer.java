@@ -16,6 +16,7 @@ class MulticastServer {
     void startServer(String groupAddress, int port) throws IOException {
         InetAddress group = InetAddress.getByName(groupAddress);
         socket = new MulticastSocket(port);
+        socket.setReuseAddress(true);
         socket.joinGroup(group);
 
         mcast = new Thread(new MulticastServerInit(socket));
@@ -27,7 +28,7 @@ class MulticastServer {
             @Override
             public void run() {
                 for (String address : MulticastServerInit.foundMasters) {
-                    if (FileClient.ping(address, Integer.parseInt(MeshFS.properties.getProperty("port"))) == -1) {
+                    if (FileClient.ping(address, Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) == -1) {
                         MulticastServerInit.foundMasters.remove(address);
                     }
                 }
@@ -70,7 +71,7 @@ class MulticastServerInit implements Runnable {
     }
 
     private void evaluateMaster(String ip, String port) {
-        if ((!MeshFS.nogui) && (FileClient.ping(ip, Integer.parseInt(port)) > -1)) {
+        if ((!MeshFS.nogui) && (FileClient.ping(ip, Integer.parseInt(port)) > -1) && !foundMasters.contains(ip)) {
             foundMasters.add(ip);
         }
     }
@@ -158,9 +159,9 @@ class MulticastServerInit implements Runnable {
             DatagramPacket dp = new DatagramPacket(data, data.length);
             try {
                 socket.receive(dp);
-                if (!dp.getAddress().equals(InetAddress.getByName(Reporting.getIpAddresses().get(0)))) {
+                //if (!dp.getAddress().equals(InetAddress.getByName(Reporting.getIpAddresses().get(0)))) {
                     processRequest(new String(dp.getData()).trim(), dp);
-                }
+                //}
             } catch (SocketTimeoutException | SocketException ignored) {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
