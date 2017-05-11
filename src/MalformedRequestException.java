@@ -12,7 +12,8 @@ class MalformedRequestException extends Exception {
     private List<String> messageParts;
 
     MalformedRequestException(String message) {
-        messageParts = Arrays.asList(message.split("\\|"));
+        super("Request did not exist or was invalid");
+        messageParts = Arrays.asList(message.split(";"));
     }
 
     List<String> getReason() {
