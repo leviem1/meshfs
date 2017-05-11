@@ -16,7 +16,6 @@ class ClientModeConfiguration extends JFrame {
 
     private static JFrame clientModeConfiguration;
     private final boolean runType;
-    private String usernameFinal = "";
 
     //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
@@ -319,7 +318,7 @@ class ClientModeConfiguration extends JFrame {
             return;
         }
         try {
-            String uuid = connectAsUser(usernameField.getText(), String.valueOf(passwordField.getPassword()));
+            String uuid = connectAsUser(usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())));
             System.out.println(uuid);
             if(uuid.equals("-1")){
                 System.out.println("Error!");
@@ -332,24 +331,23 @@ class ClientModeConfiguration extends JFrame {
                 passwordField.setEnabled(true);
             }
             File catalog = File.createTempFile(".catalog", ".json");
-            if (!(usernameFinal.equals(""))) {
-                FileClient.receiveFile(
+            if (!(usernameField.getText().isEmpty())) {
+                System.out.println("Got this far");
+                /*FileClient.getUserFiles(
                         serverAddressField.getSelectedItem().toString(),
                         Integer.parseInt(serverPortField.getText()),
-                        ".catalog.json",
-                        catalog.getAbsolutePath());
+                        usernameField.getText(),
+                        uuid);*/
                 ClientBrowser.run(
                         serverAddressField.getSelectedItem().toString(),
                         Integer.parseInt(serverPortField.getText()),
                         clientModeConfiguration,
-                        usernameFinal,
+                        usernameField.getText(),
                         catalog,
                         runType);
                 dispose();
             }
         } catch (IOException ignored) {
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
         }
     }
 
@@ -377,7 +375,8 @@ class ClientModeConfiguration extends JFrame {
                     serverAddressField.getSelectedItem().toString(),
                     Integer.parseInt(serverPortField.getText()),
                     username,
-                    Crypt.generateEncryptedAuth(username, password));
+                    password);
+                    //Crypt.generateEncryptedAuth(username, password));
             return uuid;
 
         } catch (IOException | MalformedRequestException e) {

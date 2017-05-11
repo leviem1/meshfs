@@ -2,6 +2,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.*;
 import java.security.MessageDigest;
@@ -108,6 +109,8 @@ class ServerInit implements Runnable {
                     System.out.println(x);
                 }*/
 
+
+                //format requests in form of #, uuid, parameters
                 if (!(requestParts[0].equals("109") || requestParts[0].equals("113")) && (!requestParts[1].equals(MeshFS.properties.getProperty("uuid")))){
                     return;
                 }
@@ -175,6 +178,11 @@ class ServerInit implements Runnable {
 
                     case "114": //114:Delete Account
                         deleteAccount(requestParts[1], out);
+
+                        break;
+
+                    case "115": //115:Get User Files
+                        getUserFiles(requestParts[1], requestParts[2], out);
 
                         break;
 
@@ -471,24 +479,26 @@ class ServerInit implements Runnable {
     }
 
     private void sendAuthInfo(String username, String password, Socket client) throws IOException {
+        System.out.println(username + " " + password);
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
         FileInputStream fis = new FileInputStream(auth);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        HashMap<String, String> accounts = null;
+        ArrayList<UserAccounts> accounts = null;
         try {
-            accounts = (HashMap) ois.readObject();
+            accounts = (ArrayList)ois.readObject();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         if(auth.exists()) {
-            for (HashMap.Entry<String, String> entry : accounts.entrySet()) {
-                String un = entry.getKey();
-                String pw = entry.getValue();
+            for(UserAccounts userAccount : accounts){
+                String un = userAccount.getUsername();
+                String pw = userAccount.getPassword();
+
                 if(username.toLowerCase().trim().equals(un) && password.trim().equals(pw)){
-                        out.println("201");
-                        out.println(MeshFS.properties.getProperty("uuid")+ "\n");
+                    out.println("201");
+                    out.println(MeshFS.properties.getProperty("uuid")+ "\n");
                 }
             }
             out.println("202\n");
@@ -527,6 +537,26 @@ class ServerInit implements Runnable {
                 }
             }
         }
+    }
+
+    private void getUserFiles(String uuid, String userAccount, Socket client) throws IOException {
+        System.out.println(uuid + " " + userAccount);
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        FileInputStream fis = new FileInputStream(catalog);
+
+        JSONObject catalogObj = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
+        JSONObject userObj = JSONManipulator.getItemContents(catalogObj, "/users/mark/");
+
+        System.out.println(userObj);
+
+        out.println("201");
+        out.println(userObj.toString()+ "\n");
+
+        fis.close();
+        out.close();
+        dos.close();
     }
 
 

@@ -25,10 +25,10 @@ class JSONManipulator {
     private JSONManipulator() {}
 
     /**
-     * This method is returns the JSONObject stored in a file.
+     * This method returns the JSONObject of a file.
      *
-     * @param filePath the file path of the file that is to be read
-     * @return JSONObject read from file
+     * @param filePath is the file path of the file that is to be read
+     * @return JSONObject is from the read from file
      */
     static synchronized JSONObject getJSONObject(String filePath) {
         JSONObject jsonObject = null;
@@ -123,7 +123,7 @@ class JSONManipulator {
             item = itemLocation;
         }
 
-        List<JSONObject> filesToRemove = smartRemove(folderToRead);
+        /*List<JSONObject> filesToRemove = smartRemove(folderToRead);
         folderToRead.remove(item);
         JSONObject manifest = getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         for (JSONObject fileName : filesToRemove){
@@ -144,7 +144,7 @@ class JSONManipulator {
                 ((JSONObject) jsonObject.get("fileInfo")).remove(fileName);
             }
         }
-
+        */
         return jsonObject;
     }
 
@@ -587,12 +587,12 @@ class JSONManipulator {
         return jsonObject;
     }
 
-    static JSONObject deleteUsers(JSONObject jsonObject, List<String> users){
+    /*static JSONObject deleteUsers(JSONObject jsonObject, List<String> users){
         for (String user : users) {
             ((JSONObject) ((JSONObject) jsonObject.get("root")).get("User")).remove(user);
         }
         return removeGroups(jsonObject, "root/Shared", users);
-    }
+    }*/
 
 
 

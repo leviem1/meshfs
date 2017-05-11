@@ -1,7 +1,11 @@
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 
 /**
  * @author Mark Hedrick
@@ -200,5 +204,15 @@ class UserAccountOptions extends JFrame {
                 });
 
         closeBtn.addActionListener(e -> dispose());
+        googleAccountBtn.addActionListener(
+                e -> {
+                    try {
+                        DriveAPI.authorize(JacksonFactory.getDefaultInstance(), GoogleNetHttpTransport.newTrustedTransport());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (GeneralSecurityException e1) {
+                        e1.printStackTrace();
+                    }
+                });
     }
 }

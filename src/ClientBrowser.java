@@ -109,14 +109,14 @@ class ClientBrowser extends JFrame {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("root/" + userAccount);
         DefaultMutableTreeNode sharedNode = new DefaultMutableTreeNode("root/Shared");
-        DefaultMutableTreeNode userRoot =
-                (readFolder(
-                        userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), userNode));
-        DefaultMutableTreeNode sharedRoot =
+        /*(DefaultMutableTreeNode userRoot =
+                readFolder(
+                        userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), userNode));*/
+        /*(DefaultMutableTreeNode sharedRoot =
                 (readFolder(
                         userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), sharedNode));
         root.add(userRoot);
-        root.add(sharedRoot);
+        root.add(sharedRoot);*/
 
         if (isLoaded) {
             dialogPane.repaint();
@@ -584,7 +584,7 @@ class ClientBrowser extends JFrame {
                 leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
                 if (leaf.getAllowsChildren()) {
                     String folderLocation2 = folderLocation + "/" + name;
-                    readFolder(folderLocation2, jsonObj2, leaf);
+                    //readFolder(folderLocation2, jsonObj2, leaf);
                 }
                 branch.add(leaf);
             }
@@ -668,12 +668,12 @@ class ClientBrowser extends JFrame {
                                         serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
                                 clientBrowserButtonModifier(false);
                                 tree1.removeAll();
-                                tree1.setModel(
+                                /*tree1.setModel(
                                         new DefaultTreeModel(
                                                 readFolder(
                                                         userAccount,
                                                         JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()),
-                                                        new DefaultMutableTreeNode(userAccount))));
+                                                        new DefaultMutableTreeNode(userAccount))));*/
                                 tempCatalog.delete();
                             }
                         } catch (IOException ignored) {

@@ -1,6 +1,8 @@
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.apache.commons.cli.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -75,6 +77,8 @@ class CliParser {
 
         } catch (ParseException e) {
             help();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -110,73 +114,70 @@ class CliParser {
 
     @SuppressWarnings("unchecked")
     void addUser(String username) throws IOException, ClassNotFoundException {
-        username = username.toLowerCase();
-        if(username.equals("guest")){
-            System.out.print("The user guest is reserved for MeshFS.");
+        ArrayList<UserAccounts> accounts;
+        if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+        }else{
+            accounts = new ArrayList<>();
+        }
+
+        if (username.equals("guest")) {
+            System.out.println("The user guest is reserved for MeshFS.");
             System.exit(1);
         }
+
+        for (UserAccounts account : accounts) {
+            if (account.getUsername().equals(username)) {
+                System.out.println("User already exists!");
+                System.out.println("Quitting!");
+                return;
+            }
+        }
+
         System.out.print("Enter Password for " + username + ": ");
         char[] password = System.console().readPassword();
         System.out.print("Retype Password: ");
         char[] password2 = System.console().readPassword();
 
-        if(!Arrays.equals(password, password2)){
+        if (!Arrays.equals(password, password2)) {
             System.out.println("Passwords do not match!");
             addUser(username);
             return;
         }
 
+        username = username.toLowerCase();
         String pass = new String(password);
 
-        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
-        HashMap<String, String> accounts;
 
-        if(auth.exists()) {
-            FileInputStream fis = new FileInputStream(auth);
-            ObjectInputStream ois = new ObjectInputStream(fis);
+        accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass), "user"));
+        Crypt.writeAuthFile(accounts);
+    }
 
-            accounts = (HashMap) ois.readObject();
-            for (HashMap.Entry<String, String> entry : accounts.entrySet()) {
-                String un = entry.getKey();
-                if(username.equals(un)){
-                    System.out.println("User already exists!");
-                    System.out.println("Quitting!");
-                    return;
-                }
-            }
+    void removeUser(String username) throws IOException, ClassNotFoundException {
+        ArrayList<UserAccounts> accounts = null;
+        if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
         }else{
-            accounts = new HashMap<>();
+            System.err.println("No authentication file exists!");
+            System.exit(1);
         }
 
-        accounts.put(username, Crypt.generateEncryptedAuth(username.toLowerCase(), pass));
-        writeAuth(accounts);
-    }
+        if (username.equals("guest")) {
+            System.out.println("The user guest is reserved for MeshFS.");
+            System.exit(1);
+        }
 
-    void removeUser(String username) {
-        username = username.toLowerCase();
-        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
-        HashMap<String, String> accounts;
-        if (auth.exists()) {
-            try {
-                FileInputStream fis = new FileInputStream(auth);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                accounts = (HashMap) ois.readObject();
-                fis.close();
-                ois.close();
-                if(!accounts.containsKey(username)){
-                    System.out.println("User " + username + " does not exist!");
-                    System.exit(1);
-                }
-                accounts.remove(username);
-                writeAuth(accounts);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+        for(UserAccounts account : accounts){
+            if(account.getUsername().equals(username.toLowerCase())){
+                accounts.remove(account);
+                break;
             }
         }
-        System.exit(0);
+
+        Crypt.writeAuthFile(accounts);
     }
 
-    void updateAccount(String username){
+    void updateAccount(String username) throws IOException, ClassNotFoundException {
         username = username.toLowerCase();
         removeUser(username);
         try {
@@ -185,18 +186,6 @@ class CliParser {
             e.printStackTrace();
         }
         System.exit(0);
-    }
-
-    private void writeAuth(HashMap<String, String> accountsEnc) {
-        try {
-            FileOutputStream fos =
-                    new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(accountsEnc);
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }

@@ -3,6 +3,7 @@ import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.time.Instant;
 
@@ -465,7 +466,6 @@ final class FileClient {
     }
 
     static String loginAsUser(String serverAddress, int port, String username, String password) throws IOException, MalformedRequestException {
-        String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -502,4 +502,21 @@ final class FileClient {
             client.close();
         }
     }
+
+    static JSONObject getUserFiles(String serverAddress, int port, String userAccount, String uuid) throws MalformedRequestException, IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        out.println("115|" + uuid + "|" + userAccount + "\n");
+        if ((input.readLine().trim()).equals("202")) {
+            client.close();
+            return new JSONObject();
+        }
+        String jsonObj = input.readLine().trim();
+        System.out.println("OBJ received: " + jsonObj);
+        client.close();
+        return new JSONObject();
+    }
+
 }
