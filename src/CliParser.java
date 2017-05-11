@@ -1,10 +1,9 @@
 import org.apache.commons.cli.*;
 
 import java.io.*;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * The CliParser class allows for the reading of command line arguments. Only calling on the class
