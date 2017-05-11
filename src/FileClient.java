@@ -464,62 +464,6 @@ final class FileClient {
         }
     }
 
-    static String getServerUUID(String serverAddress, int port) throws IOException {
-        //TODO: Fix shit code, learn how it works before trying to fuck with this.
-
-        /*
-        String response;
-        String uuid = "";
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        try {
-            out.println("112\n");
-            uuid = input.readLine();
-            if (!(response = input.readLine().trim()).equals("201")) {
-                System.err.println(response);
-            }
-            client.close();
-        } catch (SocketTimeoutException ste) {
-            client.close();
-        }
-        return uuid;
-        */
-        return "Shitty code doesn't work";
-    }
-
-    @SuppressWarnings("deprecation")
-    static void receiveAuthFile(String serverAddress, int port, String fileOut) throws IOException, MalformedRequestException {
-        String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        DataInputStream dis = new DataInputStream(client.getInputStream());
-        FileOutputStream fos = new FileOutputStream(fileOut);
-
-        try {
-            out.println("113|" + MeshFS.properties.getProperty("uuid") + "\n");
-
-            if (!(response = dis.readLine().trim()).equals("201")) {
-                throw new MalformedRequestException(response);
-            }
-            int br;
-            byte[] data = new byte[4096];
-
-            while ((br = dis.read(data, 0, data.length)) != -1) {
-                fos.write(data, 0, br);
-                fos.flush();
-            }
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            out.close();
-            dis.close();
-            fos.close();
-            client.close();
-        }
-    }
-
     static String loginAsUser(String serverAddress, int port, String username, String password) throws IOException, MalformedRequestException {
         String response;
         Socket client = new Socket(serverAddress, port);

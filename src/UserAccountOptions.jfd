@@ -3,12 +3,15 @@ JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:0:x}}"
+			"$verticalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:0:x}}"
+		} ) {
 			name: "this"
 			"$sizePolicy": 1
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {comp titleLbl2::l::313:x, comp titleLbl::l:::x, seq {comp buttonBar:::p:309:p, space :0:0:x}, seq {comp changePasswordBtn:::p::p, space ::41:x, comp deleteAccount:::p::p}}}}"
-				"$verticalGroup": "par l {seq {comp titleLbl2:::p::p, space s:::p, comp titleLbl:::p::p, space s:::p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space ::36:x, comp buttonBar:::p:44:p}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l {par l:::p {comp buttonBar:::p:309:p, seq {comp changePasswordBtn:::p::p, space :::x, comp deleteAccount:::p::p}}, comp googleAccountBtn::l:p::p}, space :0:51:x}, seq t {par t {comp titleLbl::l::311:x, comp titleLbl2::::311:x}, space :p:49:p}}}}"
+				"$verticalGroup": "par l {seq {space :::p, comp titleLbl2:::p::p, space :::p, comp titleLbl:::p::p, space :p:24:p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space :::p, comp googleAccountBtn:::p::p, space ::11:x, comp buttonBar:::p:44:p}}"
 			} ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -38,7 +41,6 @@ new FormModel {
 						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
-						"gridy": 0
 					} )
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
@@ -51,13 +53,15 @@ new FormModel {
 					"text": "Change Password"
 					"font": #SwingDerivedFont0
 				} )
-			}, new FormLayoutConstraints( class java.lang.String ) {
-				"value": "Center"
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "googleAccountBtn"
+					"text": "Link Google Account..."
+					"font": #SwingDerivedFont0
+				} )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 345, 245 )
+			"size": new java.awt.Dimension( 350, 255 )
 		} )
 	}
 }
-

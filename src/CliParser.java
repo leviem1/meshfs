@@ -21,8 +21,7 @@ class CliParser {
     CliParser(String[] args) {
         opt.addOption("h", "help", false, "Display application's help message.");
         opt.addOption("m", "masterIP", true, "IP of master (if self, use 127.0.0.1 or own IP).");
-        opt.addOption(
-                "r", "regenconfig", false, "Regenerate application's default configuration file.");
+        opt.addOption("r", "regenconfig", false, "Regenerate application's default configuration file.");
         opt.addOption("nogui", false, "Run MeshFS without graphical user interface (server mode only)");
         opt.addOption("reconfig", false, "Reconfigure MeshFS graphically");
         opt.addOption("adduser", true, "Add user interactively");
@@ -85,7 +84,6 @@ class CliParser {
         formatter.printHelp("MeshFS [options]", opt);
         System.exit(0);
     }
-
 
     void addUser() {
         Scanner input = new Scanner(System.in);
