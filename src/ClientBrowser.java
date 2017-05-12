@@ -35,12 +35,12 @@ class ClientBrowser extends JFrame {
     private JTree tree1;
     private JPanel panel1;
     private JButton uploadBtn;
-    private JButton downloadBtn;
     private JButton newDirBtn;
     private JButton downloadAsBtn;
-    private JButton moveBtn;
     private JButton duplicateBtn;
+    private JButton moveBtn;
     private JButton renameBtn;
+    private JButton shareBtn;
     private JButton propertiesBtn;
     private JButton removeBtn;
     private JPanel buttonBar;
@@ -130,12 +130,12 @@ class ClientBrowser extends JFrame {
         tree1 = new JTree(new DefaultTreeModel(root));
         panel1 = new JPanel();
         uploadBtn = new JButton();
-        downloadBtn = new JButton();
         newDirBtn = new JButton();
         downloadAsBtn = new JButton();
-        moveBtn = new JButton();
         duplicateBtn = new JButton();
+        moveBtn = new JButton();
         renameBtn = new JButton();
+        shareBtn = new JButton();
         propertiesBtn = new JButton();
         removeBtn = new JButton();
         buttonBar = new JPanel();
@@ -172,10 +172,6 @@ class ClientBrowser extends JFrame {
                     uploadBtn.setText("Upload...");
                     uploadBtn.setFont(new Font("Arial", uploadBtn.getFont().getStyle(), uploadBtn.getFont().getSize() + 1));
 
-                    //---- downloadBtn ----
-                    downloadBtn.setText("Save");
-                    downloadBtn.setFont(new Font("Arial", downloadBtn.getFont().getStyle(), downloadBtn.getFont().getSize() + 1));
-
                     //---- newDirBtn ----
                     newDirBtn.setText("New Folder");
                     newDirBtn.setFont(new Font("Arial", newDirBtn.getFont().getStyle(), newDirBtn.getFont().getSize() + 1));
@@ -184,17 +180,21 @@ class ClientBrowser extends JFrame {
                     downloadAsBtn.setText("Save As...");
                     downloadAsBtn.setFont(new Font("Arial", downloadAsBtn.getFont().getStyle(), downloadAsBtn.getFont().getSize() + 1));
 
-                    //---- moveBtn ----
-                    moveBtn.setText("Move...");
-                    moveBtn.setFont(new Font("Arial", moveBtn.getFont().getStyle(), moveBtn.getFont().getSize() + 1));
-
                     //---- duplicateBtn ----
                     duplicateBtn.setText("Duplicate");
                     duplicateBtn.setFont(new Font("Arial", duplicateBtn.getFont().getStyle(), duplicateBtn.getFont().getSize() + 1));
 
+                    //---- moveBtn ----
+                    moveBtn.setText("Move...");
+                    moveBtn.setFont(new Font("Arial", moveBtn.getFont().getStyle(), moveBtn.getFont().getSize() + 1));
+
                     //---- renameBtn ----
                     renameBtn.setText("Rename...");
                     renameBtn.setFont(new Font("Arial", renameBtn.getFont().getStyle(), renameBtn.getFont().getSize() + 1));
+
+                    //---- shareBtn ----
+                    shareBtn.setText("Share");
+                    shareBtn.setFont(new Font("Arial", shareBtn.getFont().getStyle(), shareBtn.getFont().getSize() + 1));
 
                     //---- propertiesBtn ----
                     propertiesBtn.setText("Properties");
@@ -210,42 +210,39 @@ class ClientBrowser extends JFrame {
                         panel1Layout.createParallelGroup()
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(panel1Layout.createParallelGroup()
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(newDirBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(downloadAsBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(moveBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(renameBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(shareBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(propertiesBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(removeBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(uploadBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(downloadBtn, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                                            .addComponent(removeBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(newDirBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(moveBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(downloadAsBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(renameBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(duplicateBtn, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addContainerGap())
+                                    .addComponent(duplicateBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                     panel1Layout.setVerticalGroup(
                         panel1Layout.createParallelGroup()
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(uploadBtn)
+                                .addComponent(uploadBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(newDirBtn)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(downloadBtn)
+                                .addComponent(downloadAsBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(downloadAsBtn)
+                                .addComponent(duplicateBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(moveBtn)
+                                .addComponent(moveBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(duplicateBtn)
+                                .addComponent(renameBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(renameBtn)
+                                .addComponent(shareBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(propertiesBtn)
+                                .addComponent(propertiesBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(removeBtn)
+                                .addComponent(removeBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(15, Short.MAX_VALUE))
                     );
                 }
@@ -256,7 +253,7 @@ class ClientBrowser extends JFrame {
                     contentPanelLayout.createParallelGroup()
                         .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
                             .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 408, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
@@ -308,7 +305,7 @@ class ClientBrowser extends JFrame {
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(565, 465);
+        setSize(550, 465);
         setLocationRelativeTo(getOwner());
         //GEN-END:initComponents
         isLoaded = true;
@@ -401,34 +398,6 @@ class ClientBrowser extends JFrame {
                         }
                     } catch (NullPointerException ignored) {
                     }
-                });
-        downloadBtn.addActionListener(
-                e -> {
-                    DefaultMutableTreeNode node =
-                            (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                    if ((new File(
-                            System.getProperty("user.home")
-                                    + File.separator
-                                    + "Downloads"
-                                    + File.separator
-                                    + node.toString())
-                            .exists())) {
-                        JOptionPane.showMessageDialog(
-                                null, "File already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    Thread download =
-                            new Thread(
-                                    () -> {
-                                        statusLbl.setText("Downloading...");
-                                        downloadFile(
-                                                System.getProperty("user.home")
-                                                        + File.separator
-                                                        + "Downloads"
-                                                        + File.separator
-                                                        + node.toString());
-                                    });
-                    download.start();
                 });
         downloadAsBtn.addActionListener(
                 e -> {
@@ -627,13 +596,13 @@ class ClientBrowser extends JFrame {
     }
 
     private void clientBrowserButtonModifier(boolean state) {
-        downloadBtn.setEnabled(state);
         downloadAsBtn.setEnabled(state);
         propertiesBtn.setEnabled(state);
         renameBtn.setEnabled(state);
         removeBtn.setEnabled(state);
         duplicateBtn.setEnabled(state);
         moveBtn.setEnabled(state);
+        shareBtn.setEnabled(state);
     }
 
     private void catalogCheck() {

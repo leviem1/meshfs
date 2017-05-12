@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "5.2.5.1.342" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -10,19 +10,30 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane1::::262:x, seq {par l {seq {comp fileNameLbl:::p::p, space :::p, comp fileNameValue:::p::p}, seq l {comp fileSizeLbl:::p::p, space :::p, comp fileSizeValue:::p::p}, seq l {comp ownerLbl:::p::p, space :::p, comp ownerValue:::p::p}, comp locationLbl::l:p::p, seq l {comp creationDateLbl:::p::p, space :::p, comp creationDateValue:::p::p}}, space :0:142:x}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp fileNameLbl::b:p::p, comp fileNameValue::b:p::p}, space s:::p, par b {comp fileSizeLbl::b:p::p, comp fileSizeValue::b:p::p}, space s:::p, par b {comp creationDateLbl::b:p::p, comp creationDateValue::b:p::p}, space s:::p, par b {comp ownerLbl::b:p::p, comp ownerValue::b:p::p}, space s:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1::::81:x}}"
+					"$horizontalGroup": "par l {seq t {space :::p, par t {comp scrollPane1::l::262:x, seq l {par l {seq {comp fileNameLbl:::p::p, space :::p, comp fileNameValue:::p::p, space s:::p, comp fileSizeValue:::p:81:p}, seq l {comp creationDateLbl:::p::p, space :::p, comp creationDateValue:::p::p}, seq l {comp ownerLbl:::p::p, space :::p, comp ownerValue:::p::p}, comp locationLbl::l:p::p, comp locationLbl2::l:p:122:p}, space :0:0:x}, comp scrollPane2::t::262:x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp fileNameLbl::b:p::p, comp fileNameValue::b:p::p, comp fileSizeValue::b:p::p}, space u:::p, par b {comp creationDateLbl::b:p::p, comp creationDateValue::b:p::p}, space u:::p, par b {comp ownerLbl::b:p::p, comp ownerValue::b:p::p}, space u:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p:62:p, space u:::p, comp locationLbl2:::p::p, space :::p, comp scrollPane2::::71:x, space :::p}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "fileNameLbl"
-						"text": "File Name:"
+						"text": "Item Name:"
 						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 196608, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "fileSizeLbl"
-						"text": "File Size:"
+						name: "fileNameValue"
+						"text": "name"
 						"font": #SwingDerivedFont0
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JLabel(fileName);"
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "fileSizeValue"
+						"text": "(size)"
+						"font": #SwingDerivedFont0
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JLabel(fileSize);"
+						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "creationDateLbl"
@@ -30,13 +41,26 @@ new FormModel {
 						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "creationDateValue"
+						"text": "date"
+						"font": #SwingDerivedFont0
+						auxiliary() {
+							"JavaCodeGenerator.customCreateCode": "new JLabel(creationDate);"
+						}
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "ownerLbl"
 						"text": "Added By:"
 						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "ownerValue"
+						"text": "null"
+						"font": #SwingDerivedFont0
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "locationLbl"
-						"text": "File Details:"
+						"text": "Distribution Details:"
 						"font": #SwingDerivedFont0
 					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -51,33 +75,15 @@ new FormModel {
 						} )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "fileNameValue"
-						"text": "null"
+						name: "locationLbl2"
+						"text": "Permissions:"
 						"font": #SwingDerivedFont0
-						auxiliary() {
-							"JavaCodeGenerator.customCreateCode": "new JLabel(fileName);"
-						}
 					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "fileSizeValue"
-						"text": "null"
-						"font": #SwingDerivedFont0
-						auxiliary() {
-							"JavaCodeGenerator.customCreateCode": "new JLabel(fileSize);"
-						}
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "creationDateValue"
-						"text": "null"
-						"font": #SwingDerivedFont0
-						auxiliary() {
-							"JavaCodeGenerator.customCreateCode": "new JLabel(creationDate);"
-						}
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "ownerValue"
-						"text": "null"
-						"font": #SwingDerivedFont0
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane2"
+						add( new FormComponent( "javax.swing.JList" ) {
+							name: "list1"
+						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -90,11 +96,6 @@ new FormModel {
 				} ) {
 					name: "buttonBar"
 					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "shareBtn"
-						"text": "Share..."
-						"font": #SwingDerivedFont0
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
@@ -118,7 +119,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 300, 365 )
+			"size": new java.awt.Dimension( 300, 405 )
 		} )
 	}
 }

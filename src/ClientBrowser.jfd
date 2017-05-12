@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "5.2.5.1.342" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -11,7 +11,7 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq t {comp scrollPane1:::p:408:p, space u:::p, comp panel1:::p::p, space :::x}}"
+					"$horizontalGroup": "par l {seq t {comp scrollPane1:::p:408:p, space :::p, comp panel1:::p::p, space ::-5:x}}"
 					"$verticalGroup": "par l {seq {par l {comp scrollPane1::::366:x, comp panel1:::::x}, space :::p}}"
 				} ) {
 					name: "contentPanel"
@@ -26,19 +26,14 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, par l {comp propertiesBtn:::::x, comp uploadBtn:::::x, comp downloadBtn::t:::x, seq l {par t:::p {comp removeBtn::l:::x, comp newDirBtn::l:::x, comp moveBtn::l:::x, comp downloadAsBtn::l:::x, comp renameBtn::l:::x, comp duplicateBtn::l:::x}, space :0:0:x}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp uploadBtn:::p::p, space :::p, comp newDirBtn:::p::p, space :::p, comp downloadBtn:::p::p, space :::p, comp downloadAsBtn:::p::p, space :::p, comp moveBtn:::p::p, space :::p, comp duplicateBtn:::p::p, space :::p, comp renameBtn:::p::p, space :::p, comp propertiesBtn:::p::p, space :::p, comp removeBtn:::p::p, space ::15:x}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l:::p {comp newDirBtn::l:::x, comp downloadAsBtn::l:::x, comp moveBtn::l:::x, comp renameBtn::l:::x, comp shareBtn::l:::x, comp propertiesBtn::l:::x, comp removeBtn::l:::x, comp uploadBtn::l:::x, comp duplicateBtn::l:::x}, space :::x}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp uploadBtn:::p:33:p, space :::p, comp newDirBtn:::p::p, space :::p, comp downloadAsBtn:::p:33:p, space :::p, comp duplicateBtn:::p:33:p, space :::p, comp moveBtn:::p:33:p, space :::p, comp renameBtn:::p:33:p, space :::p, comp shareBtn:::p:33:p, space :::p, comp propertiesBtn:::p:33:p, space :::p, comp removeBtn:::p:33:p, space ::15:x}}"
 					} ) {
 						name: "panel1"
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "uploadBtn"
 							"text": "Upload..."
 							"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "downloadBtn"
-							"text": "Save"
-							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "newDirBtn"
@@ -51,18 +46,23 @@ new FormModel {
 							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "moveBtn"
-							"text": "Move..."
-							"font": #SwingDerivedFont0
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "duplicateBtn"
 							"text": "Duplicate"
 							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "moveBtn"
+							"text": "Move..."
+							"font": #SwingDerivedFont0
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "renameBtn"
 							"text": "Rename..."
+							"font": #SwingDerivedFont0
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "shareBtn"
+							"text": "Share"
 							"font": #SwingDerivedFont0
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
@@ -120,8 +120,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 565, 465 )
+			"size": new java.awt.Dimension( 550, 465 )
 		} )
 	}
 }
-
