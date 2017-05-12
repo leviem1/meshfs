@@ -120,10 +120,10 @@ class ServerInit implements Runnable {
 
                         break;
                     case "102": //102:Post file
-                        if (requestParts.length == 4) {
-                            receiveFile(requestParts[2], requestParts[3], out);
+                        if (requestParts.length == 5) {
+                            receiveFile(requestParts[2], requestParts[3], requestParts[4], out);
                         } else {
-                            receiveFile(requestParts[2], out);
+                            receiveFile(requestParts[2], requestParts[3], out);
                         }
 
                         break;
@@ -156,7 +156,7 @@ class ServerInit implements Runnable {
                         ping(requestParts[1], out);
 
                         break;
-                    case "110": //110:Rename File (virtual only)
+                    case "110": //110:Rename File
                         renameFile(requestParts[2], requestParts[3], out);
 
                         break;
@@ -306,7 +306,7 @@ class ServerInit implements Runnable {
         dos.close();
     }
 
-    private void receiveFile(String filename, Socket client) throws IOException {
+    private void receiveFile(String filename, String md5, Socket client) throws IOException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -326,7 +326,7 @@ class ServerInit implements Runnable {
         dis.close();
     }
 
-    private void receiveFile(String filename, String userAccount, Socket client)
+    private void receiveFile(String filename, String md5, String userAccount, Socket client)
             throws IOException {
         int br;
         byte[] data = new byte[4096];
@@ -351,6 +351,13 @@ class ServerInit implements Runnable {
         out.close();
         fos.close();
         dis.close();
+        try {
+            if (!md5.equals(FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename))) {
+
+            }
+        }catch (NoSuchAlgorithmException ignored) {
+
+        }
 
         JSONManipulator.writeJSONObject(
                 MeshFS.properties.getProperty("repository") + ".catalog.json",
@@ -558,7 +565,6 @@ class ServerInit implements Runnable {
         out.close();
         dos.close();
     }
-
 
     private void badRequest(Socket client, String request, String message) {
         try {

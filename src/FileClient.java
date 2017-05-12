@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 
 /**
@@ -136,7 +137,7 @@ final class FileClient {
         FileInputStream fis = new FileInputStream(filepath);
 
         try {
-            out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "|" + userAccount + "\n");
+            out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "|" + FileUtils.getMD5Hash(filepath) + "|" + userAccount + "\n");
 
             if (!(response = input.readLine().trim()).equals("201")) {
                 throw new MalformedRequestException(response);
@@ -148,7 +149,7 @@ final class FileClient {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (SocketTimeoutException ignored) {
+        } catch (SocketTimeoutException | NoSuchAlgorithmException ignored) {
         } finally {
             out.close();
             input.close();
