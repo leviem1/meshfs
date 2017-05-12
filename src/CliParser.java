@@ -1,10 +1,9 @@
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.apache.commons.cli.*;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -24,11 +23,14 @@ class CliParser {
         opt.addOption("m", "masterIP", true, "IP of master (if self, use 127.0.0.1 or own IP).");
         opt.addOption("r", "regenconfig", false, "Regenerate application's default configuration file.");
         opt.addOption("nogui", false, "Run MeshFS without graphical user interface (server mode only)");
-        opt.addOption("reconfig", false, "Reconfigure MeshFS graphically");
-        opt.addOption("adduser", true, "Add user interactively");
-        opt.addOption("deluser", true, "Remove user interactively");
-        opt.addOption("changepass", true, "Update user credentials interactively");
-
+        opt.addOption("reconfig", false, "Reconfigure MeshFS graphically.");
+        opt.addOption("addUser", true, "Add user interactively.");
+        opt.addOption("addGroup", true, "Update user groups interactively.");
+        opt.addOption("removeUser", true, "Remove user interactively.");
+        opt.addOption("removeGroup", true, "Remove a group from a user interactively.");
+        opt.addOption("changePass", true, "Update user credentials interactively.");
+        opt.addOption("listUsers", false, "Display all user accounts.");
+        opt.addOption("listGroups", true, "Display all user groups.");
         opt.addOption("u", "uuid", true, "Set UUID value for server to server communication");
 
         try {
@@ -43,8 +45,44 @@ class CliParser {
                 MeshFS.properties = ConfigParser.loadDefaultProperties();
             }
 
+            if (cmd.hasOption("u")) {
+                MeshFS.properties.setProperty("uuid", cmd.getOptionValue("u"));
+            }
+
             if (cmd.hasOption("m")) {
                 MeshFS.properties.setProperty("masterIP", cmd.getOptionValue("m"));
+            }
+
+            if (cmd.hasOption("addUser")) {
+                try {
+                    addUser(cmd.getOptionValue("addUser"));
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (cmd.hasOption("removeUser")) {
+                removeUser(cmd.getOptionValue("removeUser"));
+            }
+
+            if (cmd.hasOption("changePass")) {
+                updateAccount(cmd.getOptionValue("changePass"));
+            }
+
+            if (cmd.hasOption("addGroup")) {
+                addGroup(cmd.getOptionValue("addGroup"));
+            }
+
+            if (cmd.hasOption("removeGroup")) {
+                removeGroup(cmd.getOptionValue("removeGroup"));
+            }
+
+            if (cmd.hasOption("listUsers")) {
+                listUsers();
+            }
+
+            if (cmd.hasOption("listGroups")) {
+                listGroups(cmd.getOptionValue("listGroups"));
             }
 
             if (cmd.hasOption("nogui")) {
@@ -53,26 +91,6 @@ class CliParser {
 
             if (cmd.hasOption("reconfig")) {
                 MeshFS.configure = true;
-            }
-
-            if (cmd.hasOption("u")) {
-                MeshFS.properties.setProperty("uuid", cmd.getOptionValue("u"));
-            }
-
-            if (cmd.hasOption("adduser")) {
-                try {
-                    addUser(cmd.getOptionValue("adduser"));
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (cmd.hasOption("deluser")) {
-                removeUser(cmd.getOptionValue("deluser"));
-            }
-
-            if (cmd.hasOption("changepass")) {
-                updateAccount(cmd.getOptionValue("changepass"));
             }
 
         } catch (ParseException e) {
@@ -120,7 +138,6 @@ class CliParser {
         }else{
             accounts = new ArrayList<>();
         }
-
         if (username.equals("guest")) {
             System.out.println("The user guest is reserved for MeshFS.");
             System.exit(1);
@@ -148,8 +165,7 @@ class CliParser {
         username = username.toLowerCase();
         String pass = new String(password);
 
-
-        accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass), "user"));
+        accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass), "user", new ArrayList<>(Arrays.asList(username))));
         Crypt.writeAuthFile(accounts);
     }
 
@@ -186,6 +202,166 @@ class CliParser {
             e.printStackTrace();
         }
         System.exit(0);
+    }
+
+    void addGroup(String username){
+        Scanner input = new Scanner(System.in);
+        while(true) {
+            System.out.print("Group: ");
+            String groupName = new Scanner(System.in).nextLine();
+
+            try {
+                ArrayList<UserAccounts> accounts;
+                if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+                    accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+                }else{
+                    accounts = new ArrayList<>();
+                }
+
+                if (username.equals("guest")) {
+                    System.out.println("The user guest cannot be modified.");
+                    System.exit(1);
+                }
+                boolean exists = false;
+                for (UserAccounts account : accounts) {
+                    if (account.getUsername().equals(username)) {
+                        account.addGroup(groupName);
+                        exists = true;
+                        break;
+                    }
+                }
+                if(!exists){
+                    System.out.println("Username " + username + " does not exist!");
+                    System.exit(1);
+                }
+                Crypt.writeAuthFile(accounts);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("User group modified!!");
+            System.out.println("Add another group to " + username + "? [y/N]");
+            String response = input.nextLine();
+
+            if(response.isEmpty() || response.toLowerCase().equals("n")){
+                System.exit(0);
+            }
+        }
+    }
+
+    void removeGroup(String username){
+        Scanner input = new Scanner(System.in);
+        while(true) {
+            System.out.print("Group: ");
+            String groupName = new Scanner(System.in).nextLine();
+
+            try {
+                ArrayList<UserAccounts> accounts;
+                if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+                    accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+                }else{
+                    accounts = new ArrayList<>();
+                }
+
+                if (username.equals("guest")) {
+                    System.out.println("The user guest cannot be modified.");
+                    System.exit(1);
+                }
+                ArrayList<String> toRemove = new ArrayList<>();
+                for (UserAccounts account : accounts) {
+                    if (account.getUsername().equals(username)) {
+                        if(groupName.equals("all")){
+                            for(String group : account.getGroups()){
+                                if(!group.equals(username)){
+                                    toRemove.add(group);
+                                }
+                            }
+                            System.out.println("Going to remove: " + toRemove.toString());
+                            System.out.println("Proceed? [y/N]");
+                            String response = input.nextLine();
+
+                            if(response.isEmpty() || response.toLowerCase().equals("n")){
+                                System.exit(0);
+                            }
+                            for(String group : toRemove){
+                                account.removeGroup(group);
+                            }
+                            Crypt.writeAuthFile(accounts);
+                        }else{
+                            account.removeGroup(groupName);
+                            System.out.println("Going to remove" + groupName);
+                            System.out.println("Proceed? [y/N]");
+                            String response = input.nextLine();
+
+                            if(response.isEmpty() || response.toLowerCase().equals("n")){
+                                System.exit(0);
+                            }
+                            Crypt.writeAuthFile(accounts);
+                        }
+                        System.exit(0);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("User group modified!!");
+            System.out.println("Remove another group from " + username + "? [y/N]");
+            String response = input.nextLine();
+
+            if(response.isEmpty() || response.toLowerCase().equals("n")){
+                System.exit(0);
+            }
+        }
+    }
+
+    void listUsers(){
+        try {
+            ArrayList<UserAccounts> accounts;
+            if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+                accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            }else{
+                return;
+            }
+
+
+            for (UserAccounts account : accounts) {
+                System.out.println(account.getUsername());
+            }
+            System.exit(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void listGroups(String username){
+        try {
+            ArrayList<UserAccounts> accounts;
+            if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+                accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            }else{
+                return;
+            }
+
+            for (UserAccounts account : accounts) {
+                if(account.getUsername().equals(username)){
+                    System.out.println(account.getGroups().toString());
+
+                }
+            }
+            System.exit(0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }

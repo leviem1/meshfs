@@ -9,10 +9,12 @@ class UserAccounts implements java.io.Serializable{
     private String accountType;
     private ArrayList<String> groups;
 
-    UserAccounts(String username, String password, String accountType){
+    UserAccounts(String username, String password, String accountType, ArrayList<String> groups){
         this.username = username;
         this.password = password;
         this.accountType = accountType;
+        this.groups = groups;
+
     }
 
     String getUsername(){
@@ -26,5 +28,25 @@ class UserAccounts implements java.io.Serializable{
     String getAccountType(){
         return accountType;
     }
+
+    ArrayList<String> getGroups() {
+        return groups;
+    }
+
+    void addGroup(String groupName){
+        if(!groups.contains(groupName)){
+            groups.add(groupName);
+        }
+    }
+
+    ArrayList<String> removeGroup(String groupName){
+        if(groups.contains(groupName)){
+            groups.remove(groupName);
+        }
+        return groups;
+    }
+
+
+
 
 }
