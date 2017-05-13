@@ -283,7 +283,7 @@ class ClientModeConfiguration extends JFrame {
         }
 
         private void changed() {
-            if(!(serverAddressField.getSelectedItem().toString().isEmpty())){
+            if(serverAddressField.getSelectedIndex() != -1){
                 if(!(serverPortField.getText().isEmpty())) {
                     if (!(usernameField.getText().isEmpty())) {
                         if (!(String.valueOf(passwordField.getPassword()).isEmpty())) {

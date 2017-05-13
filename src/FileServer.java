@@ -486,7 +486,6 @@ class ServerInit implements Runnable {
     }
 
     private void sendAuthInfo(String username, String password, Socket client) throws IOException {
-        System.out.println(username + " " + password);
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");

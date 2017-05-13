@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -35,6 +36,10 @@ class Crypt {
 
     public static void writeAuthFile(ArrayList<UserAccounts> accountsArrayList) {
         try {
+            File repo = new File(MeshFS.properties.getProperty("repository"));
+            if(!repo.getAbsoluteFile().exists()){
+                repo.mkdirs();
+            }
             FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(accountsArrayList);

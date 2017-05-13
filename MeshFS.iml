@@ -16,5 +16,6 @@
     <orderEntry type="library" name="com.google.http-client:google-http-client:1.22.0" level="project" />
     <orderEntry type="library" name="com.google.http-client:google-http-client-jackson2:1.22.0" level="project" />
     <orderEntry type="library" name="com.google.oauth-client:google-oauth-client-jetty:1.22.0" level="project" />
+    <orderEntry type="library" name="org.apache.commons:commons-lang3:3.5" level="project" />
   </component>
 </module>

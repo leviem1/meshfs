@@ -37,7 +37,7 @@ class DriveAPI {
 
     private DriveAPI() {}
 
-    private static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport) throws IOException {
+    static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport) throws IOException {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSONFactory, new InputStreamReader(MeshFS.class.getResourceAsStream("/client_id.json")));
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSONFactory, clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/MeshFS"))).build();
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");

@@ -48,9 +48,9 @@ class MeshFS {
             }
 
             if (isMaster) {
-                if (configure && !cliParser.cmd.hasOption("adduser")) {
-                    System.out.println("Starting Interactive Authentication Configurator");
-                    cliParser.addUser();
+                if (((configure && !cliParser.cmd.hasOption("adduser"))) || !new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
+                    System.out.println("Starting Initial Authentication Generator");
+                    cliParser.addUser(true);
                 }
                 File manifestFile = new File(MeshFS.properties.getProperty("repository") + ".manifest.json");
                 manifestFile.delete();

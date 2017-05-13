@@ -1,4 +1,5 @@
 import org.apache.commons.cli.*;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -55,7 +56,7 @@ class CliParser {
 
             if (cmd.hasOption("addUser")) {
                 try {
-                    addUser(cmd.getOptionValue("addUser"));
+                    addUser(cmd.getOptionValue("addUser"), false);
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -106,32 +107,49 @@ class CliParser {
         System.exit(0);
     }
 
-    void addUser() {
+    void addUser(boolean initial) {
         Scanner input = new Scanner(System.in);
-        while(true) {
-            System.out.print("Username: ");
-            String username = new Scanner(System.in).nextLine();
+        if(!initial){
+            while(true) {
+                System.out.print("Username: ");
+                String username = new Scanner(System.in).nextLine();
 
+                try {
+                    addUser(username, initial);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                System.out.println("User Added!");
+                System.out.println("Add another user? [y/N]");
+                String response = input.nextLine();
+
+                if(response.isEmpty() || response.toLowerCase().equals("n")){
+                    break;
+                }
+            }
+        }else{
+            System.out.println("Adding administrator account...");
             try {
-                addUser(username);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+                addUser("admin", true);
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
+        }
 
-            System.out.println("User Added!");
-            System.out.println("Add another user? [y/N]");
-            String response = input.nextLine();
-
-            if(response.isEmpty() || response.toLowerCase().equals("n")){
-                break;
+        System.out.println("Do you wish to start the server? [Y/n]");
+        String response = new Scanner(System.in).nextLine();
+        System.out.println(response);
+        if(!response.isEmpty()){
+            if(!response.toLowerCase().equals("y")){
+                System.out.println("Exiting!");
+                System.exit(0);
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    void addUser(String username) throws IOException, ClassNotFoundException {
+    void addUser(String username, boolean initial) throws IOException, ClassNotFoundException {
         ArrayList<UserAccounts> accounts;
         if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
             accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
@@ -142,34 +160,65 @@ class CliParser {
             System.out.println("The user guest is reserved for MeshFS.");
             System.exit(1);
         }
+        if(!initial && username.equals("admin")){
+            System.out.println("The default administrator account is reserved for the system admin");
+            System.exit(1);
+        }
+        if(!initial){
+            for (UserAccounts account : accounts) {
+                if (account.getUsername().equals(username)) {
+                    System.out.println("User already exists!");
+                    System.out.println("Quitting!");
+                    return;
+                }
+            }
 
-        for (UserAccounts account : accounts) {
-            if (account.getUsername().equals(username)) {
-                System.out.println("User already exists!");
-                System.out.println("Quitting!");
+            System.out.print("Enter Password for " + username + ": ");
+            char[] password = System.console().readPassword();
+            System.out.print("Retype Password: ");
+            char[] password2 = System.console().readPassword();
+
+            if (!Arrays.equals(password, password2)) {
+                System.out.println("Passwords do not match!");
+                addUser(username, false);
                 return;
             }
+
+            username = username.toLowerCase();
+            String pass = new String(password);
+            accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass), initial ? "admin" : "user", new ArrayList<>(Arrays.asList(username))));
+            Crypt.writeAuthFile(accounts);
+
+            System.out.println("User Added!");
+
+            System.out.println("Do you wish to start the server? [y/N]");
+            String response = new Scanner(System.in).nextLine();
+
+            if(response.isEmpty() || response.toLowerCase().equals("n")){
+                System.out.println("Exiting!");
+                System.exit(0);
+            }
+        }else{
+            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            String pw = RandomStringUtils.random( 8, characters);
+            accounts.add(new UserAccounts("admin", Crypt.generateEncryptedPass(username, pw) , "admin", new ArrayList<>(Arrays.asList(username))));
+            Crypt.writeAuthFile(accounts);
+            System.out.println("Admin account generated!");
+            System.out.println("Username: admin (non case-sensitive)");
+            System.out.println("Password: " + pw);
+            System.out.print("Press any key to continue...");
+            new Scanner(System.in).nextLine();
         }
 
-        System.out.print("Enter Password for " + username + ": ");
-        char[] password = System.console().readPassword();
-        System.out.print("Retype Password: ");
-        char[] password2 = System.console().readPassword();
 
-        if (!Arrays.equals(password, password2)) {
-            System.out.println("Passwords do not match!");
-            addUser(username);
-            return;
-        }
 
-        username = username.toLowerCase();
-        String pass = new String(password);
-
-        accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass), "user", new ArrayList<>(Arrays.asList(username))));
-        Crypt.writeAuthFile(accounts);
     }
 
     void removeUser(String username) throws IOException, ClassNotFoundException {
+        if(username.equals("admin")){
+            System.out.println("The user 'admin' cannot be deleted!");
+            return;
+        }
         ArrayList<UserAccounts> accounts = null;
         if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
             accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
@@ -194,10 +243,14 @@ class CliParser {
     }
 
     void updateAccount(String username) throws IOException, ClassNotFoundException {
+        if(username.equals("admin")){
+            System.out.println("The password for 'admin' cannot be changed!");
+            return;
+        }
         username = username.toLowerCase();
         removeUser(username);
         try {
-            addUser(username);
+            addUser(username, false);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -232,6 +285,7 @@ class CliParser {
                 }
                 if(!exists){
                     System.out.println("Username " + username + " does not exist!");
+                    System.out.println("Exiting!");
                     System.exit(1);
                 }
                 Crypt.writeAuthFile(accounts);
@@ -246,6 +300,7 @@ class CliParser {
             String response = input.nextLine();
 
             if(response.isEmpty() || response.toLowerCase().equals("n")){
+                System.out.println("Exiting!");
                 System.exit(0);
             }
         }
@@ -254,9 +309,13 @@ class CliParser {
     void removeGroup(String username){
         Scanner input = new Scanner(System.in);
         while(true) {
+            System.out.println("Hint: typing 'all' below will result in removing all non-primary user groups");
             System.out.print("Group: ");
             String groupName = new Scanner(System.in).nextLine();
-
+            if(groupName.equals("admin")){
+                System.out.println("The group name 'admin' is reserved!");
+                break;
+            }
             try {
                 ArrayList<UserAccounts> accounts;
                 if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
@@ -267,6 +326,7 @@ class CliParser {
 
                 if (username.equals("guest")) {
                     System.out.println("The user guest cannot be modified.");
+                    System.out.println("Exiting!");
                     System.exit(1);
                 }
                 ArrayList<String> toRemove = new ArrayList<>();
@@ -283,6 +343,7 @@ class CliParser {
                             String response = input.nextLine();
 
                             if(response.isEmpty() || response.toLowerCase().equals("n")){
+                                System.out.println("Exiting!");
                                 System.exit(0);
                             }
                             for(String group : toRemove){
@@ -296,16 +357,16 @@ class CliParser {
                             String response = input.nextLine();
 
                             if(response.isEmpty() || response.toLowerCase().equals("n")){
+                                System.out.println("Exiting!");
                                 System.exit(0);
                             }
                             Crypt.writeAuthFile(accounts);
                         }
+                        System.out.println("Exiting!");
                         System.exit(0);
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
 
@@ -314,6 +375,7 @@ class CliParser {
             String response = input.nextLine();
 
             if(response.isEmpty() || response.toLowerCase().equals("n")){
+                System.out.println("Exiting!");
                 System.exit(0);
             }
         }
@@ -330,12 +392,11 @@ class CliParser {
 
 
             for (UserAccounts account : accounts) {
-                System.out.println(account.getUsername());
+                System.out.println(account.getUsername() + " (" + account.getAccountType() + ")");
             }
+            System.out.println("Exiting!");
             System.exit(0);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -355,11 +416,10 @@ class CliParser {
 
                 }
             }
+            System.out.println("Exiting!");
             System.exit(0);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
