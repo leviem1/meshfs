@@ -1,4 +1,5 @@
 import com.jgoodies.forms.factories.DefaultComponentFactory;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -128,6 +129,10 @@ class ServerModeConfiguration extends JFrame {
     private void initComponents() {
         NumberFormat numberFormat = NumberFormat.getInstance();
         numberFormat.setGroupingUsed(false);
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        String pw = RandomStringUtils.random( 8, characters);
+        String value = "<html>Username: admin <br>Password: " + pw + "</html>";
+        model.add(0, value);
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         DefaultComponentFactory compFactory = DefaultComponentFactory.getInstance();

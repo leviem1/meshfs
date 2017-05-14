@@ -52,7 +52,7 @@ class ServerConfigConfirmation extends JFrame {
         frameListeners();
 
         if (isMaster) {
-            serverIdentifierField.setEnabled(false);
+            serverIdentifierField.setEditable(false);
             serverIdentifierLbl.setEnabled(false);
             serverIdentifierField.setText(MeshFS.properties.getProperty("uuid"));
         }
