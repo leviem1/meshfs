@@ -59,7 +59,7 @@ class DISTAL {
      * @param uploadFilePath    the file path of the file that is to be distributed
      * @param filePathInCatalog where the file is to be put in the catalog.
      */
-    static void distributor(String uploadFilePath, String filePathInCatalog) {
+    static void distributor(String uploadFilePath, String filePathInCatalog, UserAccounts user) {
         String userAccount;
         try {
             userAccount = filePathInCatalog.substring(0, filePathInCatalog.indexOf("/"));
@@ -73,16 +73,15 @@ class DISTAL {
         int numOfWholeCopies = Integer.parseInt(MeshFS.properties.getProperty("numWholeCopy"));
         uploadFilePath = MeshFS.properties.getProperty("repository") + uploadFilePath;
         String manifestFileLocation = MeshFS.properties.getProperty("repository") + ".manifest.json";
-        JSONObject manifestFile = JSONManipulator.getJSONObject(manifestFileLocation);
+        JSONObject manifestFile = JSONUtils.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.getProperty("repository") + ".catalog.json";
 
         //make the JTree show that the file is being distributed
-        JSONManipulator.addToIndex(
+        JSONUtils.addTempFile(
                 userAccount,
                 uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1)
                         + " (distributing)",
-                catalogFileLocation,
-                userAccount);
+                catalogFileLocation, user);
 
         try {
             String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
@@ -90,7 +89,7 @@ class DISTAL {
             long sizeOfStripe;
 
             //create a map of the amount of available storage on each computer
-            LinkedHashMap<String, Long> compStorageMap = JSONManipulator.createStorageMap(manifestFile);
+            LinkedHashMap<String, Long> compStorageMap = JSONUtils.createStorageMap(manifestFile);
 
             //sort the compStorageMap by descending available storage
             LinkedHashMap<String, Long> sortedCompStorageMap = sortMapByValue(compStorageMap);
@@ -180,7 +179,7 @@ class DISTAL {
             }
 
             //create a unique filename for the uploaded file
-            JSONObject jsonObj = JSONManipulator.getJSONObject(catalogFileLocation);
+            JSONObject jsonObj = JSONUtils.getJSONObject(catalogFileLocation);
             String currentName = jsonObj.get("currentName").toString();
             String newName = incrementName(currentName);
 
@@ -212,21 +211,21 @@ class DISTAL {
             sendFiles(stripes, uploadFilePath, sizeOfFile, newName);
 
             //update the JSON file in order to update the JTree
-            JSONManipulator.writeJSONObject(
+            JSONUtils.writeJSONObject(
                     catalogFileLocation,
-                    JSONManipulator.removeItem(
+                    JSONUtils.deleteItem(
                             jsonObj,
                             userAccount
                                     + "/"
                                     + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1)
-                                    + " (distributing)"));
-            JSONManipulator.addToIndex(
+                                    + " (distributing)", user));
+            JSONUtils.addFileToCatalog(
                     stripes,
                     filePathInCatalog,
                     fileName,
                     catalogFileLocation,
                     newName,
-                    userAccount,
+                    user,
                     sizeOfFile);
 
         } catch (Exception e) {
@@ -283,7 +282,7 @@ class DISTAL {
                         + outName
                         + "_w";
         JSONObject manifestFile =
-                JSONManipulator.getJSONObject(
+                JSONUtils.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".manifest.json");
 
         //create a new thread for each stripe, so all stripes are written simultaneously

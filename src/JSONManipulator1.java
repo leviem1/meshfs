@@ -20,9 +20,9 @@ import java.util.*;
  * @author Aaron Duran
  * @version 1.0.0
  */
-class JSONManipulator {
+class JSONManipulator1 {
 
-    private JSONManipulator() {}
+    private JSONManipulator1() {}
 
     /**
      * This method returns the JSONObject of a file.
@@ -183,6 +183,7 @@ class JSONManipulator {
             String newName) {
         return copyFile(jsonObject, itemLocation, destinationLocation, showDate, newName, true);
     }
+
     private static JSONObject copyFile(
             JSONObject jsonObject,
             String itemLocation,
@@ -303,11 +304,11 @@ class JSONManipulator {
             String userAccount,
             long fileSize) {
 
-        JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
+        JSONObject jsonFile = getJSONObject(JSONFilePath);
 
         jsonFile.replace("currentName", alphanumericName);
 
-        JSONObject objChildInfo = new JSONObject();
+
         JSONObject objChild = new JSONObject();
         JSONArray ipArray = new JSONArray();
 
@@ -315,10 +316,10 @@ class JSONManipulator {
             ipArray.addAll(stripes.get(stripe));
             if (stripe == 0) {
 
-                objChildInfo.put("whole", ipArray.clone());
+                objChild.put("whole", ipArray.clone());
             } else {
 
-                objChildInfo.put("stripe" + "_" + String.valueOf(stripe - 1), ipArray.clone());
+                objChild.put("stripe" + "_" + String.valueOf(stripe - 1), ipArray.clone());
             }
             ipArray.clear();
         }
@@ -331,14 +332,13 @@ class JSONManipulator {
 
         objChild.put("fileName", alphanumericName);
 
-        objChildInfo.put("fileSize", humanReadableByteCount(fileSize));
+        objChild.put("fileSize", humanReadableByteCount(fileSize));
 
-        objChildInfo.put("creationDate", creationDate);
+        objChild.put("creationDate", creationDate);
 
-        objChildInfo.put("references", 1);
+        objChild.put("references", 1);
 
         jsonFile = putItemInFolder(jsonFile, itemLocation, fileName, objChild);
-        jsonFile = putItemInFolder(jsonFile, "fileInfo", alphanumericName, objChildInfo);
 
         try {
             writeJSONObject(JSONFilePath, jsonFile);
@@ -359,13 +359,13 @@ class JSONManipulator {
     @SuppressWarnings("unchecked")
     static void addToIndex(
             String itemLocation, String fileName, String JSONFilePath, String userAccount) {
-        JSONObject jsonFile = JSONManipulator.getJSONObject(JSONFilePath);
+        JSONObject jsonFile = getJSONObject(JSONFilePath);
         JSONObject objChild = new JSONObject();
 
         objChild.put("type", "tempFile");
 
         objChild.put("owner", userAccount);
-        jsonFile = JSONManipulator.putItemInFolder(jsonFile, itemLocation, fileName, objChild);
+        jsonFile = putItemInFolder(jsonFile, itemLocation, fileName, objChild);
         try {
             writeJSONObject(JSONFilePath, jsonFile);
         } catch (IOException e) {
@@ -416,8 +416,7 @@ class JSONManipulator {
             e.printStackTrace();
         }
         JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
-        String[] folders = itemLocation.split("/");
-        JSONObject jsonObject = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
+        JSONObject jsonObject = getJSONObject(catalog.getAbsolutePath());
         List<String> stripeNames = new ArrayList<>();
         List<Thread> childThreads = new ArrayList<>();
         boolean wholeNecessary = true;
