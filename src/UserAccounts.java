@@ -1,9 +1,10 @@
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * Created by markhedrick on 5/11/17.
  */
-class UserAccounts implements java.io.Serializable{
+class UserAccounts implements Serializable{
     private String username;
     private String password;
     private String accountType;

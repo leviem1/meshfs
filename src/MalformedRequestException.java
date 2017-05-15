@@ -2,7 +2,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The MalformedRequestException class is an exception thrown during
+ * The MalformedRequestException class is an exception thrown when
+ * a request does not exist or is invalid
  *
  * @author Levi Muniz
  * @version 1.0.0
