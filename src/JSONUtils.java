@@ -267,15 +267,14 @@ class JSONUtils {
     /**
      * This method adds a new file, with all of its properties, to the JSONObject.
      *
-     * @param JSONFilePath the file path of the catalog file
      * @param itemLocation the source virtual path within the JSONObject
      * @param fileName     the name of the file, the way it appears in the file browser
      * @param username     the account name that uploaded the file
      */
 
     @SuppressWarnings("unchecked")
-    static void addTempFile(String JSONFilePath, String itemLocation, String fileName, String username) throws IOException{
-        JSONObject jsonFile = getJSONObject(JSONFilePath);
+    static void addTempFile(String itemLocation, String fileName, String username) throws IOException{
+        JSONObject jsonFile = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONObject objChild = new JSONObject();
 
         objChild.put("type", "tempFile");
@@ -286,7 +285,7 @@ class JSONUtils {
         objChild.put("users", users);
         jsonFile = putItemInFolder(jsonFile, itemLocation, fileName, objChild);
 
-        writeJSONObject(JSONFilePath, jsonFile);
+        writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", jsonFile);
     }
 
     /**
