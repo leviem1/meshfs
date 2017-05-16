@@ -1,0 +1,96 @@
+JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"title": "Group Manager - MeshFS"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "groupTitle"
+					"text": "Group Manager"
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
+					"horizontalAlignment": 0
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "North"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l:::p {comp locationLbl::l:p::p, seq l {comp groupNameLbl:::p::p, space u:::p, comp groupNameField:::p:192:p, space :::p, comp submitBtn:::p::p}, comp scrollPane1:::::x, comp removeGroup::t:p::p}, space ::12:x}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp groupNameLbl::b:p::p, comp groupNameField::b:p::p, comp submitBtn::b:p::p}, space u:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p:200:p, space :::p, comp removeGroup:::p::p, space ::17:x}}"
+				} ) {
+					name: "contentPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "groupNameLbl"
+						"text": "Name:"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "groupNameField"
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "locationLbl"
+						"text": "Current Groups"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 1, 1, false )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "submitBtn"
+						"text": "Add Group"
+						"font": #SwingDerivedFont0
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						add( new FormComponent( "javax.swing.JList" ) {
+							name: "groupList"
+							auxiliary() {
+								"JavaCodeGenerator.customCreateCode": "new JList(model);"
+							}
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "removeGroup"
+						"text": "Remove Group"
+						"font": #SwingDerivedFont0
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0:1.0, 80, 80"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+				} ) {
+					name: "buttonBar"
+					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "okButton"
+						"text": "OK"
+						"font": &SwingDerivedFont1 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 0
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "cancelButton"
+						"text": "Cancel"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+						"gridy": 0
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 5, 0 )
+			"size": new java.awt.Dimension( 395, 445 )
+		} )
+	}
+}

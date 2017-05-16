@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.2.5.1.342" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -208,8 +208,8 @@ new FormModel {
 						"title": "Storage"
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {par l {seq {par l {seq {space :p:238:p, comp textArea1:::p::p}, seq {space :::p, par l:::p {seq l {comp usernameLbl:::p::p, space :::p, comp usernameValueField::::214:x}, seq l {comp passwordLbl:::p::p, space :::p, comp passwordValueField:::::x}}}, seq t {space :::p, comp submitBtn:::p::p}}, space :::p, comp scrollPane2::::180:x}, seq {space :::p, comp allowGuestBox:::p::p, space ::175:x, comp removeUserBtn:::p::p}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {space :::p, par l {seq l {comp scrollPane2:::p:223:p, space :::p, par b {comp removeUserBtn::b:p::p, comp allowGuestBox::b:p::p}, space :p:21:p, comp textArea1:::p::p}, seq l {par b {comp usernameLbl::b:p::p, comp usernameValueField::b:p::p}, space u:::p, par b {comp passwordLbl::b:p::p, comp passwordValueField::b:p::p}, space u:::p, comp submitBtn:::p::p}}}}"
+						"$horizontalGroup": "par l {seq {par l {seq {par l {seq l {space :::p, comp groupLbl:::p:66:p, space :::p, par l {comp groupBox:::::x, seq {space :0:0:x, comp groupManagerBtn:::p:105:p}}}, seq {space :p:238:p, comp textArea1:::p::p}, seq {space :::p, par l {seq l {comp usernameLbl:::p::p, space :::p, comp usernameValueField:::p:194:p}, seq l {comp passwordLbl:::p::p, space :::p, comp passwordValueField:::p:198:p}}}}, space :::p, comp scrollPane2:::p:200:p}, seq {space :::p, comp allowGuestBox:::p::p, space :::x, comp submitBtn:::p::p, space :::p, comp removeUserBtn:::p::p}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, par l {seq {par b {comp usernameLbl::b:p::p, comp usernameValueField::b:p::p}, space u:::p, par b {comp passwordLbl::b:p::p, comp passwordValueField::b:p::p}, space s:::p, par t {comp groupLbl:::p::p, comp groupBox:::p::p}, space :::p, comp groupManagerBtn:::p:29:p}, comp scrollPane2:::p:223:p}, space :::p, par b {comp removeUserBtn::b:p::p, comp allowGuestBox::b:p::p, comp submitBtn::b:p::p}, space :p:21:p, comp textArea1:::p::p}}"
 					} ) {
 						name: "userAccounts"
 						"background": new java.awt.Color( 229, 229, 229, 255 )
@@ -245,21 +245,34 @@ new FormModel {
 							} )
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "submitBtn"
-							"text": "Add User"
-							"font": #SwingDerivedFont2
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "removeUserBtn"
 							"text": "Delete User"
 							"font": #SwingDerivedFont2
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "allowGuestBox"
-							"text": "Allow Guest User to Login"
+							"text": "Enable Guest"
 							"horizontalTextPosition": 2
 							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 							"selected": true
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "groupLbl"
+							"text": "Group:"
+							"font": #SwingDerivedFont3
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "submitBtn"
+							"text": "Add User"
+							"font": #SwingDerivedFont2
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "groupManagerBtn"
+							"text": "Groups..."
+							"font": #SwingDerivedFont2
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "groupBox"
 						} )
 					}, new FormLayoutConstraints( null ) {
 						"title": "User Accounts"
@@ -314,4 +327,3 @@ new FormModel {
 		} )
 	}
 }
-
