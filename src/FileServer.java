@@ -153,7 +153,7 @@ class ServerInit implements Runnable {
 
                         break;
                     case "109": //109:Ping
-                        ping(requestParts[1], out);
+                        ping(out);
 
                         break;
                     case "110": //110:Rename File
@@ -197,10 +197,9 @@ class ServerInit implements Runnable {
         }
     }
 
-    private void ping(String epochTime, Socket client) throws IOException {
+    private void ping(Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         out.println("201");
-        out.println(String.valueOf(Instant.now().toEpochMilli() - Long.valueOf(epochTime)) + "\n");
     }
 
     private void sendReport(Socket client) throws IOException {

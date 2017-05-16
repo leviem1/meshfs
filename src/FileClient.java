@@ -403,16 +403,16 @@ final class FileClient {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
             PrintWriter out = new PrintWriter(client.getOutputStream(), true);
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            out.println("109|" + String.valueOf(Instant.now().toEpochMilli()) + "\n");
+            long initial = Instant.now().toEpochMilli();
+            out.println("109\n");
 
             if (!(input.readLine().trim()).equals("201")) {
                 client.close();
                 return -1;
             }
 
-            String response = input.readLine();
             client.close();
-            return Integer.parseInt(response);
+            return (int) (Instant.now().toEpochMilli() - initial);
         } catch (IOException ioe) {
             ioe.printStackTrace();
             return -1;
