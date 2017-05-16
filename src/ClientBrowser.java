@@ -104,17 +104,6 @@ class ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
-        try {
-            String jsonObj = FileClient.getUserFiles(serverAddress, port, userAccount, uuid).toString();
-
-            System.out.println(jsonObj);
-            FileWriter fw = new FileWriter(catalogFile);
-            fw.write(jsonObj);
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("root/" + userAccount);
         DefaultMutableTreeNode sharedNode = new DefaultMutableTreeNode("root/Shared");
@@ -600,18 +589,16 @@ class ClientBrowser extends JFrame {
                     } else {
                         try {
                             File tempCatalog = File.createTempFile(".catalog", ".json");
-                            FileWriter fileWriter = new FileWriter(tempCatalog);
                             tempCatalog.deleteOnExit();
-                            try {
+                            try(FileWriter fileWriter = new FileWriter(tempCatalog.getAbsolutePath())){
                                 fileWriter.write(FileClient.getUserFiles(serverAddress, port, userAccount, uuid).toString());
-                            } catch (Exception e) {
-                                failureCount += 1;
                             }
+                            System.out.println("Client browser passed from cmc" + catalogFile.getAbsolutePath());
+                            System.out.println("Temp catalog " + tempCatalog.getAbsolutePath());
                             JSONObject latestCatalog =
                                     JSONUtils.getJSONObject(tempCatalog.getAbsolutePath());
                             JSONObject localCatalog =
-                                    JSONUtils.getJSONObject(
-                                            new File(catalogFile.getAbsolutePath()).getAbsolutePath());
+                                    JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
                             if (localCatalog.equals(latestCatalog)) {
                                 tempCatalog.delete();
                             } else {

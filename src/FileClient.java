@@ -1,6 +1,9 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -522,9 +525,21 @@ final class FileClient {
             return new JSONObject();
         }
         String jsonObj = input.readLine().trim();
-        System.out.println("OBJ received: " + jsonObj);
+
         client.close();
-        return new JSONObject();
+
+
+        JSONObject jsonObject = null;
+        JSONParser reader = new JSONParser();
+
+        try {
+            Object obj = reader.parse(jsonObj);
+            jsonObject = (JSONObject) obj;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject;
     }
 
 }

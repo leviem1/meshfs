@@ -332,12 +332,12 @@ class ClientModeConfiguration extends JFrame {
                 passwordField.setEnabled(true);
             }
             File catalog = File.createTempFile(".catalog", ".json");
-            catalog.deleteOnExit();
             if (!(usernameField.getText().isEmpty())) {
                 System.out.println("Got this far");
-
-                FileWriter fw = new FileWriter(catalog);
-                fw.write(FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), uuid).toString());
+                try(FileWriter fileWriter = new FileWriter(catalog.getAbsolutePath())){
+                    fileWriter.write(FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), uuid).toString());
+                }
+                System.out.println("Wr");
                 ClientBrowser.run(
                         serverAddressField.getSelectedItem().toString(),
                         Integer.parseInt(serverPortField.getText()),
