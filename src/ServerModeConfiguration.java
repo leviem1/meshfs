@@ -15,6 +15,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -28,7 +29,7 @@ class ServerModeConfiguration extends JFrame {
 
     private static JFrame serverModeConfiguration;
     private final DefaultListModel model;
-    private final HashMap<String, String> accountsEnc;
+    private final ArrayList<UserAccounts> accountsEnc;
     private final HashMap<String, String> accountsPlain;
     private HashMap<String, String> accountsImported;
     private String out;
@@ -77,9 +78,14 @@ class ServerModeConfiguration extends JFrame {
     private JPasswordField passwordValueField;
     private JScrollPane scrollPane2;
     private JList userAccountDataList;
-    private JButton submitBtn;
     private JButton removeUserBtn;
     private JCheckBox allowGuestBox;
+    private JButton submitBtn;
+    private JLabel groupLbl;
+    private JComboBox groupBox;
+    private JButton groupManagerBtn;
+    private JLabel accountTypeLbl;
+    private JComboBox accountTypeBox;
     private JPanel buttonBar;
     private JButton backBtn;
     private JButton resetConfigBtn;
@@ -96,7 +102,7 @@ class ServerModeConfiguration extends JFrame {
         }
 
         model = new DefaultListModel();
-        accountsEnc = new HashMap<>();
+        accountsEnc = new ArrayList<>();
         accountsPlain = new HashMap<>();
         accountsImported = new HashMap<>();
 
@@ -114,6 +120,10 @@ class ServerModeConfiguration extends JFrame {
         helpIcon.setToolTipText(
                 "<html>Selecting this option will designate<br>this computer as the master MeshFS<br>server</html>");
         repoPathField.setEnabled(false);
+        userAccountDataList.setBorder(new EmptyBorder(10,10, 10, 10));
+        accountTypeBox.addItem("User");
+        accountTypeBox.addItem("Admin");
+
     }
 
     static void writeConfig(Properties properties) {
@@ -131,7 +141,7 @@ class ServerModeConfiguration extends JFrame {
         numberFormat.setGroupingUsed(false);
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         String pw = RandomStringUtils.random( 8, characters);
-        String value = "<html>Username: admin <br>Password: " + pw + "</html>";
+        String value = "<html>Username: admin <br>Password: " + pw + "<br>Group: none<br>Type: admin</html>";
         model.add(0, value);
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -178,9 +188,14 @@ class ServerModeConfiguration extends JFrame {
         passwordValueField = new JPasswordField();
         scrollPane2 = new JScrollPane();
         userAccountDataList = new JList(model);
-        submitBtn = new JButton();
         removeUserBtn = new JButton();
         allowGuestBox = new JCheckBox();
+        submitBtn = new JButton();
+        groupLbl = new JLabel();
+        groupBox = new JComboBox();
+        groupManagerBtn = new JButton();
+        accountTypeLbl = new JLabel();
+        accountTypeBox = new JComboBox();
         buttonBar = new JPanel();
         backBtn = new JButton();
         resetConfigBtn = new JButton();
@@ -311,7 +326,7 @@ class ServerModeConfiguration extends JFrame {
                                                 .addComponent(isMasterBox)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(helpIcon, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 3, Short.MAX_VALUE))
+                                                .addGap(0, 469, Short.MAX_VALUE))
                                             .addGroup(networkTabLayout.createSequentialGroup()
                                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
                                                     .addGroup(GroupLayout.Alignment.LEADING, networkTabLayout.createSequentialGroup()
@@ -329,7 +344,7 @@ class ServerModeConfiguration extends JFrame {
                                                             .addComponent(serverTimeoutField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
                                                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                             .addComponent(timeUnitLbl))))
-                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 449, Short.MAX_VALUE)
                                                 .addGroup(networkTabLayout.createParallelGroup()
                                                     .addGroup(GroupLayout.Alignment.TRAILING, networkTabLayout.createSequentialGroup()
                                                         .addComponent(stripesLbl)
@@ -393,7 +408,7 @@ class ServerModeConfiguration extends JFrame {
                                 .addGroup(networkTabLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(backupConfigBtn)
                                     .addComponent(exportDescriptionLbl))
-                                .addContainerGap(12, Short.MAX_VALUE))
+                                .addContainerGap(190, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Network", networkTab);
@@ -450,11 +465,11 @@ class ServerModeConfiguration extends JFrame {
                                         .addComponent(spaceSldr, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE))
                                     .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(freeSpaceLbl, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 125, Short.MAX_VALUE))
+                                        .addGap(0, 606, Short.MAX_VALUE))
                                     .addGroup(storageTabLayout.createSequentialGroup()
                                         .addComponent(repositoryLbl)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+                                        .addComponent(repoPathField, GroupLayout.DEFAULT_SIZE, 761, Short.MAX_VALUE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(browseBtn)))
                                 .addContainerGap())
@@ -476,7 +491,7 @@ class ServerModeConfiguration extends JFrame {
                                     .addComponent(spaceSldr, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(freeSpaceLbl)
-                                .addContainerGap(171, Short.MAX_VALUE))
+                                .addContainerGap(349, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("Storage", storageTab);
@@ -507,19 +522,31 @@ class ServerModeConfiguration extends JFrame {
                         scrollPane2.setViewportView(userAccountDataList);
                     }
 
-                    //---- submitBtn ----
-                    submitBtn.setText("Add User");
-                    submitBtn.setFont(new Font("Arial", submitBtn.getFont().getStyle(), submitBtn.getFont().getSize() + 1));
-
                     //---- removeUserBtn ----
                     removeUserBtn.setText("Delete User");
                     removeUserBtn.setFont(new Font("Arial", removeUserBtn.getFont().getStyle(), removeUserBtn.getFont().getSize() + 1));
 
                     //---- allowGuestBox ----
-                    allowGuestBox.setText("Allow Guest User to Login");
+                    allowGuestBox.setText("Enable Guest");
                     allowGuestBox.setHorizontalTextPosition(SwingConstants.LEFT);
                     allowGuestBox.setFont(new Font("Arial", allowGuestBox.getFont().getStyle(), allowGuestBox.getFont().getSize() + 1));
                     allowGuestBox.setSelected(true);
+
+                    //---- submitBtn ----
+                    submitBtn.setText("Add User");
+                    submitBtn.setFont(new Font("Arial", submitBtn.getFont().getStyle(), submitBtn.getFont().getSize() + 1));
+
+                    //---- groupLbl ----
+                    groupLbl.setText("Group:");
+                    groupLbl.setFont(new Font("Arial", groupLbl.getFont().getStyle(), groupLbl.getFont().getSize() + 1));
+
+                    //---- groupManagerBtn ----
+                    groupManagerBtn.setText("Groups...");
+                    groupManagerBtn.setFont(new Font("Arial", groupManagerBtn.getFont().getStyle(), groupManagerBtn.getFont().getSize() + 1));
+
+                    //---- accountTypeLbl ----
+                    accountTypeLbl.setText("Account Type:");
+                    accountTypeLbl.setFont(new Font("Arial", accountTypeLbl.getFont().getStyle(), accountTypeLbl.getFont().getSize() + 1));
 
                     GroupLayout userAccountsLayout = new GroupLayout(userAccounts);
                     userAccounts.setLayout(userAccountsLayout);
@@ -528,31 +555,45 @@ class ServerModeConfiguration extends JFrame {
                             .addGroup(userAccountsLayout.createSequentialGroup()
                                 .addGroup(userAccountsLayout.createParallelGroup()
                                     .addGroup(userAccountsLayout.createSequentialGroup()
-                                        .addGroup(userAccountsLayout.createParallelGroup()
+                                        .addContainerGap()
+                                        .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                             .addGroup(userAccountsLayout.createSequentialGroup()
-                                                .addGap(238, 238, 238)
-                                                .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(userAccountsLayout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                .addGroup(userAccountsLayout.createParallelGroup()
                                                     .addGroup(userAccountsLayout.createSequentialGroup()
                                                         .addComponent(usernameLbl)
                                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(usernameValueField, GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
+                                                        .addComponent(usernameValueField, GroupLayout.PREFERRED_SIZE, 194, GroupLayout.PREFERRED_SIZE))
                                                     .addGroup(userAccountsLayout.createSequentialGroup()
                                                         .addComponent(passwordLbl)
                                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(passwordValueField))))
+                                                        .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE))
+                                                    .addGroup(userAccountsLayout.createSequentialGroup()
+                                                        .addComponent(groupLbl, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(groupBox, GroupLayout.PREFERRED_SIZE, 283, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(groupManagerBtn, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(62, 62, 62))
                                             .addGroup(GroupLayout.Alignment.TRAILING, userAccountsLayout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(submitBtn)))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE))
+                                                .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(removeUserBtn)
+                                                    .addGroup(userAccountsLayout.createSequentialGroup()
+                                                        .addComponent(accountTypeLbl)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(accountTypeBox, GroupLayout.PREFERRED_SIZE, 210, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(submitBtn)))
+                                                .addGap(29, 29, 29)))
+                                        .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE))
                                     .addGroup(userAccountsLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(allowGuestBox)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 175, Short.MAX_VALUE)
-                                        .addComponent(removeUserBtn)))
+                                        .addGroup(userAccountsLayout.createParallelGroup()
+                                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                                .addContainerGap()
+                                                .addComponent(allowGuestBox))
+                                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                                .addGap(238, 238, 238)
+                                                .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
                                 .addContainerGap())
                     );
                     userAccountsLayout.setVerticalGroup(
@@ -563,9 +604,7 @@ class ServerModeConfiguration extends JFrame {
                                     .addGroup(userAccountsLayout.createSequentialGroup()
                                         .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 223, GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                            .addComponent(removeUserBtn)
-                                            .addComponent(allowGuestBox))
+                                        .addComponent(allowGuestBox)
                                         .addGap(21, 21, 21)
                                         .addComponent(textArea1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                     .addGroup(userAccountsLayout.createSequentialGroup()
@@ -576,8 +615,23 @@ class ServerModeConfiguration extends JFrame {
                                         .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                             .addComponent(passwordLbl)
                                             .addComponent(passwordValueField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(submitBtn))))
+                                        .addGroup(userAccountsLayout.createParallelGroup()
+                                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                                .addGap(16, 16, 16)
+                                                .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                    .addComponent(groupBox, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(groupLbl)
+                                                    .addComponent(groupManagerBtn, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+                                                .addGap(18, 18, 18)
+                                                .addGroup(userAccountsLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                    .addComponent(accountTypeLbl, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(accountTypeBox, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)))
+                                            .addGroup(userAccountsLayout.createSequentialGroup()
+                                                .addGap(94, 94, 94)
+                                                .addComponent(submitBtn)))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(removeUserBtn)))
+                                .addGap(0, 143, Short.MAX_VALUE))
                     );
                 }
                 serverSettingPane.addTab("User Accounts", userAccounts);
@@ -621,7 +675,7 @@ class ServerModeConfiguration extends JFrame {
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        setSize(535, 435);
+        setSize(667, 415);
         setLocationRelativeTo(getOwner());
         //GEN-END:initComponents
     }
@@ -832,11 +886,19 @@ class ServerModeConfiguration extends JFrame {
         submitBtn.addActionListener(
                 e -> {
                     String password = String.valueOf(passwordValueField.getPassword());
+                    String group = "none";
+                    if(groupBox.getSelectedItem() != null){
+                        group = groupBox.getSelectedItem().toString();
+                    }
                     String value =
                             "<html>Username: "
                                     + usernameValueField.getText()
                                     + "<br>Password: "
                                     + password
+                                    + "<br>Group: "
+                                    + group
+                                    + "<br>Type: "
+                                    + accountTypeBox.getSelectedItem().toString()
                                     + "</html>";
                     int index = userAccountDataList.getModel().getSize();
                     if (usernameValueField.getText().equals("guest")) {
@@ -944,6 +1006,11 @@ class ServerModeConfiguration extends JFrame {
                     InitialConfiguration.run(serverModeConfiguration);
                     dispose();
                 });
+        groupManagerBtn.addActionListener(
+                actionEvent -> {
+                    GroupManager.run(serverModeConfiguration, groupBox);
+                });
+
     }
 
     DocumentListener serverModeConfigRefreshListener =  new DocumentListener() {
@@ -1177,7 +1244,27 @@ class ServerModeConfiguration extends JFrame {
                             .substring(
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")
                                             + 10,
+                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("Group:"));
+            String group =
+                    userAccountDataList
+                            .getModel()
+                            .getElementAt(i)
+                            .toString()
+                            .substring(
+                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("Group:")
+                                            + 7,
+                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("Type:"));
+            String type =
+                    userAccountDataList
+                            .getModel()
+                            .getElementAt(i)
+                            .toString()
+                            .substring(
+                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("Type:")
+                                            + 6,
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
+
+            System.out.println("my group is " + i + " " + group);
 
             for (int x = 0; x < user.length() - 1; x = x + 2) {
                 try {
@@ -1193,8 +1280,8 @@ class ServerModeConfiguration extends JFrame {
             }
             assert messageDigest != null;
             messageDigest.update(pass.getBytes(), 0, pass.length());
-            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
-            accountsEnc.put(user, new BigInteger(1, messageDigest.digest()).toString(256));
+            out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>, Group: <i>" + group.toLowerCase() + "</i>, Type: <i>" + type + "<br>";
+            accountsEnc.add(new UserAccounts(user, new BigInteger(1, messageDigest.digest()).toString(256), type, new ArrayList<>(Arrays.asList(group.substring(0, group.lastIndexOf("<br>"))))));
             accountsPlain.put(user, passOrig);
         }
         if (out.equals("")) {
@@ -1218,8 +1305,8 @@ class ServerModeConfiguration extends JFrame {
             }
             assert messageDigest != null;
             messageDigest.update(pass.getBytes(), 0, pass.length());
-            out += "Username: <i>" + user + "</i>,&nbsp;Password: <i>" + passOrig + "</i><br>";
-            accountsEnc.put(user, new BigInteger(1, messageDigest.digest()).toString(256));
+            out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>" + "</i>, Group: <i>none</i>, Type: <i>User" + "<br>";
+            accountsEnc.add(new UserAccounts(user, new BigInteger(1, messageDigest.digest()).toString(256), "user", new ArrayList<>(Arrays.asList("guest"))));
             accountsPlain.put(user, passOrig);
         }
     }

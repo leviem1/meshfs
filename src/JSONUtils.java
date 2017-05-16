@@ -94,8 +94,8 @@ class JSONUtils {
             try {
                 if (user.getAccountType().equals("admin")
                         || (user == null)
-                        || (!Collections.disjoint(((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))), user.getGroups)
-                        && !((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("blacklist"))).contains(user.getUsername()))) {
+                        || (!Collections.disjoint(((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))), user.getGroups()))
+                        && !((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("blacklist"))).contains(user.getUsername())) {
 
                     contents.put(keyStr, (((JSONObject) folderToRead.get(keyStr)).get("type")).toString());
                 }
@@ -314,7 +314,8 @@ class JSONUtils {
      * @return true on success, false on failure
      * @throws IOException if a socket cannot be initialized
      */
-    static void pullFile(String itemLocation, String path, String outFile, String serverAddress, int port, File catalog) throws IOException, MalformedRequestException, PullRequestException {
+    static void pullFile(String itemLocation, String path, String outFile, String serverAddress, int port, File catalog) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
+
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
         tempManifest.deleteOnExit();
@@ -347,7 +348,7 @@ class JSONUtils {
                                             () -> {
                                                 try {
                                                     FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + "." + fileNameWNum);
-                                                } catch (IOException | MalformedRequestException ioe) {
+                                                } catch (IOException | MalformedRequestException | FileTransferException ioe) {
                                                     ioe.printStackTrace();
                                                 }
                                             });

@@ -29,7 +29,7 @@ final class FileClient {
      */
     static void receiveFile(
             String serverAddress, int port, String fileName)
-            throws IOException, MalformedRequestException {
+            throws IOException, MalformedRequestException, FileTransferException {
         receiveFile(serverAddress, port, fileName, MeshFS.properties.getProperty("repository") + fileName);
     }
 
@@ -45,8 +45,7 @@ final class FileClient {
     @SuppressWarnings("deprecation")
     static void receiveFile(
             String serverAddress, int port, String fileName, String fileOut)
-            throws IOException, MalformedRequestException {
-        String response;
+            throws IOException, MalformedRequestException, FileTransferException {
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -55,8 +54,10 @@ final class FileClient {
 
         try {
             out.println("101|" +MeshFS.properties.getProperty("uuid") + "|" + fileName + "\n");
+            String response = dis.readLine().trim();
+            String[] responseParts = response.split("\\|");
 
-            if (!(response = dis.readLine().trim()).equals("201")) {
+            if (!responseParts[0].equals("201")) {
                 throw new MalformedRequestException(response);
             }
             int br;
@@ -66,6 +67,12 @@ final class FileClient {
                 fos.write(data, 0, br);
                 fos.flush();
             }
+
+            try {
+                if (!responseParts[1].equals(FileUtils.getMD5Hash(fileOut))) {
+                    throw new FileTransferException();
+                }
+            }catch (NoSuchAlgorithmException ignored) {}
         } catch (SocketTimeoutException ignored) {
         } finally {
             out.close();
@@ -94,7 +101,7 @@ final class FileClient {
         FileInputStream fis = new FileInputStream(filepath);
 
         try {
-            out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "\n");
+            out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "|" + FileUtils.getMD5Hash(filepath) + "\n");
 
             if (!(response = input.readLine().trim()).equals("201")) {
                 throw new MalformedRequestException(response);
@@ -106,7 +113,7 @@ final class FileClient {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (SocketTimeoutException ignored) {
+        } catch (SocketTimeoutException | NoSuchAlgorithmException ignored) {
         } finally {
             input.close();
             out.close();

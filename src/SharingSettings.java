@@ -1,10 +1,6 @@
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.*;
-/*
- * Created by JFormDesigner on Fri May 12 15:12:59 MDT 2017
- */
-
 
 
 /**

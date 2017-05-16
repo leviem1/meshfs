@@ -227,13 +227,13 @@ class ServerInit implements Runnable {
         JSONObject manifest = new JSONObject();
         if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
             manifest =
-                    JSONManipulator.getJSONObject(
+                    JSONUtils.getJSONObject(
                             MeshFS.properties.getProperty("repository") + ".manifest.json");
         }
         JSONArray reportArray = Reporting.splitter(reportFull);
 
         manifest.put(reportArray.get(0), reportArray.get(1));
-        JSONManipulator.writeJSONObject(
+        JSONUtils.writeJSONObject(
                 MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
@@ -244,11 +244,11 @@ class ServerInit implements Runnable {
         out.flush();
 
         JSONObject jsonObj =
-                JSONManipulator.getJSONObject(
+                JSONUtils.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".catalog.json");
-        JSONManipulator.writeJSONObject(
+        JSONUtils.writeJSONObject(
                 MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONManipulator.moveFile(jsonObj, currentPath, newPath));
+                JSONUtils.moveFile(jsonObj, currentPath, newPath));
     }
 
     private void deleteFile(String filePath, boolean physical, Socket client) throws IOException {
@@ -260,11 +260,11 @@ class ServerInit implements Runnable {
             FileUtils.removeFile(filePath);
         } else {
             JSONObject jsonObj =
-                    JSONManipulator.getJSONObject(
+                    JSONUtils.getJSONObject(
                             MeshFS.properties.getProperty("repository") + ".catalog.json");
-            JSONManipulator.writeJSONObject(
+            JSONUtils.writeJSONObject(
                     MeshFS.properties.getProperty("repository") + ".catalog.json",
-                    JSONManipulator.removeItem(jsonObj, filePath));
+                    JSONUtils.deleteItem(jsonObj, filePath));
         }
     }
 
@@ -274,11 +274,11 @@ class ServerInit implements Runnable {
         out.flush();
 
         JSONObject jsonObj =
-                JSONManipulator.getJSONObject(
+                JSONUtils.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".catalog.json");
-        JSONManipulator.writeJSONObject(
+        JSONUtils.writeJSONObject(
                 MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONManipulator.copyFile(
+                JSONUtils.copyFile(
                         jsonObj,
                         currentPath,
                         currentPath.substring(0, currentPath.lastIndexOf("/")),
@@ -294,19 +294,21 @@ class ServerInit implements Runnable {
         FileInputStream fis =
                 new FileInputStream(MeshFS.properties.getProperty("repository") + filename);
 
-        out.println("201");
+        try {
+            out.println("201|" + FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename));
 
-        while ((br = fis.read(data, 0, data.length)) != -1) {
-            dos.write(data, 0, br);
-            dos.flush();
-        }
+            while ((br = fis.read(data, 0, data.length)) != -1) {
+                dos.write(data, 0, br);
+                dos.flush();
+            }
+        } catch (NoSuchAlgorithmException ignored) {}
 
         out.close();
         fis.close();
         dos.close();
     }
 
-    private void receiveFile(String filename, String md5, Socket client) throws IOException {
+    private void receiveFile(String filename, String md5, Socket client) throws IOException, FileTransferException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -321,13 +323,19 @@ class ServerInit implements Runnable {
             fos.flush();
         }
 
+        try {
+            if (!md5.equals(FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename))) {
+                throw new FileTransferException();
+            }
+        }catch (NoSuchAlgorithmException ignored) {}
+
         out.close();
         fos.close();
         dis.close();
     }
 
     private void receiveFile(String filename, String md5, String userAccount, Socket client)
-            throws IOException {
+            throws IOException, FileTransferException {
         int br;
         byte[] data = new byte[4096];
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -337,7 +345,7 @@ class ServerInit implements Runnable {
 
         out.println("201");
 
-        JSONManipulator.addToIndex(
+        JSONUtils.addToIndex(
                 userAccount,
                 filename + " (uploading)",
                 MeshFS.properties.getProperty("repository") + ".catalog.json",
@@ -351,18 +359,17 @@ class ServerInit implements Runnable {
         out.close();
         fos.close();
         dis.close();
+
         try {
             if (!md5.equals(FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename))) {
-
+                throw new FileTransferException();
             }
-        }catch (NoSuchAlgorithmException ignored) {
+        }catch (NoSuchAlgorithmException ignored) {}
 
-        }
-
-        JSONManipulator.writeJSONObject(
+        JSONUtils.writeJSONObject(
                 MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONManipulator.removeItem(
-                        JSONManipulator.getJSONObject(
+                JSONUtils.deleteItem(
+                        JSONUtils.getJSONObject(
                                 MeshFS.properties.getProperty("repository") + ".catalog.json"),
                         "root/Users/" + userAccount + "/" + filename + " (uploading)"));
 
@@ -378,11 +385,11 @@ class ServerInit implements Runnable {
         out.flush();
 
         JSONObject jsonObj =
-                JSONManipulator.getJSONObject(
+                JSONUtils.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".catalog.json");
-        JSONManipulator.writeJSONObject(
+        JSONUtils.writeJSONObject(
                 MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONManipulator.addFolder(jsonObj, directoryPath, directoryName, userAccount));
+                JSONUtils.addFolder(jsonObj, directoryPath, directoryName, userAccount));
     }
 
     private void renameFile(String jsonPath, String newName, Socket client)
@@ -392,11 +399,11 @@ class ServerInit implements Runnable {
         out.flush();
 
         JSONObject jsonObj =
-                JSONManipulator.getJSONObject(
+                JSONUtils.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".catalog.json");
-        JSONManipulator.writeJSONObject(
+        JSONUtils.writeJSONObject(
                 MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONManipulator.renameFile(jsonObj, jsonPath, newName));
+                JSONUtils.renameFile(jsonObj, jsonPath, newName));
     }
 
     private void changePassword(
@@ -552,8 +559,8 @@ class ServerInit implements Runnable {
         File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
         FileInputStream fis = new FileInputStream(catalog);
 
-        JSONObject catalogObj = JSONManipulator.getJSONObject(catalog.getAbsolutePath());
-        JSONObject userObj = JSONManipulator.getItemContents(catalogObj, "/users/mark/");
+        JSONObject catalogObj = JSONUtils.getJSONObject(catalog.getAbsolutePath());
+        JSONObject userObj = JSONUtils.getItemContents(catalogObj, "/users/mark/");
 
         System.out.println(userObj);
 
