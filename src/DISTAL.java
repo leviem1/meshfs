@@ -59,7 +59,7 @@ class DISTAL {
      * @param uploadFilePath    the file path of the file that is to be distributed
      * @param filePathInCatalog where the file is to be put in the catalog.
      */
-    static void distributor(String uploadFilePath, String filePathInCatalog, UserAccounts user) {
+    static void distributor(String uploadFilePath, String filePathInCatalog, UserAccounts user) throws IOException, MalformedRequestException{
         String userAccount;
         try {
             userAccount = filePathInCatalog.substring(0, filePathInCatalog.indexOf("/"));
@@ -83,154 +83,147 @@ class DISTAL {
                         + " (distributing)",
                 catalogFileLocation, user);
 
-        try {
-            String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
-            long sizeOfFile = FileUtils.getSize(uploadFilePath);
-            long sizeOfStripe;
+        String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
+        long sizeOfFile = FileUtils.getSize(uploadFilePath);
+        long sizeOfStripe;
 
-            //create a map of the amount of available storage on each computer
-            LinkedHashMap<String, Long> compStorageMap = JSONUtils.createStorageMap(manifestFile);
+        //create a map of the amount of available storage on each computer
+        LinkedHashMap<String, Long> compStorageMap = JSONUtils.createStorageMap(manifestFile);
 
-            //sort the compStorageMap by descending available storage
-            LinkedHashMap<String, Long> sortedCompStorageMap = sortMapByValue(compStorageMap);
+        //sort the compStorageMap by descending available storage
+        LinkedHashMap<String, Long> sortedCompStorageMap = sortMapByValue(compStorageMap);
 
-            //don't use stripes if a file is less than 4096 byte
-            if (sizeOfFile <= 4096L) {
+        //don't use stripes if a file is less than 4096 byte
+        if (sizeOfFile <= 4096L) {
+            numOfWholeCopies += numOfStripedCopies;
+            numOfStripes = 0;
+            numOfStripedCopies = 0;
+        }
+
+        //create a list of computers that can store a whole copy.
+        List<String> computersForWholes = new ArrayList<>();
+
+        while (true) {
+
+            for (String macAddress : sortedCompStorageMap.keySet()) {
+                if (computersForWholes.size() == numOfWholeCopies) {
+                    break;
+                }
+                if ((!computersForWholes.contains(macAddress))
+                        && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
+                    computersForWholes.add(macAddress);
+                    sortedCompStorageMap.replace(
+                            macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
+                }
+            }
+            sortedCompStorageMap = sortMapByValue(sortedCompStorageMap);
+
+            int numOfComputersUsed = sortedCompStorageMap.size();
+
+            //use stripes only when the number of computers available exceeds the number of requested redundancies
+            if (numOfComputersUsed <= numOfStripedCopies + numOfWholeCopies) {
+                numOfWholeCopies = numOfComputersUsed;
+                numOfStripes = 0;
+                numOfStripedCopies = 0;
+            }
+
+            //don't use stripes if there is only one stripe
+            if (numOfStripes == 1) {
                 numOfWholeCopies += numOfStripedCopies;
                 numOfStripes = 0;
                 numOfStripedCopies = 0;
             }
 
-            //create a list of computers that can store a whole copy.
-            List<String> computersForWholes = new ArrayList<>();
+            //dynamic resigning of number of Wholes by number of computers that are on
+            if (numOfComputersUsed < numOfWholeCopies) {
+                numOfWholeCopies = numOfComputersUsed;
+            }
 
-            while (true) {
+            //dynamic resigning of number of Stripes by number of computers that are on
+            if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
+                numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
+            }
 
+            //define how big each stripe should be
+            try {
+                sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
+            } catch (Exception e) {
+                sizeOfStripe = 0L;
+            }
+
+            //remove any computer that cannot store a stripe
+            boolean finalComputerCount = true;
+            if (sizeOfStripe != 0L) {
                 for (String macAddress : sortedCompStorageMap.keySet()) {
-                    if (computersForWholes.size() == numOfWholeCopies) {
-                        break;
-                    }
-                    if ((!computersForWholes.contains(macAddress))
-                            && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
-                        computersForWholes.add(macAddress);
-                        sortedCompStorageMap.replace(
-                                macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
-                    }
-                }
-                sortedCompStorageMap = sortMapByValue(sortedCompStorageMap);
-
-                int numOfComputersUsed = sortedCompStorageMap.size();
-
-                //use stripes only when the number of computers available exceeds the number of requested redundancies
-                if (numOfComputersUsed <= numOfStripedCopies + numOfWholeCopies) {
-                    numOfWholeCopies = numOfComputersUsed;
-                    numOfStripes = 0;
-                    numOfStripedCopies = 0;
-                }
-
-                //don't use stripes if there is only one stripe
-                if (numOfStripes == 1) {
-                    numOfWholeCopies += numOfStripedCopies;
-                    numOfStripes = 0;
-                    numOfStripedCopies = 0;
-                }
-
-                //dynamic resigning of number of Wholes by number of computers that are on
-                if (numOfComputersUsed < numOfWholeCopies) {
-                    numOfWholeCopies = numOfComputersUsed;
-                }
-
-                //dynamic resigning of number of Stripes by number of computers that are on
-                if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
-                    numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
-                }
-
-                //define how big each stripe should be
-                try {
-                    sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
-                } catch (Exception e) {
-                    sizeOfStripe = 0L;
-                }
-
-                //remove any computer that cannot store a stripe
-                boolean finalComputerCount = true;
-                if (sizeOfStripe != 0L) {
-                    for (String macAddress : sortedCompStorageMap.keySet()) {
-                        if (sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
-                            sortedCompStorageMap.remove(macAddress);
-                            finalComputerCount = false;
-                        }
-                    }
-                }
-
-                //keep dynamically reassigning computers until all listed computers can hold the files that they will be given.
-                if (finalComputerCount) {
-                    break;
-                }
-            }
-
-            //define which computers get stripes
-            List<String> computersForStripes = new ArrayList<>();
-            for (String macAddress : sortedCompStorageMap.keySet()) {
-                if (computersForStripes.size() == numOfStripedCopies * numOfStripes) {
-                    break;
-                }
-                computersForStripes.add(macAddress);
-            }
-
-            //create a unique filename for the uploaded file
-            JSONObject jsonObj = JSONUtils.getJSONObject(catalogFileLocation);
-            String currentName = jsonObj.get("currentName").toString();
-            String newName = incrementName(currentName);
-
-            //create the list that will be used to distribute the wholes and stripes
-            List<List<String>> stripes = new ArrayList<>();
-
-            //first list is for the computers that will receive wholes
-            stripes.add(computersForWholes);
-
-            //if only computer is available to hold stripes, then do not use stripes.
-
-            if (numOfStripes != 0) {
-                //create a list for each stripe
-                for (int copy = 0; copy < numOfStripes; copy++) {
-                    stripes.add(new ArrayList<>());
-                }
-
-                //balancing the number of computers that each stripe is sent to.
-                for (int copy = 0; copy < numOfStripedCopies; copy++) {
-                    for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++) {
-                        stripes
-                                .get(currentStripe + 1)
-                                .add(computersForStripes.get((copy * numOfStripes) + currentStripe));
+                    if (sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
+                        sortedCompStorageMap.remove(macAddress);
+                        finalComputerCount = false;
                     }
                 }
             }
 
-            //send the files to the respective computers
-            sendFiles(stripes, uploadFilePath, sizeOfFile, newName);
-
-            //update the JSON file in order to update the JTree
-            JSONUtils.writeJSONObject(
-                    catalogFileLocation,
-                    JSONUtils.deleteItem(
-                            jsonObj,
-                            userAccount
-                                    + "/"
-                                    + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1)
-                                    + " (distributing)", user));
-            JSONUtils.addFileToCatalog(
-                    stripes,
-                    filePathInCatalog,
-                    fileName,
-                    catalogFileLocation,
-                    newName,
-                    user,
-                    sizeOfFile);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            //keep dynamically reassigning computers until all listed computers can hold the files that they will be given.
+            if (finalComputerCount) {
+                break;
+            }
         }
+
+        //define which computers get stripes
+        List<String> computersForStripes = new ArrayList<>();
+        for (String macAddress : sortedCompStorageMap.keySet()) {
+            if (computersForStripes.size() == numOfStripedCopies * numOfStripes) {
+                break;
+            }
+            computersForStripes.add(macAddress);
+        }
+
+        //create a unique filename for the uploaded file
+        JSONObject jsonObj = JSONUtils.getJSONObject(catalogFileLocation);
+        String currentName = jsonObj.get("currentName").toString();
+        String newName = incrementName(currentName);
+
+        //create the list that will be used to distribute the wholes and stripes
+        List<List<String>> stripes = new ArrayList<>();
+
+        //first list is for the computers that will receive wholes
+        stripes.add(computersForWholes);
+
+        //if only computer is available to hold stripes, then do not use stripes.
+
+        if (numOfStripes != 0) {
+            //create a list for each stripe
+            for (int copy = 0; copy < numOfStripes; copy++) {
+                stripes.add(new ArrayList<>());
+            }
+
+            //balancing the number of computers that each stripe is sent to.
+            for (int copy = 0; copy < numOfStripedCopies; copy++) {
+                for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++) {
+                    stripes
+                            .get(currentStripe + 1)
+                            .add(computersForStripes.get((copy * numOfStripes) + currentStripe));
+                }
+            }
+        }
+
+        //send the files to the respective computers
+        sendFiles(stripes, uploadFilePath, sizeOfFile, newName);
+
+        //update the JSON file in order to update the JTree
+                JSONUtils.deleteItem(
+                        jsonObj,
+                        userAccount
+                                + "/"
+                                + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1)
+                                + " (distributing)");
+        JSONUtils.addFileToCatalog(
+                stripes,
+                filePathInCatalog,
+                fileName,
+                catalogFileLocation,
+                newName,
+                user,
+                sizeOfFile);
     }
 
     private static String incrementName(String name) {
