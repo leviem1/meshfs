@@ -1,9 +1,9 @@
-import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -416,6 +416,28 @@ class JSONUtils {
     static JSONObject buildUserCatalog(UserAccounts user){
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         return catalogBuilder(catalog, user);
+    }
+
+    static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog){
+        return JTreeBuilderRecursive(userCatalog, new DefaultMutableTreeNode("root"));
+    }
+
+    private static DefaultMutableTreeNode JTreeBuilderRecursive(JSONObject jsonObject, DefaultMutableTreeNode branch) {
+        Map<String, String> folderContents = getMapOfFolderContents(jsonObject, null);
+        if (folderContents.keySet().isEmpty()) {
+            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
+            branch.add(leaf);
+        } else {
+            for (String name : folderContents.keySet()) {
+                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
+                leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
+                if (leaf.getAllowsChildren()) {
+                    leaf = JTreeBuilderRecursive(jsonObject, leaf);
+                }
+                branch.add(leaf);
+            }
+        }
+        return branch;
     }
 
 
