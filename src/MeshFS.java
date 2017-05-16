@@ -96,7 +96,11 @@ class MeshFS {
                                 Long currentTimeStamp = new Date().getTime();
                                 if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
                                         .exists())) {
-                                    return;
+                                    try {
+                                        JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                                 JSONObject manifest =
                                         JSONUtils.getJSONObject(
@@ -139,8 +143,8 @@ class MeshFS {
                                         FileClient.sendReport(
                                                 properties.getProperty("masterIP"),
                                                 Integer.parseInt(properties.getProperty("portNumber")));
-                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest");
-                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog");
+                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest.json");
+                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog.json");
                                     } catch (IOException | MalformedRequestException ioe) {
                                         ioe.printStackTrace();
                                     } catch (FileTransferException e) {
