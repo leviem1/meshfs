@@ -69,9 +69,14 @@ class JSONUtils {
      */
     @SuppressWarnings("unchecked")
     static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, UserAccounts user) {
-        String[] Tree = folderLocation.split("/");
+        List<String> Tree = new ArrayList<>();
+        if (folderLocation.contains("/")){
+            Tree = Arrays.asList(folderLocation.split("/"));
+        }
+
         JSONObject folderToRead = jsonObject;
         JSONObject folderToReadNew;
+
         for (String folder : Tree) {
             folderToReadNew = (JSONObject) folderToRead.get(folder);
             if (folderToReadNew == null) {
@@ -87,6 +92,8 @@ class JSONUtils {
                 folderToRead = folderToReadNew;
             }
         }
+
+
         LinkedHashMap<String, String> contents = new LinkedHashMap<>();
 
         for (Object key : folderToRead.keySet()) {
