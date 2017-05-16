@@ -32,6 +32,8 @@ class CliParser {
         opt.addOption("changePass", true, "Update user credentials interactively.");
         opt.addOption("listUsers", false, "Display all user accounts.");
         opt.addOption("listGroups", true, "Display all user groups.");
+        opt.addOption("getUserType", true, "Get type of user.");
+
         opt.addOption("u", "uuid", true, "Set UUID value for server to server communication");
 
         try {
@@ -84,6 +86,10 @@ class CliParser {
 
             if (cmd.hasOption("listGroups")) {
                 listGroups(cmd.getOptionValue("listGroups"));
+            }
+
+            if (cmd.hasOption("getUserType")) {
+                getAccountType(cmd.getOptionValue("getUserType"));
             }
 
             if (cmd.hasOption("nogui")) {
@@ -423,5 +429,29 @@ class CliParser {
             e.printStackTrace();
         }
     }
+
+    void getAccountType(String username){
+        try {
+            ArrayList<UserAccounts> accounts;
+            if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+                accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            }else{
+                return;
+            }
+
+            for (UserAccounts account : accounts) {
+                if(account.getUsername().equals(username)){
+                    System.out.println(account.getAccountType());
+                }
+            }
+            System.out.println("Exiting!");
+            System.exit(0);
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 }

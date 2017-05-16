@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.Properties;
  */
 class ServerConfigConfirmation extends JFrame {
     private static JFrame serverConfigConfirmation;
-    private final HashMap accountDetails;
+    private final ArrayList accountDetails;
     private Properties properties;
 
 
@@ -37,7 +38,7 @@ class ServerConfigConfirmation extends JFrame {
     //GEN-END:variables
 
     private ServerConfigConfirmation(
-            String content, HashMap accountDetails, Properties properties, boolean isMaster) {
+            String content, ArrayList accountDetails, Properties properties, boolean isMaster) {
         this.properties = properties;
         this.accountDetails = accountDetails;
 
@@ -65,7 +66,7 @@ class ServerConfigConfirmation extends JFrame {
     public static void run(
             JFrame sender,
             String content,
-            HashMap accountDetails,
+            ArrayList accountDetails,
             Properties properties,
             boolean isMaster) {
         serverConfigConfirmation =
