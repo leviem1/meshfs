@@ -6,6 +6,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
 
@@ -331,13 +332,12 @@ class ClientModeConfiguration extends JFrame {
                 passwordField.setEnabled(true);
             }
             File catalog = File.createTempFile(".catalog", ".json");
+            catalog.deleteOnExit();
             if (!(usernameField.getText().isEmpty())) {
                 System.out.println("Got this far");
-                /*FileClient.getUserFiles(
-                        serverAddressField.getSelectedItem().toString(),
-                        Integer.parseInt(serverPortField.getText()),
-                        usernameField.getText(),
-                        uuid);*/
+
+                FileWriter fw = new FileWriter(catalog);
+                fw.write(FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), uuid).toString());
                 ClientBrowser.run(
                         serverAddressField.getSelectedItem().toString(),
                         Integer.parseInt(serverPortField.getText()),
@@ -348,6 +348,8 @@ class ClientModeConfiguration extends JFrame {
                 dispose();
             }
         } catch (IOException ignored) {
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
         }
     }
 

@@ -81,7 +81,7 @@ class DISTAL {
                 userAccount,
                 uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1)
                         + " (distributing)",
-                catalogFileLocation, username);
+                catalogFileLocation);
 
         String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
         long sizeOfFile = FileUtils.getSize(uploadFilePath);

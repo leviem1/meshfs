@@ -105,6 +105,8 @@ class ClientBrowser extends JFrame {
         } catch (IOException ignored) {
         } catch (MalformedRequestException e) {
             e.printStackTrace();
+        } catch (FileTransferException e) {
+            e.printStackTrace();
         }
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
         DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("root/" + userAccount);
@@ -322,11 +324,11 @@ class ClientBrowser extends JFrame {
                     fileChooser.setAcceptAllFileFilterUsed(true);
                     int rVal = fileChooser.showOpenDialog(null);
                     if (rVal == JFileChooser.APPROVE_OPTION) {
-                        Map<String, String> folderMap =
-                                JSONManipulator.getMapOfFolderContents(
-                                        JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()),
+                        Map<String, String> folderMap = null;
+                                /*JSONUtils.buildUserCatalog(userAccount,
+                                        JSONUtils.getJSONObject(catalogFile.getAbsolutePath()),
                                         userAccount,
-                                        userAccount);
+                                        userAccount);*/
                         for (Map.Entry<String, String> item : folderMap.entrySet()) {
                             if (item.getKey().equals(fileChooser.getSelectedFile().getName())) {
                                 JOptionPane.showMessageDialog(
@@ -362,8 +364,8 @@ class ClientBrowser extends JFrame {
                         return;
                     }
                     JSONObject contents =
-                            JSONManipulator.getItemContents(
-                                    JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()),
+                            JSONUtils.getItemContents(
+                                    JSONUtils.getJSONObject(catalogFile.getAbsolutePath()),
                                     tree1
                                             .getSelectionPath()
                                             .toString()
@@ -434,10 +436,10 @@ class ClientBrowser extends JFrame {
                                     .toString()
                                     .substring(1, tree1.getSelectionPath().toString().length() - 1)
                                     .replaceAll("[ ]*, ", "/");
-                    JSONObject jsonObject = JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
-                    JSONObject fileProperties = JSONManipulator.getItemContents(jsonObject, jsonPath);
+                    JSONObject jsonObject = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
+                    JSONObject fileProperties = JSONUtils.getItemContents(jsonObject, jsonPath);
                     Object owner = fileProperties.get("owner");
-                    JSONObject fileInfo = JSONManipulator.getItemContents(jsonObject, "fileInfo/" + fileProperties.get("fileName").toString());
+                    JSONObject fileInfo = JSONUtils.getItemContents(jsonObject, "fileInfo/" + fileProperties.get("fileName").toString());
                     Object fileSize = fileInfo.get("fileSize");
                     Object creationDate = fileInfo.get("creationDate");
 
@@ -537,33 +539,10 @@ class ClientBrowser extends JFrame {
                 e -> UserAccountOptions.run(clientBrowser, userAccount, serverAddress, port, previousRunType));
     }
 
-    private DefaultMutableTreeNode readFolder(
-            String folderLocation, JSONObject jsonObj2, DefaultMutableTreeNode branch) {
-        Map<String, String> folderContents =
-                JSONManipulator.getMapOfFolderContents(
-                        JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()),
-                        folderLocation,
-                        userAccount);
-        if (folderContents.keySet().isEmpty()) {
-            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
-            branch.add(leaf);
-        } else {
-            for (String name : folderContents.keySet()) {
-                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
-                leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
-                if (leaf.getAllowsChildren()) {
-                    String folderLocation2 = folderLocation + "/" + name;
-                    //readFolder(folderLocation2, jsonObj2, leaf);
-                }
-                branch.add(leaf);
-            }
-        }
-        return branch;
-    }
 
     private void downloadFile(String path) {
         try {
-            if (!(JSONManipulator.pullFile(
+            JSONUtils.pullFile(
                     tree1
                             .getSelectionPath()
                             .toString()
@@ -573,24 +552,20 @@ class ClientBrowser extends JFrame {
                     path.substring(path.lastIndexOf(File.separator)),
                     serverAddress,
                     port,
-                    catalogFile))) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Download Failed! Please try again later...",
-                        "MeshFS - Error",
-                        JOptionPane.ERROR_MESSAGE);
-                statusLbl.setText("Download Failure!");
-                Thread.sleep(1000);
-                statusLbl.setText("");
-            } else {
-                JOptionPane.showMessageDialog(
+                    catalogFile);
+            JOptionPane.showMessageDialog(
                         null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
                 statusLbl.setText("Download Completed!");
                 Thread.sleep(1000);
                 statusLbl.setText("");
-            }
         } catch (IOException ignored) {
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (PullRequestException e) {
+            e.printStackTrace();
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
+        } catch (FileTransferException e) {
             e.printStackTrace();
         }
     }
@@ -626,9 +601,9 @@ class ClientBrowser extends JFrame {
                                 failureCount += 1;
                             }
                             JSONObject latestCatalog =
-                                    JSONManipulator.getJSONObject(tempCatalog.getAbsolutePath());
+                                    JSONUtils.getJSONObject(tempCatalog.getAbsolutePath());
                             JSONObject localCatalog =
-                                    JSONManipulator.getJSONObject(
+                                    JSONUtils.getJSONObject(
                                             new File(catalogFile.getAbsolutePath()).getAbsolutePath());
                             if (localCatalog.equals(latestCatalog)) {
                                 tempCatalog.delete();
@@ -637,16 +612,14 @@ class ClientBrowser extends JFrame {
                                         serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
                                 clientBrowserButtonModifier(false);
                                 tree1.removeAll();
-                                /*tree1.setModel(
-                                        new DefaultTreeModel(
-                                                readFolder(
-                                                        userAccount,
-                                                        JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()),
-                                                        new DefaultMutableTreeNode(userAccount))));*/
+                                //tree1.setModel(
+                                        //new DefaultTreeModel(JSONUtils.JTreeBuilder(JSONUtils.()));
                                 tempCatalog.delete();
                             }
                         } catch (IOException ignored) {
                         } catch (MalformedRequestException e) {
+                            e.printStackTrace();
+                        } catch (FileTransferException e) {
                             e.printStackTrace();
                         }
                     }
