@@ -177,12 +177,12 @@ class ServerInit implements Runnable {
                         break;
 
                     case "114": //114:Delete Account
-                        deleteAccount(requestParts[1], out);
+                        deleteAccount(requestParts[2], out);
 
                         break;
 
                     case "115": //115:Get User Files
-                        getUserFiles(requestParts[1], requestParts[2], out);
+                        getUserFiles(requestParts[2], requestParts[3], out);
 
                         break;
 
@@ -540,14 +540,23 @@ class ServerInit implements Runnable {
     }
 
     private void getUserFiles(String uuid, String userAccount, Socket client) throws IOException {
-        System.out.println(uuid + " " + userAccount);
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
         FileInputStream fis = new FileInputStream(catalog);
-
-        JSONObject catalogObj = JSONUtils.getJSONObject(catalog.getAbsolutePath());
-        JSONObject userObj = JSONUtils.getItemContents(catalogObj, "/users/mark/");
+        ArrayList<UserAccounts> accounts = null;
+        UserAccounts user = null;
+        try {
+             accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        for(UserAccounts account : accounts){
+            if(account.getUsername().equals(userAccount)){
+                user = account;
+            }
+        }
+        JSONObject userObj = JSONUtils.buildUserCatalog(user);
 
         System.out.println(userObj);
 
