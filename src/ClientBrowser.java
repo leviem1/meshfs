@@ -7,6 +7,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Timer;
@@ -48,10 +49,11 @@ class ClientBrowser extends JFrame {
     private JButton optionsBtn;
     private JLabel statusLbl;
     private JButton quitBtn;
+    private String uuid;
     //GEN-END:variables
 
     private ClientBrowser(
-            String serverAddress, int port, String userAccount, File catalogFile, boolean previousRunType) {
+            String serverAddress, int port, String userAccount, File catalogFile, boolean previousRunType, String uuid) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
@@ -64,6 +66,7 @@ class ClientBrowser extends JFrame {
         this.userAccount = userAccount;
         this.catalogFile = catalogFile;
         this.previousRunType = previousRunType;
+        this.uuid = uuid;
 
         catalogTimer = new java.util.Timer();
 
@@ -91,8 +94,10 @@ class ClientBrowser extends JFrame {
             JFrame sender,
             String userAccount,
             File catalogFile,
-            boolean previousRunType) {
-        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogFile, previousRunType);
+            boolean previousRunType,
+            String uuid) {
+
+        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogFile, previousRunType, uuid);
         CenterWindow.centerOnWindow(sender, clientBrowser);
         clientBrowser.setVisible(true);
         catalogFile.deleteOnExit();
@@ -100,12 +105,14 @@ class ClientBrowser extends JFrame {
 
     private void initComponents() {
         try {
-            FileClient.receiveFile(
-                    serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
-        } catch (IOException ignored) {
+            String jsonObj = FileClient.getUserFiles(serverAddress, port, userAccount, uuid).toString();
+
+            System.out.println(jsonObj);
+            FileWriter fw = new FileWriter(catalogFile);
+            fw.write(jsonObj);
         } catch (MalformedRequestException e) {
             e.printStackTrace();
-        } catch (FileTransferException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
@@ -593,10 +600,10 @@ class ClientBrowser extends JFrame {
                     } else {
                         try {
                             File tempCatalog = File.createTempFile(".catalog", ".json");
+                            FileWriter fileWriter = new FileWriter(tempCatalog);
                             tempCatalog.deleteOnExit();
                             try {
-                                FileClient.receiveFile(
-                                        serverAddress, port, ".catalog.json", tempCatalog.getAbsolutePath());
+                                fileWriter.write(FileClient.getUserFiles(serverAddress, port, userAccount, uuid).toString());
                             } catch (Exception e) {
                                 failureCount += 1;
                             }
