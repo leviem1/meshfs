@@ -242,13 +242,11 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
-
-        JSONObject jsonObj =
-                JSONUtils.getJSONObject(
-                        MeshFS.properties.getProperty("repository") + ".catalog.json");
-        JSONUtils.writeJSONObject(
-                MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONUtils.moveFile(jsonObj, currentPath, newPath));
+        try {
+            JSONUtils.moveItem(currentPath, newPath);
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
+        }
     }
 
     private void deleteFile(String filePath, boolean physical, Socket client) throws IOException {
@@ -262,9 +260,11 @@ class ServerInit implements Runnable {
             JSONObject jsonObj =
                     JSONUtils.getJSONObject(
                             MeshFS.properties.getProperty("repository") + ".catalog.json");
-            JSONUtils.writeJSONObject(
-                    MeshFS.properties.getProperty("repository") + ".catalog.json",
-                    JSONUtils.deleteItem(jsonObj, filePath));
+            try {
+                JSONUtils.deleteItem(filePath);
+            } catch (MalformedRequestException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -272,18 +272,7 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
-
-        JSONObject jsonObj =
-                JSONUtils.getJSONObject(
-                        MeshFS.properties.getProperty("repository") + ".catalog.json");
-        JSONUtils.writeJSONObject(
-                MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONUtils.copyFile(
-                        jsonObj,
-                        currentPath,
-                        currentPath.substring(0, currentPath.lastIndexOf("/")),
-                        true,
-                        currentPath.substring(currentPath.lastIndexOf("/") + 1)));
+        JSONUtils.duplicateItem(currentPath);
     }
 
     private void sendFile(String filename, Socket client) throws IOException {
@@ -344,12 +333,7 @@ class ServerInit implements Runnable {
                 new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
         out.println("201");
-
-        JSONUtils.addToIndex(
-                userAccount,
-                filename + " (uploading)",
-                MeshFS.properties.getProperty("repository") + ".catalog.json",
-                userAccount);
+        JSONUtils.addTempFile("root/Users/" + userAccount,filename + "(uploading)", userAccount);
 
         while ((br = dis.read(data, 0, data.length)) != -1) {
             fos.write(data, 0, br);
@@ -365,15 +349,21 @@ class ServerInit implements Runnable {
                 throw new FileTransferException();
             }
         }catch (NoSuchAlgorithmException ignored) {}
+        try {
+            JSONUtils.deleteItem("root/Users/" + userAccount + "/" + filename + " (uploading)");
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
+        }
 
-        JSONUtils.writeJSONObject(
-                MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONUtils.deleteItem(
-                        JSONUtils.getJSONObject(
-                                MeshFS.properties.getProperty("repository") + ".catalog.json"),
-                        "root/Users/" + userAccount + "/" + filename + " (uploading)"));
-
-        Thread distributor = new Thread(() -> DISTAL.distributor(filename, "root/Users/" + userAccount));
+        Thread distributor = new Thread(() -> {
+            try {
+                DISTAL.distributor(filename, "root/Users/" + userAccount, userAccount);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (MalformedRequestException e) {
+                e.printStackTrace();
+            }
+        });
         distributor.start();
     }
 
@@ -387,9 +377,7 @@ class ServerInit implements Runnable {
         JSONObject jsonObj =
                 JSONUtils.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".catalog.json");
-        JSONUtils.writeJSONObject(
-                MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONUtils.addFolder(jsonObj, directoryPath, directoryName, userAccount));
+        JSONUtils.createNewFolder(directoryPath, directoryName);
     }
 
     private void renameFile(String jsonPath, String newName, Socket client)
@@ -398,12 +386,11 @@ class ServerInit implements Runnable {
         out.println("201");
         out.flush();
 
-        JSONObject jsonObj =
-                JSONUtils.getJSONObject(
-                        MeshFS.properties.getProperty("repository") + ".catalog.json");
-        JSONUtils.writeJSONObject(
-                MeshFS.properties.getProperty("repository") + ".catalog.json",
-                JSONUtils.renameFile(jsonObj, jsonPath, newName));
+        try {
+            JSONUtils.renameItem(jsonPath, newName);
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
+        }
     }
 
     private void changePassword(

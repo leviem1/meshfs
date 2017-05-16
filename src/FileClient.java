@@ -343,13 +343,13 @@ final class FileClient {
             JSONObject manifest = new JSONObject();
             if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
                 manifest =
-                        JSONManipulator.getJSONObject(
+                        JSONUtils.getJSONObject(
                                 MeshFS.properties.getProperty("repository") + ".manifest.json");
             }
             JSONArray reportArray = Reporting.splitter(reportFull);
 
             manifest.put(reportArray.get(0), reportArray.get(1));
-            JSONManipulator.writeJSONObject(
+            JSONUtils.writeJSONObject(
                     MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
         } catch (SocketTimeoutException ignored) {}
         finally {
