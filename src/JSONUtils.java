@@ -112,7 +112,7 @@ class JSONUtils {
 
 
     @SuppressWarnings("unchecked")
-    static void addFileToCatalog(List<List<String>> stripes, String itemDestinationLocation, String fileName, String JSONFilePath, String alphanumericName, UserAccounts user, long fileSize) throws IOException {
+    static void addFileToCatalog(List<List<String>> stripes, String itemDestinationLocation, String fileName, String JSONFilePath, String alphanumericName, String username, long fileSize) throws IOException {
 
         JSONObject catalog = getJSONObject(JSONFilePath);
 
@@ -137,7 +137,7 @@ class JSONUtils {
         String creationDate = df.format(new Date());
 
         JSONArray userArray = new JSONArray();
-        userArray.add(user.getUsername());
+        userArray.add(username);
 
         objChild.put("type", "file");
 
@@ -270,18 +270,18 @@ class JSONUtils {
      * @param JSONFilePath the file path of the catalog file
      * @param itemLocation the source virtual path within the JSONObject
      * @param fileName     the name of the file, the way it appears in the file browser
-     * @param user         the account that uploaded the file
+     * @param username     the account name that uploaded the file
      */
 
     @SuppressWarnings("unchecked")
-    static void addTempFile(String JSONFilePath, String itemLocation, String fileName, UserAccounts user) throws IOException{
+    static void addTempFile(String JSONFilePath, String itemLocation, String fileName, String username) throws IOException{
         JSONObject jsonFile = getJSONObject(JSONFilePath);
         JSONObject objChild = new JSONObject();
 
         objChild.put("type", "tempFile");
 
         JSONArray users = new JSONArray();
-        users.add(user.getUsername());
+        users.add(username);
 
         objChild.put("users", users);
         jsonFile = putItemInFolder(jsonFile, itemLocation, fileName, objChild);

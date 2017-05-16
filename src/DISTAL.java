@@ -59,7 +59,7 @@ class DISTAL {
      * @param uploadFilePath    the file path of the file that is to be distributed
      * @param filePathInCatalog where the file is to be put in the catalog.
      */
-    static void distributor(String uploadFilePath, String filePathInCatalog, UserAccounts user) throws IOException, MalformedRequestException{
+    static void distributor(String uploadFilePath, String filePathInCatalog, String username) throws IOException, MalformedRequestException{
         String userAccount;
         try {
             userAccount = filePathInCatalog.substring(0, filePathInCatalog.indexOf("/"));
@@ -81,7 +81,7 @@ class DISTAL {
                 userAccount,
                 uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1)
                         + " (distributing)",
-                catalogFileLocation, user);
+                catalogFileLocation, username);
 
         String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
         long sizeOfFile = FileUtils.getSize(uploadFilePath);
@@ -222,7 +222,7 @@ class DISTAL {
                 fileName,
                 catalogFileLocation,
                 newName,
-                user,
+                username,
                 sizeOfFile);
     }
 
