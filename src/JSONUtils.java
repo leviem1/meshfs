@@ -203,6 +203,11 @@ class JSONUtils {
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", copyFile(catalog, itemLocation, itemLocation.substring(0,itemLocation.lastIndexOf("/")), null, true));
     }
 
+    static void deleteItem(String itemLocation) throws IOException, MalformedRequestException{
+        JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        deleteItem(catalog, itemLocation, true);
+    }
+
     static void deleteItem(JSONObject catalog, String itemLocation) throws IOException, MalformedRequestException{
         deleteItem(catalog, itemLocation, true);
     }
