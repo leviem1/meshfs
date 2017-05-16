@@ -113,10 +113,10 @@ class ClientBrowser extends JFrame {
         DefaultMutableTreeNode sharedNode = new DefaultMutableTreeNode("root/Shared");
         /*(DefaultMutableTreeNode userRoot =
                 readFolder(
-                        userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), userNode));*/
+                        userAccount, JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), userNode));*/
         /*(DefaultMutableTreeNode sharedRoot =
                 (readFolder(
-                        userAccount, JSONManipulator.getJSONObject(catalogFile.getAbsolutePath()), sharedNode));
+                        userAccount, JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), sharedNode));
         root.add(userRoot);
         root.add(sharedRoot);*/
 

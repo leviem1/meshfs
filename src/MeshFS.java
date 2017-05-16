@@ -83,7 +83,7 @@ class MeshFS {
                     JSONObject fileInfo = new JSONObject();
                     newCatalog.put("fileInfo", fileInfo);
                     try {
-                        JSONManipulator.writeJSONObject(
+                        JSONUtils.writeJSONObject(
                                 properties.getProperty("repository") + ".catalog.json", newCatalog);
                     } catch (IOException ignored) {
                     }
@@ -99,20 +99,26 @@ class MeshFS {
                                     return;
                                 }
                                 JSONObject manifest =
-                                        JSONManipulator.getJSONObject(
+                                        JSONUtils.getJSONObject(
                                                 MeshFS.properties.getProperty("repository") + ".manifest.json");
                                 JSONObject newManifest = manifest;
                                 for (Object computer : manifest.keySet()) {
                                     Long nodeTimeStamp =
                                             (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
                                     if (currentTimeStamp > nodeTimeStamp + 32000) {
-                                        newManifest = JSONManipulator.removeItem(newManifest, computer.toString());
+                                        try {
+                                            JSONUtils.deleteItem(newManifest, computer.toString());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        } catch (MalformedRequestException e) {
+                                            e.printStackTrace();
+                                        }
                                         System.out.println(computer.toString() + " was removed from the manifest");
                                         break;
                                     }
                                 }
                                 try {
-                                    JSONManipulator.writeJSONObject(
+                                    JSONUtils.writeJSONObject(
                                             MeshFS.properties.getProperty("repository") + ".manifest.json", newManifest);
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -137,6 +143,8 @@ class MeshFS {
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog");
                                     } catch (IOException | MalformedRequestException ioe) {
                                         ioe.printStackTrace();
+                                    } catch (FileTransferException e) {
+                                        e.printStackTrace();
                                     }
                                 }
                             }
@@ -190,10 +198,10 @@ class MeshFS {
                 e.printStackTrace();
             }
 
-            if (Reporting.getSystemOS().toLowerCase().contains("mac")) {
+            /*if (Reporting.getSystemOS().toLowerCase().contains("mac")) {
                 com.apple.eawt.Application.getApplication()
                         .setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-            }
+            }*/
 
             if (configure) {
                 GreetingsWindow.run(true, null);

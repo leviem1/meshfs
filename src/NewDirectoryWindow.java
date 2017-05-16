@@ -68,7 +68,7 @@ class NewDirectoryWindow extends JFrame {
     }
 
     private void initComponents() {
-        JSONObject jsonObj = JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
+        JSONObject jsonObj = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
         DefaultMutableTreeNode tree = new DefaultMutableTreeNode(userAccount);
 
         tree = (readFolder(userAccount, jsonObj, tree));
@@ -233,8 +233,8 @@ class NewDirectoryWindow extends JFrame {
 
     private DefaultMutableTreeNode readFolder(
             String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch) {
-        Map<String, String> folderContents =
-                JSONManipulator.getMapOfFolderContents(jsonObj, folderLocation, userAccount);
+        Map<String, String> folderContents = null;
+                //JSONUtils.getMapOfFolderContents(jsonObj, folderLocation, userAccount);
         if (!(folderContents.values().contains("directory"))) {
             DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no folders)");
             branch.add(leaf);

@@ -271,10 +271,10 @@ class RenameFileWindow extends JFrame {
                                     } else {
                                         String newJsonPath = jsonObj.substring(0, jsonObj.lastIndexOf("/"));
                                         JSONObject catalogJson =
-                                                JSONManipulator.getJSONObject(catalogFile.getAbsolutePath());
-                                        Map<String, String> folderMap =
-                                                JSONManipulator.getMapOfFolderContents(
-                                                        catalogJson, newJsonPath, userAccount);
+                                                JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
+                                        Map<String, String> folderMap = null;
+                                                /*JSONUtils.getMapOfFolderContents(
+                                                        catalogJson, newJsonPath, userAccount);*/
                                         for (Map.Entry<String, String> entry : folderMap.entrySet()) {
                                             if (entry.getValue().equals("file")) {
                                                 if (entry.getKey().equals(newNameValueField.getText())) {

@@ -78,13 +78,13 @@ class MulticastServerInit implements Runnable {
 
     private void masterDownRecord(InetAddress address) {
         reportedDown.add(address);
-        if ((reportedDown.size() > JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest").size() / 2) && !masterDown) {
+        if ((reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest").size() / 2) && !masterDown) {
             masterDown = true;
             LinkedHashMap<String, Integer> speeds = new LinkedHashMap();
             LinkedHashMap<String, Integer> sortedSpeeds = new LinkedHashMap();
             sortedSpeeds.put("temp", -1);
 
-            JSONObject manifestFile = JSONManipulator.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest");
+            JSONObject manifestFile = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest");
 
             for (Object MACAddress : manifestFile.keySet()) {
                 if (Long.parseLong((((JSONObject) manifestFile.get(MACAddress)).get("FreeSpace")).toString()) > 21474836480L) {

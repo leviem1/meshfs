@@ -182,7 +182,7 @@ class ServerInit implements Runnable {
                         break;
 
                     case "115": //115:Get User Files
-                        getUserFiles(requestParts[2], requestParts[3], out);
+                        getUserFiles(requestParts[2], out);
 
                         break;
 
@@ -539,7 +539,7 @@ class ServerInit implements Runnable {
         }
     }
 
-    private void getUserFiles(String uuid, String userAccount, Socket client) throws IOException {
+    private void getUserFiles(String userAccount, Socket client) throws IOException {
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
