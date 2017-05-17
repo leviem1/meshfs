@@ -86,13 +86,23 @@ class DriveAPI {
         downloader.download(new GenericUrl(uploadedFile.getDownloadUrl()), out);
     }
 
-    static List<File> listFiles() throws Exception {
+    static List<File> listFiles() throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Credential credential = authorize(JSONFactory, httpTransport);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
         List<File> files = new ArrayList<>();
         files.addAll(drive.files().list().setQ("trashed = false and mimeType != 'application/vnd.google-apps.folder'").execute().getItems());
+        return files;
+    }
+
+    static List<File> listFolders() throws IOException, GeneralSecurityException {
+        JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
+        HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        Credential credential = authorize(JSONFactory, httpTransport);
+        Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
+        List<File> files = new ArrayList<>();
+        files.addAll(drive.files().list().setQ("trashed = false and mimeType = 'application/vnd.google-apps.folder'").execute().getItems());
         return files;
     }
 }
