@@ -60,6 +60,8 @@ class DISTAL {
      * @param filePathInCatalog where the file is to be put in the catalog.
      */
     static void distributor(String uploadFilePath, String filePathInCatalog, String username) throws IOException, MalformedRequestException{
+        System.out.println("uploadPath: "+uploadFilePath);
+        filePathInCatalog = JSONUtils.catalogStringFixer(filePathInCatalog);
         String userAccount;
         try {
             userAccount = filePathInCatalog.substring(0, filePathInCatalog.indexOf("/"));
@@ -78,10 +80,10 @@ class DISTAL {
 
         //make the JTree show that the file is being distributed
         JSONUtils.addTempFile(
-                userAccount,
+                filePathInCatalog,
                 uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1)
                         + " (distributing)",
-                catalogFileLocation);
+                username);
 
         String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
         long sizeOfFile = FileUtils.getSize(uploadFilePath);
@@ -210,12 +212,7 @@ class DISTAL {
         sendFiles(stripes, uploadFilePath, sizeOfFile, newName);
 
         //update the JSON file in order to update the JTree
-                JSONUtils.deleteItem(
-                        jsonObj,
-                        userAccount
-                                + "/"
-                                + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1)
-                                + " (distributing)");
+                JSONUtils.deleteItem(jsonObj, filePathInCatalog + uploadFilePath + " (distributing)", false);
         JSONUtils.addFileToCatalog(
                 stripes,
                 filePathInCatalog,
@@ -263,17 +260,17 @@ class DISTAL {
         }
         //rename the original file to what the distributed whole file will be
 
-        new File(sourceFileLocationOld)
-                .renameTo(
-                        new File(
-                                sourceFileLocationOld.substring(
-                                        0, sourceFileLocationOld.lastIndexOf(File.separator) + 1)
-                                        + outName
-                                        + "_w"));
+        System.out.println("Old: " +sourceFileLocationOld);
+
         final String sourceFileLocation =
                 sourceFileLocationOld.substring(0, sourceFileLocationOld.lastIndexOf(File.separator) + 1)
                         + outName
                         + "_w";
+
+        System.out.println("New: " +sourceFileLocation);
+
+        new File(sourceFileLocationOld).renameTo(new File(sourceFileLocation));
+
         JSONObject manifestFile =
                 JSONUtils.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".manifest.json");

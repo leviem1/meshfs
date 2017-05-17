@@ -280,7 +280,9 @@ class JSONUtils {
         JSONArray users = new JSONArray();
         users.add(username);
 
-        objChild.put("users", users);
+        objChild.put("groups", users);
+        objChild.put("admins", users);
+        objChild.put("blacklist", new JSONArray());
         jsonFile = putItemInFolder(jsonFile, itemLocation, fileName, objChild);
 
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", jsonFile);
@@ -450,9 +452,8 @@ class JSONUtils {
     }
 
     static String catalogStringFixer(String itemLocationString){
-        System.out.println("string: "+ itemLocationString);
-        if (!itemLocationString.equals("") &&  (! (itemLocationString.substring(0,itemLocationString.indexOf("/",1))).equals("root/Users")) && (! (itemLocationString.substring(0,itemLocationString.indexOf("/",1))).equals("root/Shared"))){
-            itemLocationString = itemLocationString.substring(0,itemLocationString.indexOf("/") + 1) + "Users/" + itemLocationString.substring(itemLocationString.indexOf("/",1));
+        if ((itemLocationString.contains("/")) &&  (! (itemLocationString.substring(0,itemLocationString.indexOf("/",5))).equals("root/Users")) && (! (itemLocationString.substring(0,itemLocationString.indexOf("/",5))).equals("root/Shared"))){
+            itemLocationString = itemLocationString.substring(0,itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/",5));
         }
         return itemLocationString;
     }
@@ -477,10 +478,7 @@ class JSONUtils {
 
 
     private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccounts user){
-        System.out.println("reading: " + jsonObject);
-        System.out.println("username: " + user.getUsername());
         LinkedHashMap<String, String> items = getMapOfFolderContents(jsonObject, user);
-        System.out.println("read: " +items);
         JSONObject catalog = new JSONObject();
         for(String item : items.keySet()){
             if (items.get(item).equals("directory")){
@@ -489,10 +487,8 @@ class JSONUtils {
             else{
                 catalog.put(item, jsonObject.get(item));
             }
-            System.out.println(jsonObject.keySet());
         }
         if (jsonObject.containsKey("groups")) {
-            System.out.println("yes");
             catalog.put("type", "directory");
             catalog.put("groups", jsonObject.get("groups"));
             catalog.put("admins", jsonObject.get("admins"));
@@ -526,6 +522,7 @@ class JSONUtils {
 
     private static JSONObject copyFile(JSONObject catalog, String itemLocation, String destinationLocation, String newName, boolean updatePermissions) {
         itemLocation = catalogStringFixer(itemLocation);
+        destinationLocation = catalogStringFixer(destinationLocation);
         JSONObject itemContents = getItemContents(catalog, itemLocation);
 
         if (updatePermissions){
