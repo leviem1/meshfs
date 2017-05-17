@@ -192,7 +192,7 @@ class CliParser {
 
             username = username.toLowerCase();
             String pass = new String(password);
-            accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass), initial ? "admin" : "user", new ArrayList<>(Arrays.asList(username))));
+            accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass),"user", new ArrayList<>(Arrays.asList(username))));
             Crypt.writeAuthFile(accounts);
 
             System.out.println("User Added!");
@@ -204,6 +204,8 @@ class CliParser {
                 System.out.println("Exiting!");
                 System.exit(0);
             }
+
+            MeshFS.nogui = true;
         }else{
             String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             String pw = RandomStringUtils.random( 8, characters);
