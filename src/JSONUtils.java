@@ -409,8 +409,9 @@ class JSONUtils {
     }
 
     static JSONObject buildUserCatalog(UserAccounts user){
-        JSONObject root = (JSONObject) getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json").get("root");
-        if (!root.containsKey(user.getUsername())){
+        JSONObject catalog = (JSONObject) getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        JSONObject users = (JSONObject) ((JSONObject) catalog.get("root")).get("Users");
+        if (!users.containsKey(user.getUsername())){
             JSONObject folder = new JSONObject();
             JSONArray groups = new JSONArray();
 
@@ -419,9 +420,9 @@ class JSONUtils {
             folder.put("groups", groups);
             folder.put("blacklist", new JSONArray());
             folder.put("admins", groups);
-            root.put(user.getUsername(),folder);
+            users.put(user.getUsername(),folder);
         }
-        return catalogBuilder(root, user);
+        return catalogBuilder(catalog, user);
     }
 
     static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog){
