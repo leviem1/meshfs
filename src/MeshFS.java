@@ -1,3 +1,4 @@
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.swing.*;
@@ -73,15 +74,18 @@ class MeshFS {
                     JSONObject newCatalog = new JSONObject();
                     JSONObject folder = new JSONObject();
                     JSONObject newRoot = new JSONObject();
+                    JSONArray groups = new JSONArray();
+                    groups.add("all");
 
                     newCatalog.put("currentName", "0000000000000000");
                     folder.put("type", "directory");
+                    folder.put("groups", groups);
+                    folder.put("blacklist", new JSONArray());
+                    folder.put("admins", new JSONArray());
                     newRoot.put("Users", folder);
                     newRoot.put("Shared", folder);
                     newCatalog.put("root", newRoot);
 
-                    JSONObject fileInfo = new JSONObject();
-                    newCatalog.put("fileInfo", fileInfo);
                     try {
                         JSONUtils.writeJSONObject(
                                 properties.getProperty("repository") + ".catalog.json", newCatalog);

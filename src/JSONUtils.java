@@ -75,22 +75,9 @@ class JSONUtils {
         }
 
         JSONObject folderToRead = jsonObject;
-        JSONObject folderToReadNew;
 
         for (String folder : Tree) {
-            folderToReadNew = (JSONObject) folderToRead.get(folder);
-            if (folderToReadNew == null) {
-                JSONObject folderCreator = new JSONObject();
-
-                folderCreator.put("type", "directory");
-                folderCreator.put("groups", user.getUsername());
-                folderCreator.put("blacklist", new JSONArray());
-
-                folderToRead.put(folder, folderCreator);
-                folderToRead = (JSONObject) folderToRead.get(folder);
-            } else {
-                folderToRead = folderToReadNew;
-            }
+            folderToRead = (JSONObject) folderToRead.get(folder);
         }
 
 
@@ -101,6 +88,7 @@ class JSONUtils {
             try {
                 if (user.getAccountType().equals("admin")
                         || (user == null)
+                        || ((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))).contains("all")
                         || (!Collections.disjoint(((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))), user.getGroups()))
                         && !((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("blacklist"))).contains(user.getUsername())) {
 
@@ -421,8 +409,19 @@ class JSONUtils {
     }
 
     static JSONObject buildUserCatalog(UserAccounts user){
-        JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
-        return catalogBuilder(catalog, user);
+        JSONObject root = (JSONObject) getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json").get("root");
+        if (!root.containsKey(user.getUsername())){
+            JSONObject folder = new JSONObject();
+            JSONArray groups = new JSONArray();
+
+            groups.add(user.getUsername());
+            folder.put("type", "directory");
+            folder.put("groups", groups);
+            folder.put("blacklist", new JSONArray());
+            folder.put("admins", groups);
+            root.put(user.getUsername(),folder);
+        }
+        return catalogBuilder(root, user);
     }
 
     static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog){
