@@ -111,7 +111,7 @@ class MeshFS {
                                             (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
                                     if (currentTimeStamp > nodeTimeStamp + 32000) {
                                         try {
-                                            JSONUtils.deleteItem(newManifest, computer.toString());
+                                            JSONUtils.deleteItem(newManifest, computer.toString(), false);
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         } catch (MalformedRequestException e) {
