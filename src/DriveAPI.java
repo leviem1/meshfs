@@ -37,20 +37,20 @@ class DriveAPI {
 
     private DriveAPI() {}
 
-    static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport) throws IOException {
+    static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport, String user) throws IOException {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSONFactory, new InputStreamReader(MeshFS.class.getResourceAsStream("/client_id.json")));
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSONFactory, clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store/MeshFS"))).build();
-        return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+        return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize(user);
     }
 
     static void unauthorize() {
         FileUtils.removeFile(System.getProperty("user.home") + java.io.File.separator + ".store/MeshFS/StoredCredential");
     }
 
-    static File uploadFile(java.io.File filePath, String type) throws IOException, GeneralSecurityException {
+    static File uploadFile(java.io.File filePath, String type, String user) throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        Credential credential = authorize(JSONFactory, httpTransport);
+        Credential credential = authorize(JSONFactory, httpTransport, user);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
 
         File fileMetadata = new File();
@@ -64,7 +64,7 @@ class DriveAPI {
         return insert.execute();
     }
 
-    static void downloadFile(String fileID) throws IOException, GeneralSecurityException {
+    static void downloadFile(String fileID, String user) throws IOException, GeneralSecurityException {
 
         java.io.File parentDir = new java.io.File(System.getProperty("user.home") + java.io.File.separator + "Downloads" + java.io.File.separator);
         if (!parentDir.exists() && !parentDir.mkdirs()) {
@@ -73,7 +73,7 @@ class DriveAPI {
 
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        Credential credential = authorize(JSONFactory, httpTransport);
+        Credential credential = authorize(JSONFactory, httpTransport, user);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
 
         File uploadedFile = drive.files().get(fileID).execute();
@@ -86,20 +86,20 @@ class DriveAPI {
         downloader.download(new GenericUrl(uploadedFile.getDownloadUrl()), out);
     }
 
-    static List<File> listFiles() throws IOException, GeneralSecurityException {
+    static List<File> listFiles(String user) throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        Credential credential = authorize(JSONFactory, httpTransport);
+        Credential credential = authorize(JSONFactory, httpTransport, user);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
         List<File> files = new ArrayList<>();
         files.addAll(drive.files().list().setQ("trashed = false and mimeType != 'application/vnd.google-apps.folder'").execute().getItems());
         return files;
     }
 
-    static List<File> listFolders() throws IOException, GeneralSecurityException {
+    static List<File> listFolders(String user) throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        Credential credential = authorize(JSONFactory, httpTransport);
+        Credential credential = authorize(JSONFactory, httpTransport, user);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
         List<File> files = new ArrayList<>();
         files.addAll(drive.files().list().setQ("trashed = false and mimeType = 'application/vnd.google-apps.folder'").execute().getItems());
