@@ -320,7 +320,6 @@ class ClientModeConfiguration extends JFrame {
         }
         try {
             String uuid = connectAsUser(usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())));
-            System.out.println(uuid);
             if(uuid.equals("-1")){
                 System.out.println("Error!");
                 JOptionPane.showMessageDialog(
@@ -337,7 +336,6 @@ class ClientModeConfiguration extends JFrame {
                 try(FileWriter fileWriter = new FileWriter(catalog.getAbsolutePath())){
                     fileWriter.write(FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), uuid).toString());
                 }
-                System.out.println("Wr");
                 ClientBrowser.run(
                         serverAddressField.getSelectedItem().toString(),
                         Integer.parseInt(serverPortField.getText()),

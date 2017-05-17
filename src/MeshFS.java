@@ -84,6 +84,10 @@ class MeshFS {
                     folder.put("admins", new JSONArray());
                     newRoot.put("Users", folder);
                     newRoot.put("Shared", folder);
+                    newRoot.put("type", "directory");
+                    newRoot.put("groups", groups);
+                    newRoot.put("blacklist", new JSONArray());
+                    newRoot.put("admins", new JSONArray());
                     newCatalog.put("root", newRoot);
 
                     try {

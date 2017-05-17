@@ -488,7 +488,6 @@ final class FileClient {
             return "-1";
         }
         uuid = input.readLine().trim();
-        System.out.println("UUID received: " + uuid);
         client.close();
         return uuid;
     }

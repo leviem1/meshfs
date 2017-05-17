@@ -104,17 +104,11 @@ class ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
-        DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("root/" + userAccount);
-        DefaultMutableTreeNode sharedNode = new DefaultMutableTreeNode("root/Shared");
-        /*(DefaultMutableTreeNode userRoot =
-                readFolder(
-                        userAccount, JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), userNode));*/
-        /*(DefaultMutableTreeNode sharedRoot =
-                (readFolder(
-                        userAccount, JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), sharedNode));
-        root.add(userRoot);
-        root.add(sharedRoot);*/
+        DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()));
+        //DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("root/" + userAccount);
+        //DefaultMutableTreeNode sharedNode = new DefaultMutableTreeNode("root/Shared");
+
+        System.out.println("My user JSON OBJ is: " + JSONUtils.getJSONObject(catalogFile.getAbsolutePath()));
 
         if (isLoaded) {
             dialogPane.repaint();
@@ -534,7 +528,6 @@ class ClientBrowser extends JFrame {
         optionsBtn.addActionListener(
                 e -> UserAccountOptions.run(clientBrowser, userAccount, serverAddress, port, previousRunType));
     }
-
 
     private void downloadFile(String path) {
         try {

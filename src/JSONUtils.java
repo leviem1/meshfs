@@ -69,6 +69,7 @@ class JSONUtils {
      */
     @SuppressWarnings("unchecked")
     static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, UserAccounts user) {
+        System.out.println("READinG JSON: "+ jsonObject);
         List<String> Tree = new ArrayList<>();
         if (folderLocation.contains("/")){
             Tree = Arrays.asList(folderLocation.split("/"));
@@ -86,12 +87,11 @@ class JSONUtils {
         for (Object key : folderToRead.keySet()) {
             String keyStr = key.toString();
             try {
-                if (user.getAccountType().equals("admin")
-                        || (user == null)
+                if ((user == null)
+                        || (user.getAccountType().equals("admin")
                         || ((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))).contains("all")
                         || (!Collections.disjoint(((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))), user.getGroups()))
-                        && !((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("blacklist"))).contains(user.getUsername())) {
-
+                        && !((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("blacklist"))).contains(user.getUsername()))) {
                     contents.put(keyStr, (((JSONObject) folderToRead.get(keyStr)).get("type")).toString());
                 }
             }
@@ -409,7 +409,7 @@ class JSONUtils {
     }
 
     static JSONObject buildUserCatalog(UserAccounts user){
-        JSONObject catalog = (JSONObject) getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONObject users = (JSONObject) ((JSONObject) catalog.get("root")).get("Users");
         if (!users.containsKey(user.getUsername())){
             JSONObject folder = new JSONObject();
@@ -421,11 +421,20 @@ class JSONUtils {
             folder.put("blacklist", new JSONArray());
             folder.put("admins", groups);
             users.put(user.getUsername(),folder);
+
+            try {
+                writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         }
         return catalogBuilder(catalog, user);
     }
 
     static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog){
+        System.out.println("userCatalog: " + userCatalog);
         return JTreeBuilderRecursive(userCatalog, new DefaultMutableTreeNode("root"));
     }
 
@@ -439,7 +448,7 @@ class JSONUtils {
                 DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
                 leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
                 if (leaf.getAllowsChildren()) {
-                    leaf = JTreeBuilderRecursive(jsonObject, leaf);
+                    leaf = JTreeBuilderRecursive((JSONObject) jsonObject.get(name), leaf);
                 }
                 branch.add(leaf);
             }
@@ -457,6 +466,12 @@ class JSONUtils {
             }
             else{
                 catalog.put(item, jsonObject.get(item));
+            }
+            if (jsonObject.containsKey("groups")) {
+                catalog.put("type", "directory");
+                catalog.put("groups", jsonObject.get("groups"));
+                catalog.put("admins", jsonObject.get("admins"));
+                catalog.put("blacklist", jsonObject.get("blacklist"));
             }
         }
         return catalog;

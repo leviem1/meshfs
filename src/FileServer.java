@@ -557,8 +557,6 @@ class ServerInit implements Runnable {
         }
         JSONObject userObj = JSONUtils.buildUserCatalog(user);
 
-        System.out.println(userObj);
-
         out.println("201");
         out.println(userObj.toString()+ "\n");
 
