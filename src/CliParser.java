@@ -33,7 +33,7 @@ class CliParser {
         opt.addOption("listUsers", false, "Display all user accounts.");
         opt.addOption("listGroups", true, "Display all user groups.");
         opt.addOption("getUserType", true, "Get type of user.");
-
+        opt.addOption("resetAll", false, "Reset admin password, and all user accounts to default state.");
         opt.addOption("u", "uuid", true, "Set UUID value for server to server communication");
 
         try {
@@ -90,6 +90,10 @@ class CliParser {
 
             if (cmd.hasOption("getUserType")) {
                 getAccountType(cmd.getOptionValue("getUserType"));
+            }
+
+            if (cmd.hasOption("resetAll")) {
+                resetAuth();
             }
 
             if (cmd.hasOption("nogui")) {
@@ -452,6 +456,35 @@ class CliParser {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    void resetAuth(){
+        System.out.println("Do you still wish to reset all accounts? NOTE: This will remove all users and groups.");
+        System.out.println("Proceed? [y/N]");
+        String response = new Scanner(System.in).nextLine();
+
+        if(response.isEmpty() || response.toLowerCase().equals("n")) {
+            System.out.println("Exiting!");
+            System.exit(0);
+        }
+
+        ArrayList<UserAccounts> accounts = null;
+        if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+            try {
+                accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }else{
+            return;
+        }
+        accounts.clear();
+        addUser(true);
+
+
+
     }
 
 
