@@ -593,8 +593,6 @@ class ClientBrowser extends JFrame {
                             try(FileWriter fileWriter = new FileWriter(tempCatalog.getAbsolutePath())){
                                 fileWriter.write(FileClient.getUserFiles(serverAddress, port, userAccount, uuid).toString());
                             }
-                            System.out.println("Client browser passed from cmc" + catalogFile.getAbsolutePath());
-                            System.out.println("Temp catalog " + tempCatalog.getAbsolutePath());
                             JSONObject latestCatalog =
                                     JSONUtils.getJSONObject(tempCatalog.getAbsolutePath());
                             JSONObject localCatalog =

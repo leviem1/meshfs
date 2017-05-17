@@ -378,7 +378,6 @@ final class FileClient {
 
         try {
             out.println("108|" + MeshFS.properties.getProperty("uuid") + "\n");
-
             if (!(response = input.readLine().trim()).equals("201")) {
                 throw new MalformedRequestException(response);
             }

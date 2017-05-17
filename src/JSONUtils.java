@@ -515,7 +515,7 @@ class JSONUtils {
      * @param smart
      * @return JSONObject in which the item was removed
      */
-    private static void deleteItem(JSONObject catalog, String itemLocation, boolean smart) throws IOException, MalformedRequestException {
+    static void deleteItem(JSONObject catalog, String itemLocation, boolean smart) throws IOException, MalformedRequestException {
         JSONObject folderToRead = catalog;
         String item;
         if (itemLocation.contains("/")) {
