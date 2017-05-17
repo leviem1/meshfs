@@ -104,7 +104,7 @@ class ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
-        DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()));
+        DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()),userAccount.equals("admin"));
         //DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("root/" + userAccount);
         //DefaultMutableTreeNode sharedNode = new DefaultMutableTreeNode("root/Shared");
 

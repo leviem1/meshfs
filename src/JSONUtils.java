@@ -69,7 +69,6 @@ class JSONUtils {
      */
     @SuppressWarnings("unchecked")
     static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, UserAccounts user) {
-        System.out.println("READinG JSON: "+ jsonObject);
         List<String> Tree = new ArrayList<>();
         if (folderLocation.contains("/")){
             Tree = Arrays.asList(folderLocation.split("/"));
@@ -433,9 +432,17 @@ class JSONUtils {
         return catalogBuilder(catalog, user);
     }
 
-    static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog){
-        System.out.println("userCatalog: " + userCatalog);
-        return JTreeBuilderRecursive(userCatalog, new DefaultMutableTreeNode("root"));
+    static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog, boolean adminFormat){
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+        if(adminFormat){
+            root = JTreeBuilderRecursive((JSONObject) userCatalog.get("root"), new DefaultMutableTreeNode("root"));
+
+        }
+        else {
+            root = JTreeBuilderRecursive((JSONObject) ((JSONObject) userCatalog.get("root")).get("Users"), new DefaultMutableTreeNode("root"));
+            root.add(JTreeBuilderRecursive((JSONObject) ((JSONObject) userCatalog.get("root")).get("Shared"), new DefaultMutableTreeNode("Shared")));
+        }
+        return root;
     }
 
     private static DefaultMutableTreeNode JTreeBuilderRecursive(JSONObject jsonObject, DefaultMutableTreeNode branch) {
@@ -458,7 +465,10 @@ class JSONUtils {
 
 
     private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccounts user){
+        System.out.println("reading: " + jsonObject);
+        System.out.println("username: " + user.getUsername());
         LinkedHashMap<String, String> items = getMapOfFolderContents(jsonObject, user);
+        System.out.println("read: " +items);
         JSONObject catalog = new JSONObject();
         for(String item : items.keySet()){
             if (items.get(item).equals("directory")){
@@ -467,13 +477,16 @@ class JSONUtils {
             else{
                 catalog.put(item, jsonObject.get(item));
             }
-            if (jsonObject.containsKey("groups")) {
-                catalog.put("type", "directory");
-                catalog.put("groups", jsonObject.get("groups"));
-                catalog.put("admins", jsonObject.get("admins"));
-                catalog.put("blacklist", jsonObject.get("blacklist"));
-            }
+            System.out.println(jsonObject.keySet());
         }
+        if (jsonObject.containsKey("groups")) {
+            System.out.println("yes");
+            catalog.put("type", "directory");
+            catalog.put("groups", jsonObject.get("groups"));
+            catalog.put("admins", jsonObject.get("admins"));
+            catalog.put("blacklist", jsonObject.get("blacklist"));
+        }
+
         return catalog;
     }
 
