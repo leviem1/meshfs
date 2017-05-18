@@ -8,10 +8,11 @@ import java.net.MulticastSocket;
  */
 class MulticastClient {
 
-    private MulticastClient() {}
+    private MulticastClient() {
+    }
 
     static void notifyClients(String groupAddress, int port) throws IOException {
-        byte[] request = ("151|" +  Reporting.getIpAddresses().get(0) + "|" + MeshFS.properties.getProperty("portNumber")).getBytes();
+        byte[] request = ("151|" + Reporting.getIpAddresses().get(0) + "|" + MeshFS.properties.getProperty("portNumber")).getBytes();
 
         MulticastSocket socket = new MulticastSocket(port);
         socket.setBroadcast(true);

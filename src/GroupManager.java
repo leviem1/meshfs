@@ -1,14 +1,6 @@
-import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import javax.swing.*;
-import javax.swing.GroupLayout;
-import javax.swing.border.*;
-
-
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 
 /**
@@ -23,8 +15,8 @@ class GroupManager extends JFrame {
 
         this.groupBox = groupBox;
         model = new DefaultListModel();
-        if(groupBox.getItemCount() > 0){
-            for(int x = 0; x < groupBox.getModel().getSize(); x ++){
+        if (groupBox.getItemCount() > 0) {
+            for (int x = 0; x < groupBox.getModel().getSize(); x++) {
                 model.add(model.getSize(), groupBox.getItemAt(x));
 
             }
@@ -97,36 +89,36 @@ class GroupManager extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                .addComponent(locationLbl)
+                        contentPanelLayout.createParallelGroup()
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                    .addComponent(groupNameLbl)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(groupNameField, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(submitBtn))
-                                .addComponent(scrollPane1)
-                                .addComponent(removeGroup, GroupLayout.Alignment.TRAILING))
-                            .addContainerGap(12, Short.MAX_VALUE))
+                                        .addContainerGap()
+                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(locationLbl)
+                                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                                        .addComponent(groupNameLbl)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(groupNameField, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(submitBtn))
+                                                .addComponent(scrollPane1)
+                                                .addComponent(removeGroup, GroupLayout.Alignment.TRAILING))
+                                        .addContainerGap(12, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(groupNameLbl)
-                                .addComponent(groupNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(submitBtn))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(locationLbl)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(removeGroup)
-                            .addContainerGap(17, Short.MAX_VALUE))
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                                .addComponent(groupNameLbl)
+                                                .addComponent(groupNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(submitBtn))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(locationLbl)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(removeGroup)
+                                        .addContainerGap(17, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -135,22 +127,22 @@ class GroupManager extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 85, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- cancelButton ----
                 cancelButton.setText("Cancel");
                 cancelButton.setFont(new Font("Arial", cancelButton.getFont().getStyle(), cancelButton.getFont().getSize() + 1));
                 buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -170,11 +162,11 @@ class GroupManager extends JFrame {
         groupManager.setVisible(true);
     }
 
-    private void frameListeners(){
+    private void frameListeners() {
         submitBtn.addActionListener(
                 actionEvent -> {
-                    for(int i = 0; i < model.getSize(); i++){
-                        if(model.get(i).toString().equals(groupNameField.getText().toLowerCase())){
+                    for (int i = 0; i < model.getSize(); i++) {
+                        if (model.get(i).toString().equals(groupNameField.getText().toLowerCase())) {
                             JOptionPane.showMessageDialog(groupManager, "Group already exists!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                             groupNameField.setText("");
                             groupNameField.requestFocus();
@@ -190,23 +182,23 @@ class GroupManager extends JFrame {
         removeGroup.addActionListener(
                 actionEvent -> model.remove(groupList.getSelectedIndex()));
         okButton.addActionListener(
-                        actionEvent -> {
-                            groupBox.removeAllItems();
-                            for(int i = 0; i < model.getSize(); i++){
-                                String item = model.getElementAt(i).toString();
-                                if(groupBox.getModel().getSize() > 0){
-                                    for(int x = 0; x < groupBox.getModel().getSize(); x ++){
-                                        System.out.println(groupBox.getModel().getElementAt(x).toString());
-                                        if(!groupBox.getModel().getElementAt(x).toString().equals(item)){
-                                            groupBox.addItem(item);
-                                        }
-                                    }
-                                }else{
+                actionEvent -> {
+                    groupBox.removeAllItems();
+                    for (int i = 0; i < model.getSize(); i++) {
+                        String item = model.getElementAt(i).toString();
+                        if (groupBox.getModel().getSize() > 0) {
+                            for (int x = 0; x < groupBox.getModel().getSize(); x++) {
+                                System.out.println(groupBox.getModel().getElementAt(x).toString());
+                                if (!groupBox.getModel().getElementAt(x).toString().equals(item)) {
                                     groupBox.addItem(item);
                                 }
                             }
-                            dispose();
-                        });
+                        } else {
+                            groupBox.addItem(item);
+                        }
+                    }
+                    dispose();
+                });
     }
 
 

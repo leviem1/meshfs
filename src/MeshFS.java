@@ -17,7 +17,7 @@ class MeshFS {
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
-        System.setProperty("java.net.preferIPv4Stack" , "true");
+        System.setProperty("java.net.preferIPv4Stack", "true");
         //check if we already have a config file
         configure = !new File(".config.properties").exists();
         //load and check for properties

@@ -1,16 +1,16 @@
-import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by markhedrick on 5/11/17.
  */
-class UserAccounts implements Serializable{
+class UserAccounts implements Serializable {
     private String username;
     private String password;
     private String accountType;
     private ArrayList<String> groups;
 
-    UserAccounts(String username, String password, String accountType, ArrayList<String> groups){
+    UserAccounts(String username, String password, String accountType, ArrayList<String> groups) {
         this.username = username;
         this.password = password;
         this.accountType = accountType;
@@ -18,15 +18,15 @@ class UserAccounts implements Serializable{
 
     }
 
-    String getUsername(){
+    String getUsername() {
         return username;
     }
 
-    String getPassword(){
+    String getPassword() {
         return password;
     }
 
-    String getAccountType(){
+    String getAccountType() {
         return accountType;
     }
 
@@ -34,20 +34,18 @@ class UserAccounts implements Serializable{
         return groups;
     }
 
-    void addGroup(String groupName){
-        if(!groups.contains(groupName)){
+    void addGroup(String groupName) {
+        if (!groups.contains(groupName)) {
             groups.add(groupName);
         }
     }
 
-    ArrayList<String> removeGroup(String groupName){
-        if(groups.contains(groupName)){
+    ArrayList<String> removeGroup(String groupName) {
+        if (groups.contains(groupName)) {
             groups.remove(groupName);
         }
         return groups;
     }
-
-
 
 
 }

@@ -10,7 +10,8 @@ import java.util.UUID;
  */
 class ConfigParser {
 
-    private ConfigParser() {}
+    private ConfigParser() {
+    }
 
     /**
      * This method is used to load the default values of properties of this program.
@@ -31,7 +32,7 @@ class ConfigParser {
         defaultProperties.setProperty("serverThreads", "16");
         defaultProperties.setProperty("timeout", "5");
         defaultProperties.setProperty("uuid", UUID.randomUUID().toString());
-        
+
         return defaultProperties;
     }
 

@@ -95,7 +95,9 @@ class MulticastServerInit implements Runnable {
             for (String key : speeds.keySet()) {
                 Integer latency = speeds.get(key);
                 boolean isBroken = false;
-                if (latency == -1) {continue;}
+                if (latency == -1) {
+                    continue;
+                }
                 for (String sortedKey : sortedSpeeds.keySet()) {
                     if (latency <= sortedSpeeds.get(sortedKey)) {
                         LinkedHashMap<String, Integer> reorderStorageMap = (LinkedHashMap<String, Integer>) sortedSpeeds.clone();
@@ -160,7 +162,7 @@ class MulticastServerInit implements Runnable {
             try {
                 socket.receive(dp);
                 //if (!dp.getAddress().equals(InetAddress.getByName(Reporting.getIpAddresses().get(0)))) {
-                    processRequest(new String(dp.getData()).trim(), dp);
+                processRequest(new String(dp.getData()).trim(), dp);
                 //}
             } catch (SocketTimeoutException | SocketException ignored) {
             } catch (IOException ioe) {

@@ -1,6 +1,5 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -9,8 +8,6 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * The FileClient class handles connecting to other servers in the cluster
@@ -20,7 +17,8 @@ import java.util.Arrays;
  */
 final class FileClient {
 
-    private FileClient() {}
+    private FileClient() {
+    }
 
     /**
      * This method is used to request to download a file from the server.
@@ -57,7 +55,7 @@ final class FileClient {
         FileOutputStream fos = new FileOutputStream(fileOut);
 
         try {
-            out.println("101|" +MeshFS.properties.getProperty("uuid") + "|" + fileName + "\n");
+            out.println("101|" + MeshFS.properties.getProperty("uuid") + "|" + fileName + "\n");
             String response = dis.readLine().trim();
             String[] responseParts = response.split("\\|");
 
@@ -76,7 +74,8 @@ final class FileClient {
                 if (!responseParts[1].equals(FileUtils.getMD5Hash(fileOut))) {
                     throw new FileTransferException();
                 }
-            }catch (NoSuchAlgorithmException ignored) {}
+            } catch (NoSuchAlgorithmException ignored) {
+            }
         } catch (SocketTimeoutException ignored) {
         } finally {
             out.close();
@@ -195,8 +194,8 @@ final class FileClient {
                 throw new MalformedRequestException(response);
             }
 
-        } catch (SocketTimeoutException ignored) {}
-        finally {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             input.close();
             out.close();
             client.close();
@@ -226,8 +225,8 @@ final class FileClient {
                 throw new MalformedRequestException(response);
             }
 
-        } catch (SocketTimeoutException ignored) {}
-        finally {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             input.close();
             out.close();
             client.close();
@@ -268,8 +267,8 @@ final class FileClient {
             if (!(response = input.readLine().trim()).equals("201")) {
                 throw new MalformedRequestException(response);
             }
-        } catch (SocketTimeoutException ignored) {}
-        finally {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             input.close();
             out.close();
             client.close();
@@ -306,8 +305,8 @@ final class FileClient {
                 throw new MalformedRequestException(response);
             }
 
-        } catch (SocketTimeoutException ignored) {}
-        finally {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             input.close();
             out.close();
             client.close();
@@ -355,8 +354,8 @@ final class FileClient {
             manifest.put(reportArray.get(0), reportArray.get(1));
             JSONUtils.writeJSONObject(
                     MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
-        } catch (SocketTimeoutException ignored) {}
-        finally {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             input.close();
             out.close();
             client.close();
@@ -384,8 +383,8 @@ final class FileClient {
             }
 
             out.println(Reporting.generate() + "\n");
-        } catch (SocketTimeoutException ignored) {}
-        finally {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             input.close();
             out.close();
             client.close();
@@ -446,8 +445,8 @@ final class FileClient {
                 throw new MalformedRequestException(response);
             }
 
-        } catch (SocketTimeoutException ignored) {}
-        finally {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             input.close();
             out.close();
             client.close();
@@ -468,8 +467,8 @@ final class FileClient {
                 throw new MalformedRequestException(response);
             }
             client.close();
-        } catch (SocketTimeoutException ignored) {}
-        finally {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             out.close();
             input.close();
             client.close();
@@ -505,8 +504,8 @@ final class FileClient {
                 throw new MalformedRequestException(response);
             }
             client.close();
-        } catch (SocketTimeoutException ignored) {}
-        finally {
+        } catch (SocketTimeoutException ignored) {
+        } finally {
             out.close();
             input.close();
             client.close();

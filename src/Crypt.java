@@ -2,12 +2,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by markhedrick on 5/10/17.
@@ -37,7 +35,7 @@ class Crypt {
     public static void writeAuthFile(ArrayList<UserAccounts> accountsArrayList) {
         try {
             File repo = new File(MeshFS.properties.getProperty("repository"));
-            if(!repo.getAbsoluteFile().exists()){
+            if (!repo.getAbsoluteFile().exists()) {
                 repo.mkdirs();
             }
             FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");

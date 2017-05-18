@@ -1,8 +1,10 @@
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.io.*;
-import java.lang.reflect.Array;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -119,8 +121,8 @@ class CliParser {
 
     void addUser(boolean initial) {
         Scanner input = new Scanner(System.in);
-        if(!initial){
-            while(true) {
+        if (!initial) {
+            while (true) {
                 System.out.print("Username: ");
                 String username = new Scanner(System.in).nextLine();
 
@@ -134,11 +136,11 @@ class CliParser {
                 System.out.println("Add another user? [y/N]");
                 String response = input.nextLine();
 
-                if(response.isEmpty() || response.toLowerCase().equals("n")){
+                if (response.isEmpty() || response.toLowerCase().equals("n")) {
                     break;
                 }
             }
-        }else{
+        } else {
             System.out.println("Adding administrator account...");
             try {
                 addUser("admin", true);
@@ -150,8 +152,8 @@ class CliParser {
         System.out.println("Do you wish to start the server? [Y/n]");
         String response = new Scanner(System.in).nextLine();
         System.out.println(response);
-        if(!response.isEmpty()){
-            if(!response.toLowerCase().equals("y")){
+        if (!response.isEmpty()) {
+            if (!response.toLowerCase().equals("y")) {
                 System.out.println("Exiting!");
                 System.exit(0);
             }
@@ -161,20 +163,20 @@ class CliParser {
     @SuppressWarnings("unchecked")
     void addUser(String username, boolean initial) throws IOException, ClassNotFoundException {
         ArrayList<UserAccounts> accounts;
-        if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+        if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
             accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        }else{
+        } else {
             accounts = new ArrayList<>();
         }
         if (username.equals("guest")) {
             System.out.println("The user guest is reserved for MeshFS.");
             System.exit(1);
         }
-        if(!initial && username.equals("admin")){
+        if (!initial && username.equals("admin")) {
             System.out.println("The default administrator account is reserved for the system admin");
             System.exit(1);
         }
-        if(!initial){
+        if (!initial) {
             for (UserAccounts account : accounts) {
                 if (account.getUsername().equals(username)) {
                     System.out.println("User already exists!");
@@ -196,7 +198,7 @@ class CliParser {
 
             username = username.toLowerCase();
             String pass = new String(password);
-            accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass),"user", new ArrayList<>(Arrays.asList(username))));
+            accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass), "user", new ArrayList<>(Arrays.asList(username))));
             Crypt.writeAuthFile(accounts);
 
             System.out.println("User Added!");
@@ -204,16 +206,16 @@ class CliParser {
             System.out.println("Do you wish to start the server? [y/N]");
             String response = new Scanner(System.in).nextLine();
 
-            if(response.isEmpty() || response.toLowerCase().equals("n")){
+            if (response.isEmpty() || response.toLowerCase().equals("n")) {
                 System.out.println("Exiting!");
                 System.exit(0);
             }
 
             MeshFS.nogui = true;
-        }else{
+        } else {
             String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            String pw = RandomStringUtils.random( 8, characters);
-            accounts.add(new UserAccounts("admin", Crypt.generateEncryptedPass(username, pw) , "admin", new ArrayList<>(Arrays.asList(username))));
+            String pw = RandomStringUtils.random(8, characters);
+            accounts.add(new UserAccounts("admin", Crypt.generateEncryptedPass(username, pw), "admin", new ArrayList<>(Arrays.asList(username))));
             Crypt.writeAuthFile(accounts);
             System.out.println("Admin account generated!");
             System.out.println("Username: admin (non case-sensitive)");
@@ -223,18 +225,17 @@ class CliParser {
         }
 
 
-
     }
 
     void removeUser(String username) throws IOException, ClassNotFoundException {
-        if(username.equals("admin")){
+        if (username.equals("admin")) {
             System.out.println("The user 'admin' cannot be deleted!");
             return;
         }
         ArrayList<UserAccounts> accounts = null;
-        if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+        if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
             accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        }else{
+        } else {
             System.err.println("No authentication file exists!");
             System.exit(1);
         }
@@ -244,8 +245,8 @@ class CliParser {
             System.exit(1);
         }
 
-        for(UserAccounts account : accounts){
-            if(account.getUsername().equals(username.toLowerCase())){
+        for (UserAccounts account : accounts) {
+            if (account.getUsername().equals(username.toLowerCase())) {
                 accounts.remove(account);
                 break;
             }
@@ -255,7 +256,7 @@ class CliParser {
     }
 
     void updateAccount(String username) throws IOException, ClassNotFoundException {
-        if(username.equals("admin")){
+        if (username.equals("admin")) {
             System.out.println("The password for 'admin' cannot be changed!");
             return;
         }
@@ -269,17 +270,17 @@ class CliParser {
         System.exit(0);
     }
 
-    void addGroup(String username){
+    void addGroup(String username) {
         Scanner input = new Scanner(System.in);
-        while(true) {
+        while (true) {
             System.out.print("Group: ");
             String groupName = new Scanner(System.in).nextLine();
 
             try {
                 ArrayList<UserAccounts> accounts;
-                if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+                if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
                     accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-                }else{
+                } else {
                     accounts = new ArrayList<>();
                 }
 
@@ -295,7 +296,7 @@ class CliParser {
                         break;
                     }
                 }
-                if(!exists){
+                if (!exists) {
                     System.out.println("Username " + username + " does not exist!");
                     System.out.println("Exiting!");
                     System.exit(1);
@@ -311,28 +312,28 @@ class CliParser {
             System.out.println("Add another group to " + username + "? [y/N]");
             String response = input.nextLine();
 
-            if(response.isEmpty() || response.toLowerCase().equals("n")){
+            if (response.isEmpty() || response.toLowerCase().equals("n")) {
                 System.out.println("Exiting!");
                 System.exit(0);
             }
         }
     }
 
-    void removeGroup(String username){
+    void removeGroup(String username) {
         Scanner input = new Scanner(System.in);
-        while(true) {
+        while (true) {
             System.out.println("Hint: typing 'all' below will result in removing all non-primary user groups");
             System.out.print("Group: ");
             String groupName = new Scanner(System.in).nextLine();
-            if(groupName.equals("admin")){
+            if (groupName.equals("admin")) {
                 System.out.println("The group name 'admin' is reserved!");
                 break;
             }
             try {
                 ArrayList<UserAccounts> accounts;
-                if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+                if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
                     accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-                }else{
+                } else {
                     accounts = new ArrayList<>();
                 }
 
@@ -344,9 +345,9 @@ class CliParser {
                 ArrayList<String> toRemove = new ArrayList<>();
                 for (UserAccounts account : accounts) {
                     if (account.getUsername().equals(username)) {
-                        if(groupName.equals("all")){
-                            for(String group : account.getGroups()){
-                                if(!group.equals(username)){
+                        if (groupName.equals("all")) {
+                            for (String group : account.getGroups()) {
+                                if (!group.equals(username)) {
                                     toRemove.add(group);
                                 }
                             }
@@ -354,21 +355,21 @@ class CliParser {
                             System.out.println("Proceed? [y/N]");
                             String response = input.nextLine();
 
-                            if(response.isEmpty() || response.toLowerCase().equals("n")){
+                            if (response.isEmpty() || response.toLowerCase().equals("n")) {
                                 System.out.println("Exiting!");
                                 System.exit(0);
                             }
-                            for(String group : toRemove){
+                            for (String group : toRemove) {
                                 account.removeGroup(group);
                             }
                             Crypt.writeAuthFile(accounts);
-                        }else{
+                        } else {
                             account.removeGroup(groupName);
                             System.out.println("Going to remove" + groupName);
                             System.out.println("Proceed? [y/N]");
                             String response = input.nextLine();
 
-                            if(response.isEmpty() || response.toLowerCase().equals("n")){
+                            if (response.isEmpty() || response.toLowerCase().equals("n")) {
                                 System.out.println("Exiting!");
                                 System.exit(0);
                             }
@@ -386,19 +387,19 @@ class CliParser {
             System.out.println("Remove another group from " + username + "? [y/N]");
             String response = input.nextLine();
 
-            if(response.isEmpty() || response.toLowerCase().equals("n")){
+            if (response.isEmpty() || response.toLowerCase().equals("n")) {
                 System.out.println("Exiting!");
                 System.exit(0);
             }
         }
     }
 
-    void listUsers(){
+    void listUsers() {
         try {
             ArrayList<UserAccounts> accounts;
-            if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+            if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
                 accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-            }else{
+            } else {
                 return;
             }
 
@@ -413,17 +414,17 @@ class CliParser {
         }
     }
 
-    void listGroups(String username){
+    void listGroups(String username) {
         try {
             ArrayList<UserAccounts> accounts;
-            if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+            if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
                 accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-            }else{
+            } else {
                 return;
             }
 
             for (UserAccounts account : accounts) {
-                if(account.getUsername().equals(username)){
+                if (account.getUsername().equals(username)) {
                     System.out.println(account.getGroups().toString());
 
                 }
@@ -436,17 +437,17 @@ class CliParser {
         }
     }
 
-    void getAccountType(String username){
+    void getAccountType(String username) {
         try {
             ArrayList<UserAccounts> accounts;
-            if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+            if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
                 accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-            }else{
+            } else {
                 return;
             }
 
             for (UserAccounts account : accounts) {
-                if(account.getUsername().equals(username)){
+                if (account.getUsername().equals(username)) {
                     System.out.println(account.getAccountType());
                 }
             }
@@ -458,18 +459,18 @@ class CliParser {
         }
     }
 
-    void resetAuth(){
+    void resetAuth() {
         System.out.println("Do you still wish to reset all accounts? NOTE: This will remove all users and groups.");
         System.out.println("Proceed? [y/N]");
         String response = new Scanner(System.in).nextLine();
 
-        if(response.isEmpty() || response.toLowerCase().equals("n")) {
+        if (response.isEmpty() || response.toLowerCase().equals("n")) {
             System.out.println("Exiting!");
             System.exit(0);
         }
 
         ArrayList<UserAccounts> accounts = null;
-        if(new File(MeshFS.properties.getProperty("repository")+".auth").exists()){
+        if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
             try {
                 accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
             } catch (IOException e) {
@@ -477,16 +478,14 @@ class CliParser {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             return;
         }
         accounts.clear();
         addUser(true);
 
 
-
     }
-
 
 
 }

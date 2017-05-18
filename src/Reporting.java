@@ -21,7 +21,8 @@ import java.util.*;
  */
 class Reporting {
 
-    private Reporting() {}
+    private Reporting() {
+    }
 
     /**
      * This method is used to get the operating system's name that the JVM is being run on.

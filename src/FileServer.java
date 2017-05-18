@@ -2,12 +2,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.net.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -111,7 +109,7 @@ class ServerInit implements Runnable {
 
 
                 //format requests in form of #, uuid, parameters
-                if (!(requestParts[0].equals("109") || requestParts[0].equals("113")) && (!requestParts[1].equals(MeshFS.properties.getProperty("uuid")))){
+                if (!(requestParts[0].equals("109") || requestParts[0].equals("113")) && (!requestParts[1].equals(MeshFS.properties.getProperty("uuid")))) {
                     return;
                 }
                 switch (requestParts[0]) {
@@ -299,7 +297,8 @@ class ServerInit implements Runnable {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (NoSuchAlgorithmException ignored) {}
+        } catch (NoSuchAlgorithmException ignored) {
+        }
 
         out.close();
         fis.close();
@@ -325,7 +324,8 @@ class ServerInit implements Runnable {
             if (!md5.equals(FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename))) {
                 throw new FileTransferException();
             }
-        }catch (NoSuchAlgorithmException ignored) {}
+        } catch (NoSuchAlgorithmException ignored) {
+        }
 
         out.close();
         fos.close();
@@ -342,7 +342,7 @@ class ServerInit implements Runnable {
                 new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
         out.println("201");
-        JSONUtils.addTempFile("root/Users/" + userAccount,filename + "(uploading)", userAccount);
+        JSONUtils.addTempFile("root/Users/" + userAccount, filename + "(uploading)", userAccount);
 
         while ((br = dis.read(data, 0, data.length)) != -1) {
             fos.write(data, 0, br);
@@ -357,7 +357,8 @@ class ServerInit implements Runnable {
             if (!md5.equals(FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename))) {
                 throw new FileTransferException();
             }
-        }catch (NoSuchAlgorithmException ignored) {}
+        } catch (NoSuchAlgorithmException ignored) {
+        }
         try {
             JSONUtils.deleteItem("root/Users/" + userAccount + "/" + filename + " (uploading)");
         } catch (MalformedRequestException e) {
@@ -496,22 +497,22 @@ class ServerInit implements Runnable {
         ObjectInputStream ois = new ObjectInputStream(fis);
         ArrayList<UserAccounts> accounts = null;
         try {
-            accounts = (ArrayList)ois.readObject();
+            accounts = (ArrayList) ois.readObject();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        if(auth.exists()) {
-            for(UserAccounts userAccount : accounts){
+        if (auth.exists()) {
+            for (UserAccounts userAccount : accounts) {
                 String un = userAccount.getUsername();
                 String pw = userAccount.getPassword();
 
-                if(username.toLowerCase().trim().equals(un) && password.trim().equals(pw)){
+                if (username.toLowerCase().trim().equals(un) && password.trim().equals(pw)) {
                     out.println("201");
-                    out.println(MeshFS.properties.getProperty("uuid")+ "\n");
+                    out.println(MeshFS.properties.getProperty("uuid") + "\n");
                 }
             }
             out.println("202\n");
-        }else{
+        } else {
             out.println("202\n");
         }
         fis.close();
@@ -556,19 +557,19 @@ class ServerInit implements Runnable {
         ArrayList<UserAccounts> accounts = null;
         UserAccounts user = null;
         try {
-             accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        for(UserAccounts account : accounts){
-            if(account.getUsername().equals(userAccount)){
+        for (UserAccounts account : accounts) {
+            if (account.getUsername().equals(userAccount)) {
                 user = account;
             }
         }
         JSONObject userObj = JSONUtils.buildUserCatalog(user);
 
         out.println("201");
-        out.println(userObj.toString()+ "\n");
+        out.println(userObj.toString() + "\n");
 
         fis.close();
         out.close();
@@ -587,9 +588,9 @@ class ServerInit implements Runnable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        for(UserAccounts account : accounts){
-            if(account.getUsername().equals(userAccount)){
-                for(String group : account.getGroups()){
+        for (UserAccounts account : accounts) {
+            if (account.getUsername().equals(userAccount)) {
+                for (String group : account.getGroups()) {
                     groups.add(group);
                 }
             }
@@ -614,8 +615,8 @@ class ServerInit implements Runnable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        for(UserAccounts account : accounts){
-            for(String group : account.getGroups()){
+        for (UserAccounts account : accounts) {
+            for (String group : account.getGroups()) {
                 groups.add(group);
             }
         }

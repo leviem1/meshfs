@@ -5,14 +5,13 @@ import org.json.simple.parser.ParseException;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -20,7 +19,8 @@ import java.util.*;
  */
 class JSONUtils {
 
-    private  JSONUtils() {}
+    private JSONUtils() {
+    }
 
     /**
      * This method returns the JSONObject of a file.
@@ -72,7 +72,7 @@ class JSONUtils {
     static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, UserAccounts user) {
         folderLocation = catalogStringFixer(folderLocation);
         List<String> Tree = new ArrayList<>();
-        if (folderLocation.contains("/")){
+        if (folderLocation.contains("/")) {
             Tree = Arrays.asList(folderLocation.split("/"));
         }
 
@@ -95,15 +95,15 @@ class JSONUtils {
                         && !((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("blacklist"))).contains(user.getUsername()))) {
                     contents.put(keyStr, (((JSONObject) folderToRead.get(keyStr)).get("type")).toString());
                 }
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored){}
         }
 
         return contents;
     }
 
     static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, UserAccounts user) {
-        return  getMapOfFolderContents(jsonObject, "", user);
+        return getMapOfFolderContents(jsonObject, "", user);
     }
 
 
@@ -156,7 +156,7 @@ class JSONUtils {
     }
 
 
-    static void editPermissions(String itemLocation, List<String> userGroups, boolean add, boolean canEdit, boolean canView) throws  IOException{
+    static void editPermissions(String itemLocation, List<String> userGroups, boolean add, boolean canEdit, boolean canView) throws IOException {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         String[] folders = itemLocation.split("/");
@@ -167,20 +167,18 @@ class JSONUtils {
 
         JSONArray admins = (JSONArray) item.get("admins");
         JSONArray groups = (JSONArray) item.get("groups");
-        
-        if (canEdit){
-            if (add){
+
+        if (canEdit) {
+            if (add) {
                 admins.addAll(userGroups);
-            }
-            else{
+            } else {
                 admins.removeAll(userGroups);
             }
         }
-        if (canView){
-            if (add){
+        if (canView) {
+            if (add) {
                 groups.addAll(userGroups);
-            }
-            else{
+            } else {
                 groups.removeAll(userGroups);
             }
         }
@@ -192,20 +190,20 @@ class JSONUtils {
     /**
      * This method creates a new reference of the given item to the designated path within the JSONObject.
      *
-     * @param itemLocation        the source virtual path within the catalog
+     * @param itemLocation the source virtual path within the catalog
      * @return updated JSONObject that the item was read from
      */
-    static void duplicateItem(String itemLocation) throws IOException{
+    static void duplicateItem(String itemLocation) throws IOException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
-        writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", copyFile(catalog, itemLocation, itemLocation.substring(0,itemLocation.lastIndexOf("/")), null, true));
+        writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", copyFile(catalog, itemLocation, itemLocation.substring(0, itemLocation.lastIndexOf("/")), null, true));
     }
 
-    static void deleteItem(String itemLocation) throws IOException, MalformedRequestException{
+    static void deleteItem(String itemLocation) throws IOException, MalformedRequestException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         deleteItem(catalog, itemLocation, true);
     }
 
-    static void deleteItem(JSONObject catalog, String itemLocation) throws IOException, MalformedRequestException{
+    static void deleteItem(JSONObject catalog, String itemLocation) throws IOException, MalformedRequestException {
         deleteItem(catalog, itemLocation, true);
     }
 
@@ -217,19 +215,19 @@ class JSONUtils {
      *                            the name of the item in this path)
      * @return updated JSONObject that item was read from
      */
-    static void moveItem(String itemLocation, String destinationLocation) throws IOException, MalformedRequestException{
-        moveFile(itemLocation, destinationLocation, itemLocation.substring(itemLocation.lastIndexOf("/")+1), true);
+    static void moveItem(String itemLocation, String destinationLocation) throws IOException, MalformedRequestException {
+        moveFile(itemLocation, destinationLocation, itemLocation.substring(itemLocation.lastIndexOf("/") + 1), true);
     }
 
     /**
      * This method copies the given item to the designated path within the JSONObject.
      *
-     * @param itemLocation        the source virtual path within the JSONObject
-     * @param newName             what the item should be called
+     * @param itemLocation the source virtual path within the JSONObject
+     * @param newName      what the item should be called
      * @return updated JSONObject that item was read from
      */
-    static void renameItem(String itemLocation, String newName) throws IOException, MalformedRequestException{
-        moveFile(itemLocation, itemLocation.substring(0,itemLocation.lastIndexOf("/")), newName, false);
+    static void renameItem(String itemLocation, String newName) throws IOException, MalformedRequestException {
+        moveFile(itemLocation, itemLocation.substring(0, itemLocation.lastIndexOf("/")), newName, false);
     }
 
     /**
@@ -245,7 +243,7 @@ class JSONUtils {
         }
     }
 
-    static void createNewFolder(String parentFolderLocation, String folderName) throws IOException{
+    static void createNewFolder(String parentFolderLocation, String folderName) throws IOException {
         parentFolderLocation = catalogStringFixer(parentFolderLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
 
@@ -261,6 +259,7 @@ class JSONUtils {
 
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", putItemInFolder(catalog, parentFolderLocation, folderName, folderCreator));
     }
+
     /**
      * This method adds a new file, with all of its properties, to the JSONObject.
      *
@@ -270,7 +269,7 @@ class JSONUtils {
      */
 
     @SuppressWarnings("unchecked")
-    static void addTempFile(String itemLocation, String fileName, String username) throws IOException{
+    static void addTempFile(String itemLocation, String fileName, String username) throws IOException {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject jsonFile = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONObject objChild = new JSONObject();
@@ -413,10 +412,10 @@ class JSONUtils {
         }
     }
 
-    static JSONObject buildUserCatalog(UserAccounts user){
+    static JSONObject buildUserCatalog(UserAccounts user) {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONObject users = (JSONObject) ((JSONObject) catalog.get("root")).get("Users");
-        if (!users.containsKey(user.getUsername())){
+        if (!users.containsKey(user.getUsername())) {
             JSONObject folder = new JSONObject();
             JSONArray groups = new JSONArray();
 
@@ -425,7 +424,7 @@ class JSONUtils {
             folder.put("groups", groups);
             folder.put("blacklist", new JSONArray());
             folder.put("admins", groups);
-            users.put(user.getUsername(),folder);
+            users.put(user.getUsername(), folder);
 
             try {
                 writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
@@ -438,22 +437,21 @@ class JSONUtils {
         return catalogBuilder(catalog, user);
     }
 
-    static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog, boolean adminFormat){
+    static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog, boolean adminFormat) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-        if(adminFormat){
+        if (adminFormat) {
             root = JTreeBuilderRecursive((JSONObject) userCatalog.get("root"), new DefaultMutableTreeNode("root"));
 
-        }
-        else {
+        } else {
             root = JTreeBuilderRecursive((JSONObject) ((JSONObject) userCatalog.get("root")).get("Users"), new DefaultMutableTreeNode("root"));
             root.add(JTreeBuilderRecursive((JSONObject) ((JSONObject) userCatalog.get("root")).get("Shared"), new DefaultMutableTreeNode("Shared")));
         }
         return root;
     }
 
-    static String catalogStringFixer(String itemLocationString){
-        if ((itemLocationString.contains("/")) &&  (! (itemLocationString.substring(0,itemLocationString.indexOf("/",5))).equals("root/Users")) && (! (itemLocationString.substring(0,itemLocationString.indexOf("/",5))).equals("root/Shared"))){
-            itemLocationString = itemLocationString.substring(0,itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/",5));
+    static String catalogStringFixer(String itemLocationString) {
+        if ((itemLocationString.contains("/")) && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users")) && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))) {
+            itemLocationString = itemLocationString.substring(0, itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/", 5));
         }
         return itemLocationString;
     }
@@ -477,14 +475,13 @@ class JSONUtils {
     }
 
 
-    private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccounts user){
+    private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccounts user) {
         LinkedHashMap<String, String> items = getMapOfFolderContents(jsonObject, user);
         JSONObject catalog = new JSONObject();
-        for(String item : items.keySet()){
-            if (items.get(item).equals("directory")){
+        for (String item : items.keySet()) {
+            if (items.get(item).equals("directory")) {
                 catalog.put(item, catalogBuilder((JSONObject) jsonObject.get(item), user));
-            }
-            else{
+            } else {
                 catalog.put(item, jsonObject.get(item));
             }
         }
@@ -501,11 +498,11 @@ class JSONUtils {
     /**
      * This method copies the given item to the designated path within the JSONObject.
      *
-     * @param catalog                 the JSONObject that is being read
+     * @param catalog             the JSONObject that is being read
      * @param destinationLocation the source virtual path within the JSONObject (the name of the
-     *                                item should not be in this path)
-     * @param fileName                the destination virtual path within the JSONObject
-     * @param itemContents            this is the JSONObject the contains all the information about the file
+     *                            item should not be in this path)
+     * @param fileName            the destination virtual path within the JSONObject
+     * @param itemContents        this is the JSONObject the contains all the information about the file
      * @return JSONObject that item is written to
      */
 
@@ -525,7 +522,7 @@ class JSONUtils {
         destinationLocation = catalogStringFixer(destinationLocation);
         JSONObject itemContents = getItemContents(catalog, itemLocation);
 
-        if (updatePermissions){
+        if (updatePermissions) {
             JSONObject destination = getItemContents(catalog, destinationLocation);
             JSONArray destinationUsers = (JSONArray) (destination.get("groups"));
             JSONArray destinationAdmins = (JSONArray) (destination.get("admins"));
@@ -536,7 +533,7 @@ class JSONUtils {
         if (newName == null) {
             DateFormat df = new SimpleDateFormat("h:mm:ss a");
             Date dateObj = new Date();
-            catalog = putItemInFolder(catalog, destinationLocation, itemLocation.substring(itemLocation.lastIndexOf("/")+1) + " (" + df.format(dateObj) + ")", itemContents);
+            catalog = putItemInFolder(catalog, destinationLocation, itemLocation.substring(itemLocation.lastIndexOf("/") + 1) + " (" + df.format(dateObj) + ")", itemContents);
         } else {
             catalog = putItemInFolder(catalog, destinationLocation, newName, itemContents);
         }
@@ -585,8 +582,7 @@ class JSONUtils {
                     }
                 }
             }
-        }
-        else {
+        } else {
             folderToRead.remove(item);
         }
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
@@ -598,16 +594,15 @@ class JSONUtils {
         deleteItem(catalog, itemLocation, false);
     }
 
-    private static List<JSONObject> smartDelete(JSONObject itemToRemove){
+    private static List<JSONObject> smartDelete(JSONObject itemToRemove) {
         List<JSONObject> removedFiles = new ArrayList<>();
 
-        if (itemToRemove.get("type").toString().equals("directory")){
+        if (itemToRemove.get("type").toString().equals("directory")) {
             LinkedHashMap<String, String> children = getMapOfFolderContents(itemToRemove, null);
             for (String childName : children.keySet()) {
                 removedFiles.addAll(smartDelete((JSONObject) itemToRemove.get(childName)));
             }
-        }
-        else if (itemToRemove.get("type").toString().equals("file")){
+        } else if (itemToRemove.get("type").toString().equals("file")) {
             removedFiles.add(itemToRemove);
         }
         return removedFiles;
@@ -621,15 +616,15 @@ class JSONUtils {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
-    private static JSONObject changePermissions(JSONObject jsonObject, JSONArray newUserArray, JSONArray newAdminArray, boolean removeBlacklist){
+    private static JSONObject changePermissions(JSONObject jsonObject, JSONArray newUserArray, JSONArray newAdminArray, boolean removeBlacklist) {
         jsonObject.put("groups", newUserArray);
         jsonObject.put("admins", newAdminArray);
-        if (removeBlacklist){
+        if (removeBlacklist) {
             jsonObject.put("blacklist", new JSONArray());
         }
 
         LinkedHashMap<String, String> children = getMapOfFolderContents(jsonObject, null);
-        for (String child : children.keySet()){
+        for (String child : children.keySet()) {
             jsonObject.replace(child, changePermissions((JSONObject) jsonObject.get(child), newUserArray, newAdminArray, removeBlacklist));
         }
         return jsonObject;

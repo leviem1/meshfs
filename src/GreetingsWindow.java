@@ -107,21 +107,21 @@ class GreetingsWindow extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
-                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
-                            .addContainerGap())
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addGroup(contentPanelLayout.createParallelGroup()
+                                                .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
+                                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE))
+                                        .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(titleLbl)
-                            .addGap(12, 12, 12)
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(titleLbl)
+                                        .addGap(12, 12, 12)
+                                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.NORTH);
@@ -135,15 +135,15 @@ class GreetingsWindow extends JFrame {
                 quitButton.setText("Quit");
                 quitButton.setFont(new Font("Arial", quitButton.getFont().getStyle(), quitButton.getFont().getSize() + 1));
                 buttonBar.add(quitButton, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- configBtn ----
                 configBtn.setText("Configuration...");
                 configBtn.setFont(new Font("Arial", configBtn.getFont().getStyle(), configBtn.getFont().getSize() + 1));
                 buttonBar.add(configBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }

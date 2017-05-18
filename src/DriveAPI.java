@@ -35,7 +35,8 @@ import java.util.List;
 
 class DriveAPI {
 
-    private DriveAPI() {}
+    private DriveAPI() {
+    }
 
     static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport, String user) throws IOException {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSONFactory, new InputStreamReader(MeshFS.class.getResourceAsStream("/client_id.json")));
@@ -68,7 +69,7 @@ class DriveAPI {
 
         java.io.File parentDir = new java.io.File(System.getProperty("user.home") + java.io.File.separator + "Downloads" + java.io.File.separator);
         if (!parentDir.exists() && !parentDir.mkdirs()) {
-          throw new IOException("Unable to create parent directory");
+            throw new IOException("Unable to create parent directory");
         }
 
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
@@ -81,7 +82,7 @@ class DriveAPI {
         OutputStream out = new FileOutputStream(new java.io.File(parentDir, uploadedFile.getTitle()));
 
         MediaHttpDownloader downloader =
-            new MediaHttpDownloader(httpTransport, drive.getRequestFactory().getInitializer());
+                new MediaHttpDownloader(httpTransport, drive.getRequestFactory().getInitializer());
         downloader.setDirectDownloadEnabled(false);
         downloader.download(new GenericUrl(uploadedFile.getDownloadUrl()), out);
     }
