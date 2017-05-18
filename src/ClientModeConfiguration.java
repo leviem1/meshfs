@@ -342,8 +342,7 @@ class ClientModeConfiguration extends JFrame {
                         clientModeConfiguration,
                         usernameField.getText(),
                         catalog,
-                        runType,
-                        uuid);
+                        runType);
                 dispose();
             }
         } catch (IOException ignored) {

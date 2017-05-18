@@ -49,11 +49,10 @@ class ClientBrowser extends JFrame {
     private JButton optionsBtn;
     private JLabel statusLbl;
     private JButton quitBtn;
-    private String uuid;
     //GEN-END:variables
 
     private ClientBrowser(
-            String serverAddress, int port, String userAccount, File catalogFile, boolean previousRunType, String uuid) {
+            String serverAddress, int port, String userAccount, File catalogFile, boolean previousRunType) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
@@ -66,7 +65,6 @@ class ClientBrowser extends JFrame {
         this.userAccount = userAccount;
         this.catalogFile = catalogFile;
         this.previousRunType = previousRunType;
-        this.uuid = uuid;
 
         catalogTimer = new java.util.Timer();
 
@@ -94,10 +92,9 @@ class ClientBrowser extends JFrame {
             JFrame sender,
             String userAccount,
             File catalogFile,
-            boolean previousRunType,
-            String uuid) {
+            boolean previousRunType) {
 
-        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogFile, previousRunType, uuid);
+        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogFile, previousRunType);
         CenterWindow.centerOnWindow(sender, clientBrowser);
         clientBrowser.setVisible(true);
         catalogFile.deleteOnExit();
@@ -572,6 +569,7 @@ class ClientBrowser extends JFrame {
     private void catalogCheck() {
         SwingUtilities.invokeLater(
                 () -> {
+                    System.out.println("Checking...");
                     if (failureCount >= 5) {
                         catalogTimer.cancel();
                         catalogTimer.purge();
@@ -583,29 +581,26 @@ class ClientBrowser extends JFrame {
                         try {
                             File tempCatalog = File.createTempFile(".catalog", ".json");
                             tempCatalog.deleteOnExit();
-                            try(FileWriter fileWriter = new FileWriter(tempCatalog.getAbsolutePath())){
-                                fileWriter.write(FileClient.getUserFiles(serverAddress, port, userAccount, uuid).toString());
+                            try (FileWriter fileWriter = new FileWriter(tempCatalog.getAbsolutePath())) {
+                                fileWriter.write(FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).toString());
+                            } catch (Exception e) {
+                                failureCount += 1;
                             }
-                            JSONObject latestCatalog =
-                                    JSONUtils.getJSONObject(tempCatalog.getAbsolutePath());
-                            JSONObject localCatalog =
-                                    JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
+                            JSONObject latestCatalog = JSONUtils.getJSONObject(tempCatalog.getAbsolutePath());
+                            JSONObject localCatalog = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
+                            System.out.println("Latest: " + latestCatalog);
+                            System.out.println("Local: " + localCatalog);
                             if (localCatalog.equals(latestCatalog)) {
                                 tempCatalog.delete();
                             } else {
-                                FileClient.receiveFile(
-                                        serverAddress, port, ".catalog.json", catalogFile.getAbsolutePath());
                                 clientBrowserButtonModifier(false);
                                 tree1.removeAll();
-                                //tree1.setModel(
-                                        //new DefaultTreeModel(JSONUtils.JTreeBuilder(JSONUtils.()));
+                                System.out.println("Need to update JTree!");
+                                tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()),userAccount.equals("admin"))));
+                                System.out.println("Just updated JTree!");
                                 tempCatalog.delete();
                             }
                         } catch (IOException ignored) {
-                        } catch (MalformedRequestException e) {
-                            e.printStackTrace();
-                        } catch (FileTransferException e) {
-                            e.printStackTrace();
                         }
                     }
                 });
