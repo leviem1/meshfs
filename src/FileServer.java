@@ -1,3 +1,4 @@
+import com.google.api.services.drive.model.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -6,8 +7,7 @@ import java.math.BigInteger;
 import java.net.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * The FileServer class starts a file server with a variable port, amount of sockets, and timeout.
@@ -191,6 +191,11 @@ class ServerInit implements Runnable {
 
                     case "117": //117:Get All Groups
                         getGroups(out);
+
+                        break;
+
+                    case "118": //118:Update user Groups
+                        setUserGroup(requestParts[2], requestParts[3], out);
 
                         break;
 
@@ -579,8 +584,6 @@ class ServerInit implements Runnable {
     private void getUserGroups(String userAccount, Socket client) throws IOException {
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
-        FileInputStream fis = new FileInputStream(catalog);
         ArrayList<UserAccounts> accounts = null;
         ArrayList<String> groups = new ArrayList<>();
         try {
@@ -598,7 +601,6 @@ class ServerInit implements Runnable {
         out.println("201");
         out.println(groups.toString() + "\n");
 
-        fis.close();
         out.close();
         dos.close();
     }
@@ -606,8 +608,6 @@ class ServerInit implements Runnable {
     private void getGroups(Socket client) throws IOException {
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
-        FileInputStream fis = new FileInputStream(catalog);
         ArrayList<UserAccounts> accounts = null;
         ArrayList<String> groups = new ArrayList<>();
         try {
@@ -624,7 +624,40 @@ class ServerInit implements Runnable {
         out.println("201");
         out.println(groups.toString() + "\n");
 
-        fis.close();
+        out.close();
+        dos.close();
+    }
+
+    private void setUserGroup(String userAccount, String userGroups, Socket client) throws IOException {
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        ArrayList<UserAccounts> accounts = null;
+        try {
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        List<String> newGroupsList = Arrays.asList(userGroups.split(", "));
+        String un = null;
+        String pw = null;
+        String at = null;
+
+
+        for (UserAccounts account : accounts) {
+            if (account.getUsername().equals(userAccount.toLowerCase())) {
+                un = account.getUsername();
+                pw = account.getPassword();
+                at = account.getAccountType();
+                accounts.remove(account);
+                break;
+            }
+        }
+
+        accounts.add(new UserAccounts(un, pw, at, new ArrayList<>(newGroupsList)));
+        Crypt.writeAuthFile(accounts);
+
+        out.println("201");
+
         out.close();
         dos.close();
     }

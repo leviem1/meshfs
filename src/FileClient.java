@@ -554,7 +554,7 @@ final class FileClient {
 
         client.close();
 
-        return groups;
+        return groups.replace("[", "").replace("]", "");
 
     }
 
@@ -572,7 +572,22 @@ final class FileClient {
 
         client.close();
 
-        return groups;
+        return groups.replace("[", "").replace("]", "");
+
+    }
+
+    static boolean updateUserGroupMembership(String serverAddress, int port, String userAccount, String newGroups, String uuid) throws MalformedRequestException, IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        out.println("118|" + uuid + "|"+ userAccount + "|" + newGroups + "\n");
+        if ((input.readLine().trim()).equals("201")) {
+            client.close();
+            return true;
+        }
+
+        return false;
 
     }
 

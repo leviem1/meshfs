@@ -10,7 +10,7 @@ new FormModel {
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {seq {par l {comp titleLbl2::l:::x, seq {space :::p, comp currentGroupsLbl:::::x, space :::p, comp newGroupsLbl:::p:225:p, space :p:25:p}}, space :::p}, seq l {space :::p, comp splitPane1:::p:512:p, space :::x}}"
-					"$verticalGroup": "par l {seq {comp titleLbl2:::p::p, space u:::p, par b {comp currentGroupsLbl::b:p::p, comp newGroupsLbl::b:p::p}, space :::p, comp splitPane1::::196:x}}"
+					"$verticalGroup": "par l {seq {comp titleLbl2:::p::p, space u:::p, par b {comp currentGroupsLbl::b:p::p, comp newGroupsLbl::b:p::p}, space :::p, comp splitPane1::::344:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -65,7 +65,7 @@ new FormModel {
 								"value": "Center"
 							} )
 							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-								"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp addGroupLbl:::p:80:p, space ::159:x}, seq {comp userGroupBox::::151:x, space :p:3:p, comp addGroupBtn:::p::p, space u:::p, comp removeMembershipBtn:::p::p}}}}"
+								"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp addGroupLbl:::p:80:p, space ::164:x}, seq {comp userGroupBox::::147:x, space :p:3:p, comp addGroupBtn:::p::p, space u:::p, comp removeMembershipBtn:::p::p}}}}"
 								"$verticalGroup": "par l {seq l {space :::p, comp addGroupLbl:::p::p, space :::p, par b {comp userGroupBox::b:p:29:p, comp removeMembershipBtn::b:p::p, comp addGroupBtn::b:p::p}, space ::8:x}}"
 							} ) {
 								name: "panel3"
@@ -79,6 +79,7 @@ new FormModel {
 								add( new FormComponent( "javax.swing.JComboBox" ) {
 									name: "userGroupBox"
 									"font": #SwingDerivedFont1
+									"editable": true
 								} )
 								add( new FormComponent( "javax.swing.JButton" ) {
 									name: "removeMembershipBtn"
