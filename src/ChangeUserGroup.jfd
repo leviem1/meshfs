@@ -1,0 +1,130 @@
+JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {par l {comp titleLbl2::l:::x, seq {space :::p, comp currentGroupsLbl:::::x, space :::p, comp newGroupsLbl:::p:225:p, space :p:25:p}}, space :::p}, seq l {space :::p, comp splitPane1:::p:512:p, space :::x}}"
+					"$verticalGroup": "par l {seq {comp titleLbl2:::p::p, space u:::p, par b {comp currentGroupsLbl::b:p::p, comp newGroupsLbl::b:p::p}, space :::p, comp splitPane1::::196:x}}"
+				} ) {
+					name: "contentPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "titleLbl2"
+						"text": "Change User Group"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 9, false )
+						"horizontalAlignment": 0
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "newGroupsLbl"
+						"text": "New Group Membership"
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 1, 1, false )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "currentGroupsLbl"
+						"text": "Current Group Membership"
+						"font": #SwingDerivedFont0
+					} )
+					add( new FormContainer( "javax.swing.JSplitPane", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+						name: "splitPane1"
+						"dividerLocation": 256
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+							name: "panel1"
+							add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+								name: "scrollPane1"
+								add( new FormComponent( "javax.swing.JList" ) {
+									name: "currentGroupsList"
+									"enabled": false
+									"font": &SwingDerivedFont1 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+									auxiliary() {
+										"JavaCodeGenerator.customCreateCode": "new JList(currentGroupModel);"
+									}
+								} )
+							}, new FormLayoutConstraints( class java.lang.String ) {
+								"value": "Center"
+							} )
+						}, new FormLayoutConstraints( class java.lang.String ) {
+							"value": "left"
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+							name: "panel2"
+							add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+								name: "scrollPane2"
+								add( new FormComponent( "javax.swing.JList" ) {
+									name: "newGroupsList"
+									"font": #SwingDerivedFont1
+									auxiliary() {
+										"JavaCodeGenerator.customCreateCode": "new JList(newGroupModel);"
+									}
+								} )
+							}, new FormLayoutConstraints( class java.lang.String ) {
+								"value": "Center"
+							} )
+							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+								"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp addGroupLbl:::p:80:p, space ::159:x}, seq {comp userGroupBox::::151:x, space :p:3:p, comp addGroupBtn:::p::p, space u:::p, comp removeMembershipBtn:::p::p}}}}"
+								"$verticalGroup": "par l {seq l {space :::p, comp addGroupLbl:::p::p, space :::p, par b {comp userGroupBox::b:p:29:p, comp removeMembershipBtn::b:p::p, comp addGroupBtn::b:p::p}, space ::8:x}}"
+							} ) {
+								name: "panel3"
+								add( new FormComponent( "javax.swing.JLabel" ) {
+									name: "addGroupLbl"
+									"text": "Add Group:"
+									"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+									"horizontalTextPosition": 0
+									"verticalTextPosition": 3
+								} )
+								add( new FormComponent( "javax.swing.JComboBox" ) {
+									name: "userGroupBox"
+									"font": #SwingDerivedFont1
+								} )
+								add( new FormComponent( "javax.swing.JButton" ) {
+									name: "removeMembershipBtn"
+									"text": "-"
+									"font": #SwingDerivedFont1
+								} )
+								add( new FormComponent( "javax.swing.JButton" ) {
+									name: "addGroupBtn"
+									"text": "+"
+									"font": #SwingDerivedFont1
+								} )
+							}, new FormLayoutConstraints( class java.lang.String ) {
+								"value": "South"
+							} )
+						}, new FormLayoutConstraints( class java.lang.String ) {
+							"value": "right"
+						} )
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0:1.0, 80"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+				} ) {
+					name: "buttonBar"
+					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "okButton"
+						"text": "OK"
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 0
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 550, 350 )
+		} )
+	}
+}

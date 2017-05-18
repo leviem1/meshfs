@@ -321,7 +321,6 @@ class ClientModeConfiguration extends JFrame {
         try {
             String uuid = connectAsUser(usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())));
             if(uuid.equals("-1")){
-                System.out.println("Error!");
                 JOptionPane.showMessageDialog(
                         clientModeConfiguration, "Login Failure!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
                 usernameField.requestFocus();

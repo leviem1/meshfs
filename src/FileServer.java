@@ -186,6 +186,16 @@ class ServerInit implements Runnable {
 
                         break;
 
+                    case "116": //116:Get User Groups
+                        getUserGroups(requestParts[2], out);
+
+                        break;
+
+                    case "117": //117:Get All Groups
+                        getGroups(out);
+
+                        break;
+
                     default:
                         badRequest(out, request, "Invalid Request");
                         break;
@@ -565,6 +575,60 @@ class ServerInit implements Runnable {
         dos.close();
     }
 
+    private void getUserGroups(String userAccount, Socket client) throws IOException {
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        FileInputStream fis = new FileInputStream(catalog);
+        ArrayList<UserAccounts> accounts = null;
+        ArrayList<String> groups = new ArrayList<>();
+        try {
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        for(UserAccounts account : accounts){
+            if(account.getUsername().equals(userAccount)){
+                for(String group : account.getGroups()){
+                    groups.add(group);
+                }
+            }
+        }
+        out.println("201");
+        out.println(groups.toString() + "\n");
+
+        fis.close();
+        out.close();
+        dos.close();
+    }
+
+    private void getGroups(Socket client) throws IOException {
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        FileInputStream fis = new FileInputStream(catalog);
+        ArrayList<UserAccounts> accounts = null;
+        ArrayList<String> groups = new ArrayList<>();
+        try {
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        for(UserAccounts account : accounts){
+            for(String group : account.getGroups()){
+                groups.add(group);
+            }
+        }
+
+        out.println("201");
+        out.println(groups.toString() + "\n");
+
+        fis.close();
+        out.close();
+        dos.close();
+    }
+
+
     private void badRequest(Socket client, String request, String message) {
         try {
             if (client.isClosed()) return;
@@ -575,6 +639,7 @@ class ServerInit implements Runnable {
             ioe.printStackTrace();
         }
     }
+
 
     public void run() {
         while (!Thread.interrupted()) {

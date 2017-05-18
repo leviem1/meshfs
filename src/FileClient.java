@@ -6,10 +6,11 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The FileClient class handles connecting to other servers in the cluster
@@ -538,6 +539,42 @@ final class FileClient {
         }
 
         return jsonObject;
+    }
+
+    static String getUserGroups(String serverAddress, int port, String userAccount, String uuid) throws MalformedRequestException, IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        out.println("116|" + uuid + "|" + userAccount + "\n");
+        if ((input.readLine().trim()).equals("202")) {
+            client.close();
+            return "";
+        }
+        String groups = input.readLine().trim();
+
+        client.close();
+
+        return groups;
+
+    }
+
+    static String getGroups(String serverAddress, int port, String uuid) throws MalformedRequestException, IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        out.println("117|" + uuid + "\n");
+        if ((input.readLine().trim()).equals("202")) {
+            client.close();
+            return "";
+        }
+        String groups = input.readLine().trim();
+
+        client.close();
+
+        return groups;
+
     }
 
 }

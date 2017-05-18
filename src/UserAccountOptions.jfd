@@ -4,14 +4,14 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:0:x}}"
-			"$verticalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:0:x}}"
+			"$horizontalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:1:x}}"
+			"$verticalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:1:x}}"
 		} ) {
 			name: "this"
 			"$sizePolicy": 1
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l {par l:::p {comp buttonBar:::p:309:p, seq {comp changePasswordBtn:::p::p, space :::x, comp deleteAccount:::p::p}}, comp googleAccountBtn::l:p::p}, space :0:51:x}, seq t {par t {comp titleLbl::l::311:x, comp titleLbl2::::311:x}, space :p:49:p}}}}"
-				"$verticalGroup": "par l {seq {space :::p, comp titleLbl2:::p::p, space :::p, comp titleLbl:::p::p, space :p:24:p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space :::p, comp googleAccountBtn:::p::p, space ::11:x, comp buttonBar:::p:44:p}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l:::p {comp buttonBar:::p:309:p, seq {comp changePasswordBtn:::p::p, space :::x, comp deleteAccount:::p::p}, seq {comp googleAccountBtn:::p::p, space :::x, comp changeGroupBtn:::p:134:p}}, space :0:8:x}, seq t {par t {comp titleLbl::l:::x, comp titleLbl2:::::x}, space :p:49:p}}}}"
+				"$verticalGroup": "par l {seq {space :::p, comp titleLbl2:::p::p, space :::p, comp titleLbl:::p::p, space :p:24:p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space :::p, par b {comp googleAccountBtn::b:p::p, comp changeGroupBtn::b:p::p}, space :::x, comp buttonBar:::p:44:p}}"
 			} ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -55,7 +55,12 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "googleAccountBtn"
-					"text": "Link Google Account..."
+					"text": "Link to Google..."
+					"font": #SwingDerivedFont0
+				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "changeGroupBtn"
+					"text": "Change Group"
 					"font": #SwingDerivedFont0
 				} )
 			} )

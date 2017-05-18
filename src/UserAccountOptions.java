@@ -28,6 +28,7 @@ class UserAccountOptions extends JFrame {
     private JButton deleteAccount;
     private JButton changePasswordBtn;
     private JButton googleAccountBtn;
+    private JButton changeGroupBtn;
     //GEN-END:variables
 
     private UserAccountOptions(
@@ -72,6 +73,7 @@ class UserAccountOptions extends JFrame {
         deleteAccount = new JButton();
         changePasswordBtn = new JButton();
         googleAccountBtn = new JButton();
+        changeGroupBtn = new JButton();
 
         //======== this ========
         Container contentPane = getContentPane();
@@ -114,8 +116,12 @@ class UserAccountOptions extends JFrame {
             changePasswordBtn.setFont(new Font("Arial", changePasswordBtn.getFont().getStyle(), changePasswordBtn.getFont().getSize() + 1));
 
             //---- googleAccountBtn ----
-            googleAccountBtn.setText("Link Google Account...");
+            googleAccountBtn.setText("Link to Google...");
             googleAccountBtn.setFont(new Font("Arial", googleAccountBtn.getFont().getStyle(), googleAccountBtn.getFont().getSize() + 1));
+
+            //---- changeGroupBtn ----
+            changeGroupBtn.setText("Change Group");
+            changeGroupBtn.setFont(new Font("Arial", changeGroupBtn.getFont().getStyle(), changeGroupBtn.getFont().getSize() + 1));
 
             GroupLayout dialogPaneLayout = new GroupLayout(dialogPane);
             dialogPane.setLayout(dialogPaneLayout);
@@ -125,19 +131,21 @@ class UserAccountOptions extends JFrame {
                         .addContainerGap()
                         .addGroup(dialogPaneLayout.createParallelGroup()
                             .addGroup(dialogPaneLayout.createSequentialGroup()
-                                .addGroup(dialogPaneLayout.createParallelGroup()
-                                    .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(dialogPaneLayout.createSequentialGroup()
-                                            .addComponent(changePasswordBtn)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(deleteAccount)))
-                                    .addComponent(googleAccountBtn))
-                                .addGap(0, 51, Short.MAX_VALUE))
+                                .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(dialogPaneLayout.createSequentialGroup()
+                                        .addComponent(changePasswordBtn)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(deleteAccount))
+                                    .addGroup(dialogPaneLayout.createSequentialGroup()
+                                        .addComponent(googleAccountBtn)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(changeGroupBtn, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 8, Short.MAX_VALUE))
                             .addGroup(GroupLayout.Alignment.TRAILING, dialogPaneLayout.createSequentialGroup()
                                 .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                    .addComponent(titleLbl, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
-                                    .addComponent(titleLbl2, GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
+                                    .addComponent(titleLbl, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(titleLbl2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(49, 49, 49))))
             );
             dialogPaneLayout.setVerticalGroup(
@@ -152,8 +160,10 @@ class UserAccountOptions extends JFrame {
                             .addComponent(changePasswordBtn)
                             .addComponent(deleteAccount))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(googleAccountBtn)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                        .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(googleAccountBtn)
+                            .addComponent(changeGroupBtn))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE))
             );
         }
@@ -164,13 +174,13 @@ class UserAccountOptions extends JFrame {
             contentPaneLayout.createParallelGroup()
                 .addGroup(contentPaneLayout.createSequentialGroup()
                     .addComponent(dialogPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE))
+                    .addGap(0, 1, Short.MAX_VALUE))
         );
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()
                 .addGroup(contentPaneLayout.createSequentialGroup()
                     .addComponent(dialogPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE))
+                    .addGap(0, 1, Short.MAX_VALUE))
         );
         setSize(350, 255);
         setLocationRelativeTo(getOwner());
@@ -213,6 +223,10 @@ class UserAccountOptions extends JFrame {
                     } catch (GeneralSecurityException e1) {
                         e1.printStackTrace();
                     }*/
+                });
+        changeGroupBtn.addActionListener(
+                e -> {
+                    ChangeUserGroup.run(userAccountOptions, userAccount, serverAddress, port);
                 });
     }
 }
