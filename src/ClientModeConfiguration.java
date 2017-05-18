@@ -332,7 +332,6 @@ class ClientModeConfiguration extends JFrame {
             }
             File catalog = File.createTempFile(".catalog", ".json");
             if (!(usernameField.getText().isEmpty())) {
-                System.out.println("Got this far");
                 try(FileWriter fileWriter = new FileWriter(catalog.getAbsolutePath())){
                     fileWriter.write(FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), uuid).toString());
                 }

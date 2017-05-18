@@ -1,4 +1,6 @@
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,6 +11,8 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -102,11 +106,6 @@ class ClientBrowser extends JFrame {
 
     private void initComponents() {
         DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()),userAccount.equals("admin"));
-        //DefaultMutableTreeNode userNode = new DefaultMutableTreeNode("root/" + userAccount);
-        //DefaultMutableTreeNode sharedNode = new DefaultMutableTreeNode("root/Shared");
-
-        System.out.println("My user JSON OBJ is: " + JSONUtils.getJSONObject(catalogFile.getAbsolutePath()));
-
         if (isLoaded) {
             dialogPane.repaint();
             dialogPane.revalidate();
@@ -569,7 +568,6 @@ class ClientBrowser extends JFrame {
     private void catalogCheck() {
         SwingUtilities.invokeLater(
                 () -> {
-                    System.out.println("Checking...");
                     if (failureCount >= 5) {
                         catalogTimer.cancel();
                         catalogTimer.purge();
@@ -579,28 +577,27 @@ class ClientBrowser extends JFrame {
                         dispose();
                     } else {
                         try {
-                            File tempCatalog = File.createTempFile(".catalog", ".json");
-                            tempCatalog.deleteOnExit();
-                            try (FileWriter fileWriter = new FileWriter(tempCatalog.getAbsolutePath())) {
-                                fileWriter.write(FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).toString());
-                            } catch (Exception e) {
+                            String localCatalog = JSONUtils.getJSONObject(catalogFile.getAbsolutePath()).toString();
+                            String latestCatalog = null;
+                            try {
+                                latestCatalog = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).toString();
+                            } catch (MalformedRequestException e) {
+                                e.printStackTrace();
+                            } catch (ConnectException ce){
                                 failureCount += 1;
                             }
-                            JSONObject latestCatalog = JSONUtils.getJSONObject(tempCatalog.getAbsolutePath());
-                            JSONObject localCatalog = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
-                            System.out.println("Latest: " + latestCatalog);
-                            System.out.println("Local: " + localCatalog);
-                            if (localCatalog.equals(latestCatalog)) {
-                                tempCatalog.delete();
-                            } else {
+                            if (!localCatalog.equals(latestCatalog)) {
                                 clientBrowserButtonModifier(false);
-                                tree1.removeAll();
-                                System.out.println("Need to update JTree!");
-                                tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()),userAccount.equals("admin"))));
-                                System.out.println("Just updated JTree!");
-                                tempCatalog.delete();
+                                tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder((JSONObject)new JSONParser().parse(latestCatalog), true)));
+                                try(FileWriter fileWriter = new FileWriter(catalogFile.getAbsolutePath())){
+                                    fileWriter.write(FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).toString());
+                                } catch (MalformedRequestException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         } catch (IOException ignored) {
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
