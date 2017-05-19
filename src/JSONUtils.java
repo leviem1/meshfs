@@ -408,7 +408,26 @@ class JSONUtils {
                 }
             }
             FileUtils.combineStripes(numberSorter(stripeNames), outFileDir + File.separator + "." + outFile);
-            new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFile));
+
+            String outFileNew = outFile;
+
+            if (!(new File(outFileDir + File.separator + outFile)).exists()) {
+                String fileNew;
+                int count = 1;
+                while (true) {
+                    fileNew = outFile.substring(0, outFile.lastIndexOf(".")) + " (" + count + ")" + outFile.substring(outFile.lastIndexOf("."));
+
+                    if (!new File(fileNew).exists()) {
+                        break;
+                    }
+
+                    count++;
+
+                }
+                outFileNew = fileNew;
+            }
+
+            new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFileNew));
         }
         for (String filePath : stripeNames) {
             Files.deleteIfExists(Paths.get(filePath));

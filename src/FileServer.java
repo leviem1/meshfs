@@ -347,7 +347,27 @@ class ServerInit implements Runnable {
                 new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
         out.println("201");
-        JSONUtils.addTempFile("root/Users/" + userAccount, filename + " (uploading)", userAccount);
+
+        if ((new File(filename)).exists()) {
+            String fileNew;
+            int count = 1;
+            while (true) {
+                fileNew = filename.substring(0, filename.lastIndexOf(".")) + " (" + count + ")" + filename.substring(filename.lastIndexOf("."));
+
+                if (!new File(fileNew).exists()) {
+                    break;
+                }
+
+                count++;
+
+            }
+            filename = fileNew;
+            fos = new FileOutputStream(filename);
+        }
+
+        final String filenameTrue = filename;
+
+        JSONUtils.addTempFile("root/Users/" + userAccount, filenameTrue + " (uploading)", userAccount);
 
         while ((br = dis.read(data, 0, data.length)) != -1) {
             fos.write(data, 0, br);
@@ -367,10 +387,8 @@ class ServerInit implements Runnable {
 
         Thread distributor = new Thread(() -> {
             try {
-                DISTAL.distributor(filename, "root/Users/" + userAccount, userAccount);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (MalformedRequestException e) {
+                DISTAL.distributor(filenameTrue, "root/Users/" + userAccount, userAccount);
+            } catch (IOException | MalformedRequestException e) {
                 e.printStackTrace();
             }
         });
@@ -383,10 +401,6 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
-
-        JSONObject jsonObj =
-                JSONUtils.getJSONObject(
-                        MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONUtils.createNewFolder(directoryPath, directoryName);
     }
 
