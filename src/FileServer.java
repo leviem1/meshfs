@@ -383,10 +383,6 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
         out.flush();
-
-        JSONObject jsonObj =
-                JSONUtils.getJSONObject(
-                        MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONUtils.createNewFolder(directoryPath, directoryName);
     }
 
