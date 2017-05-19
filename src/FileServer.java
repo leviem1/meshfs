@@ -347,7 +347,7 @@ class ServerInit implements Runnable {
                 new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
         out.println("201");
-        JSONUtils.addTempFile("root/Users/" + userAccount, filename + "(uploading)", userAccount);
+        JSONUtils.addTempFile("root/Users/" + userAccount, filename + " (uploading)", userAccount);
 
         while ((br = dis.read(data, 0, data.length)) != -1) {
             fos.write(data, 0, br);
@@ -363,11 +363,6 @@ class ServerInit implements Runnable {
                 throw new FileTransferException();
             }
         } catch (NoSuchAlgorithmException ignored) {
-        }
-        try {
-            JSONUtils.deleteItem("root/Users/" + userAccount + "/" + filename + " (uploading)");
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
         }
 
         Thread distributor = new Thread(() -> {

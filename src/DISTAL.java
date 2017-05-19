@@ -60,14 +60,8 @@ class DISTAL {
      * @param filePathInCatalog where the file is to be put in the catalog.
      */
     static void distributor(String uploadFilePath, String filePathInCatalog, String username) throws IOException, MalformedRequestException {
-        System.out.println("uploadPath: " + uploadFilePath);
+
         filePathInCatalog = JSONUtils.catalogStringFixer(filePathInCatalog);
-        String userAccount;
-        try {
-            userAccount = filePathInCatalog.substring(0, filePathInCatalog.indexOf("/"));
-        } catch (Exception e) {
-            userAccount = filePathInCatalog;
-        }
 
         //import properties
         int numOfStripes = Integer.parseInt(MeshFS.properties.getProperty("numStripes"));
@@ -78,12 +72,12 @@ class DISTAL {
         JSONObject manifestFile = JSONUtils.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.getProperty("repository") + ".catalog.json";
 
+        //create a unique filename for the uploaded file
+        String newName = incrementName();
+
         //make the JTree show that the file is being distributed
-        JSONUtils.addTempFile(
-                filePathInCatalog,
-                uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1)
-                        + " (distributing)",
-                username);
+        JSONUtils.renameItem(filePathInCatalog + "/" + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (uploading)",
+                uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distributing)");
 
         String fileName = uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1);
         long sizeOfFile = FileUtils.getSize(uploadFilePath);
@@ -179,11 +173,6 @@ class DISTAL {
             computersForStripes.add(macAddress);
         }
 
-        //create a unique filename for the uploaded file
-        JSONObject jsonObj = JSONUtils.getJSONObject(catalogFileLocation);
-        String currentName = jsonObj.get("currentName").toString();
-        String newName = incrementName(currentName);
-
         //create the list that will be used to distribute the wholes and stripes
         List<List<String>> stripes = new ArrayList<>();
 
@@ -212,7 +201,7 @@ class DISTAL {
         sendFiles(stripes, uploadFilePath, sizeOfFile, newName);
 
         //update the JSON file in order to update the JTree
-        JSONUtils.deleteItem(jsonObj, filePathInCatalog + uploadFilePath + " (distributing)", false);
+        JSONUtils.deleteItem(filePathInCatalog + "/" + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distributing)", false);
         JSONUtils.addFileToCatalog(
                 stripes,
                 filePathInCatalog,
@@ -223,7 +212,10 @@ class DISTAL {
                 sizeOfFile);
     }
 
-    private static String incrementName(String name) {
+    private static String incrementName() throws IOException {
+        JSONObject catalog = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        String name = catalog.get("currentName").toString();
+
         //creates a new unique filename
         String alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int incrementReverseIndex = 1;
@@ -245,6 +237,8 @@ class DISTAL {
         for (int reverseIndex = (toAdd.length() - 1); reverseIndex >= 0; reverseIndex--) {
             newName += toAdd.charAt(reverseIndex);
         }
+        catalog.replace("currentName", newName);
+        JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
         return newName;
     }
 
@@ -350,8 +344,7 @@ class sendFilesThreading implements Runnable {
                                                     MeshFS.properties.getProperty("repository")
                                                             + File.separator
                                                             + outName
-                                                            + "_w",
-                                                    MeshFS.properties.getProperty("remoteUUID"));
+                                                            + "_w");
                                         } catch (MalformedRequestException e) {
                                             e.printStackTrace();
                                         }

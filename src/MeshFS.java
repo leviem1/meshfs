@@ -113,27 +113,19 @@ class MeshFS {
                                 JSONObject manifest =
                                         JSONUtils.getJSONObject(
                                                 MeshFS.properties.getProperty("repository") + ".manifest.json");
-                                JSONObject newManifest = manifest;
                                 for (Object computer : manifest.keySet()) {
                                     Long nodeTimeStamp =
                                             (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
                                     if (currentTimeStamp > nodeTimeStamp + 32000) {
                                         try {
-                                            JSONUtils.deleteItem(newManifest, computer.toString(), false);
+                                            JSONUtils.deleteManifestItem(computer.toString());
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         } catch (MalformedRequestException e) {
                                             e.printStackTrace();
                                         }
                                         System.out.println(computer.toString() + " was removed from the manifest");
-                                        break;
                                     }
-                                }
-                                try {
-                                    JSONUtils.writeJSONObject(
-                                            MeshFS.properties.getProperty("repository") + ".manifest.json", newManifest);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
                                 }
                             }
                         };

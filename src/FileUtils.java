@@ -117,6 +117,8 @@ class FileUtils {
             hash.append(Integer.toString((mdData[i] & 0xff) + 0x100, 16).substring(1));
         }
 
+        fis.close();
+
         return hash.toString();
     }
 

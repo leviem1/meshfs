@@ -203,8 +203,9 @@ class JSONUtils {
         deleteItem(catalog, itemLocation, true);
     }
 
-    static void deleteItem(JSONObject catalog, String itemLocation) throws IOException, MalformedRequestException {
-        deleteItem(catalog, itemLocation, true);
+    static void deleteItem(String itemLocation, boolean smart) throws IOException, MalformedRequestException {
+        JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        deleteItem(catalog, itemLocation, smart);
     }
 
     /**
@@ -227,6 +228,8 @@ class JSONUtils {
      * @return updated JSONObject that item was read from
      */
     static void renameItem(String itemLocation, String newName) throws IOException, MalformedRequestException {
+        System.out.println(itemLocation);
+        System.out.println(newName);
         moveFile(itemLocation, itemLocation.substring(0, itemLocation.lastIndexOf("/")), newName, false);
     }
 
@@ -587,6 +590,14 @@ class JSONUtils {
         }
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
     }
+
+    static void deleteManifestItem(String MACAddress) throws IOException, MalformedRequestException {
+        JSONObject manifest = getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
+        JSONObject folderToRead = manifest;
+        folderToRead.remove(MACAddress);
+        writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
+    }
+
 
     private static void moveFile(String itemLocation, String destinationLocation, String newName, boolean updatePermissions) throws IOException, MalformedRequestException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
