@@ -24,7 +24,6 @@ class MeshFS {
         properties = ConfigParser.loadProperties();
         CliParser cliParser = new CliParser(args);
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
-        DriveAPI.unauthorize();
         multicastServer = new MulticastServer();
         try {
             multicastServer.startServer(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
@@ -229,8 +228,5 @@ class onQuit implements Runnable {
             MeshFS.multicastServer.stopServer();
         } catch (NullPointerException ignored) {
         }
-
-        DriveAPI.unauthorize();
-
     }
 }
