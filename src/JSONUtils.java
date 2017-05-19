@@ -334,7 +334,7 @@ class JSONUtils {
         boolean wholeNecessary = true;
 
         JSONObject fileInfo = getItemContents(jsonObject, itemLocation);
-        String fileName = fileInfo.get("fileName").toString();
+        String fileName = fileInfo.get("alphanumericName").toString();
 
         for (Object stripe : fileInfo.keySet()) {
             if (stripe.toString().contains("stripe")) {

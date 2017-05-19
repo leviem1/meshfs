@@ -269,12 +269,16 @@ class RenameFileWindow extends JFrame {
                                     if (newNameValueField.getText().isEmpty()) {
                                         okButton.setEnabled(false);
                                     } else {
-                                        String newJsonPath = jsonObj.substring(0, jsonObj.lastIndexOf("/"));
-                                        JSONObject catalogJson =
-                                                JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
-                                        Map<String, String> folderMap = null;
-                                                /*JSONUtils.getMapOfFolderContents(
-                                                        catalogJson, newJsonPath, userAccount);*/
+                                        JSONObject userFiles = null;
+                                        try {
+                                            userFiles = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
+                                        } catch (MalformedRequestException e1) {
+                                            e1.printStackTrace();
+                                        } catch (IOException e1) {
+                                            e1.printStackTrace();
+                                        }
+                                        Map<String, String> folderMap = JSONUtils.getMapOfFolderContents(userFiles, null);
+
                                         for (Map.Entry<String, String> entry : folderMap.entrySet()) {
                                             if (entry.getValue().equals("file")) {
                                                 if (entry.getKey().equals(newNameValueField.getText())) {

@@ -286,7 +286,7 @@ class ClientModeConfiguration extends JFrame {
         }
 
         private void changed() {
-            if (serverAddressField.getSelectedIndex() != -1) {
+            if (serverAddressField.getItemCount() != 0 || serverAddressField.getSelectedItem() != null) {
                 if (!(serverPortField.getText().isEmpty())) {
                     if (!(usernameField.getText().isEmpty())) {
                         if (!(String.valueOf(passwordField.getPassword()).isEmpty())) {
@@ -296,15 +296,18 @@ class ClientModeConfiguration extends JFrame {
                             okButton.setEnabled(false);
                         }
                     } else {
+
                         okButton.setEnabled(false);
                     }
                 } else {
                     okButton.setEnabled(false);
                 }
             } else {
+                System.out.println("x");
                 okButton.setEnabled(false);
             }
         }
+
     };
 
     private void onOk() {
