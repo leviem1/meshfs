@@ -43,7 +43,6 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/jetty-util-6.1.26.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/servlet-api-2.5-20081211.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-lang3-3.5.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-cli/commons-cli/1.4/commons-cli-1.4.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
