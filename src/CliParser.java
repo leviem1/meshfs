@@ -1,3 +1,4 @@
+import javafx.scene.shape.Mesh;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -477,6 +478,8 @@ class CliParser {
             return;
         }
         accounts.clear();
+        new File(MeshFS.properties.getProperty("repo")+".catalog.json").delete();
+        new File(MeshFS.properties.getProperty("repo")+".manifest.json").delete();
         addUser(true);
 
 
