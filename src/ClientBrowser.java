@@ -309,11 +309,16 @@ class ClientBrowser extends JFrame {
                     fileChooser.setAcceptAllFileFilterUsed(true);
                     int rVal = fileChooser.showOpenDialog(null);
                     if (rVal == JFileChooser.APPROVE_OPTION) {
-                        Map<String, String> folderMap = null;
-                                /*JSONUtils.buildUserCatalog(userAccount,
-                                        JSONUtils.getJSONObject(catalogFile.getAbsolutePath()),
-                                        userAccount,
-                                        userAccount);*/
+                        JSONObject userFiles = null;
+                        try {
+                            userFiles = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
+                        } catch (MalformedRequestException e1) {
+                            e1.printStackTrace();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                        Map<String, String> folderMap = JSONUtils.getMapOfFolderContents(userFiles, null);
+
                         for (Map.Entry<String, String> item : folderMap.entrySet()) {
                             if (item.getKey().equals(fileChooser.getSelectedFile().getName())) {
                                 JOptionPane.showMessageDialog(

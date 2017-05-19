@@ -376,6 +376,7 @@ class ClientModeConfiguration extends JFrame {
                     Integer.parseInt(serverPortField.getText()),
                     username,
                     password);
+            MeshFS.properties.setProperty("uuid", uuid);
             //Crypt.generateEncryptedAuth(username, password));
             return uuid;
 
