@@ -10,12 +10,12 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="com.googlecode.json-simple:json-simple:1.1.1" level="project" />
     <orderEntry type="library" exported="" name="JGoodies Forms" level="project" />
-    <orderEntry type="library" name="edu.vt.middleware:vt-password:3.1.2" level="project" />
-    <orderEntry type="library" name="com.google.apis:google-api-services-drive:v2-rev168-1.20.0" level="project" />
-    <orderEntry type="library" name="com.google.http-client:google-http-client:1.22.0" level="project" />
-    <orderEntry type="library" name="com.google.http-client:google-http-client-jackson2:1.22.0" level="project" />
-    <orderEntry type="library" name="com.google.oauth-client:google-oauth-client-jetty:1.22.0" level="project" />
-    <orderEntry type="library" name="org.apache.commons:commons-lang3:3.5" level="project" />
-    <orderEntry type="library" name="commons-cli:commons-cli:1.4" level="project" />
+    <orderEntry type="library" exported="" name="edu.vt.middleware:vt-password:3.1.2" level="project" />
+    <orderEntry type="library" exported="" name="com.google.apis:google-api-services-drive:v2-rev168-1.20.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.http-client:google-http-client:1.22.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.http-client:google-http-client-jackson2:1.22.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.oauth-client:google-oauth-client-jetty:1.22.0" level="project" />
+    <orderEntry type="library" exported="" name="org.apache.commons:commons-lang3:3.5" level="project" />
+    <orderEntry type="library" exported="" name="commons-cli:commons-cli:1.4" level="project" />
   </component>
 </module>
