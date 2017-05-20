@@ -1,4 +1,3 @@
-import com.google.api.services.drive.model.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -196,6 +195,11 @@ class ServerInit implements Runnable {
 
                     case "118": //118:Update user Groups
                         setUserGroup(requestParts[2], requestParts[3], out);
+
+                        break;
+
+                    case "119": //119: Get User Type
+                        getUserType(requestParts[2], out);
 
                         break;
 
@@ -666,6 +670,28 @@ class ServerInit implements Runnable {
         Crypt.writeAuthFile(accounts);
 
         out.println("201");
+
+        out.close();
+        dos.close();
+    }
+
+    private void getUserType(String userAccount, Socket client) throws IOException {
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        ArrayList<UserAccounts> accounts = null;
+        String userType = null;
+        try {
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        for (UserAccounts account : accounts) {
+            if (account.getUsername().equals(userAccount)) {
+                userType = account.getAccountType();
+            }
+        }
+        out.println("201");
+        out.println(userType.toString() + "\n");
 
         out.close();
         dos.close();

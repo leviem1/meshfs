@@ -143,6 +143,8 @@ class JSONUtils {
 
         objChild.put("creationDate", creationDate);
 
+        objChild.put("fileName", fileName);
+
 
         JSONObject destination = getItemContents(catalog, itemDestinationLocation);
         JSONArray destinationUsers = (JSONArray) (destination.get("groups"));

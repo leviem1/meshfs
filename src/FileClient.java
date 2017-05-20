@@ -591,4 +591,22 @@ final class FileClient {
 
     }
 
+    static String getUserType(String serverAddress, int port, String userAccount, String uuid) throws MalformedRequestException, IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        out.println("119|" + uuid + "|" + userAccount + "\n");
+        if ((input.readLine().trim()).equals("202")) {
+            client.close();
+            return "";
+        }
+        String userType = input.readLine().trim();
+
+        client.close();
+
+        return userType;
+
+    }
+
 }

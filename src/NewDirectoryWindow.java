@@ -69,9 +69,15 @@ class NewDirectoryWindow extends JFrame {
 
     private void initComponents() {
         JSONObject jsonObj = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
-        DefaultMutableTreeNode tree = new DefaultMutableTreeNode(userAccount);
-
-        tree = (readFolder(userAccount, jsonObj, tree));
+        boolean userType = false;
+        try {
+            if(FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin")) userType = true;
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        DefaultMutableTreeNode tree = JSONUtils.JTreeBuilder(jsonObj, userType);
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
@@ -233,8 +239,7 @@ class NewDirectoryWindow extends JFrame {
 
     private DefaultMutableTreeNode readFolder(
             String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch) {
-        Map<String, String> folderContents = null;
-        //JSONUtils.getMapOfFolderContents(jsonObj, folderLocation, userAccount);
+        Map<String, String> folderContents = JSONUtils.getMapOfFolderContents(jsonObj, folderLocation, null);
         if (!(folderContents.values().contains("directory"))) {
             DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no folders)");
             branch.add(leaf);

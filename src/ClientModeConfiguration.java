@@ -231,11 +231,7 @@ class ClientModeConfiguration extends JFrame {
                         bindAnonymously(false);
                     }
                 });
-        ((JTextField) serverAddressField
-                .getEditor()
-                .getEditorComponent())
-                .getDocument()
-                .addDocumentListener(clientConnectionSettingsListener);
+
         serverAddressField.addPopupMenuListener(new PopupMenuListener() {
             @Override
             public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
@@ -250,6 +246,7 @@ class ClientModeConfiguration extends JFrame {
             public void popupMenuCanceled(PopupMenuEvent e) {
             }
         });
+        ((JTextField)serverAddressField.getEditor().getEditorComponent()).getDocument().addDocumentListener(clientConnectionSettingsListener);
         serverPortField
                 .getDocument()
                 .addDocumentListener(clientConnectionSettingsListener);
@@ -286,7 +283,7 @@ class ClientModeConfiguration extends JFrame {
         }
 
         private void changed() {
-            if (serverAddressField.getItemCount() != 0 || serverAddressField.getSelectedItem() != null) {
+            if (serverAddressField.getItemCount() != 0 || !serverAddressField.getEditor().getItem().toString().isEmpty()) {
                 if (!(serverPortField.getText().isEmpty())) {
                     if (!(usernameField.getText().isEmpty())) {
                         if (!(String.valueOf(passwordField.getPassword()).isEmpty())) {
@@ -303,7 +300,6 @@ class ClientModeConfiguration extends JFrame {
                     okButton.setEnabled(false);
                 }
             } else {
-                System.out.println("x");
                 okButton.setEnabled(false);
             }
         }
