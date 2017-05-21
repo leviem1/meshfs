@@ -376,9 +376,7 @@ class ClientBrowser extends JFrame {
                         treePath += (item.toString() + "/");
                     }
                     treePath = treePath.substring(0, treePath.length() - 1);
-                    JSONObject contents =
-                            JSONUtils.getItemContents(
-                                    JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), treePath);
+                    JSONObject contents = JSONUtils.getItemContents(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), JSONUtils.catalogStringFixer(treePath));
                     Object type = contents.get("type");
                     try {
                         if (node.toString().equals("(no files)")) {
@@ -446,19 +444,8 @@ class ClientBrowser extends JFrame {
                     jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
                     JSONObject jsonObject = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
                     JSONObject fileProperties = JSONUtils.getItemContents(jsonObject, jsonPath);
-                    Object owner = fileProperties.get("groups");
-                    JSONObject fileInfo = JSONUtils.getItemContents(jsonObject, "fileInfo/" + fileProperties.get("fileName").toString());
-                    Object fileSize = fileInfo.get("fileSize");
-                    Object creationDate = fileInfo.get("creationDate");
 
-
-                    ClientBrowserFileProperties.run(
-                            node.toString(),
-                            fileSize.toString(),
-                            creationDate.toString(),
-                            owner.toString(),
-                            clientBrowser,
-                            fileProperties);
+                    ClientBrowserFileProperties.run(clientBrowser, fileProperties, userAccount, serverAddress, port);
                 });
         removeBtn.addActionListener(
                 e -> {
@@ -589,7 +576,6 @@ class ClientBrowser extends JFrame {
         removeBtn.setEnabled(state);
         duplicateBtn.setEnabled(state);
         moveBtn.setEnabled(state);
-        shareBtn.setEnabled(state);
     }
 
     private void catalogCheck() {

@@ -507,7 +507,19 @@ class CliParser {
         accounts.clear();
         new File(MeshFS.properties.getProperty("repo")+".catalog.json").delete();
         new File(MeshFS.properties.getProperty("repo")+".manifest.json").delete();
+        Crypt.writeAuthFile(accounts);
         addUser(true);
+        System.out.println("Do you wish to enable the guest account? [Y/n]");
+        response = new Scanner(System.in).nextLine();
+        if (response.isEmpty() || response.toLowerCase().equals("y")) {
+            try {
+                addUser("guest", "guest");
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
 
     }

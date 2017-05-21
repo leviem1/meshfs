@@ -10,8 +10,8 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq t {space :::p, par t {comp scrollPane1::l::412:x, seq l {par l {seq {comp fileNameLbl:::p::p, space :::p, comp fileNameValue:::p::p, space s:::p, comp fileSizeValue:::p:81:p}, seq l {comp creationDateLbl:::p::p, space :::p, comp creationDateValue:::p::p}, seq l {comp ownerLbl:::p::p, space :::p, comp ownerValue:::p::p}, comp locationLbl::l:p::p, comp locationLbl2::l:p:122:p}, space :0:0:x}, comp scrollPane2::t::412:x}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp fileNameLbl::b:p::p, comp fileNameValue::b:p::p, comp fileSizeValue::b:p::p}, space u:::p, par b {comp creationDateLbl::b:p::p, comp creationDateValue::b:p::p}, space u:::p, par b {comp ownerLbl::b:p::p, comp ownerValue::b:p::p}, space u:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p:62:p, space u:::p, comp locationLbl2:::p::p, space :::p, comp scrollPane2::::231:x, space :::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::l::412:x, comp scrollPane2::t::412:x, seq {par l {seq {comp fileNameLbl:::p::p, space :::p, comp fileNameValue:::p::p, space s:::p, comp fileSizeValue:::p:81:p}, seq l {comp creationDateLbl:::p::p, space :::p, comp creationDateValue:::p::p}, comp locationLbl::l:p::p, comp permissionsLbl::l:p:122:p}, space :0:184:x}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp fileNameLbl::b:p::p, comp fileNameValue::b:p::p, comp fileSizeValue::b:p::p}, space u:::p, par b {comp creationDateLbl::b:p::p, comp creationDateValue::b:p::p}, space s:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p:62:p, space u:::p, comp permissionsLbl:::p::p, space :::p, comp scrollPane2::::231:x, space :p:33:p}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -49,16 +49,6 @@ new FormModel {
 						}
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "ownerLbl"
-						"text": "Added By:"
-						"font": #SwingDerivedFont0
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "ownerValue"
-						"text": "null"
-						"font": #SwingDerivedFont0
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "locationLbl"
 						"text": "Distribution Details"
 						"font": &SwingDerivedFont1 new com.jformdesigner.model.SwingDerivedFont( "Arial", 1, 1, false )
@@ -75,14 +65,18 @@ new FormModel {
 						} )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "locationLbl2"
+						name: "permissionsLbl"
 						"text": "Permissions"
 						"font": #SwingDerivedFont1
 					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane2"
 						add( new FormComponent( "javax.swing.JList" ) {
-							name: "list1"
+							name: "permissionList"
+							"enabled": false
+							auxiliary() {
+								"JavaCodeGenerator.customCreateCode": "new JList(permModel);"
+							}
 						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
@@ -120,7 +114,7 @@ new FormModel {
 					"value": "North"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
-				"value": "Center"
+				"value": "South"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )

@@ -3,6 +3,7 @@ import org.json.simple.JSONObject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
 
 
 /**
@@ -10,8 +11,10 @@ import java.awt.*;
  */
 class SharingSettings extends JFrame {
     private static JFrame sharingSettings;
+    private ArrayList groups;
 
-    public SharingSettings(String itemName) {
+    public SharingSettings(String userAccount, String serverAddress, int port, ArrayList groups, ArrayList admins, JFrame sender) {
+        this.groups = groups;
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -19,7 +22,6 @@ class SharingSettings extends JFrame {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
 
-        this.setTitle("Sharing Settings - " + itemName);
         initComponents();
     }
 
@@ -37,7 +39,7 @@ class SharingSettings extends JFrame {
         removeUserBtn = new JButton();
         fileNameLbl2 = new JLabel();
         scrollPane2 = new JScrollPane();
-        list2 = new JList();
+        list2 = new JList(groups.toArray());
         fileNameLbl4 = new JLabel();
         addGroupBox = new JComboBox();
         addGroupBtn = new JButton();
@@ -146,7 +148,7 @@ class SharingSettings extends JFrame {
                                     .addComponent(addGroupBtn)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(removeGroupBtn, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)))
-                            .addContainerGap(169, Short.MAX_VALUE))
+                            .addContainerGap(177, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
@@ -207,6 +209,12 @@ class SharingSettings extends JFrame {
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
+    }
+
+    public static void run(JFrame sender, String userAccount, String serverAddress, int port, ArrayList groups, ArrayList admins) {
+        sharingSettings = new SharingSettings(userAccount, serverAddress, port, groups, admins, sender);
+        CenterWindow.centerOnWindow(sender, sharingSettings);
+        sharingSettings.setVisible(true);
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
