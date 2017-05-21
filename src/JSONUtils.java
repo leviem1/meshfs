@@ -475,7 +475,7 @@ class JSONUtils {
 
     static String catalogStringFixer(String itemLocationString) {
         if ((itemLocationString.contains("/")) && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users")) && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))) {
-            itemLocationString = itemLocationString.substring(0, itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/", 5));
+            itemLocationString = itemLocationString.substring(0, itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/"));
         }
         return itemLocationString;
     }
