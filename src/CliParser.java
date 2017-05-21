@@ -1,9 +1,13 @@
-import javafx.scene.shape.Mesh;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  * The CliParser class allows for the reading of command line arguments. Only calling on the class
@@ -143,11 +147,21 @@ class CliParser {
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
+            System.out.println("Do you wish to enable the guest account? [Y/n]");
+            String response = new Scanner(System.in).nextLine();
+            if (response.isEmpty() || response.toLowerCase().equals("y")) {
+                try {
+                    addUser("guest", "guest");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         System.out.println("Do you wish to start the server? [Y/n]");
         String response = new Scanner(System.in).nextLine();
-        System.out.println(response);
         if (!response.isEmpty()) {
             if (!response.toLowerCase().equals("y")) {
                 System.out.println("Exiting!");
@@ -222,6 +236,19 @@ class CliParser {
 
 
     }
+
+    void addUser(String username, String password) throws IOException, ClassNotFoundException {
+        ArrayList<UserAccounts> accounts;
+        if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+        } else {
+            accounts = new ArrayList<>();
+        }
+
+        accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, password), "user", new ArrayList<>(Arrays.asList(username))));
+        Crypt.writeAuthFile(accounts);
+    }
+
 
     void removeUser(String username) throws IOException, ClassNotFoundException {
         if (username.equals("admin")) {

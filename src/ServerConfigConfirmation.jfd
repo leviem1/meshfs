@@ -5,12 +5,12 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
-			"title": "MeshFS - Server Configuration Confirmation"
+			"title": "MeshFS - Server Confirmation"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp label1::::362:x, comp configValuesPane:::::x, seq l {comp serverIdentifierLbl:::p::p, space :::p, comp serverIdentifierField::::272:x}}, space :::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp label1::::562:x, comp configValuesPane:::::x, seq l {comp serverIdentifierLbl:::p::p, space :::p, comp serverIdentifierField::::480:x}}, space :::p}}"
 					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space u:::p, comp configValuesPane:::p:174:p, space :::p, par b {comp serverIdentifierLbl::b:p::p, comp serverIdentifierField::b:p::p}, space :::x}}"
 				} ) {
 					name: "contentPanel"

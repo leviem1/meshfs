@@ -2,11 +2,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.net.*;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * The FileServer class starts a file server with a variable port, amount of sockets, and timeout.
@@ -421,84 +422,41 @@ class ServerInit implements Runnable {
         }
     }
 
-    private void changePassword(
-            String username, String oldPassword, String newPassword, Socket client)
-            throws IOException, ClassNotFoundException {
+    private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException, ClassNotFoundException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
-
-        FileInputStream fis =
-                new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
+        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
+        FileInputStream fis = new FileInputStream(auth);
         ObjectInputStream ois = new ObjectInputStream(fis);
-
-        HashMap<String, String> userAccounts;
-
+        ArrayList<UserAccounts> accounts = null;
+        UserAccounts accountToRemove;
+        String accountType;
+        ArrayList<String> accountGroups;
         try {
-            userAccounts = (HashMap) ois.readObject();
-            fis.close();
-            ois.close();
-            for (HashMap.Entry<String, String> entry : userAccounts.entrySet()) {
-                String accountName = entry.getKey();
-                String accountPassword = entry.getValue();
-                if (!(username.equals("guest"))) {
-                    if (accountName.equals(username)) {
-
-                        for (int x = 0; x < username.length() - 1; x = x + 2) {
-                            try {
-                                oldPassword += username.charAt(x);
-                            } catch (IndexOutOfBoundsException ignored) {
-                            }
-                        }
-                        MessageDigest messageDigest = null;
-                        try {
-                            messageDigest = MessageDigest.getInstance("MD5");
-                        } catch (NoSuchAlgorithmException e) {
-                            e.printStackTrace();
-                        }
-                        assert messageDigest != null;
-                        messageDigest.update(oldPassword.getBytes(), 0, oldPassword.length());
-                        String generatedPassword = new BigInteger(1, messageDigest.digest()).toString(256);
-                        if (accountPassword.equals(generatedPassword)) {
-                            out.println("201");
-                            out.flush();
-                            userAccounts.remove(username);
-                            for (int x = 0; x < username.length() - 1; x = x + 2) {
-                                try {
-                                    newPassword += username.charAt(x);
-                                } catch (IndexOutOfBoundsException ignored) {
-                                }
-                            }
-                            try {
-                                messageDigest = MessageDigest.getInstance("MD5");
-                            } catch (NoSuchAlgorithmException e) {
-                                e.printStackTrace();
-                            }
-                            assert messageDigest != null;
-                            messageDigest.update(newPassword.getBytes(), 0, newPassword.length());
-                            String newPasswordEncrypted = new BigInteger(1, messageDigest.digest()).toString(256);
-                            userAccounts.put(username, newPasswordEncrypted);
-                            FileOutputStream fos =
-                                    new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
-                            ObjectOutputStream oos = new ObjectOutputStream(fos);
-                            oos.writeObject(userAccounts);
-                            oos.flush();
-                            fos.close();
-                            fos.flush();
-
-                        } else {
-                            out.println("202");
-                            out.flush();
-                        }
+            accounts = (ArrayList) ois.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (auth.exists() && !username.equals("guest")) {
+            for (UserAccounts userAccount : accounts) {
+                if (userAccount.getUsername().equals(username)) {
+                    if (userAccount.getPassword().equals(Crypt.generateEncryptedPass(username, oldPassword))) {
+                        accountToRemove = userAccount;
+                        accountType = userAccount.getAccountType();
+                        accountGroups = userAccount.getGroups();
+                        accounts.remove(accountToRemove);
+                        accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, newPassword), accountType, accountGroups));
+                        Crypt.writeAuthFile(accounts);
+                        out.println("201");
+                        out.flush();
+                    } else {
+                        out.println("202");
+                        out.flush();
                     }
-                } else {
-                    out.println("202");
-                    out.flush();
-
                 }
             }
-        } catch (EOFException ignored) {
+            ois.close();
+            fis.close();
         }
-        ois.close();
-        fis.close();
     }
 
     private void getServerUUID(Socket client) throws IOException {

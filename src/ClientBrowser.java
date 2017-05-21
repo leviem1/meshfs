@@ -12,8 +12,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @author Mark Hedrick
@@ -82,7 +84,15 @@ class ClientBrowser extends JFrame {
                 new TimerTask() {
                     @Override
                     public void run() {
-                        catalogCheck();
+                        if(failureCount >= 5){
+                            catalogTimer.cancel();
+                            catalogTimer.purge();
+                            JOptionPane.showMessageDialog(clientBrowser, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+                            ClientModeConfiguration.run(clientBrowser, serverAddress, previousRunType);
+                            dispose();
+                        }else{
+                            catalogCheck();
+                        }
                     }
                 };
         catalogTimer.scheduleAtFixedRate(catalogCheck, 0, 500);
@@ -106,7 +116,8 @@ class ClientBrowser extends JFrame {
     private void initComponents() {
         userType = false;
         try {
-            if(FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin")) userType = true;
+            if (FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin"))
+                userType = true;
         } catch (MalformedRequestException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -202,63 +213,63 @@ class ClientBrowser extends JFrame {
                     GroupLayout panel1Layout = new GroupLayout(panel1);
                     panel1.setLayout(panel1Layout);
                     panel1Layout.setHorizontalGroup(
-                        panel1Layout.createParallelGroup()
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(newDirBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(downloadAsBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(moveBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(renameBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(shareBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(propertiesBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(removeBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(uploadBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(duplicateBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            panel1Layout.createParallelGroup()
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                            .addContainerGap()
+                                            .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(newDirBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(downloadAsBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(moveBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(renameBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(shareBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(propertiesBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(removeBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(uploadBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(duplicateBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     );
                     panel1Layout.setVerticalGroup(
-                        panel1Layout.createParallelGroup()
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(uploadBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(newDirBtn)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(downloadAsBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(duplicateBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(moveBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(renameBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(shareBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(propertiesBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(removeBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(15, Short.MAX_VALUE))
+                            panel1Layout.createParallelGroup()
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                            .addContainerGap()
+                                            .addComponent(uploadBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(newDirBtn)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(downloadAsBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(duplicateBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(moveBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(renameBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(shareBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(propertiesBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(removeBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addContainerGap(15, Short.MAX_VALUE))
                     );
                 }
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 408, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 408, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
-                                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addContainerGap())
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addGroup(contentPanelLayout.createParallelGroup()
+                                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                                                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addContainerGap())
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -267,35 +278,35 @@ class ClientBrowser extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 374, 0};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 374, 0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
 
                 //---- logoutBtn ----
                 logoutBtn.setText("Logout");
                 logoutBtn.setFont(new Font("Arial", logoutBtn.getFont().getStyle(), logoutBtn.getFont().getSize() + 1));
                 buttonBar.add(logoutBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- optionsBtn ----
                 optionsBtn.setText("Options...");
                 optionsBtn.setFont(new Font("Arial", optionsBtn.getFont().getStyle(), optionsBtn.getFont().getSize() + 1));
                 buttonBar.add(optionsBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- statusLbl ----
                 statusLbl.setHorizontalAlignment(SwingConstants.CENTER);
                 buttonBar.add(statusLbl, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- quitBtn ----
                 quitBtn.setText("Quit");
                 quitBtn.setFont(new Font("Arial", quitBtn.getFont().getStyle(), quitBtn.getFont().getSize() + 1));
                 buttonBar.add(quitBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -363,14 +374,14 @@ class ClientBrowser extends JFrame {
                     }
 
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String treePath ="";
-                    for (Object item : treeList){
+                    String treePath = "";
+                    for (Object item : treeList) {
                         treePath += (item.toString() + "/");
                     }
-                    treePath = treePath.substring(0,treePath.length()-1);
+                    treePath = treePath.substring(0, treePath.length() - 1);
                     JSONObject contents =
                             JSONUtils.getItemContents(
-                                    JSONUtils.getJSONObject(catalogFile.getAbsolutePath()),treePath);
+                                    JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), treePath);
                     Object type = contents.get("type");
                     try {
                         if (node.toString().equals("(no files)")) {
@@ -431,11 +442,11 @@ class ClientBrowser extends JFrame {
                     DefaultMutableTreeNode node =
                             (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath ="";
-                    for (Object item : treeList){
+                    String jsonPath = "";
+                    for (Object item : treeList) {
                         jsonPath += (item.toString() + "/");
                     }
-                    jsonPath = jsonPath.substring(0,jsonPath.length()-1);
+                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
                     JSONObject jsonObject = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
                     JSONObject fileProperties = JSONUtils.getItemContents(jsonObject, jsonPath);
                     Object owner = fileProperties.get("groups");
@@ -455,11 +466,11 @@ class ClientBrowser extends JFrame {
         removeBtn.addActionListener(
                 e -> {
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath ="";
-                    for (Object item : treeList){
+                    String jsonPath = "";
+                    for (Object item : treeList) {
                         jsonPath += (item.toString() + "/");
                     }
-                    jsonPath = jsonPath.substring(0,jsonPath.length()-1);
+                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
                     try {
                         FileClient.deleteFile(serverAddress, port, jsonPath);
                         catalogCheck();
@@ -471,11 +482,11 @@ class ClientBrowser extends JFrame {
         duplicateBtn.addActionListener(
                 e -> {
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath ="";
-                    for (Object item : treeList){
+                    String jsonPath = "";
+                    for (Object item : treeList) {
                         jsonPath += (item.toString() + "/");
                     }
-                    jsonPath = jsonPath.substring(0,jsonPath.length()-1);
+                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
                     try {
                         FileClient.duplicateFile(serverAddress, port, jsonPath);
                         catalogCheck();
@@ -487,11 +498,11 @@ class ClientBrowser extends JFrame {
         moveBtn.addActionListener(
                 e -> {
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath ="";
-                    for (Object item : treeList){
+                    String jsonPath = "";
+                    for (Object item : treeList) {
                         jsonPath += (item.toString() + "/");
                     }
-                    jsonPath = jsonPath.substring(0,jsonPath.length()-1);
+                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
                     MoveFileWindow.run(
                             tree1.getLastSelectedPathComponent().toString(),
                             jsonPath,
@@ -517,11 +528,11 @@ class ClientBrowser extends JFrame {
                     DefaultMutableTreeNode node =
                             (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath ="";
-                    for (Object item : treeList){
+                    String jsonPath = "";
+                    for (Object item : treeList) {
                         jsonPath += (item.toString() + "/");
                     }
-                    jsonPath = jsonPath.substring(0,jsonPath.length()-1);
+                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
                     RenameFileWindow.run(
                             serverAddress,
                             port,
@@ -545,11 +556,11 @@ class ClientBrowser extends JFrame {
     private void downloadFile(String path) {
         try {
             java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-            String jsonPath ="";
-            for (Object item : treeList){
+            String jsonPath = "";
+            for (Object item : treeList) {
                 jsonPath += (item.toString() + "/");
             }
-            jsonPath = jsonPath.substring(0,jsonPath.length()-1);
+            jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
             JSONUtils.pullFile(
                     jsonPath,
                     path,
@@ -587,14 +598,6 @@ class ClientBrowser extends JFrame {
     private void catalogCheck() {
         SwingUtilities.invokeLater(
                 () -> {
-                    if (failureCount >= 5) {
-                        catalogTimer.cancel();
-                        catalogTimer.purge();
-                        JOptionPane.showMessageDialog(
-                                null, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                        ClientModeConfiguration.run(clientBrowser, serverAddress, previousRunType);
-                        dispose();
-                    } else {
                         try {
                             String localCatalog = JSONUtils.getJSONObject(catalogFile.getAbsolutePath()).toString();
                             String latestCatalog = null;
@@ -605,7 +608,7 @@ class ClientBrowser extends JFrame {
                             } catch (ConnectException ce) {
                                 failureCount += 1;
                             }
-                            if (!localCatalog.equals(latestCatalog)) {
+                            if (!localCatalog.equals(latestCatalog) && latestCatalog != null) {
                                 clientBrowserButtonModifier(false);
                                 tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder((JSONObject) new JSONParser().parse(latestCatalog), userType)));
                                 try (FileWriter fileWriter = new FileWriter(catalogFile.getAbsolutePath())) {
@@ -619,6 +622,8 @@ class ClientBrowser extends JFrame {
                             e.printStackTrace();
                         }
                     }
-                });
+
+        );
     }
+
 }

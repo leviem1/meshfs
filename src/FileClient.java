@@ -416,7 +416,6 @@ final class FileClient {
             client.close();
             return (int) (Instant.now().toEpochMilli() - initial);
         } catch (IOException ioe) {
-            ioe.printStackTrace();
             return -1;
         }
     }
@@ -453,7 +452,7 @@ final class FileClient {
         }
     }
 
-    static void changePassword(
+    static boolean changePassword(
             String serverAddress, int port, String username, String oldPassword, String newPassword)
             throws IOException, MalformedRequestException {
         String response;
@@ -463,16 +462,24 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try {
             out.println("111|" + MeshFS.properties.getProperty("uuid") + "|" + username + "|" + oldPassword + "|" + newPassword + "\n");
-            if (!(response = input.readLine().trim()).equals("201")) {
-                throw new MalformedRequestException(response);
-            }
+            response = input.readLine().trim();
+            System.out.println(response);
             client.close();
+            if(response.equals("202")){
+                return false;
+            }
+            if (!(response.equals("201"))) {
+                throw new MalformedRequestException(response);
+            }else{
+                return true;
+            }
         } catch (SocketTimeoutException ignored) {
         } finally {
             out.close();
             input.close();
             client.close();
         }
+        return false;
     }
 
     static String loginAsUser(String serverAddress, int port, String username, String password) throws IOException, MalformedRequestException {

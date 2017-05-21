@@ -25,13 +25,18 @@ class MulticastServer {
         System.out.println("Multicast server started!");
 
         TimerTask checkMasters = new TimerTask() {
+            ArrayList<String> mastersToRemove = new ArrayList<>();
             @Override
             public void run() {
                 for (String address : MulticastServerInit.foundMasters) {
-                    if (FileClient.ping(address, Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) == -1) {
-                        MulticastServerInit.foundMasters.remove(address);
+                    try {
+                        if (FileClient.ping(address, Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) == -1) {
+                            mastersToRemove.add(address);
+                        }
+                    }catch(Exception ignored){
                     }
                 }
+                MulticastServerInit.foundMasters.removeAll(mastersToRemove);
             }
         };
 

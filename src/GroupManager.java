@@ -188,7 +188,6 @@ class GroupManager extends JFrame {
                         String item = model.getElementAt(i).toString();
                         if (groupBox.getModel().getSize() > 0) {
                             for (int x = 0; x < groupBox.getModel().getSize(); x++) {
-                                System.out.println(groupBox.getModel().getElementAt(x).toString());
                                 if (!groupBox.getModel().getElementAt(x).toString().equals(item)) {
                                     groupBox.addItem(item);
                                 }

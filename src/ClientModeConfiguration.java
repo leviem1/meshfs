@@ -307,16 +307,18 @@ class ClientModeConfiguration extends JFrame {
     };
 
     private void onOk() {
-        int pingTime = FileClient.ping(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()));
+        int pingTime = -1;
+        try{
+            pingTime = FileClient.ping(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()));
+        }catch(Exception ignored){}
         if (pingTime == -1) {
             JOptionPane.showMessageDialog(
                     clientModeConfiguration, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
             serverAddressField.setSelectedItem("");
-            serverPortField.setText("5704");
-            usernameField.setText("guest");
-            passwordField.setText("guest");
-            bindAnonymouslyCheckBox.setSelected(true);
+            usernameField.setText("");
+            passwordField.setText("");
             okButton.setEnabled(false);
+            serverAddressField.requestFocus();
             return;
         }
         try {

@@ -61,6 +61,7 @@ class ChangeUserGroup extends JFrame {
         okButton = new JButton();
 
         //======== this ========
+        setTitle("MeshFS - Change User Group");
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
