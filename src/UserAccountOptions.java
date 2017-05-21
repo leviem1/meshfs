@@ -49,6 +49,8 @@ class UserAccountOptions extends JFrame {
         if (userAccount.equals("guest")) {
             changePasswordBtn.setEnabled(false);
             changePasswordBtn.setToolTipText("Changing the guest password is not allowed");
+            changeGroupBtn.setEnabled(false);
+            changeGroupBtn.setToolTipText("Changing guest groups is not allowed");
         }
     }
 
