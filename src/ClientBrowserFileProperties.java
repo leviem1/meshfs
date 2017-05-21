@@ -28,6 +28,7 @@ class ClientBrowserFileProperties extends JFrame {
     private JScrollPane scrollPane2;
     private JList list1;
     private JPanel buttonBar;
+    private JButton shareBtn;
     private JButton okButton;
     private JLabel titleLbl;
     //GEN-END:variables
@@ -119,6 +120,7 @@ class ClientBrowserFileProperties extends JFrame {
         scrollPane2 = new JScrollPane();
         list1 = new JList();
         buttonBar = new JPanel();
+        shareBtn = new JButton();
         okButton = new JButton();
         titleLbl = new JLabel();
 
@@ -164,8 +166,8 @@ class ClientBrowserFileProperties extends JFrame {
                 ownerValue.setFont(new Font("Arial", Font.PLAIN, ownerValue.getFont().getSize() + 1));
 
                 //---- locationLbl ----
-                locationLbl.setText("Distribution Details:");
-                locationLbl.setFont(new Font("Arial", Font.PLAIN, locationLbl.getFont().getSize() + 1));
+                locationLbl.setText("Distribution Details");
+                locationLbl.setFont(new Font("Arial", locationLbl.getFont().getStyle() | Font.BOLD, locationLbl.getFont().getSize() + 1));
 
                 //======== scrollPane1 ========
                 {
@@ -177,8 +179,8 @@ class ClientBrowserFileProperties extends JFrame {
                 }
 
                 //---- locationLbl2 ----
-                locationLbl2.setText("Permissions:");
-                locationLbl2.setFont(new Font("Arial", Font.PLAIN, locationLbl2.getFont().getSize() + 1));
+                locationLbl2.setText("Permissions");
+                locationLbl2.setFont(new Font("Arial", locationLbl2.getFont().getStyle() | Font.BOLD, locationLbl2.getFont().getSize() + 1));
 
                 //======== scrollPane2 ========
                 {
@@ -188,58 +190,58 @@ class ClientBrowserFileProperties extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout.createParallelGroup()
-                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                                .addComponent(scrollPane1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
-                                                .addGroup(GroupLayout.Alignment.LEADING, contentPanelLayout.createSequentialGroup()
-                                                        .addGroup(contentPanelLayout.createParallelGroup()
-                                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                                        .addComponent(fileNameLbl)
-                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                        .addComponent(fileNameValue)
-                                                                        .addGap(18, 18, 18)
-                                                                        .addComponent(fileSizeValue, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE))
-                                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                                        .addComponent(creationDateLbl)
-                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                        .addComponent(creationDateValue))
-                                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                                        .addComponent(ownerLbl)
-                                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                        .addComponent(ownerValue))
-                                                                .addComponent(locationLbl)
-                                                                .addComponent(locationLbl2, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE))
-                                                        .addGap(0, 0, Short.MAX_VALUE))
-                                                .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE))
-                                        .addContainerGap())
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addComponent(scrollPane1, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                                .addGroup(GroupLayout.Alignment.LEADING, contentPanelLayout.createSequentialGroup()
+                                    .addGroup(contentPanelLayout.createParallelGroup()
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(fileNameLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(fileNameValue)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(fileSizeValue, GroupLayout.PREFERRED_SIZE, 81, GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(creationDateLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(creationDateValue))
+                                        .addGroup(contentPanelLayout.createSequentialGroup()
+                                            .addComponent(ownerLbl)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(ownerValue))
+                                        .addComponent(locationLbl)
+                                        .addComponent(locationLbl2, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE))
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE))
+                            .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(fileNameLbl)
-                                                .addComponent(fileNameValue)
-                                                .addComponent(fileSizeValue))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(creationDateLbl)
-                                                .addComponent(creationDateValue))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(ownerLbl)
-                                                .addComponent(ownerValue))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(locationLbl)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(locationLbl2)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                                        .addContainerGap())
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(fileNameLbl)
+                                .addComponent(fileNameValue)
+                                .addComponent(fileSizeValue))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(creationDateLbl)
+                                .addComponent(creationDateValue))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(ownerLbl)
+                                .addComponent(ownerValue))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(locationLbl)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(locationLbl2)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
+                            .addContainerGap())
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -248,15 +250,22 @@ class ClientBrowserFileProperties extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
+
+                //---- shareBtn ----
+                shareBtn.setText("Edit Permissions...");
+                shareBtn.setFont(new Font("Arial", shareBtn.getFont().getStyle(), shareBtn.getFont().getSize() + 1));
+                buttonBar.add(shareBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", Font.PLAIN, okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                buttonBar.add(okButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
@@ -274,5 +283,9 @@ class ClientBrowserFileProperties extends JFrame {
 
     private void frameListeners() {
         okButton.addActionListener(e -> dispose());
+        shareBtn.addActionListener(e -> {
+            SharingSettings.r();
+        });
+
     }
 }

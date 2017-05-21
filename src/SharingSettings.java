@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -7,6 +9,8 @@ import java.awt.*;
  * @author User #1
  */
 class SharingSettings extends JFrame {
+    private static JFrame sharingSettings;
+
     public SharingSettings(String itemName) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -28,16 +32,16 @@ class SharingSettings extends JFrame {
         scrollPane1 = new JScrollPane();
         list1 = new JList();
         fileNameLbl3 = new JLabel();
-        comboBox1 = new JComboBox();
-        button1 = new JButton();
-        button3 = new JButton();
+        addUserBox = new JComboBox();
+        addUserBtn = new JButton();
+        removeUserBtn = new JButton();
         fileNameLbl2 = new JLabel();
         scrollPane2 = new JScrollPane();
         list2 = new JList();
         fileNameLbl4 = new JLabel();
-        comboBox2 = new JComboBox();
-        button2 = new JButton();
-        button4 = new JButton();
+        addGroupBox = new JComboBox();
+        addGroupBtn = new JButton();
+        removeGroupBtn = new JButton();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
@@ -65,19 +69,26 @@ class SharingSettings extends JFrame {
 
                     //---- list1 ----
                     list1.setBorder(null);
+                    list1.setFont(new Font("Arial", list1.getFont().getStyle(), list1.getFont().getSize()));
                     scrollPane1.setViewportView(list1);
                 }
 
                 //---- fileNameLbl3 ----
                 fileNameLbl3.setText("Add User:");
-                fileNameLbl3.setFont(new Font("Arial", Font.PLAIN, fileNameLbl3.getFont().getSize() + 1));
+                fileNameLbl3.setFont(new Font("Arial", fileNameLbl3.getFont().getStyle(), fileNameLbl3.getFont().getSize()));
 
-                //---- button1 ----
-                button1.setText("+");
+                //---- addUserBox ----
+                addUserBox.setFont(new Font("Arial", addUserBox.getFont().getStyle(), addUserBox.getFont().getSize()));
+                addUserBox.setEditable(true);
 
-                //---- button3 ----
-                button3.setText("-");
-                button3.setEnabled(false);
+                //---- addUserBtn ----
+                addUserBtn.setText("+");
+                addUserBtn.setFont(new Font("Arial", addUserBtn.getFont().getStyle(), addUserBtn.getFont().getSize()));
+
+                //---- removeUserBtn ----
+                removeUserBtn.setText("-");
+                removeUserBtn.setEnabled(false);
+                removeUserBtn.setFont(new Font("Arial", removeUserBtn.getFont().getStyle(), removeUserBtn.getFont().getSize()));
 
                 //---- fileNameLbl2 ----
                 fileNameLbl2.setText("Groups");
@@ -85,73 +96,82 @@ class SharingSettings extends JFrame {
 
                 //======== scrollPane2 ========
                 {
+
+                    //---- list2 ----
+                    list2.setFont(new Font("Arial", list2.getFont().getStyle(), list2.getFont().getSize()));
                     scrollPane2.setViewportView(list2);
                 }
 
                 //---- fileNameLbl4 ----
                 fileNameLbl4.setText("Add Group:");
-                fileNameLbl4.setFont(new Font("Arial", Font.PLAIN, fileNameLbl4.getFont().getSize() + 1));
+                fileNameLbl4.setFont(new Font("Arial", fileNameLbl4.getFont().getStyle(), fileNameLbl4.getFont().getSize()));
 
-                //---- button2 ----
-                button2.setText("+");
+                //---- addGroupBox ----
+                addGroupBox.setFont(new Font("Arial", addGroupBox.getFont().getStyle(), addGroupBox.getFont().getSize()));
+                addGroupBox.setEditable(true);
 
-                //---- button4 ----
-                button4.setText("-");
-                button4.setEnabled(false);
+                //---- addGroupBtn ----
+                addGroupBtn.setText("+");
+                addGroupBtn.setFont(new Font("Arial", addGroupBtn.getFont().getStyle(), addGroupBtn.getFont().getSize()));
+
+                //---- removeGroupBtn ----
+                removeGroupBtn.setText("-");
+                removeGroupBtn.setEnabled(false);
+                removeGroupBtn.setFont(new Font("Arial", removeGroupBtn.getFont().getStyle(), removeGroupBtn.getFont().getSize()));
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout.createParallelGroup()
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addComponent(fileNameLbl, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(contentPanelLayout.createParallelGroup()
-                                                .addComponent(fileNameLbl, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addComponent(fileNameLbl3, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(button1)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(button3, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
-                                                .addComponent(fileNameLbl2, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addComponent(fileNameLbl4)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(button2)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(button4, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)))
-                                        .addContainerGap(10, Short.MAX_VALUE))
+                                    .addComponent(fileNameLbl3, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(addUserBox, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(addUserBtn)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(removeUserBtn, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(fileNameLbl2, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(fileNameLbl4)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(addGroupBox, GroupLayout.PREFERRED_SIZE, 152, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(addGroupBtn)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(removeGroupBtn, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)))
+                            .addContainerGap(169, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(fileNameLbl)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(fileNameLbl3)
-                                                .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(button1)
-                                                .addComponent(button3, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(fileNameLbl2)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(fileNameLbl4)
-                                                .addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(button2)
-                                                .addComponent(button4, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
-                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(fileNameLbl)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(fileNameLbl3)
+                                .addComponent(addUserBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(addUserBtn)
+                                .addComponent(removeUserBtn, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(fileNameLbl2)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(fileNameLbl4)
+                                .addComponent(addGroupBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(addGroupBtn)
+                                .addComponent(removeGroupBtn, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -160,20 +180,20 @@ class SharingSettings extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 85, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 5), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- cancelButton ----
                 cancelButton.setText("Cancel");
                 buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
@@ -197,16 +217,16 @@ class SharingSettings extends JFrame {
     private JScrollPane scrollPane1;
     private JList list1;
     private JLabel fileNameLbl3;
-    private JComboBox comboBox1;
-    private JButton button1;
-    private JButton button3;
+    private JComboBox addUserBox;
+    private JButton addUserBtn;
+    private JButton removeUserBtn;
     private JLabel fileNameLbl2;
     private JScrollPane scrollPane2;
     private JList list2;
     private JLabel fileNameLbl4;
-    private JComboBox comboBox2;
-    private JButton button2;
-    private JButton button4;
+    private JComboBox addGroupBox;
+    private JButton addGroupBtn;
+    private JButton removeGroupBtn;
     private JPanel buttonBar;
     private JButton okButton;
     private JButton cancelButton;
