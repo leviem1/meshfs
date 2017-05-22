@@ -1,3 +1,4 @@
+import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -54,28 +55,26 @@ class ClientBrowserFileProperties extends JFrame {
         if (Reporting.getSystemOS().contains("Windows")) {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
+
         model = new DefaultListModel();
         permModel = new DefaultListModel();
 
         String fileName = itemPath.substring(itemPath.lastIndexOf("/") + 1);
 
-        String fileSize = null;
-        String creationDate = null;
+        String fileSize;
+        String creationDate;
 
         if (itemContents.get("type").equals("directory")) {
 
 
-            fileSize = JSONUtils.humanReadableByteCount(JSONUtils.totalUsedStorageOfFolder(itemPath));
-            creationDate = "2017";
+            Pair<String, String> folderProperties= JSONUtils.folderProperties(itemPath);
+            fileSize = folderProperties.getKey();
+            creationDate = folderProperties.getValue();
         }else{
             fileName = (String) itemContents.get("fileName");
             fileSize = JSONUtils.humanReadableByteCount((long)itemContents.get("fileSize"));
             creationDate = (String) itemContents.get("creationDate");
         }
-
-
-        System.out.println(fileName);
-
 
 
         JSONArray groups = (JSONArray) itemContents.get("groups");
@@ -111,6 +110,10 @@ class ClientBrowserFileProperties extends JFrame {
 
         initComponents(fileName, fileSize, creationDate);
         frameListeners();
+
+        if(userAccount.equals("guest")){
+            shareBtn.setEnabled(false);
+        }
 
         String fileNameLbl = fileName;
         if (fileName.length() > 25) {

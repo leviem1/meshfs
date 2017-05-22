@@ -11,8 +11,8 @@ new FormModel {
 			"$sizePolicy": 1
 			"title": "MeshFS - Account Control Center"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l:::p {comp buttonBar:::p:309:p, seq {comp changePasswordBtn:::p::p, space :::x, comp deleteAccount:::p::p}, seq {comp googleAccountBtn:::p::p, space :::x, comp changeGroupBtn:::p:134:p}}, space :0:8:x}, seq t {par t {comp titleLbl::l:::x, comp titleLbl2:::::x}, space :p:49:p}}}}"
-				"$verticalGroup": "par l {seq {space :::p, comp titleLbl2:::p::p, space :::p, comp titleLbl:::p::p, space :p:24:p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space :::p, par b {comp googleAccountBtn::b:p::p, comp changeGroupBtn::b:p::p}, space :::x, comp buttonBar:::p:44:p}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l:::p {comp buttonBar:::p::p, seq {comp changePasswordBtn:::p::p, space :::x, comp deleteAccount:::p::p}, seq {comp googleAccountBtn:::p::p, space :::x, comp changeGroupBtn:::p:134:p}}, space :0:8:x}, seq t {par t {comp titleLbl::l:::x, comp titleLbl2:::::x}, space :p:49:p}}}}"
+				"$verticalGroup": "par l {seq {space :::p, comp titleLbl2:::p::p, space :::p, comp titleLbl:::p::p, space :p:24:p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space :::p, par b {comp googleAccountBtn::b:p::p, comp changeGroupBtn::b:p::p}, space :::x, comp buttonBar:::p::p}}"
 			} ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -28,11 +28,9 @@ new FormModel {
 					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
 					"horizontalAlignment": 0
 				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0:1.0, 80"
-					"$rowSpecs": "0"
-					"$hGap": 5
-					"$vGap": 5
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :229:229:p, comp closeBtn:::p:80:p}}"
+					"$verticalGroup": "par l {seq {space :1:1:p, comp closeBtn:::p::p}}"
 				} ) {
 					name: "buttonBar"
 					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
@@ -40,8 +38,6 @@ new FormModel {
 						name: "closeBtn"
 						"text": "Close"
 						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 1
 					} )
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {

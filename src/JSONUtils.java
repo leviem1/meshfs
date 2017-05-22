@@ -491,7 +491,7 @@ class JSONUtils {
         return itemLocationString;
     }
 
-    static Pair<String, String> FolderProperties(String folderLocation){
+    static Pair<String, String> folderProperties(String folderLocation){
         folderLocation = catalogStringFixer(folderLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         String[] folders = folderLocation.split("/");
@@ -537,7 +537,7 @@ class JSONUtils {
 
             }
         }
-        return folderSize;
+        return properties;
     }
 
     private static DefaultMutableTreeNode JTreeBuilderRecursive(JSONObject jsonObject, DefaultMutableTreeNode branch) {
