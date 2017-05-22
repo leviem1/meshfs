@@ -19,6 +19,7 @@ class ClientBrowserFileProperties extends JFrame {
     private ArrayList<String> groupData;
     private ArrayList<String> adminData;
     private ArrayList<String> blacklistData;
+    private String itemPath;
 
 
     //GEN-BEGIN:variables
@@ -42,10 +43,11 @@ class ClientBrowserFileProperties extends JFrame {
     private JLabel titleLbl;
     //GEN-END:variables
 
-    private ClientBrowserFileProperties(JSONObject itemContents, String userAccount, String serverAddress, int port) {
+    private ClientBrowserFileProperties(JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath) {
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
+        this.itemPath = itemPath;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -125,8 +127,8 @@ class ClientBrowserFileProperties extends JFrame {
         model.add(pos, "Wholes: " + wholes);
     }
 
-    public static void run(JFrame sender, JSONObject itemContents, String userAccount, String serverAddress, int port) {
-        clientBrowserFileProperties = new ClientBrowserFileProperties(itemContents, userAccount, serverAddress, port);
+    public static void run(JFrame sender, JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath) {
+        clientBrowserFileProperties = new ClientBrowserFileProperties(itemContents, userAccount, serverAddress, port, itemPath);
         CenterWindow.centerOnWindow(sender, clientBrowserFileProperties);
         clientBrowserFileProperties.setVisible(true);
     }
@@ -300,7 +302,7 @@ class ClientBrowserFileProperties extends JFrame {
     private void frameListeners() {
         okButton.addActionListener(e -> dispose());
         shareBtn.addActionListener(e -> {
-            SharingSettings.run(clientBrowserFileProperties, userAccount, serverAddress, port, groupData, adminData);
+            SharingSettings.run(clientBrowserFileProperties, userAccount, serverAddress, port, groupData, adminData, itemPath);
         });
 
     }

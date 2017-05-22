@@ -364,8 +364,7 @@ class ClientBrowser extends JFrame {
                 });
         tree1.addTreeSelectionListener(
                 e -> {
-                    DefaultMutableTreeNode node =
-                            (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                     if (node == null) {
                         return;
                     }
@@ -445,7 +444,7 @@ class ClientBrowser extends JFrame {
                     JSONObject jsonObject = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
                     JSONObject fileProperties = JSONUtils.getItemContents(jsonObject, jsonPath);
 
-                    ClientBrowserFileProperties.run(clientBrowser, fileProperties, userAccount, serverAddress, port);
+                    ClientBrowserFileProperties.run(clientBrowser, fileProperties, userAccount, serverAddress, port, jsonPath);
                 });
         removeBtn.addActionListener(
                 e -> {

@@ -204,6 +204,11 @@ class ServerInit implements Runnable {
 
                         break;
 
+                    case "120": //120: Set item permissions
+                        setItemPermissions(requestParts[2], requestParts[3], requestParts[4], requestParts[5], requestParts[6], out);
+
+                        break;
+
                     default:
                         badRequest(out, request, "Invalid Request");
                         break;
@@ -654,6 +659,27 @@ class ServerInit implements Runnable {
         out.close();
         dos.close();
     }
+
+    private void setItemPermissions(String itemLocation, String groups, String add, String edit, String view, Socket client) throws IOException {
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+        ArrayList<String> newGroups = new ArrayList<>();
+
+
+        for(String group : groups.replace("[", "").replace("]", "").split(",")){
+            newGroups.add(group.trim());
+        }
+
+        JSONUtils.editPermissions(itemLocation, newGroups, Boolean.valueOf(add), Boolean.valueOf(edit), Boolean.valueOf(view));
+
+        out.println("201");
+        //out.println(userType.toString() + "\n");
+
+        out.close();
+        dos.close();
+    }
+
 
 
     private void badRequest(Socket client, String request, String message) {

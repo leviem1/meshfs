@@ -616,4 +616,19 @@ final class FileClient {
 
     }
 
+    static boolean editPermissions(String serverAddress, int port, String itemLocation, String groups, String add, String edit, String view, String uuid) throws MalformedRequestException, IOException {
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "|" + add + "|" + edit + "|" + view +"\n");
+        if ((input.readLine().trim()).equals("202")) {
+            client.close();
+        }else{
+            return true;
+        }
+        client.close();
+        return false;
+    }
+
 }

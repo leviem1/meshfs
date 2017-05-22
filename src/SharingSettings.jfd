@@ -5,84 +5,48 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
-			"title": "filename - Sharing Settings"
+			"title": "Sharing"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp fileNameLbl::l:p:74:p, comp scrollPane1::l:p:319:p, seq l {comp fileNameLbl3:::p:74:p, space :::p, comp addUserBox:::p:147:p, space :::p, comp addUserBtn:::p::p, space :::p, comp removeUserBtn:::p:40:p}, comp fileNameLbl2::l:p:74:p, comp scrollPane2::l:p:319:p, seq l {comp fileNameLbl4:::p::p, space :::p, comp addGroupBox:::p:152:p, space :::p, comp addGroupBtn:::p::p, space :::p, comp removeGroupBtn:::p:40:p}}, space ::177:x}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp fileNameLbl:::p::p, space :::p, comp scrollPane1:::p:105:p, space :::p, par b {comp fileNameLbl3::b:p::p, comp addUserBox::b:p::p, comp addUserBtn::b:p::p, comp removeUserBtn::b:p:32:p}, space :::p, comp fileNameLbl2:::p::p, space :::p, comp scrollPane2:::p::p, space :::p, par b {comp fileNameLbl4::b:p::p, comp addGroupBox::b:p::p, comp addGroupBtn::b:p::p, comp removeGroupBtn::b:p:32:p}, space :::x}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp fileNameLbl::l:p:159:p, par t:l::p {seq l {comp fileNameLbl4:::p::p, space :::p, comp addGroupBox:::::x, space :::p, comp addGroupBtn:::p::p, space :::p, comp removeGroupBtn:::p:40:p}, comp scrollPane2::l:p:319:p}}, space ::25:x}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp fileNameLbl:::p::p, space :::p, comp scrollPane2:::p::p, space s:::p, par b {comp fileNameLbl4::b:p::p, comp addGroupBtn::b:p::p, comp removeGroupBtn::b:p:32:p, comp addGroupBox::b:p::p}, space ::15:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "fileNameLbl"
-						"text": "Users"
-						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 131073, 1, false )
-					} )
-					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "scrollPane1"
-						add( new FormComponent( "javax.swing.JList" ) {
-							name: "list1"
-							"border": sfield com.jformdesigner.model.FormObject NULL_VALUE
-							"font": &SwingDerivedFont1 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 0, false )
-						} )
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "fileNameLbl3"
-						"text": "Add User:"
-						"font": #SwingDerivedFont1
-					} )
-					add( new FormComponent( "javax.swing.JComboBox" ) {
-						name: "addUserBox"
-						"font": #SwingDerivedFont1
-						"editable": true
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "addUserBtn"
-						"text": "+"
-						"font": #SwingDerivedFont1
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "removeUserBtn"
-						"text": "-"
-						"enabled": false
-						"font": #SwingDerivedFont1
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "fileNameLbl2"
-						"text": "Groups"
-						"font": #SwingDerivedFont0
+						"text": "Users / Groups"
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 131073, 1, false )
 					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane2"
 						add( new FormComponent( "javax.swing.JList" ) {
-							name: "list2"
-							"font": #SwingDerivedFont1
+							name: "groupsList"
+							"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 0, false )
 							auxiliary() {
-								"JavaCodeGenerator.customCreateCode": "new JList(groups.toArray());"
+								"JavaCodeGenerator.customCreateCode": "new JList(groupsModel);"
 							}
 						} )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "fileNameLbl4"
-						"text": "Add Group:"
-						"font": #SwingDerivedFont1
+						"text": "Add:"
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JComboBox" ) {
 						name: "addGroupBox"
-						"font": #SwingDerivedFont1
-						"editable": true
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "addGroupBtn"
 						"text": "+"
-						"font": #SwingDerivedFont1
+						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "removeGroupBtn"
 						"text": "-"
-						"enabled": false
-						"font": #SwingDerivedFont1
+						"font": #SwingDerivedFont0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -125,7 +89,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 360, 510 )
+			"size": new java.awt.Dimension( 251, 270 )
 		} )
 	}
 }
