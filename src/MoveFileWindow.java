@@ -5,8 +5,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * @author Mark Hedrick
@@ -77,16 +77,20 @@ class MoveFileWindow extends JFrame {
 
     private void initComponents() {
         boolean userType = false;
-        try {
-            if (FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin"))
-                userType = true;
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if (userAccount.equals("admin")) userType = true;
+
         DefaultMutableTreeNode tree = JSONUtils.JTreeBuilder(catalogObj, userType);
-        //GEN-BEGIN:initComponents
+
+        Enumeration<DefaultMutableTreeNode> e = tree.depthFirstEnumeration();
+        while (e.hasMoreElements()) {
+            DefaultMutableTreeNode node = e.nextElement();
+            if(node.toString().equals(fileName)){
+                if(node.getParent().getChildCount() == 1){
+                    node.getPreviousNode().add(new DefaultMutableTreeNode("(no files)"));
+                }
+                node.removeFromParent();
+            }
+        }        //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
@@ -217,13 +221,12 @@ class MoveFileWindow extends JFrame {
                                     .replaceAll("[ ]*, ", "/")
                                     + "/";
                     try {
-                        if (currentJsonPath.equals(newJsonPath.substring(0, newJsonPath.lastIndexOf("/")))) {
+                        if (currentJsonPath.equals(newJsonPath.substring(0, newJsonPath.lastIndexOf("/"))+ "/" + fileName)) {
                             JOptionPane.showMessageDialog(
                                     moveFileWindow,
                                     "Cannot move directory to this location!",
                                     "MeshFS - Error",
                                     JOptionPane.ERROR_MESSAGE);
-                            tree1.setSelectionPath(null);
                             okButton.setEnabled(false);
                             return;
                         }
