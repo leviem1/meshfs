@@ -125,4 +125,13 @@ class FileUtils {
     static long getModificationDate(String path) {
         return new File(path).lastModified();
     }
+
+    static void emptyRepo(){
+        File repository = new File(MeshFS.properties.getProperty("repository"));
+        for(File file : repository.listFiles()){
+            if(file.getName().equals(".manifest.json") && file.getName().equals(".catalog.json") && file.getName().equals(".auth")){
+                file.delete();
+            }
+        }
+    }
 }
