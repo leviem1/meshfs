@@ -124,10 +124,10 @@ class JSONUtils {
             ipArray.addAll(stripes.get(stripe));
             if (stripe == 0) {
 
-                objChild.put("whole", ipArray.clone());
+                objChild.put("whole_w", ipArray.clone());
             } else {
 
-                objChild.put("stripe" + "_" + String.valueOf(stripe - 1), ipArray.clone());
+                objChild.put("stripe_" + String.valueOf(stripe - 1), ipArray.clone());
             }
             ipArray.clear();
         }
@@ -658,7 +658,7 @@ class JSONUtils {
                     for (Object infoKey : file.keySet()) {
                         if (infoKey.toString().contains("_")) {
                             for (Object MACAddress : (JSONArray) file.get(infoKey)) {
-                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), infoKey.toString(), true);
+                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), file.get("alphanumericName").toString() + infoKey.toString().substring(infoKey.toString().indexOf("_")), true);
                             }
                         }
                     }
