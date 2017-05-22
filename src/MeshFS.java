@@ -145,6 +145,7 @@ class MeshFS {
                                         FileClient.sendReport(
                                                 properties.getProperty("masterIP"),
                                                 Integer.parseInt(properties.getProperty("portNumber")));
+                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".auth");
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest.json");
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog.json");
                                     } catch (IOException | MalformedRequestException | FileTransferException ioe) {
