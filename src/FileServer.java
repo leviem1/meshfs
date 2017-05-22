@@ -279,9 +279,6 @@ class ServerInit implements Runnable {
         if (physical) {
             FileUtils.removeFile(filePath);
         } else {
-            JSONObject jsonObj =
-                    JSONUtils.getJSONObject(
-                            MeshFS.properties.getProperty("repository") + ".catalog.json");
             try {
                 JSONUtils.deleteItem(filePath);
             } catch (MalformedRequestException e) {
