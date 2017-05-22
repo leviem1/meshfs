@@ -114,8 +114,6 @@ class JSONUtils {
         itemDestinationLocation = catalogStringFixer(itemDestinationLocation);
         JSONObject catalog = getJSONObject(JSONFilePath);
 
-        catalog.replace("currentName", alphanumericName);
-
 
         JSONObject objChild = new JSONObject();
         JSONArray ipArray = new JSONArray();
