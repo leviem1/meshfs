@@ -239,7 +239,7 @@ class DISTAL {
         }
         catalog.replace("currentName", newName.toString());
         JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
-        return newName.toString();
+        return name;
     }
 
     private static void sendFiles(
