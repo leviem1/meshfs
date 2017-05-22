@@ -667,8 +667,7 @@ class ServerInit implements Runnable {
             newGroups.add(group.trim());
         }
 
-        JSONUtils.editPermissions(itemLocation, newGroups, Boolean.valueOf(add), Boolean.valueOf(edit), Boolean.valueOf(view));
-
+        JSONUtils.editPermissions(itemLocation, newGroups, new ArrayList<>());
         out.println("201");
 
         out.close();

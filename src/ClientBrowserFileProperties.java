@@ -57,9 +57,26 @@ class ClientBrowserFileProperties extends JFrame {
         model = new DefaultListModel();
         permModel = new DefaultListModel();
 
-        String fileName = (String) itemContents.get("fileName");
-        String fileSize = (String) itemContents.get("fileSize");
-        String creationDate = (String) itemContents.get("creationDate");
+        String fileName = itemPath.substring(itemPath.lastIndexOf("/") + 1);
+
+        String fileSize = null;
+        String creationDate = null;
+
+        if (itemContents.get("type").equals("directory")) {
+
+
+            fileSize = JSONUtils.humanReadableByteCount(JSONUtils.totalUsedStorageOfFolder(itemPath));
+            creationDate = "2017";
+        }else{
+            fileName = (String) itemContents.get("fileName");
+            fileSize = JSONUtils.humanReadableByteCount((long)itemContents.get("fileSize"));
+            creationDate = (String) itemContents.get("creationDate");
+        }
+
+
+        System.out.println(fileName);
+
+
 
         JSONArray groups = (JSONArray) itemContents.get("groups");
         JSONArray admins = (JSONArray) itemContents.get("admins");

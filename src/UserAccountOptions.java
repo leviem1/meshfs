@@ -46,9 +46,20 @@ class UserAccountOptions extends JFrame {
         titleLbl.setText(
                 "Welcome " + userAccount.substring(0, 1).toUpperCase() + userAccount.substring(1) + "!");
         setTitle("MeshFS - Account Options");
+        String userType = null;
+        try {
+            userType = FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
+        } catch (MalformedRequestException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (userAccount.equals("guest")) {
             changePasswordBtn.setEnabled(false);
             changePasswordBtn.setToolTipText("Changing the guest password is not allowed");
+            changeGroupBtn.setEnabled(false);
+            changeGroupBtn.setToolTipText("Changing guest groups is not allowed");
+        } else if(!userType.equals("admin")){
             changeGroupBtn.setEnabled(false);
             changeGroupBtn.setToolTipText("Changing guest groups is not allowed");
         }

@@ -1,3 +1,4 @@
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,7 +21,8 @@ import java.util.TimerTask;
 /**
  * @author Mark Hedrick
  */
-class ClientBrowser extends JFrame {
+class
+ClientBrowser extends JFrame {
 
     private static JFrame clientBrowser;
     private final String serverAddress;
@@ -368,6 +370,14 @@ class ClientBrowser extends JFrame {
                         return;
                     }
 
+
+                    if(node.toString().equals(userAccount) || node.toString().equals("Shared") || node.toString().equals("root")){
+                        tree1.setSelectionPath(null);
+                        return;
+                    }
+
+
+
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
                     StringBuilder treePath = new StringBuilder();
                     for (Object item : treeList) {
@@ -385,6 +395,9 @@ class ClientBrowser extends JFrame {
                         } else if (type.toString().equals("tempFile")) {
                             clientBrowserButtonModifier(false);
                             tree1.setSelectionPath(null);
+                        } else if (type.toString().equals("directory")){
+                            clientBrowserButtonModifier(true);
+                            propertiesBtn.setEnabled(true);
                         } else {
                             if (node.getChildCount() != 0) {
                                 if (!(node.toString().equals(userAccount))) {
