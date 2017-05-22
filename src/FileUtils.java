@@ -95,8 +95,8 @@ class FileUtils {
      * @param path path of the file to delete
      * @return true on success, false on failure
      */
-    static boolean removeFile(String path) {
-        return new File(path).delete();
+    static void removeFile(String path) {
+        new File(path).delete();
     }
 
     static String getMD5Hash(String path) throws IOException, NoSuchAlgorithmException {
@@ -111,10 +111,10 @@ class FileUtils {
 
         byte[] mdData = md.digest();
 
-        StringBuffer hash = new StringBuffer("");
+        StringBuilder hash = new StringBuilder("");
 
-        for (int i = 0; i < mdData.length; i++) {
-            hash.append(Integer.toString((mdData[i] & 0xff) + 0x100, 16).substring(1));
+        for (byte aMdData : mdData) {
+            hash.append(Integer.toString((aMdData & 0xff) + 0x100, 16).substring(1));
         }
 
         fis.close();

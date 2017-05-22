@@ -331,7 +331,6 @@ class ClientBrowser extends JFrame {
                         } catch (MalformedRequestException e1) {
                             e1.printStackTrace();
                         } catch (IOException e1) {
-                            e1.printStackTrace();
                         }
                         Map<String, String> folderMap = JSONUtils.getMapOfFolderContents(userFiles, null);
 
@@ -370,12 +369,12 @@ class ClientBrowser extends JFrame {
                     }
 
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String treePath = "";
+                    StringBuilder treePath = new StringBuilder();
                     for (Object item : treeList) {
-                        treePath += (item.toString() + "/");
+                        treePath.append(item.toString()).append("/");
                     }
-                    treePath = treePath.substring(0, treePath.length() - 1);
-                    JSONObject contents = JSONUtils.getItemContents(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), JSONUtils.catalogStringFixer(treePath));
+                    treePath = new StringBuilder(treePath.substring(0, treePath.length() - 1));
+                    JSONObject contents = JSONUtils.getItemContents(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), JSONUtils.catalogStringFixer(treePath.toString()));
                     Object type = contents.get("type");
                     try {
                         if (node.toString().equals("(no files)")) {
@@ -436,26 +435,26 @@ class ClientBrowser extends JFrame {
                     DefaultMutableTreeNode node =
                             (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath = "";
+                    StringBuilder jsonPath = new StringBuilder();
                     for (Object item : treeList) {
-                        jsonPath += (item.toString() + "/");
+                        jsonPath.append(item.toString()).append("/");
                     }
-                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
                     JSONObject jsonObject = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
-                    JSONObject fileProperties = JSONUtils.getItemContents(jsonObject, jsonPath);
+                    JSONObject fileProperties = JSONUtils.getItemContents(jsonObject, jsonPath.toString());
 
-                    ClientBrowserFileProperties.run(clientBrowser, fileProperties, userAccount, serverAddress, port, jsonPath);
+                    ClientBrowserFileProperties.run(clientBrowser, fileProperties, userAccount, serverAddress, port, jsonPath.toString());
                 });
         removeBtn.addActionListener(
                 e -> {
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath = "";
+                    StringBuilder jsonPath = new StringBuilder();
                     for (Object item : treeList) {
-                        jsonPath += (item.toString() + "/");
+                        jsonPath.append(item.toString()).append("/");
                     }
-                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
                     try {
-                        FileClient.deleteFile(serverAddress, port, jsonPath);
+                        FileClient.deleteFile(serverAddress, port, jsonPath.toString());
                         catalogCheck();
                     } catch (IOException ignored) {
                     } catch (MalformedRequestException e1) {
@@ -465,13 +464,13 @@ class ClientBrowser extends JFrame {
         duplicateBtn.addActionListener(
                 e -> {
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath = "";
+                    StringBuilder jsonPath = new StringBuilder();
                     for (Object item : treeList) {
-                        jsonPath += (item.toString() + "/");
+                        jsonPath.append(item.toString()).append("/");
                     }
-                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
                     try {
-                        FileClient.duplicateFile(serverAddress, port, jsonPath);
+                        FileClient.duplicateFile(serverAddress, port, jsonPath.toString());
                         catalogCheck();
                     } catch (IOException ignored) {
                     } catch (MalformedRequestException e1) {
@@ -481,14 +480,14 @@ class ClientBrowser extends JFrame {
         moveBtn.addActionListener(
                 e -> {
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath = "";
+                    StringBuilder jsonPath = new StringBuilder();
                     for (Object item : treeList) {
-                        jsonPath += (item.toString() + "/");
+                        jsonPath.append(item.toString()).append("/");
                     }
-                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
                     MoveFileWindow.run(
                             tree1.getLastSelectedPathComponent().toString(),
-                            jsonPath,
+                            jsonPath.toString(),
                             serverAddress,
                             port,
                             clientBrowser,
@@ -511,16 +510,16 @@ class ClientBrowser extends JFrame {
                     DefaultMutableTreeNode node =
                             (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-                    String jsonPath = "";
+                    StringBuilder jsonPath = new StringBuilder();
                     for (Object item : treeList) {
-                        jsonPath += (item.toString() + "/");
+                        jsonPath.append(item.toString()).append("/");
                     }
-                    jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
                     RenameFileWindow.run(
                             serverAddress,
                             port,
                             clientBrowser,
-                            jsonPath,
+                            jsonPath.toString(),
                             node.toString(),
                             userAccount,
                             catalogFile);
@@ -539,13 +538,13 @@ class ClientBrowser extends JFrame {
     private void downloadFile(String path) {
         try {
             java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-            String jsonPath = "";
+            StringBuilder jsonPath = new StringBuilder();
             for (Object item : treeList) {
-                jsonPath += (item.toString() + "/");
+                jsonPath.append(item.toString()).append("/");
             }
-            jsonPath = jsonPath.substring(0, jsonPath.length() - 1);
+            jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
             JSONUtils.pullFile(
-                    jsonPath,
+                    jsonPath.toString(),
                     path,
                     path.substring(path.lastIndexOf(File.separator)),
                     serverAddress,

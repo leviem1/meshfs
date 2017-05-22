@@ -13,7 +13,7 @@ class GroupManager extends JFrame {
 
     public GroupManager(JComboBox groupBox) {
 
-        this.groupBox = groupBox;
+        GroupManager.groupBox = groupBox;
         model = new DefaultListModel();
         if (groupBox.getItemCount() > 0) {
             for (int x = 0; x < groupBox.getModel().getSize(); x++) {

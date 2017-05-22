@@ -120,8 +120,6 @@ class MeshFS {
                                             JSONUtils.deleteManifestItem(computer.toString());
                                         } catch (IOException e) {
                                             e.printStackTrace();
-                                        } catch (MalformedRequestException e) {
-                                            e.printStackTrace();
                                         }
                                         System.out.println(computer.toString() + " was removed from the manifest");
                                     }

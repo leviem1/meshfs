@@ -57,8 +57,8 @@ class ChangeUserPassword extends JFrame {
     }
 
     public static void run(
-            JFrame sender, String userAccount, String serverAddress, int port, JFrame parentSender, boolean previouRunType) {
-        changeUserPassword = new ChangeUserPassword(userAccount, serverAddress, port, parentSender, previouRunType);
+            JFrame sender, String userAccount, String serverAddress, int port, JFrame parentSender, boolean previousRunType) {
+        changeUserPassword = new ChangeUserPassword(userAccount, serverAddress, port, parentSender, previousRunType);
         CenterWindow.centerOnWindow(sender, changeUserPassword);
         changeUserPassword.setVisible(true);
     }

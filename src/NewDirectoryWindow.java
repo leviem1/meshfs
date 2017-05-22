@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author Mark Hedrick
@@ -238,25 +237,6 @@ class NewDirectoryWindow extends JFrame {
                 });
     }
 
-    private DefaultMutableTreeNode readFolder(
-            String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch) {
-        Map<String, String> folderContents = JSONUtils.getMapOfFolderContents(jsonObj, folderLocation, null);
-        if (!(folderContents.values().contains("directory"))) {
-            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no folders)");
-            branch.add(leaf);
-        } else {
-            for (String name : folderContents.keySet()) {
-                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
-                leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
-                if (leaf.getAllowsChildren()) {
-                    String folderLocation2 = folderLocation + "/" + name;
-                    readFolder(folderLocation2, jsonObj, leaf);
-                    branch.add(leaf);
-                }
-            }
-        }
-        return branch;
-    }
 
     private void checkDirectoryName() {
         DefaultMutableTreeNode node =

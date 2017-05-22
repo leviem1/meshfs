@@ -323,7 +323,7 @@ final class FileClient {
     static void receiveReport(String serverAddress, int port) throws IOException, MalformedRequestException {
         String response;
         String reportPart;
-        String reportFull = "";
+        StringBuilder reportFull = new StringBuilder();
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -339,9 +339,9 @@ final class FileClient {
             while (true) {
                 reportPart = input.readLine();
                 if ((reportPart == null) || (reportPart.equals("\n"))) break;
-                reportFull = reportFull + reportPart + "\n";
+                reportFull.append(reportPart).append("\n");
             }
-            reportFull = reportFull.trim();
+            reportFull = new StringBuilder(reportFull.toString().trim());
 
             JSONObject manifest = new JSONObject();
             if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
@@ -349,7 +349,7 @@ final class FileClient {
                         JSONUtils.getJSONObject(
                                 MeshFS.properties.getProperty("repository") + ".manifest.json");
             }
-            JSONArray reportArray = Reporting.splitter(reportFull);
+            JSONArray reportArray = Reporting.splitter(reportFull.toString());
 
             manifest.put(reportArray.get(0), reportArray.get(1));
             JSONUtils.writeJSONObject(

@@ -14,12 +14,14 @@ class Crypt {
     public static String generateEncryptedPass(String username, String password) {
         MessageDigest messageDigest = null;
 
+        StringBuilder passwordBuilder = new StringBuilder(password);
         for (int x = 0; x < username.length() - 1; x += 2) {
             try {
-                password += username.charAt(x);
+                passwordBuilder.append(username.charAt(x));
             } catch (IndexOutOfBoundsException ignored) {
             }
         }
+        password = passwordBuilder.toString();
 
         try {
             messageDigest = MessageDigest.getInstance("MD5");

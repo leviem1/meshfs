@@ -290,7 +290,9 @@ class ChangeUserGroup extends JFrame {
 
         System.out.println("My group: " + myGroups);
         System.out.println("All groups: " + allGroups);
+        assert myGroups != null;
         java.util.List<String> myGroupsList = Arrays.asList(myGroups.split(", "));
+        assert allGroups != null;
         java.util.List<String> allGroupsList = Arrays.asList(allGroups.split(", "));
 
 

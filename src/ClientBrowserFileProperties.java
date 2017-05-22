@@ -67,26 +67,27 @@ class ClientBrowserFileProperties extends JFrame {
 
         groupData = new ArrayList<>();
         if (groups != null) {
-            for (int i = 0; i < groups.size(); i++) {
-                groupData.add((String) groups.get(i));
+            for (Object group : groups) {
+                groupData.add((String) group);
             }
         }
         adminData = new ArrayList<>();
         if (admins != null) {
-            for (int i = 0; i < admins.size(); i++) {
-                adminData.add((String) admins.get(i));
+            for (Object admin : admins) {
+                adminData.add((String) admin);
             }
         }
 
         blacklistData = new ArrayList<>();
         if (blacklist != null) {
-            for (int i = 0; i < blacklist.size(); i++) {
-                blacklistData.add((String) blacklist.get(i));
+            for (Object aBlacklist : blacklist) {
+                blacklistData.add((String) aBlacklist);
             }
         }
 
         permModel.add(permModel.getSize(), "Groups: " + groupData.toString());
         permModel.add(permModel.getSize(), "Admins: " + adminData.toString());
+        assert blacklist != null;
         permModel.add(permModel.getSize(), "Blacklisted Users: " + blacklist.toString());
 
         this.setTitle("Properties - " + fileName);
@@ -301,9 +302,7 @@ class ClientBrowserFileProperties extends JFrame {
 
     private void frameListeners() {
         okButton.addActionListener(e -> dispose());
-        shareBtn.addActionListener(e -> {
-            SharingSettings.run(clientBrowserFileProperties, userAccount, serverAddress, port, groupData, adminData, itemPath);
-        });
+        shareBtn.addActionListener(e -> SharingSettings.run(clientBrowserFileProperties, userAccount, serverAddress, port, groupData, adminData, itemPath));
 
     }
 }

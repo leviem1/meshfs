@@ -224,8 +224,6 @@ class UserAccountOptions extends JFrame {
                     }*/
                 });
         changeGroupBtn.addActionListener(
-                e -> {
-                    ChangeUserGroup.run(userAccountOptions, userAccount, serverAddress, port);
-                });
+                e -> ChangeUserGroup.run(userAccountOptions, userAccount, serverAddress, port));
     }
 }

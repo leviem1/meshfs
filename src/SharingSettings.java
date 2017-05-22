@@ -31,14 +31,10 @@ class SharingSettings extends JFrame {
         if (Reporting.getSystemOS().contains("Windows")) {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
-
         groupsModel = new DefaultListModel();
-
         initComponents();
         frameListeners();
-
         String[] serverGroups = null;
-
         try {
             serverGroups = FileClient.getGroups(serverAddress, port, MeshFS.properties.getProperty("uuid")).split(",");
         } catch (MalformedRequestException e) {
@@ -46,19 +42,15 @@ class SharingSettings extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
         for (Object groupName : groups) {
             groupsModel.addElement(groupName);
         }
-        for (String groupName : serverGroups) {
+        for (String groupName : serverGroups != null ? serverGroups : new String[0]) {
             if (!groups.contains(groupName)) {
                 addGroupBox.addItem(groupName.trim());
 
             }
         }
-
-
     }
 
     private void initComponents() {

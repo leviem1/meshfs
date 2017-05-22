@@ -82,18 +82,18 @@ class ServerInit implements Runnable {
     @SuppressWarnings("deprecation")
     private String receiveRequest(Socket client) {
         String requestPart;
-        String requestFull = "";
+        StringBuilder requestFull = new StringBuilder();
         try {
             DataInputStream input = new DataInputStream(client.getInputStream());
 
             while (((requestPart = input.readLine()) != null) && (requestFull.length() < 2048)) {
                 if (requestPart.equals("")) break;
-                requestFull = requestFull + requestPart;
+                requestFull.append(requestPart);
             }
 
-            return requestFull;
+            return requestFull.toString();
         } catch (IOException ioe) {
-            return requestFull;
+            return requestFull.toString();
         }
     }
 
@@ -233,7 +233,7 @@ class ServerInit implements Runnable {
 
     private synchronized void receiveReport(Socket client) throws IOException {
         String reportPart;
-        String reportFull = "";
+        StringBuilder reportFull = new StringBuilder();
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
@@ -242,9 +242,9 @@ class ServerInit implements Runnable {
         while (true) {
             reportPart = input.readLine();
             if ((reportPart == null) || (reportPart.equals("\n"))) break;
-            reportFull = reportFull + reportPart + "\n";
+            reportFull.append(reportPart).append("\n");
         }
-        reportFull = reportFull.trim();
+        reportFull = new StringBuilder(reportFull.toString().trim());
 
         JSONObject manifest = new JSONObject();
         if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
@@ -252,7 +252,7 @@ class ServerInit implements Runnable {
                     JSONUtils.getJSONObject(
                             MeshFS.properties.getProperty("repository") + ".manifest.json");
         }
-        JSONArray reportArray = Reporting.splitter(reportFull);
+        JSONArray reportArray = Reporting.splitter(reportFull.toString());
 
         manifest.put(reportArray.get(0), reportArray.get(1));
         JSONUtils.writeJSONObject(
@@ -569,9 +569,7 @@ class ServerInit implements Runnable {
         }
         for (UserAccounts account : accounts) {
             if (account.getUsername().equals(userAccount)) {
-                for (String group : account.getGroups()) {
-                    groups.add(group);
-                }
+                groups.addAll(account.getGroups());
             }
         }
         out.println("201");
@@ -592,9 +590,7 @@ class ServerInit implements Runnable {
             e.printStackTrace();
         }
         for (UserAccounts account : accounts) {
-            for (String group : account.getGroups()) {
-                groups.add(group);
-            }
+            groups.addAll(account.getGroups());
         }
 
         out.println("201");
@@ -654,7 +650,7 @@ class ServerInit implements Runnable {
             }
         }
         out.println("201");
-        out.println(userType.toString() + "\n");
+        out.println(userType + "\n");
 
         out.close();
         dos.close();
