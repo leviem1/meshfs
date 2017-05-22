@@ -14,6 +14,9 @@ class MeshFS {
     static boolean configure = false;
     static boolean isMaster = false;
     static MulticastServer multicastServer;
+    static Timer manifestTimer = new Timer();
+    static Timer discoveryBroadcastTimer = new Timer();
+    static Timer scheduledReportingTimer = new Timer();
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
@@ -66,7 +69,6 @@ class MeshFS {
                     }
                 };
 
-                Timer discoveryBroadcastTimer = new Timer();
                 discoveryBroadcastTimer.scheduleAtFixedRate(discoveryBroadcast, 0, 3000);
 
                 if (!catalog.exists()) {
@@ -128,7 +130,7 @@ class MeshFS {
                                 }
                             }
                         };
-                Timer manifestTimer = new Timer();
+
                 manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
             } else {
                 TimerTask scheduledReporting =
@@ -144,15 +146,13 @@ class MeshFS {
                                                 Integer.parseInt(properties.getProperty("portNumber")));
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest.json");
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog.json");
-                                    } catch (IOException | MalformedRequestException ioe) {
+                                    } catch (IOException | MalformedRequestException | FileTransferException ioe) {
                                         ioe.printStackTrace();
-                                    } catch (FileTransferException e) {
-                                        e.printStackTrace();
                                     }
                                 }
                             }
                         };
-                java.util.Timer scheduledReportingTimer = new java.util.Timer();
+
                 scheduledReportingTimer.scheduleAtFixedRate(scheduledReporting, 0, 30000);
             }
 

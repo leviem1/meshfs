@@ -1,8 +1,12 @@
+import javafx.scene.shape.MeshView;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Created by Levi Muniz on 3/1/17.
@@ -69,7 +73,9 @@ class MulticastServerInit implements Runnable {
     private Set<InetAddress> reportedDown = new LinkedHashSet<>();
     private Timer voteCastScheduler = new Timer();
     private boolean masterDown = false;
-    static List<String> foundMasters = new ArrayList();
+    private boolean recordVotes = false;
+    static List<String> foundMasters = new ArrayList<>();
+    private HashMap<String, String> newMasterVotes = new HashMap<>();
 
     MulticastServerInit(DatagramSocket socket) {
         this.socket = socket;
@@ -85,6 +91,7 @@ class MulticastServerInit implements Runnable {
         reportedDown.add(address);
         if ((reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest").size() / 2) && !masterDown) {
             masterDown = true;
+            recordVotes = true;
             LinkedHashMap<String, Integer> speeds = new LinkedHashMap();
             LinkedHashMap<String, Integer> sortedSpeeds = new LinkedHashMap();
             sortedSpeeds.put("temp", -1);
@@ -137,11 +144,173 @@ class MulticastServerInit implements Runnable {
             };
 
             voteCastScheduler.scheduleAtFixedRate(voteCaster, 0, 5000);
+
+            int currNumVotes = newMasterVotes.size();
+            final ExecutorService service = Executors.newSingleThreadExecutor();
+
+            try {
+                while (true) {
+                    int finalCurrNumVotes = currNumVotes;
+                    final Future<Object> f = service.submit(() -> {
+                        while (true) {
+                            Thread.sleep(1000);
+                            if (newMasterVotes.size() > finalCurrNumVotes) {
+                                return newMasterVotes.size();
+                            }
+                        }
+                    });
+
+                    currNumVotes = (int) f.get(30, TimeUnit.SECONDS);
+                }
+            } catch (TimeoutException | ExecutionException | InterruptedException ignored) {
+                recordVotes = false;
+                voteCastScheduler.cancel();
+            }
+
+            HashMap<String, Integer> voteResults = new HashMap<>();
+
+            for (Map.Entry vote : newMasterVotes.entrySet()) {
+                if (voteResults.containsKey(vote.getValue().toString())) {
+                    Integer currValue = voteResults.get(vote.getValue().toString());
+                    voteResults.put(vote.getValue().toString(), ++currValue);
+                } else {
+                    voteResults.put(vote.getValue().toString(), 1);
+                }
+            }
+
+            LinkedHashMap<String, Integer> sortedVoteResults = new LinkedHashMap<>();
+
+            sortedVoteResults.put("temp", -1);
+
+            for (String key : voteResults.keySet()) {
+                Integer storageAmount = voteResults.get(key);
+                boolean isBroken = false;
+
+                for (String sortedKey : sortedVoteResults.keySet()) {
+                    if (storageAmount >= sortedVoteResults.get(sortedKey)) {
+                        LinkedHashMap<String, Integer> reorderStorageMap =
+                                (LinkedHashMap<String, Integer>) sortedVoteResults.clone();
+                        sortedVoteResults.clear();
+                        for (String reorderKey : reorderStorageMap.keySet()) {
+                            if (reorderKey.equals(sortedKey)) {
+                                sortedVoteResults.put(key, storageAmount);
+                            }
+                            sortedVoteResults.put(reorderKey, reorderStorageMap.get(reorderKey));
+                        }
+                        isBroken = true;
+                        break;
+                    }
+                }
+
+                if (!isBroken) {
+                    sortedVoteResults.put(key, voteResults.get(key));
+                }
+            }
+
+            String newMasterIP = sortedVoteResults.entrySet().iterator().next().getKey();
+
+            Properties properties = ConfigParser.loadProperties();
+            properties.setProperty("masterIP", newMasterIP);
+            ConfigParser.write(properties);
+            MeshFS.properties.setProperty("masterIP", newMasterIP);
+
+            if (newMasterIP.equals(Reporting.getIpAddresses().get(0))) {
+                resetAsMaster();
+            }
+
+            try {
+                Thread.sleep(180000);
+            } catch (InterruptedException ignored) {}
+            
+            masterDown = false;
         }
     }
 
     private void recordVote(String ip, String vote) {
+        if (masterDown && recordVotes) {
+            newMasterVotes.put(ip, vote);
+        }
+    }
 
+    private void resetAsMaster() {
+        MeshFS.isMaster = true;
+        new File(MeshFS.properties.getProperty("repository") + ".manifest.json").delete();
+        File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
+
+
+        TimerTask discoveryBroadcast = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    MulticastClient.notifyClients(MeshFS.properties.getProperty("multicastGroup"), Integer.parseInt(MeshFS.properties.getProperty("multicastPort")));
+                } catch (IOException ignored) {
+                }
+            }
+        };
+
+        MeshFS.discoveryBroadcastTimer.scheduleAtFixedRate(discoveryBroadcast, 0, 3000);
+
+        if (!catalog.exists()) {
+            JSONObject newCatalog = new JSONObject();
+            JSONObject folder = new JSONObject();
+            JSONObject newRoot = new JSONObject();
+            JSONArray groups = new JSONArray();
+            groups.add("all");
+
+            newCatalog.put("currentName", "0000000000000000");
+            folder.put("type", "directory");
+            folder.put("groups", groups);
+            folder.put("blacklist", new JSONArray());
+            folder.put("admins", new JSONArray());
+            newRoot.put("Users", folder);
+            newRoot.put("Shared", folder);
+            newRoot.put("type", "directory");
+            newRoot.put("groups", groups);
+            newRoot.put("blacklist", new JSONArray());
+            newRoot.put("admins", new JSONArray());
+            newCatalog.put("root", newRoot);
+
+            try {
+                JSONUtils.writeJSONObject(
+                        MeshFS.properties.getProperty("repository") + ".catalog.json", newCatalog);
+            } catch (IOException ignored) {
+            }
+        }
+
+        TimerTask manifestCheck =
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                    Long currentTimeStamp = new Date().getTime();
+                    if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
+                            .exists())) {
+                        try {
+                            JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    JSONObject manifest =
+                            JSONUtils.getJSONObject(
+                                    MeshFS.properties.getProperty("repository") + ".manifest.json");
+                    for (Object computer : manifest.keySet()) {
+                        Long nodeTimeStamp =
+                                (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
+                        if (currentTimeStamp > nodeTimeStamp + 32000) {
+                            try {
+                                JSONUtils.deleteManifestItem(computer.toString());
+                            } catch (IOException | MalformedRequestException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println(computer.toString() + " was removed from the manifest");
+                        }
+                    }
+                }
+        };
+
+        MeshFS.manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
+
+        MeshFS.scheduledReportingTimer.cancel();
     }
 
     private void processRequest(String request, DatagramPacket dp) {
@@ -166,13 +335,8 @@ class MulticastServerInit implements Runnable {
             DatagramPacket dp = new DatagramPacket(data, data.length);
             try {
                 socket.receive(dp);
-                //if (!dp.getAddress().equals(InetAddress.getByName(Reporting.getIpAddresses().get(0)))) {
                 processRequest(new String(dp.getData()).trim(), dp);
-                //}
-            } catch (SocketTimeoutException | SocketException ignored) {
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
+            } catch (IOException ignored) {}
         }
         voteCastScheduler.cancel();
         System.out.println("Multicast socket closed");
