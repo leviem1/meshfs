@@ -44,7 +44,7 @@ class ClientBrowserFileProperties extends JFrame {
     private JLabel titleLbl;
     //GEN-END:variables
 
-    private ClientBrowserFileProperties(JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath) {
+    private ClientBrowserFileProperties(JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath, JSONObject userObj) {
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
@@ -67,7 +67,7 @@ class ClientBrowserFileProperties extends JFrame {
         if (itemContents.get("type").equals("directory")) {
 
 
-            Pair<String, String> folderProperties= JSONUtils.folderProperties(itemPath);
+            Pair<String, String> folderProperties= JSONUtils.folderProperties(userObj, itemPath);
             fileSize = folderProperties.getKey();
             creationDate = folderProperties.getValue();
         }else{
@@ -148,8 +148,8 @@ class ClientBrowserFileProperties extends JFrame {
         model.add(pos, "Wholes: " + wholes);
     }
 
-    public static void run(JFrame sender, JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath) {
-        clientBrowserFileProperties = new ClientBrowserFileProperties(itemContents, userAccount, serverAddress, port, itemPath);
+    public static void run(JFrame sender, JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath, JSONObject userObj) {
+        clientBrowserFileProperties = new ClientBrowserFileProperties(itemContents, userAccount, serverAddress, port, itemPath, userObj);
         CenterWindow.centerOnWindow(sender, clientBrowserFileProperties);
         clientBrowserFileProperties.setVisible(true);
     }

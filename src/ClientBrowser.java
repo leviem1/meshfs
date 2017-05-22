@@ -451,7 +451,7 @@ ClientBrowser extends JFrame {
                     JSONObject jsonObject = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
                     JSONObject fileProperties = JSONUtils.getItemContents(jsonObject, jsonPath.toString());
 
-                    ClientBrowserFileProperties.run(clientBrowser, fileProperties, userAccount, serverAddress, port, jsonPath.toString());
+                    ClientBrowserFileProperties.run(clientBrowser, fileProperties, userAccount, serverAddress, port, jsonPath.toString(), jsonObject);
                 });
         removeBtn.addActionListener(
                 e -> {

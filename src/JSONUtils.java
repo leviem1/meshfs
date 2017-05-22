@@ -491,12 +491,12 @@ class JSONUtils {
         return itemLocationString;
     }
 
-    static Pair<String, String> folderProperties(String folderLocation){
+    static Pair<String, String> folderProperties(JSONObject catalog, String folderLocation){
         folderLocation = catalogStringFixer(folderLocation);
-        JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         String[] folders = folderLocation.split("/");
         JSONObject item = catalog;
         for (String folder : folders) {
+            System.out.println("folder: " + folder);
             item = (JSONObject) item.get(folder);
         }
 
