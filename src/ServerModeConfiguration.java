@@ -14,10 +14,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Properties;
+import java.util.*;
 
 import static java.lang.Math.toIntExact;
 
@@ -1007,9 +1004,7 @@ class ServerModeConfiguration extends JFrame {
                     dispose();
                 });
         groupManagerBtn.addActionListener(
-                actionEvent -> {
-                    GroupManager.run(serverModeConfiguration, groupBox);
-                });
+                actionEvent -> GroupManager.run(serverModeConfiguration, groupBox));
 
     }
 
@@ -1227,15 +1222,15 @@ class ServerModeConfiguration extends JFrame {
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")
                                             + 10,
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>"));
-            String pass =
-                    userAccountDataList
+            StringBuilder pass =
+                    new StringBuilder(userAccountDataList
                             .getModel()
                             .getElementAt(i)
                             .toString()
                             .substring(
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")
                                             + 10,
-                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
+                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>")));
             String passOrig =
                     userAccountDataList
                             .getModel()
@@ -1268,7 +1263,7 @@ class ServerModeConfiguration extends JFrame {
 
             for (int x = 0; x < user.length() - 1; x = x + 2) {
                 try {
-                    pass += user.charAt(x);
+                    pass.append(user.charAt(x));
                 } catch (IndexOutOfBoundsException ignored) {
                 }
             }
@@ -1279,9 +1274,9 @@ class ServerModeConfiguration extends JFrame {
                 e.printStackTrace();
             }
             assert messageDigest != null;
-            messageDigest.update(pass.getBytes(), 0, pass.length());
+            messageDigest.update(pass.toString().getBytes(), 0, pass.length());
             out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>, Group: <i>" + group.toLowerCase() + "</i>, Type: <i>" + type + "<br>";
-            accountsEnc.add(new UserAccounts(user, new BigInteger(1, messageDigest.digest()).toString(256), type, new ArrayList<>(Arrays.asList(group.substring(0, group.lastIndexOf("<br>"))))));
+            accountsEnc.add(new UserAccounts(user, new BigInteger(1, messageDigest.digest()).toString(256), type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
             accountsPlain.put(user, passOrig);
         }
         if (out.equals("")) {
@@ -1289,11 +1284,11 @@ class ServerModeConfiguration extends JFrame {
         }
         if (allowGuestBox.isSelected()) {
             String user = "guest";
-            String pass = "guest";
+            StringBuilder pass = new StringBuilder("guest");
             String passOrig = "guest";
             for (int x = 0; x < user.length() - 1; x = x + 2) {
                 try {
-                    pass += user.charAt(x);
+                    pass.append(user.charAt(x));
                 } catch (IndexOutOfBoundsException ignored) {
                 }
             }
@@ -1304,9 +1299,9 @@ class ServerModeConfiguration extends JFrame {
                 e.printStackTrace();
             }
             assert messageDigest != null;
-            messageDigest.update(pass.getBytes(), 0, pass.length());
+            messageDigest.update(pass.toString().getBytes(), 0, pass.length());
             out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>" + "</i>, Group: <i>none</i>, Type: <i>User" + "<br>";
-            accountsEnc.add(new UserAccounts(user, new BigInteger(1, messageDigest.digest()).toString(256), "user", new ArrayList<>(Arrays.asList("guest"))));
+            accountsEnc.add(new UserAccounts(user, new BigInteger(1, messageDigest.digest()).toString(256), "user", new ArrayList<>(Collections.singletonList("guest"))));
             accountsPlain.put(user, passOrig);
         }
     }

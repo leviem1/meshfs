@@ -149,7 +149,6 @@ class JSONUtils {
         JSONObject destination = getItemContents(catalog, itemDestinationLocation);
         JSONArray destinationUsers = (JSONArray) (destination.get("groups"));
         JSONArray destinationAdmins = (JSONArray) (destination.get("admins"));
-        destination = null;
         objChild = changePermissions(objChild, destinationUsers, destinationAdmins, true);
 
         catalog = putItemInFolder(catalog, itemDestinationLocation, fileName, objChild);
@@ -258,7 +257,6 @@ class JSONUtils {
         JSONObject destination = getItemContents(catalog, parentFolderLocation);
         JSONArray destinationUsers = (JSONArray) (destination.get("groups"));
         JSONArray destinationAdmins = (JSONArray) (destination.get("admins"));
-        destination = null;
         folderCreator = changePermissions(folderCreator, destinationUsers, destinationAdmins, true);
 
 
@@ -550,7 +548,6 @@ class JSONUtils {
             JSONObject destination = getItemContents(catalog, destinationLocation);
             JSONArray destinationUsers = (JSONArray) (destination.get("groups"));
             JSONArray destinationAdmins = (JSONArray) (destination.get("admins"));
-            destination = null;
             itemContents = changePermissions(itemContents, destinationUsers, destinationAdmins, true);
         }
 
@@ -612,10 +609,9 @@ class JSONUtils {
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
     }
 
-    static void deleteManifestItem(String MACAddress) throws IOException, MalformedRequestException {
+    static void deleteManifestItem(String MACAddress) throws IOException {
         JSONObject manifest = getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
-        JSONObject folderToRead = manifest;
-        folderToRead.remove(MACAddress);
+        manifest.remove(MACAddress);
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 

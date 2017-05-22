@@ -7,7 +7,6 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author Mark Hedrick
@@ -81,7 +80,8 @@ class MoveFileWindow extends JFrame {
         JSONObject jsonObj = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
         boolean userType = false;
         try {
-            if(FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin")) userType = true;
+            if (FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin"))
+                userType = true;
         } catch (MalformedRequestException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -241,26 +241,5 @@ class MoveFileWindow extends JFrame {
                 });
     }
 
-    private DefaultMutableTreeNode readFolder(
-            String folderLocation, JSONObject jsonObj, DefaultMutableTreeNode branch) {
-        Map<String, String> folderContents = JSONUtils.getMapOfFolderContents(jsonObj, null);
-        folderContents.remove(fileName);
-        if (!(folderContents.values().contains("directory"))) {
-            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
-            branch.add(leaf);
-        } else {
-            for (String name : folderContents.keySet()) {
-                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
-                leaf.setAllowsChildren(folderContents.get(name).equals("directory"));
-                if (leaf.getAllowsChildren()) {
-                    String folderLocation2 = folderLocation + "/" + name;
-                    readFolder(folderLocation2, jsonObj, leaf);
-                    if (!(leaf.toString().equals(fileName))) {
-                        branch.add(leaf);
-                    }
-                }
-            }
-        }
-        return branch;
-    }
+
 }

@@ -323,7 +323,7 @@ final class FileClient {
     static void receiveReport(String serverAddress, int port) throws IOException, MalformedRequestException {
         String response;
         String reportPart;
-        String reportFull = "";
+        StringBuilder reportFull = new StringBuilder();
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -339,9 +339,9 @@ final class FileClient {
             while (true) {
                 reportPart = input.readLine();
                 if ((reportPart == null) || (reportPart.equals("\n"))) break;
-                reportFull = reportFull + reportPart + "\n";
+                reportFull.append(reportPart).append("\n");
             }
-            reportFull = reportFull.trim();
+            reportFull = new StringBuilder(reportFull.toString().trim());
 
             JSONObject manifest = new JSONObject();
             if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
@@ -349,7 +349,7 @@ final class FileClient {
                         JSONUtils.getJSONObject(
                                 MeshFS.properties.getProperty("repository") + ".manifest.json");
             }
-            JSONArray reportArray = Reporting.splitter(reportFull);
+            JSONArray reportArray = Reporting.splitter(reportFull.toString());
 
             manifest.put(reportArray.get(0), reportArray.get(1));
             JSONUtils.writeJSONObject(
@@ -465,12 +465,12 @@ final class FileClient {
             response = input.readLine().trim();
             System.out.println(response);
             client.close();
-            if(response.equals("202")){
+            if (response.equals("202")) {
                 return false;
             }
             if (!(response.equals("201"))) {
                 throw new MalformedRequestException(response);
-            }else{
+            } else {
                 return true;
             }
         } catch (SocketTimeoutException ignored) {
@@ -588,7 +588,7 @@ final class FileClient {
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("118|" + uuid + "|"+ userAccount + "|" + newGroups + "\n");
+        out.println("118|" + uuid + "|" + userAccount + "|" + newGroups + "\n");
         if ((input.readLine().trim()).equals("201")) {
             client.close();
             return true;
@@ -621,10 +621,10 @@ final class FileClient {
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "|" + add + "|" + edit + "|" + view +"\n");
+        out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "|" + add + "|" + edit + "|" + view + "\n");
         if ((input.readLine().trim()).equals("202")) {
             client.close();
-        }else{
+        } else {
             return true;
         }
         client.close();

@@ -219,27 +219,27 @@ class DISTAL {
         //creates a new unique filename
         String alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int incrementReverseIndex = 1;
-        String toAdd = "";
+        StringBuilder toAdd = new StringBuilder();
 
         while (true) {
             try {
                 //advance to the next character.
                 char lastChar = name.charAt(name.length() - incrementReverseIndex);
-                toAdd += alphabet.charAt(alphabet.indexOf(lastChar) + 1);
+                toAdd.append(alphabet.charAt(alphabet.indexOf(lastChar) + 1));
                 break;
             } catch (IndexOutOfBoundsException iobe) {
                 //if have reached the end of the alphabet, loop back to the beginning and use the next character
-                toAdd += alphabet.charAt(0);
+                toAdd.append(alphabet.charAt(0));
                 incrementReverseIndex++;
             }
         }
-        String newName = name.substring(0, name.length() - (toAdd.length()));
+        StringBuilder newName = new StringBuilder(name.substring(0, name.length() - (toAdd.length())));
         for (int reverseIndex = (toAdd.length() - 1); reverseIndex >= 0; reverseIndex--) {
-            newName += toAdd.charAt(reverseIndex);
+            newName.append(toAdd.charAt(reverseIndex));
         }
-        catalog.replace("currentName", newName);
+        catalog.replace("currentName", newName.toString());
         JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
-        return newName;
+        return newName.toString();
     }
 
     private static void sendFiles(
