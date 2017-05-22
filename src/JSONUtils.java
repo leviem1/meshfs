@@ -140,7 +140,7 @@ class JSONUtils {
 
         objChild.put("alphanumericName", alphanumericName);
 
-        objChild.put("fileSize", humanReadableByteCount(fileSize));
+        objChild.put("fileSize", fileSize);
 
         objChild.put("creationDate", creationDate);
 
@@ -176,6 +176,25 @@ class JSONUtils {
         item = changePermissions(item, groups, admins, false);
 
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
+    }
+
+    static void blacklistUsers(String itemLocation, List<String> userNames, boolean add){
+        itemLocation = catalogStringFixer(itemLocation);
+        JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        String[] folders = itemLocation.split("/");
+        JSONObject item = catalog;
+        for (String folder : folders) {
+            item = (JSONObject) item.get(folder);
+        }
+
+        JSONArray blacklist = (JSONArray) item.get("blacklist");
+        if (add){
+            blacklist.addAll(userNames);
+        } else {
+            blacklist.removeAll(userNames);
+        }
+
+
     }
 
     /**
@@ -464,16 +483,35 @@ class JSONUtils {
     }
 
     static String catalogStringFixer(String itemLocationString) {
-        if (itemLocationString.contains("/")){
-            System.out.println(itemLocationString);
-        }
-
         if ((itemLocationString.contains("/")) && ( (StringUtils.countMatches(itemLocationString, "/" ) == 1) || (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users") && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))))) {
             itemLocationString = itemLocationString.substring(0, itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/"));
-            System.out.println(itemLocationString);
         }
 
         return itemLocationString;
+    }
+
+    static long totalUsedStorageOfFolder(String folderLocation){
+        folderLocation = catalogStringFixer(folderLocation);
+        JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        String[] folders = folderLocation.split("/");
+        JSONObject item = catalog;
+        for (String folder : folders) {
+            item = (JSONObject) item.get(folder);
+        }
+        return folderSizeRecursive(item);
+    }
+
+    private static Long folderSizeRecursive(JSONObject folder){
+        long folderSize = 0L;
+        LinkedHashMap<String, String> folderContents = getMapOfFolderContents(folder, null);
+        for (String item : folderContents.keySet()){
+            if (folderContents.get(item).equals("directory")){
+                folderSize += folderSizeRecursive((JSONObject) folder.get(item));
+            } else if (folderContents.get(item).equals("file")){
+                folderSize += (long) ((JSONObject) folder.get(item)).get("fileSize");
+            }
+        }
+        return folderSize;
     }
 
     private static DefaultMutableTreeNode JTreeBuilderRecursive(JSONObject jsonObject, DefaultMutableTreeNode branch) {
@@ -634,7 +672,7 @@ class JSONUtils {
         return removedFiles;
     }
 
-    private static String humanReadableByteCount(long bytes) {
+    static String humanReadableByteCount(long bytes) {
         int unit = 1024;
         if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
