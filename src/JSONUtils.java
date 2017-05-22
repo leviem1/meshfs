@@ -1,3 +1,4 @@
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -157,7 +158,7 @@ class JSONUtils {
     }
 
 
-    static void editPermissions(String itemLocation, List<String> userGroups, boolean add, boolean canEdit, boolean canView) throws IOException {
+    static void editPermissions(String itemLocation, List<String> fileUsers, List<String> fileAdmins) throws IOException {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         String[] folders = itemLocation.split("/");
@@ -166,23 +167,12 @@ class JSONUtils {
             item = (JSONObject) item.get(folder);
         }
 
-        JSONArray admins = (JSONArray) item.get("admins");
-        JSONArray groups = (JSONArray) item.get("groups");
+        JSONArray groups = new JSONArray();
+        groups.addAll(fileUsers);
 
-        if (canEdit) {
-            if (add) {
-                admins.addAll(userGroups);
-            } else {
-                admins.removeAll(userGroups);
-            }
-        }
-        if (canView) {
-            if (add) {
-                groups.addAll(userGroups);
-            } else {
-                groups.removeAll(userGroups);
-            }
-        }
+        JSONArray admins = new JSONArray();
+        groups.addAll(fileAdmins);
+
         item = changePermissions(item, groups, admins, false);
 
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
@@ -196,7 +186,9 @@ class JSONUtils {
      */
     static void duplicateItem(String itemLocation) throws IOException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        System.out.println(catalog);
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", copyFile(catalog, itemLocation, itemLocation.substring(0, itemLocation.lastIndexOf("/")), null, true));
+        System.out.println(getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json"));
     }
 
     static void deleteItem(String itemLocation) throws IOException, MalformedRequestException {
@@ -472,9 +464,15 @@ class JSONUtils {
     }
 
     static String catalogStringFixer(String itemLocationString) {
-        if ((itemLocationString.contains("/")) && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users")) && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))) {
-            itemLocationString = itemLocationString.substring(0, itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/"));
+        if (itemLocationString.contains("/")){
+            System.out.println(itemLocationString);
         }
+
+        if ((itemLocationString.contains("/")) && ( (StringUtils.countMatches(itemLocationString, "/" ) == 1) || (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users") && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))))) {
+            itemLocationString = itemLocationString.substring(0, itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/"));
+            System.out.println(itemLocationString);
+        }
+
         return itemLocationString;
     }
 
