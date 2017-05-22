@@ -19,7 +19,7 @@ class NewDirectoryWindow extends JFrame {
     private final String serverAddress;
     private final int port;
     private final String userAccount;
-    private File catalogFile;
+    private JSONObject catalogObj;
     //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
@@ -34,11 +34,11 @@ class NewDirectoryWindow extends JFrame {
     //GEN-END:variables
 
     private NewDirectoryWindow(
-            String serverAddress, int port, String userAccount, File catalogFile) {
+            String serverAddress, int port, String userAccount, JSONObject catalogObj) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
-        this.catalogFile = catalogFile;
+        this.catalogObj = catalogObj;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -59,15 +59,14 @@ class NewDirectoryWindow extends JFrame {
             int port,
             JFrame sender,
             String userAccount,
-            File catalogFile) {
+            JSONObject catalogObj) {
         newDirectoryWindow =
-                new NewDirectoryWindow(serverAddress, port, userAccount, catalogFile);
+                new NewDirectoryWindow(serverAddress, port, userAccount, catalogObj);
         CenterWindow.centerOnWindow(sender, newDirectoryWindow);
         newDirectoryWindow.setVisible(true);
     }
 
     private void initComponents() {
-        JSONObject jsonObj = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
         boolean userType = false;
         try {
             if (FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin"))
@@ -77,7 +76,7 @@ class NewDirectoryWindow extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        DefaultMutableTreeNode tree = JSONUtils.JTreeBuilder(jsonObj, userType);
+        DefaultMutableTreeNode tree = JSONUtils.JTreeBuilder(catalogObj, userType);
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
@@ -236,7 +235,6 @@ class NewDirectoryWindow extends JFrame {
                     dispose();
                 });
     }
-
 
     private void checkDirectoryName() {
         DefaultMutableTreeNode node =

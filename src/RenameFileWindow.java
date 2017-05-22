@@ -18,7 +18,7 @@ class RenameFileWindow extends JFrame {
     private final String jsonObj;
     private final String userAccount;
     private final String originalName;
-    private File catalogFile;
+    private JSONObject catalogObj;
     //GEN-BEGIN:variables
     private JLabel currentNameValue;
     private JTextField newNameValueField;
@@ -32,7 +32,7 @@ class RenameFileWindow extends JFrame {
             String jsonObj,
             String currentName,
             String userAccount,
-            File catalogFile) {
+            JSONObject catalogObj) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -45,7 +45,7 @@ class RenameFileWindow extends JFrame {
         this.jsonObj = jsonObj;
         this.userAccount = userAccount;
         this.originalName = currentName;
-        this.catalogFile = catalogFile;
+        this.catalogObj = catalogObj;
 
         initComponents();
         frameListeners();
@@ -72,10 +72,10 @@ class RenameFileWindow extends JFrame {
             String jsonObj,
             String currentName,
             String userAccount,
-            File catalogFile) {
+            JSONObject catalogObj) {
         JFrame renameFileWindow =
                 new RenameFileWindow(
-                        serverAddress, port, jsonObj, currentName, userAccount, catalogFile);
+                        serverAddress, port, jsonObj, currentName, userAccount, catalogObj);
         CenterWindow.centerOnWindow(sender, renameFileWindow);
         renameFileWindow.setVisible(true);
     }

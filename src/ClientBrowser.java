@@ -29,7 +29,7 @@ ClientBrowser extends JFrame {
     private final int port;
     private final String userAccount;
     private final Timer catalogTimer;
-    private final File catalogFile;
+    private JSONObject catalogObj;
     private boolean isLoaded = false;
     private int failureCount;
     private boolean previousRunType;
@@ -58,7 +58,7 @@ ClientBrowser extends JFrame {
     //GEN-END:variables
 
     private ClientBrowser(
-            String serverAddress, int port, String userAccount, File catalogFile, boolean previousRunType) {
+            String serverAddress, int port, String userAccount, JSONObject catalogObj, boolean previousRunType) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
@@ -69,7 +69,7 @@ ClientBrowser extends JFrame {
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
-        this.catalogFile = catalogFile;
+        this.catalogObj = catalogObj;
         this.previousRunType = previousRunType;
 
         catalogTimer = new java.util.Timer();
@@ -105,13 +105,12 @@ ClientBrowser extends JFrame {
             int port,
             JFrame sender,
             String userAccount,
-            File catalogFile,
+            JSONObject catalogObj,
             boolean previousRunType) {
 
-        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogFile, previousRunType);
+        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogObj, previousRunType);
         CenterWindow.centerOnWindow(sender, clientBrowser);
         clientBrowser.setVisible(true);
-        catalogFile.deleteOnExit();
     }
 
     private void initComponents() {
@@ -119,7 +118,7 @@ ClientBrowser extends JFrame {
         if (userAccount.equals("admin")){
             userType = true;
         }
-        DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), userType);
+        DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(catalogObj, userType);
         if (isLoaded) {
             dialogPane.repaint();
             dialogPane.revalidate();
@@ -361,17 +360,15 @@ ClientBrowser extends JFrame {
         tree1.addTreeSelectionListener(
                 e -> {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                    System.out.println("node: " + node);
                     if (node == null) {
                         return;
                     }
-
 
                     if(node.toString().equals(userAccount) || node.toString().equals("Shared") || node.toString().equals("root")){
                         tree1.setSelectionPath(null);
                         return;
                     }
-
-
 
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
                     StringBuilder treePath = new StringBuilder();
@@ -379,8 +376,8 @@ ClientBrowser extends JFrame {
                         treePath.append(item.toString()).append("/");
                     }
                     treePath = new StringBuilder(treePath.substring(0, treePath.length() - 1));
-                    JSONObject contents = JSONUtils.getItemContents(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), JSONUtils.catalogStringFixer(treePath.toString()));
-                    Object type = contents.get("type");
+
+                    Object type = JSONUtils.getItemContents(catalogObj, treePath.toString());
                     try {
                         if (node.toString().equals("(no files)")) {
                             clientBrowserButtonModifier(false);
@@ -448,10 +445,9 @@ ClientBrowser extends JFrame {
                         jsonPath.append(item.toString()).append("/");
                     }
                     jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
-                    JSONObject jsonObject = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
-                    JSONObject fileProperties = JSONUtils.getItemContents(jsonObject, jsonPath.toString());
+                    JSONObject fileProperties = JSONUtils.getItemContents(catalogObj, jsonPath.toString());
 
-                    ClientBrowserFileProperties.run(clientBrowser, fileProperties, userAccount, serverAddress, port, jsonPath.toString(), jsonObject);
+                    ClientBrowserFileProperties.run(clientBrowser, fileProperties, userAccount, serverAddress, port, jsonPath.toString(), catalogObj);
                 });
         removeBtn.addActionListener(
                 e -> {
@@ -500,7 +496,7 @@ ClientBrowser extends JFrame {
                             port,
                             clientBrowser,
                             userAccount,
-                            catalogFile);
+                            catalogObj);
                 });
         quitBtn.addActionListener(
                 e -> {
@@ -512,7 +508,7 @@ ClientBrowser extends JFrame {
         newDirBtn.addActionListener(
                 e ->
                         NewDirectoryWindow.run(
-                                serverAddress, port, clientBrowser, userAccount, catalogFile));
+                                serverAddress, port, clientBrowser, userAccount, catalogObj));
         renameBtn.addActionListener(
                 e -> {
                     DefaultMutableTreeNode node =
@@ -530,7 +526,7 @@ ClientBrowser extends JFrame {
                             jsonPath.toString(),
                             node.toString(),
                             userAccount,
-                            catalogFile);
+                            catalogObj);
                 });
         logoutBtn.addActionListener(
                 e -> {
@@ -557,7 +553,7 @@ ClientBrowser extends JFrame {
                     path.substring(path.lastIndexOf(File.separator)),
                     serverAddress,
                     port,
-                    catalogFile);
+                    catalogObj);
             JOptionPane.showMessageDialog(
                     null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
             statusLbl.setText("Download Completed!");
@@ -588,7 +584,7 @@ ClientBrowser extends JFrame {
         SwingUtilities.invokeLater(
                 () -> {
                     try {
-                        String localCatalog = JSONUtils.getJSONObject(catalogFile.getAbsolutePath()).toString();
+                        String localCatalog = catalogObj.toString();
                         String latestCatalog = null;
                         try {
                             latestCatalog = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).toString();
@@ -596,17 +592,20 @@ ClientBrowser extends JFrame {
                             e.printStackTrace();
                         } catch (ConnectException ce) {
                             failureCount += 1;
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                         if (!localCatalog.equals(latestCatalog) && latestCatalog != null) {
                             clientBrowserButtonModifier(false);
                             tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder((JSONObject) new JSONParser().parse(latestCatalog), userType)));
-                            try (FileWriter fileWriter = new FileWriter(catalogFile.getAbsolutePath())) {
-                                fileWriter.write(FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).toString());
+                            try {
+                                catalogObj = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
                             } catch (MalformedRequestException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
-                    } catch (IOException ignored) {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }

@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -333,17 +335,14 @@ class ClientModeConfiguration extends JFrame {
                 usernameField.setEnabled(true);
                 passwordField.setEnabled(true);
             }
-            File catalog = File.createTempFile(".catalog", ".json");
             if (!(usernameField.getText().isEmpty())) {
-                try (FileWriter fileWriter = new FileWriter(catalog.getAbsolutePath())) {
-                    fileWriter.write(FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), uuid).toString());
-                }
+                JSONObject userFiles = FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), uuid);
                 ClientBrowser.run(
                         serverAddressField.getSelectedItem().toString(),
                         Integer.parseInt(serverPortField.getText()),
                         clientModeConfiguration,
                         usernameField.getText(),
-                        catalog,
+                        userFiles,
                         runType);
                 dispose();
             }

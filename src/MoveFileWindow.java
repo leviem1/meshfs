@@ -18,7 +18,7 @@ class MoveFileWindow extends JFrame {
     private final int port;
     private final String userAccount;
     private final String fileName;
-    private File catalogFile;
+    private JSONObject catalogObj;
     //GEN-BEGIN:variables
     private JPanel dialogPane;
     private JPanel contentPanel;
@@ -35,7 +35,7 @@ class MoveFileWindow extends JFrame {
             String serverAddress,
             int port,
             String userAccount,
-            File catalogFile) {
+            JSONObject catalogObj) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
@@ -48,7 +48,7 @@ class MoveFileWindow extends JFrame {
         this.port = port;
         this.userAccount = userAccount;
         this.fileName = fileName;
-        this.catalogFile = catalogFile;
+        this.catalogObj = catalogObj;
 
         initComponents();
         frameListeners();
@@ -69,15 +69,13 @@ class MoveFileWindow extends JFrame {
             int port,
             JFrame sender,
             String userAccount,
-            File catalogFile) {
-        moveFileWindow =
-                new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount, catalogFile);
+            JSONObject catalogObj) {
+        moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount, catalogObj);
         CenterWindow.centerOnWindow(sender, moveFileWindow);
         moveFileWindow.setVisible(true);
     }
 
     private void initComponents() {
-        JSONObject jsonObj = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
         boolean userType = false;
         try {
             if (FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin"))
@@ -87,7 +85,7 @@ class MoveFileWindow extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        DefaultMutableTreeNode tree = JSONUtils.JTreeBuilder(jsonObj, userType);
+        DefaultMutableTreeNode tree = JSONUtils.JTreeBuilder(catalogObj, userType);
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();

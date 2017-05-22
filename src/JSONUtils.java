@@ -328,11 +328,11 @@ class JSONUtils {
      * @param outFile       the name that the download file is to be saved as
      * @param serverAddress the address of the the master server
      * @param port          the port that MeshFS uses
-     * @param catalog       the catalog file to read from
+     * @param catalogObj       the catalog object to read from
      * @return true on success, false on failure
      * @throws IOException if a socket cannot be initialized
      */
-    static void pullFile(String itemLocation, String path, String outFile, String serverAddress, int port, File catalog) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
+    static void pullFile(String itemLocation, String path, String outFile, String serverAddress, int port, JSONObject catalogObj) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
         itemLocation = catalogStringFixer(itemLocation);
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
@@ -340,12 +340,11 @@ class JSONUtils {
         FileClient.receiveFile(serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath());
 
         JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
-        JSONObject jsonObject = getJSONObject(catalog.getAbsolutePath());
         List<String> stripeNames = new ArrayList<>();
         List<Thread> childThreads = new ArrayList<>();
         boolean wholeNecessary = true;
 
-        JSONObject fileInfo = getItemContents(jsonObject, itemLocation);
+        JSONObject fileInfo = getItemContents(catalogObj, itemLocation);
         String fileName = fileInfo.get("alphanumericName").toString();
 
         for (Object stripe : fileInfo.keySet()) {
