@@ -32,6 +32,7 @@ class CliParser {
         opt.addOption("removeUser", true, "Remove user interactively.");
         opt.addOption("removeGroup", true, "Remove a group from a user interactively.");
         opt.addOption("changePass", true, "Update user credentials interactively.");
+        opt.addOption("changeType", true, "Update user account type.");
         opt.addOption("listUsers", false, "Display all user accounts.");
         opt.addOption("listGroups", true, "Display all user groups.");
         opt.addOption("getUserType", true, "Get type of user.");
@@ -92,6 +93,10 @@ class CliParser {
 
             if (cmd.hasOption("getUserType")) {
                 getAccountType(cmd.getOptionValue("getUserType"));
+            }
+
+            if (cmd.hasOption("changeType")) {
+                changeAccountType(cmd.getOptionValue("changeType"));
             }
 
             if (cmd.hasOption("resetAll")) {
@@ -248,7 +253,6 @@ class CliParser {
         accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, password), "user", new ArrayList<>(Arrays.asList(username))));
         Crypt.writeAuthFile(accounts);
     }
-
 
     void removeUser(String username) throws IOException, ClassNotFoundException {
         if (username.equals("admin")) {
@@ -481,6 +485,39 @@ class CliParser {
             e.printStackTrace();
         }
     }
+
+    void changeAccountType(String username) {
+        try {
+            ArrayList<UserAccounts> accounts;
+            Scanner input = new Scanner(System.in);
+            if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
+                accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            } else {
+                return;
+            }
+
+            System.out.println("Enter new account type (admin, user): ");
+            String response = input.nextLine().trim();
+            if (response.isEmpty() || !response.toLowerCase().equals("admin") && !response.toLowerCase().equals("user")) {
+                System.out.println("Please enter \"admin\" or \"user\"");
+                System.exit(0);
+            }else{
+                for (UserAccounts account : accounts) {
+                    if (account.getUsername().equals(username)) {
+                        account.setAccountType(response);
+                    }
+                }
+            }
+            Crypt.writeAuthFile(accounts);
+            System.out.println("Account '" + username + "' was modified to be a(n) " + response + ".");
+            System.out.println("Exiting!");
+            System.exit(0);
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     void resetAuth() {
         System.out.println("Do you still wish to reset all accounts? NOTE: This will remove all users and groups.");

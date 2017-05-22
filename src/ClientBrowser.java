@@ -116,13 +116,8 @@ ClientBrowser extends JFrame {
 
     private void initComponents() {
         userType = false;
-        try {
-            if (FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin"))
-                userType = true;
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (userAccount.equals("admin")){
+            userType = true;
         }
         DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(JSONUtils.getJSONObject(catalogFile.getAbsolutePath()), userType);
         if (isLoaded) {

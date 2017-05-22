@@ -30,6 +30,11 @@ class UserAccounts implements Serializable {
         return accountType;
     }
 
+    void setAccountType(String newAccountType) {
+         accountType = newAccountType;
+    }
+
+
     ArrayList<String> getGroups() {
         return groups;
     }
