@@ -89,10 +89,9 @@ class MulticastServerInit implements Runnable {
     }
 
     private void masterDownRecord(InetAddress address) {
-        System.out.println("Master down from: " + address);
         reportedDown.put(address, Instant.now().toEpochMilli());
         if ((reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json").size() / 2) && !masterDown) {
-            System.out.println("Majority down");
+            System.out.println("Master is offline");
             Thread thread = new Thread(
                     () -> {
                         masterDown = true;
@@ -138,8 +137,6 @@ class MulticastServerInit implements Runnable {
                         sortedSpeeds.remove("temp");
                         String idealMaster = sortedSpeeds.entrySet().iterator().next().getKey();
 
-                        System.out.println("My vote: " + idealMaster);
-
                         TimerTask voteCaster = new TimerTask() {
                             @Override
                             public void run() {
@@ -171,7 +168,6 @@ class MulticastServerInit implements Runnable {
                                 currNumVotes = (int) f.get(30, TimeUnit.SECONDS);
                             }
                         } catch (TimeoutException | ExecutionException | InterruptedException ignored) {
-                            System.out.println("The votes are in");
                             recordVotes = false;
                             voteCastScheduler.cancel();
                         }
@@ -186,9 +182,6 @@ class MulticastServerInit implements Runnable {
                                 voteResults.put(vote.getValue().toString(), 1);
                             }
                         }
-
-                        System.out.println("Votes:");
-                        System.out.println(voteResults);
 
                         LinkedHashMap<String, Integer> sortedVoteResults = new LinkedHashMap<>();
 
@@ -221,8 +214,6 @@ class MulticastServerInit implements Runnable {
 
                         String newMasterIP = sortedVoteResults.entrySet().iterator().next().getKey();
 
-                        System.out.println("Winner: " + newMasterIP);
-
                         Properties properties = ConfigParser.loadProperties();
                         properties.setProperty("masterIP", newMasterIP);
                         ConfigParser.write(properties);
@@ -249,7 +240,7 @@ class MulticastServerInit implements Runnable {
     }
 
     private void recordVote(String ip, String vote) {
-        if (masterDown && recordVotes) {
+        if (masterDown && recordVotes && MeshFS.nogui) {
             newMasterVotes.put(ip, vote);
         }
     }
