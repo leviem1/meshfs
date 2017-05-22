@@ -91,7 +91,7 @@ class JSONUtils {
             String keyStr = key.toString();
             try {
                 if ((user == null)
-                        || (user.getAccountType().equals("admin")
+                        || (user.getUsername().equals("admin")
                         || ((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))).contains("all")
                         || (!Collections.disjoint(((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))), user.getGroups()))
                         && !((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("blacklist"))).contains(user.getUsername()))) {
