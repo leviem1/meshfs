@@ -1,10 +1,10 @@
-import javafx.scene.shape.MeshView;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.*;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -71,12 +71,12 @@ class MulticastServer {
 class MulticastServerInit implements Runnable {
 
     private final DatagramSocket socket;
-    private Set<InetAddress> reportedDown = new LinkedHashSet<>();
-    private Timer voteCastScheduler = new Timer();
     private volatile boolean masterDown = false;
     private volatile boolean recordVotes = false;
+    private Timer voteCastScheduler = new Timer();
     static List<String> foundMasters = new ArrayList<>();
-    private volatile HashMap<String, String> newMasterVotes = new HashMap<>();
+    private HashMap<InetAddress, Long> reportedDown = new HashMap<>();
+    private volatile ConcurrentHashMap<String, String> newMasterVotes = new ConcurrentHashMap<>();
 
     MulticastServerInit(DatagramSocket socket) {
         this.socket = socket;
@@ -89,7 +89,7 @@ class MulticastServerInit implements Runnable {
     }
 
     private void masterDownRecord(InetAddress address) {
-        reportedDown.add(address);
+        reportedDown.put(address, Instant.now().toEpochMilli());
         if ((reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest").size() / 2) && !masterDown) {
             Thread thread = new Thread(
                     () -> {
@@ -154,7 +154,7 @@ class MulticastServerInit implements Runnable {
                         try {
                             while (true) {
                                 int finalCurrNumVotes = currNumVotes;
-                                HashMap<String, String> localNewMasterVotes = newMasterVotes;
+                                ConcurrentHashMap<String, String> localNewMasterVotes = newMasterVotes;
                                 final Future<Object> f = service.submit(() -> {
                                     while (true) {
                                         Thread.sleep(1000);
@@ -218,6 +218,10 @@ class MulticastServerInit implements Runnable {
                         ConfigParser.write(properties);
                         MeshFS.properties.setProperty("masterIP", newMasterIP);
 
+                        reportedDown.clear();
+
+                        System.out.println("Migrated to new master with IP of " + newMasterIP);
+
                         if (newMasterIP.equals(Reporting.getIpAddresses().get(0))) {
                             resetAsMaster();
                         }
@@ -227,7 +231,6 @@ class MulticastServerInit implements Runnable {
                         } catch (InterruptedException ignored) {}
 
                         masterDown = false;
-                        reportedDown.clear();
                     }
             );
 
@@ -320,6 +323,9 @@ class MulticastServerInit implements Runnable {
         MeshFS.manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
 
         MeshFS.scheduledReportingTimer.cancel();
+        MeshFS.nodePanicTimer.cancel();
+        MeshFS.scheduledReportingTimer.purge();
+        MeshFS.nodePanicTimer.purge();
     }
 
     private void processRequest(String request, DatagramPacket dp) {
@@ -339,6 +345,20 @@ class MulticastServerInit implements Runnable {
     }
 
     public void run() {
+        TimerTask removeReportedDown = new TimerTask() {
+            @Override
+            public void run() {
+                for (Map.Entry reportedDownEntry : reportedDown.entrySet()) {
+                    if (Instant.now().toEpochMilli() > (long) reportedDownEntry.getValue() + 15000) {
+                        reportedDown.remove(reportedDownEntry.getKey());
+                    }
+                }
+            }
+        };
+
+        Timer removeReportedDownTimer = new Timer();
+        removeReportedDownTimer.scheduleAtFixedRate(removeReportedDown, 0, 5000);
+
         while (!Thread.interrupted()) {
             byte data[] = new byte[4096];
             DatagramPacket dp = new DatagramPacket(data, data.length);
