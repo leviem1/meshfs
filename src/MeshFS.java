@@ -70,7 +70,7 @@ class MeshFS {
                     }
                 };
 
-                discoveryBroadcastTimer.scheduleAtFixedRate(discoveryBroadcast, 0, 3000);
+                discoveryBroadcastTimer.scheduleAtFixedRate(discoveryBroadcast, 0, 1000);
 
                 if (!catalog.exists()) {
                     JSONObject newCatalog = new JSONObject();

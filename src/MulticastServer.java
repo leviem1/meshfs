@@ -89,8 +89,10 @@ class MulticastServerInit implements Runnable {
     }
 
     private void masterDownRecord(InetAddress address) {
+        System.out.println("Master down from: " + address);
         reportedDown.put(address, Instant.now().toEpochMilli());
-        if ((reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest").size() / 2) && !masterDown) {
+        if ((reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json").size() / 2) && !masterDown) {
+            System.out.println("Majority down");
             Thread thread = new Thread(
                     () -> {
                         masterDown = true;
@@ -99,7 +101,7 @@ class MulticastServerInit implements Runnable {
                         LinkedHashMap<String, Integer> sortedSpeeds = new LinkedHashMap();
                         sortedSpeeds.put("temp", -1);
 
-                        JSONObject manifestFile = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest");
+                        JSONObject manifestFile = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
 
                         for (Object MACAddress : manifestFile.keySet()) {
                             if (Long.parseLong((((JSONObject) manifestFile.get(MACAddress)).get("FreeSpace")).toString()) > 21474836480L) {
@@ -136,6 +138,8 @@ class MulticastServerInit implements Runnable {
                         sortedSpeeds.remove("temp");
                         String idealMaster = sortedSpeeds.entrySet().iterator().next().getKey();
 
+                        System.out.println("My vote: " + idealMaster);
+
                         TimerTask voteCaster = new TimerTask() {
                             @Override
                             public void run() {
@@ -167,6 +171,7 @@ class MulticastServerInit implements Runnable {
                                 currNumVotes = (int) f.get(30, TimeUnit.SECONDS);
                             }
                         } catch (TimeoutException | ExecutionException | InterruptedException ignored) {
+                            System.out.println("The votes are in");
                             recordVotes = false;
                             voteCastScheduler.cancel();
                         }
@@ -181,6 +186,9 @@ class MulticastServerInit implements Runnable {
                                 voteResults.put(vote.getValue().toString(), 1);
                             }
                         }
+
+                        System.out.println("Votes:");
+                        System.out.println(voteResults);
 
                         LinkedHashMap<String, Integer> sortedVoteResults = new LinkedHashMap<>();
 
@@ -212,6 +220,8 @@ class MulticastServerInit implements Runnable {
                         }
 
                         String newMasterIP = sortedVoteResults.entrySet().iterator().next().getKey();
+
+                        System.out.println("Winner: " + newMasterIP);
 
                         Properties properties = ConfigParser.loadProperties();
                         properties.setProperty("masterIP", newMasterIP);
@@ -260,7 +270,7 @@ class MulticastServerInit implements Runnable {
             }
         };
 
-        MeshFS.discoveryBroadcastTimer.scheduleAtFixedRate(discoveryBroadcast, 0, 3000);
+        MeshFS.discoveryBroadcastTimer.scheduleAtFixedRate(discoveryBroadcast, 0, 1000);
 
         if (!catalog.exists()) {
             JSONObject newCatalog = new JSONObject();

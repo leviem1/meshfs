@@ -589,11 +589,10 @@ ClientBrowser extends JFrame {
                             latestCatalog = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).toString();
                         } catch (MalformedRequestException e) {
                             e.printStackTrace();
-                        } catch (ConnectException ce) {
+                        } catch (IOException ioe) {
                             failureCount += 1;
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
+
                         if (!localCatalog.equals(latestCatalog) && latestCatalog != null) {
                             clientBrowserButtonModifier(false);
                             tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder((JSONObject) new JSONParser().parse(latestCatalog), userType)));
