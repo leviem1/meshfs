@@ -277,7 +277,7 @@ class ServerInit implements Runnable {
         out.flush();
 
         if (physical) {
-            FileUtils.removeFile(filePath);
+            FileUtils.removeFile(MeshFS.properties.getProperty("repository") + filePath);
         } else {
             try {
                 JSONUtils.deleteItem(filePath);

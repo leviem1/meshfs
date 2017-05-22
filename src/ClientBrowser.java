@@ -360,7 +360,6 @@ ClientBrowser extends JFrame {
         tree1.addTreeSelectionListener(
                 e -> {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                    System.out.println("node: " + node);
                     if (node == null) {
                         return;
                     }
