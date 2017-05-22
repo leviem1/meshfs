@@ -11,10 +11,11 @@ class MeshFS {
     static Properties properties;
     static FileServer fileServer;
     static boolean nogui = false;
-    static boolean configure = false;
     static boolean isMaster = false;
+    static boolean configure = false;
     static MulticastServer multicastServer;
     static Timer manifestTimer = new Timer();
+    static Timer nodePanicTimer = new Timer();
     static Timer discoveryBroadcastTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
 
@@ -131,6 +132,7 @@ class MeshFS {
 
                 manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
             } else {
+                final int[] numFailedConn = {0};
                 TimerTask scheduledReporting =
                         new TimerTask() {
                             @Override
@@ -138,6 +140,7 @@ class MeshFS {
                                 if (FileClient.ping(
                                         properties.getProperty("masterIP"),
                                         Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
+                                    numFailedConn[0] = 0;
                                     try {
                                         FileClient.sendReport(
                                                 properties.getProperty("masterIP"),
@@ -147,10 +150,25 @@ class MeshFS {
                                     } catch (IOException | MalformedRequestException | FileTransferException ioe) {
                                         ioe.printStackTrace();
                                     }
+                                } else {
+                                    numFailedConn[0]++;
                                 }
                             }
                         };
 
+                TimerTask nodePanic =
+                        new TimerTask() {
+                            @Override
+                            public void run() {
+                            if (numFailedConn[0] >= 3) {
+                                try {
+                                    MulticastClient.masterDownInform(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
+                                } catch (IOException ignored) {}
+                            }
+                            }
+                        };
+
+                nodePanicTimer.scheduleAtFixedRate(nodePanic,0, 3000);
                 scheduledReportingTimer.scheduleAtFixedRate(scheduledReporting, 0, 30000);
             }
 
