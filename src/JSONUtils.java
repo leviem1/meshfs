@@ -1,3 +1,4 @@
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -490,7 +491,7 @@ class JSONUtils {
         return itemLocationString;
     }
 
-    static long totalUsedStorageOfFolder(String folderLocation){
+    static Pair<String, String> FolderProperties(String folderLocation){
         folderLocation = catalogStringFixer(folderLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         String[] folders = folderLocation.split("/");
@@ -498,17 +499,42 @@ class JSONUtils {
         for (String folder : folders) {
             item = (JSONObject) item.get(folder);
         }
-        return folderSizeRecursive(item);
+
+        Pair<Long, Long> properties = folderPropertiesRecursive(item);
+
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
+        return new Pair<>(humanReadableByteCount(properties.getKey()), df.format(new Date(properties.getValue())));
     }
 
-    private static Long folderSizeRecursive(JSONObject folder){
-        long folderSize = 0L;
+    private static Pair<Long, Long> folderPropertiesRecursive(JSONObject folder){
+        Long folderSize = 0L;
+        Long epochDate = 0L;
+        Pair<Long, Long> properties = new Pair<>(folderSize, epochDate);
+
         LinkedHashMap<String, String> folderContents = getMapOfFolderContents(folder, null);
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
         for (String item : folderContents.keySet()){
             if (folderContents.get(item).equals("directory")){
-                folderSize += folderSizeRecursive((JSONObject) folder.get(item));
+                Pair<Long, Long> newProperties = folderPropertiesRecursive((JSONObject) folder.get(item));
+                if (newProperties.getValue() > epochDate){
+                    epochDate = newProperties.getValue();
+                }
+                properties = new Pair<>(properties.getKey() + newProperties.getKey(), epochDate);
             } else if (folderContents.get(item).equals("file")){
-                folderSize += (long) ((JSONObject) folder.get(item)).get("fileSize");
+
+                String date = (String) ((JSONObject) folder.get(item)).get("creationDate");
+                try {
+                    long epochDateNew = df.parse(date).getTime();
+                    if (epochDateNew > epochDate){
+                        epochDate = epochDateNew;
+                    }
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                }
+
+                properties = new Pair<>(properties.getKey() + (long) ((JSONObject) folder.get(item)).get("fileSize"), epochDate);
+
+
             }
         }
         return folderSize;
