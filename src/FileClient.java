@@ -465,12 +465,12 @@ final class FileClient {
             response = input.readLine().trim();
             System.out.println(response);
             client.close();
-            if(response.equals("202")){
+            if (response.equals("202")) {
                 return false;
             }
             if (!(response.equals("201"))) {
                 throw new MalformedRequestException(response);
-            }else{
+            } else {
                 return true;
             }
         } catch (SocketTimeoutException ignored) {
@@ -588,7 +588,7 @@ final class FileClient {
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("118|" + uuid + "|"+ userAccount + "|" + newGroups + "\n");
+        out.println("118|" + uuid + "|" + userAccount + "|" + newGroups + "\n");
         if ((input.readLine().trim()).equals("201")) {
             client.close();
             return true;
@@ -621,10 +621,10 @@ final class FileClient {
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "|" + add + "|" + edit + "|" + view +"\n");
+        out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "|" + add + "|" + edit + "|" + view + "\n");
         if ((input.readLine().trim()).equals("202")) {
             client.close();
-        }else{
+        } else {
             return true;
         }
         client.close();

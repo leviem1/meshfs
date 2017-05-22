@@ -667,19 +667,17 @@ class ServerInit implements Runnable {
         ArrayList<String> newGroups = new ArrayList<>();
 
 
-        for(String group : groups.replace("[", "").replace("]", "").split(",")){
+        for (String group : groups.replace("[", "").replace("]", "").split(",")) {
             newGroups.add(group.trim());
         }
 
         JSONUtils.editPermissions(itemLocation, newGroups, Boolean.valueOf(add), Boolean.valueOf(edit), Boolean.valueOf(view));
 
         out.println("201");
-        //out.println(userType.toString() + "\n");
 
         out.close();
         dos.close();
     }
-
 
 
     private void badRequest(Socket client, String request, String message) {

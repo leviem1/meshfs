@@ -246,7 +246,7 @@ class ClientModeConfiguration extends JFrame {
             public void popupMenuCanceled(PopupMenuEvent e) {
             }
         });
-        ((JTextField)serverAddressField.getEditor().getEditorComponent()).getDocument().addDocumentListener(clientConnectionSettingsListener);
+        ((JTextField) serverAddressField.getEditor().getEditorComponent()).getDocument().addDocumentListener(clientConnectionSettingsListener);
         serverPortField
                 .getDocument()
                 .addDocumentListener(clientConnectionSettingsListener);
@@ -308,9 +308,10 @@ class ClientModeConfiguration extends JFrame {
 
     private void onOk() {
         int pingTime = -1;
-        try{
+        try {
             pingTime = FileClient.ping(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()));
-        }catch(Exception ignored){}
+        } catch (Exception ignored) {
+        }
         if (pingTime == -1) {
             JOptionPane.showMessageDialog(
                     clientModeConfiguration, "Server Offline!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);

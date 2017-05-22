@@ -81,7 +81,8 @@ class MoveFileWindow extends JFrame {
         JSONObject jsonObj = JSONUtils.getJSONObject(catalogFile.getAbsolutePath());
         boolean userType = false;
         try {
-            if(FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin")) userType = true;
+            if (FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).equals("admin"))
+                userType = true;
         } catch (MalformedRequestException e) {
             e.printStackTrace();
         } catch (IOException e) {

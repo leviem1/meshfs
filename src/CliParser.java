@@ -505,8 +505,8 @@ class CliParser {
             return;
         }
         accounts.clear();
-        new File(MeshFS.properties.getProperty("repo")+".catalog.json").delete();
-        new File(MeshFS.properties.getProperty("repo")+".manifest.json").delete();
+        new File(MeshFS.properties.getProperty("repo") + ".catalog.json").delete();
+        new File(MeshFS.properties.getProperty("repo") + ".manifest.json").delete();
         Crypt.writeAuthFile(accounts);
         addUser(true);
         System.out.println("Do you wish to enable the guest account? [Y/n]");
