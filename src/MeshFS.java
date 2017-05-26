@@ -218,10 +218,10 @@ class MeshFS {
                 e.printStackTrace();
             }
 
-            /*if (Reporting.getSystemOS().toLowerCase().contains("mac")) {
+            if (Reporting.getSystemOS().toLowerCase().contains("mac")) {
                 com.apple.eawt.Application.getApplication()
                         .setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-            }*/
+            }
 
             if (configure) {
                 GreetingsWindow.run(true, null);
