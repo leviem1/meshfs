@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.1.0.112" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -10,12 +10,12 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {par l {comp titleLbl2::l:::x, seq {space :::p, comp currentGroupsLbl:::::x, space :::p, comp newGroupsLbl:::p:225:p, space :p:25:p}}, space :::p}, seq l {space :::p, comp splitPane1:::p:512:p, space :::x}}"
-					"$verticalGroup": "par l {seq {comp titleLbl2:::p::p, space u:::p, par b {comp currentGroupsLbl::b:p::p, comp newGroupsLbl::b:p::p}, space :::p, comp splitPane1::::344:x}}"
+					"$horizontalGroup": "par l {seq {par l {comp changeUserGroupTitle::l:::x, seq {space :::p, comp currentGroupsLbl:::::x, space :::p, comp newGroupsLbl:::p:225:p, space :p:25:p}}, space :::p}, seq l {space :::p, comp splitPane1:::p:512:p, space :::x}}"
+					"$verticalGroup": "par l {seq {comp changeUserGroupTitle:::p::p, space u:::p, par b {comp currentGroupsLbl::b:p::p, comp newGroupsLbl::b:p::p}, space :::p, comp splitPane1::::196:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "titleLbl2"
+						name: "changeUserGroupTitle"
 						"text": "Change User Group"
 						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 9, false )
 						"horizontalAlignment": 0
@@ -66,7 +66,7 @@ new FormModel {
 								"value": "Center"
 							} )
 							add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-								"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp addGroupLbl:::p:80:p, space ::164:x}, seq {comp userGroupBox::::147:x, space :p:3:p, comp addGroupBtn:::p::p, space u:::p, comp removeMembershipBtn:::p::p}}}}"
+								"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp addGroupLbl:::p:80:p, space ::159:x}, seq {comp userGroupBox::::151:x, space :p:3:p, comp addGroupBtn:::p::p, space u:::p, comp removeMembershipBtn:::p::p}}}}"
 								"$verticalGroup": "par l {seq l {space :::p, comp addGroupLbl:::p::p, space :::p, par b {comp userGroupBox::b:p:29:p, comp removeMembershipBtn::b:p::p, comp addGroupBtn::b:p::p}, space ::8:x}}"
 							} ) {
 								name: "panel3"

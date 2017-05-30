@@ -463,7 +463,6 @@ final class FileClient {
         try {
             out.println("111|" + MeshFS.properties.getProperty("uuid") + "|" + username + "|" + oldPassword + "|" + newPassword + "\n");
             response = input.readLine().trim();
-            System.out.println(response);
             client.close();
             if (response.equals("202")) {
                 return false;
@@ -507,7 +506,8 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try {
             out.println("114|" + MeshFS.properties.getProperty("uuid") + "|" + userAccount + "\n");
-            if (!(response = input.readLine().trim()).equals("201")) {
+            response = input.readLine().trim();
+            if (!(response.equals("201"))) {
                 throw new MalformedRequestException(response);
             }
             client.close();

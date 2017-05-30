@@ -1,3 +1,4 @@
+import org.apache.commons.lang3.ObjectUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -35,12 +36,12 @@ class FileServer {
 
         for (int threads = 0; threads < maxThreads; threads++) {
             sockets.add(new Thread(new ServerInit(fileServer, timeout)));
-            System.out.println("Socket " + threads + " initialized...");
+            System.out.println("Unicast socket " + threads + " initialized...");
         }
 
         for (int socket = 0; socket < sockets.size(); socket++) {
             (sockets.get(socket)).start();
-            System.out.println("Socket " + socket + " started!");
+            System.out.println("Unicast socket " + socket + " started!");
         }
     }
 
@@ -503,28 +504,26 @@ class ServerInit implements Runnable {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
         ObjectInputStream ois = new ObjectInputStream(fis);
-        HashMap<String, String> userAccounts;
-        userAccounts = (HashMap) ois.readObject();
+        ArrayList<UserAccounts> userAccounts;
+        userAccounts = (ArrayList) ois.readObject();
         fis.close();
         ois.close();
-        for (HashMap.Entry<String, String> entry : userAccounts.entrySet()) {
-            String accountName = entry.getKey();
-            if (!(accountName.equals("guest"))) {
-                if (accountName.equals(username)) {
-                    out.println("201");
-                    out.flush();
-                    userAccounts.remove(username);
-                    FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
-                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    oos.writeObject(userAccounts);
-                    oos.flush();
-                    fos.close();
-                } else {
-                    out.println("202");
-                    out.flush();
+        ArrayList<UserAccounts> toRemove = new ArrayList<>();
+        for (UserAccounts userAccount : userAccounts) {
+            if (!(username.equals("guest") || username.equals("admin"))) {
+                if (userAccount.getUsername().equals(username)) {
+                    toRemove.add(userAccount);
                 }
             }
         }
+        userAccounts.removeAll(toRemove);
+        FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(userAccounts);
+        oos.flush();
+        fos.close();
+        out.println("201");
+        out.flush();
     }
 
     private void getUserFiles(String userAccount, Socket client) throws IOException {
@@ -544,7 +543,12 @@ class ServerInit implements Runnable {
                 user = account;
             }
         }
-        JSONObject userObj = JSONUtils.buildUserCatalog(user);
+        JSONObject userObj;
+        try{
+            userObj = JSONUtils.buildUserCatalog(user);
+        }catch (NullPointerException npe){
+            userObj = new JSONObject();
+        }
 
         out.println("201");
         out.println(userObj.toString() + "\n");

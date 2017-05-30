@@ -31,7 +31,7 @@ class UserAccounts implements Serializable {
     }
 
     void setAccountType(String newAccountType) {
-         accountType = newAccountType;
+        accountType = newAccountType;
     }
 
 

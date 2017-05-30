@@ -177,7 +177,7 @@ class JSONUtils {
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
     }
 
-    static void blacklistUsers(String itemLocation, List<String> userNames, boolean add){
+    static void blacklistUsers(String itemLocation, List<String> userNames, boolean add) {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         String[] folders = itemLocation.split("/");
@@ -187,7 +187,7 @@ class JSONUtils {
         }
 
         JSONArray blacklist = (JSONArray) item.get("blacklist");
-        if (add){
+        if (add) {
             blacklist.addAll(userNames);
         } else {
             blacklist.removeAll(userNames);
@@ -363,7 +363,7 @@ class JSONUtils {
      * @param outFile       the name that the download file is to be saved as
      * @param serverAddress the address of the the master server
      * @param port          the port that MeshFS uses
-     * @param catalogObj       the catalog object to read from
+     * @param catalogObj    the catalog object to read from
      * @return true on success, false on failure
      * @throws IOException if a socket cannot be initialized
      */
@@ -518,14 +518,14 @@ class JSONUtils {
     }
 
     static String catalogStringFixer(String itemLocationString) {
-        if ((itemLocationString.contains("/")) && ( (StringUtils.countMatches(itemLocationString, "/" ) == 1) || (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users") && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))))) {
+        if ((itemLocationString.contains("/")) && ((StringUtils.countMatches(itemLocationString, "/") == 1) || (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users") && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))))) {
             itemLocationString = itemLocationString.substring(0, itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/"));
         }
 
         return itemLocationString;
     }
 
-    static Pair<String, String> folderProperties(JSONObject catalog, String folderLocation){
+    static Pair<String, String> folderProperties(JSONObject catalog, String folderLocation) {
         folderLocation = catalogStringFixer(folderLocation);
         String[] folders = folderLocation.split("/");
         JSONObject item = catalog;
@@ -540,26 +540,26 @@ class JSONUtils {
         return new Pair<>(humanReadableByteCount(properties.getKey()), df.format(new Date(properties.getValue())));
     }
 
-    private static Pair<Long, Long> folderPropertiesRecursive(JSONObject folder){
+    private static Pair<Long, Long> folderPropertiesRecursive(JSONObject folder) {
         Long folderSize = 0L;
         Long epochDate = 0L;
         Pair<Long, Long> properties = new Pair<>(folderSize, epochDate);
 
         LinkedHashMap<String, String> folderContents = getMapOfFolderContents(folder, null);
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
-        for (String item : folderContents.keySet()){
-            if (folderContents.get(item).equals("directory")){
+        for (String item : folderContents.keySet()) {
+            if (folderContents.get(item).equals("directory")) {
                 Pair<Long, Long> newProperties = folderPropertiesRecursive((JSONObject) folder.get(item));
-                if (newProperties.getValue() > epochDate){
+                if (newProperties.getValue() > epochDate) {
                     epochDate = newProperties.getValue();
                 }
                 properties = new Pair<>(properties.getKey() + newProperties.getKey(), epochDate);
-            } else if (folderContents.get(item).equals("file")){
+            } else if (folderContents.get(item).equals("file")) {
 
                 String date = (String) ((JSONObject) folder.get(item)).get("creationDate");
                 try {
                     long epochDateNew = df.parse(date).getTime();
-                    if (epochDateNew > epochDate){
+                    if (epochDateNew > epochDate) {
                         epochDate = epochDateNew;
                     }
                 } catch (java.text.ParseException e) {

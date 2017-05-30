@@ -2,9 +2,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.Timer;
 
 class MeshFS {
@@ -18,6 +20,8 @@ class MeshFS {
     static Timer nodePanicTimer = new Timer();
     static Timer discoveryBroadcastTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
+    static int activeWindows = 0;
+    static TimerTask manifestCheck;
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
@@ -30,7 +34,7 @@ class MeshFS {
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
         multicastServer = new MulticastServer();
         try {
-            multicastServer.startServer(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
+            multicastServer.startServer(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")), Integer.parseInt(properties.getProperty("serverThreads")));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -99,7 +103,7 @@ class MeshFS {
                     }
                 }
 
-                TimerTask manifestCheck =
+                manifestCheck =
                         new TimerTask() {
                             @Override
                             public void run() {
@@ -157,15 +161,16 @@ class MeshFS {
                         new TimerTask() {
                             @Override
                             public void run() {
-                            if (numFailedConn[0] >= 3) {
-                                try {
-                                    MulticastClient.masterDownInform(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
-                                } catch (IOException ignored) {}
-                            }
+                                if (numFailedConn[0] >= 3) {
+                                    try {
+                                        MulticastClient.masterDownInform(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
+                                    } catch (IOException ignored) {
+                                    }
+                                }
                             }
                         };
 
-                nodePanicTimer.scheduleAtFixedRate(nodePanic,0, 3000);
+                nodePanicTimer.scheduleAtFixedRate(nodePanic, 0, 3000);
                 scheduledReportingTimer.scheduleAtFixedRate(scheduledReporting, 0, 30000);
             }
 
@@ -214,16 +219,37 @@ class MeshFS {
                 e.printStackTrace();
             }
 
-            /*if (Reporting.getSystemOS().toLowerCase().contains("mac")) {
+            if (Reporting.getSystemOS().toLowerCase().contains("mac")) {
                 com.apple.eawt.Application.getApplication()
                         .setDockIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-            }*/
+            }
 
             if (configure) {
                 GreetingsWindow.run(true, null);
             } else {
                 GreetingsWindow.run(false, null);
             }
+
+
+
+            TimerTask windowCheck =
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            activeWindows = Window.getWindows().length;
+                            for(Window w: Window.getWindows()){
+                                if(!w.isShowing()){
+                                    activeWindows -= 1;
+                                }
+
+                            }
+                            if(activeWindows < 1){
+                                System.exit(0);
+                            }
+                        }
+                    };
+            Timer frameTimer = new Timer();
+            frameTimer.scheduleAtFixedRate(windowCheck, 0, 2000);
         }
     }
 }
