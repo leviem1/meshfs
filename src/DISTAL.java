@@ -15,41 +15,6 @@ import java.util.List;
  */
 class DISTAL {
 
-    @SuppressWarnings("unchecked")
-    private static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> storageMap) {
-
-        LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
-
-        //put something in the map to compare against
-        sortedMap.put("temp", -1L);
-
-        for (String key : storageMap.keySet()) {
-            Long storageAmount = storageMap.get(key);
-            boolean isBroken = false;
-
-            for (String sortedKey : sortedMap.keySet()) {
-                if (storageAmount >= sortedMap.get(sortedKey)) {
-                    //reorder the map when a storage value is larger than one that is already in the map
-                    LinkedHashMap<String, Long> reorderStorageMap =
-                            (LinkedHashMap<String, Long>) sortedMap.clone();
-                    sortedMap.clear();
-                    for (String reorderKey : reorderStorageMap.keySet()) {
-                        if (reorderKey.equals(sortedKey)) {
-                            sortedMap.put(key, storageAmount);
-                        }
-                        sortedMap.put(reorderKey, reorderStorageMap.get(reorderKey));
-                    }
-                    isBroken = true;
-                    break;
-                }
-            }
-
-            if (!isBroken) {
-                sortedMap.put(key, storageMap.get(key));
-            }
-        }
-        return sortedMap;
-    }
 
     /**
      * This method is used determines which load balance which computers will receive a file and its
@@ -72,6 +37,7 @@ class DISTAL {
         JSONObject manifestFile = JSONUtils.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.getProperty("repository") + ".catalog.json";
 
+
         //create a unique filename for the uploaded file
         String newName = incrementName();
 
@@ -84,10 +50,7 @@ class DISTAL {
         long sizeOfStripe;
 
         //create a map of the amount of available storage on each computer
-        LinkedHashMap<String, Long> compStorageMap = JSONUtils.createStorageMap(manifestFile);
-
-        //sort the compStorageMap by descending available storage
-        LinkedHashMap<String, Long> sortedCompStorageMap = sortMapByValue(compStorageMap);
+        LinkedHashMap<String, Long> sortedCompStorageMap = JSONUtils.createStorageMap(manifestFile);
 
         //don't use stripes if a file is less than 4096 byte
         if (sizeOfFile <= 4096L) {
@@ -112,7 +75,7 @@ class DISTAL {
                             macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
                 }
             }
-            sortedCompStorageMap = sortMapByValue(sortedCompStorageMap);
+            sortedCompStorageMap = JSONUtils.sortMapByValue(sortedCompStorageMap);
 
             int numOfComputersUsed = sortedCompStorageMap.size();
 
@@ -162,6 +125,11 @@ class DISTAL {
             if (finalComputerCount) {
                 break;
             }
+        }
+
+        if (numOfStripedCopies == 0 && numOfWholeCopies == 0){
+            JSONUtils.renameItem(filePathInCatalog + "/" + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distributing)", uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distribution failed)");
+            return;
         }
 
         //define which computers get stripes

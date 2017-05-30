@@ -310,11 +310,7 @@ class MulticastServerInit implements Runnable {
                         Long nodeTimeStamp =
                                 (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
                         if (currentTimeStamp > nodeTimeStamp + 32000) {
-                            try {
-                                JSONUtils.deleteManifestItem(computer.toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            FileRestore.restoreAllFilesFromComputer(computer.toString());
                             System.out.println(computer.toString() + " was removed from the manifest");
                         }
                     }

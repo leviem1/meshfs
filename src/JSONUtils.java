@@ -122,7 +122,7 @@ class JSONUtils {
             ipArray.addAll(stripes.get(stripe));
             if (stripe == 0) {
 
-                objChild.put("whole_w", ipArray.clone());
+                objChild.put("whole", ipArray.clone());
             } else {
 
                 objChild.put("stripe_" + String.valueOf(stripe - 1), ipArray.clone());
@@ -315,7 +315,44 @@ class JSONUtils {
                     MACAddress.toString(),
                     Long.valueOf((((JSONObject) manifestFile.get(MACAddress)).get("FreeSpace")).toString()));
         }
-        return storageMap;
+        return sortMapByValue(storageMap);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> storageMap) {
+
+        LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
+
+        //put something in the map to compare against
+        sortedMap.put("temp", -1L);
+
+        for (String key : storageMap.keySet()) {
+            Long storageAmount = storageMap.get(key);
+            boolean isBroken = false;
+
+            for (String sortedKey : sortedMap.keySet()) {
+                if (storageAmount >= sortedMap.get(sortedKey)) {
+                    //reorder the map when a storage value is larger than one that is already in the map
+                    LinkedHashMap<String, Long> reorderStorageMap =
+                            (LinkedHashMap<String, Long>) sortedMap.clone();
+                    sortedMap.clear();
+                    for (String reorderKey : reorderStorageMap.keySet()) {
+                        if (reorderKey.equals(sortedKey)) {
+                            sortedMap.put(key, storageAmount);
+                        }
+                        sortedMap.put(reorderKey, reorderStorageMap.get(reorderKey));
+                    }
+                    isBroken = true;
+                    break;
+                }
+            }
+
+            if (!isBroken) {
+                sortedMap.put(key, storageMap.get(key));
+            }
+        }
+        return sortedMap;
     }
 
     /**
