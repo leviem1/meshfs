@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.1.0.112" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -10,8 +10,8 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp fileNameLbl::l:p:159:p, par t:l::p {seq l {comp fileNameLbl4:::p::p, space :::p, comp addGroupBox:::::x, space :::p, comp addGroupBtn:::p::p, space :::p, comp removeGroupBtn:::p:40:p}, comp scrollPane2::l:p:319:p}}, space ::25:x}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp fileNameLbl:::p::p, space :::p, comp scrollPane2:::p::p, space s:::p, par b {comp fileNameLbl4::b:p::p, comp addGroupBtn::b:p::p, comp removeGroupBtn::b:p:32:p, comp addGroupBox::b:p::p}, space ::15:x}}"
+					"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane2::::242:x, seq {comp fileNameLbl:::p:159:p, space :0:83:x}, seq l {comp addGroupBox::::146:x, space u:::p, comp addGroupBtn:::p::p, space :::p, comp removeGroupBtn:::p:40:p}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp fileNameLbl:::p::p, space u:::p, comp scrollPane2:::p::p, space s:::p, par b {comp removeGroupBtn::b:p:32:p, comp addGroupBtn::b:p::p, comp addGroupBox::b:p::p}, space ::22:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -28,11 +28,6 @@ new FormModel {
 								"JavaCodeGenerator.customCreateCode": "new JList(groupsModel);"
 							}
 						} )
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "fileNameLbl4"
-						"text": "Add:"
-						"font": #SwingDerivedFont0
 					} )
 					add( new FormComponent( "javax.swing.JComboBox" ) {
 						name: "addGroupBox"
@@ -63,15 +58,7 @@ new FormModel {
 						name: "okButton"
 						"text": "OK"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 1
-						"gridy": 0
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "cancelButton"
-						"text": "Cancel"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 2
-						"gridy": 0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "South"
@@ -85,11 +72,11 @@ new FormModel {
 					"value": "North"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
-				"value": "Center"
+				"value": "East"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 251, 270 )
+			"location": new java.awt.Point( 0, 25 )
+			"size": new java.awt.Dimension( 280, 350 )
 		} )
 	}
 }

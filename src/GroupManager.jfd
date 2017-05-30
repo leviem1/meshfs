@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.1.0.112" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -18,8 +18,8 @@ new FormModel {
 					"value": "North"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l:::p {comp locationLbl::l:p::p, seq l {comp groupNameLbl:::p::p, space u:::p, comp groupNameField:::p:192:p, space :::p, comp submitBtn:::p::p}, comp scrollPane1:::::x, comp removeGroup::t:p::p}, space ::12:x}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp groupNameLbl::b:p::p, comp groupNameField::b:p::p, comp submitBtn::b:p::p}, space u:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p:200:p, space :::p, comp removeGroup:::p::p, space ::17:x}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp groupNameLbl:::p::p, space u:::p, comp groupNameField:::p:186:p, space s:::x, comp submitBtn:::p::p}, seq {par l {comp locationLbl::l:p::p, comp scrollPane1:::p:351:p}, space :0:0:x}, seq t {space :0:0:x, comp removeGroup:::p::p}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp groupNameLbl::b:p::p, comp submitBtn::b:p::p, comp groupNameField::b:p::p}, space u:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p:200:p, space :::p, comp removeGroup:::p::p, space ::17:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -33,7 +33,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "locationLbl"
-						"text": "Current Groups"
+						"text": "Available Groups"
 						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 1, 1, false )
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
@@ -45,6 +45,7 @@ new FormModel {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JList" ) {
 							name: "groupList"
+							"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 							auxiliary() {
 								"JavaCodeGenerator.customCreateCode": "new JList(model);"
 							}
@@ -69,18 +70,9 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "okButton"
 						"text": "OK"
-						"font": &SwingDerivedFont1 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 1
-						"gridy": 0
-					} )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "cancelButton"
-						"text": "Cancel"
-						"font": #SwingDerivedFont1
+						"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 2
-						"gridy": 0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "South"

@@ -56,7 +56,7 @@ ClientBrowser extends JFrame {
 
     private ClientBrowser(
             String serverAddress, int port, String userAccount, JSONObject catalogObj, boolean previousRunType) {
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         if (Reporting.getSystemOS().contains("Windows")) {
@@ -111,10 +111,7 @@ ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
-        userType = false;
-        if (userAccount.equals("admin")){
-            userType = true;
-        }
+        userType = userAccount.equals("admin");
         DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(catalogObj, userType);
         if (isLoaded) {
             dialogPane.repaint();
@@ -323,7 +320,7 @@ ClientBrowser extends JFrame {
                             userFiles = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
                         } catch (MalformedRequestException e1) {
                             e1.printStackTrace();
-                        } catch (IOException e1) {
+                        } catch (IOException ignored) {
                         }
                         Map<String, String> folderMap = JSONUtils.getMapOfFolderContents(userFiles, null);
 
@@ -361,7 +358,7 @@ ClientBrowser extends JFrame {
                         return;
                     }
 
-                    if(node.toString().equals(userAccount) || node.toString().equals("Shared") || node.toString().equals("root")){
+                    if (node.toString().equals(userAccount) || node.toString().equals("Shared") || node.toString().equals("root")) {
                         tree1.setSelectionPath(null);
                         return;
                     }
@@ -383,7 +380,7 @@ ClientBrowser extends JFrame {
                         } else if (type.toString().equals("tempFile")) {
                             clientBrowserButtonModifier(false);
                             tree1.setSelectionPath(null);
-                        } else if (type.toString().equals("directory")){
+                        } else if (type.toString().equals("directory")) {
                             clientBrowserButtonModifier(true);
                             propertiesBtn.setEnabled(true);
                         } else {
@@ -580,6 +577,7 @@ ClientBrowser extends JFrame {
         SwingUtilities.invokeLater(
                 () -> {
                     try {
+                        if(!clientBrowser.isVisible()) return;
                         String localCatalog = catalogObj.toString();
                         String latestCatalog = null;
                         try {

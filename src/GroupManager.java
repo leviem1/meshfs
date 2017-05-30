@@ -4,7 +4,7 @@ import java.awt.*;
 
 
 /**
- * @author User #1
+ * @author Mark Hedrick
  */
 class GroupManager extends JFrame {
     private static JFrame groupManager;
@@ -15,6 +15,8 @@ class GroupManager extends JFrame {
 
         GroupManager.groupBox = groupBox;
         model = new DefaultListModel();
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
         if (groupBox.getItemCount() > 0) {
             for (int x = 0; x < groupBox.getModel().getSize(); x++) {
                 model.add(model.getSize(), groupBox.getItemAt(x));
@@ -41,7 +43,6 @@ class GroupManager extends JFrame {
         removeGroup = new JButton();
         buttonBar = new JPanel();
         okButton = new JButton();
-        cancelButton = new JButton();
 
         //======== this ========
         setTitle("Group Manager - MeshFS");
@@ -70,7 +71,7 @@ class GroupManager extends JFrame {
                 groupNameField.setFont(new Font("Arial", groupNameField.getFont().getStyle(), groupNameField.getFont().getSize() + 1));
 
                 //---- locationLbl ----
-                locationLbl.setText("Current Groups");
+                locationLbl.setText("Available Groups");
                 locationLbl.setFont(new Font("Arial", locationLbl.getFont().getStyle() | Font.BOLD, locationLbl.getFont().getSize() + 1));
 
                 //---- submitBtn ----
@@ -79,6 +80,9 @@ class GroupManager extends JFrame {
 
                 //======== scrollPane1 ========
                 {
+
+                    //---- groupList ----
+                    groupList.setFont(new Font("Arial", groupList.getFont().getStyle(), groupList.getFont().getSize() + 1));
                     scrollPane1.setViewportView(groupList);
                 }
 
@@ -89,36 +93,41 @@ class GroupManager extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout.createParallelGroup()
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup()
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(locationLbl)
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addComponent(groupNameLbl)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                        .addComponent(groupNameField, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(submitBtn))
-                                                .addComponent(scrollPane1)
-                                                .addComponent(removeGroup, GroupLayout.Alignment.TRAILING))
-                                        .addContainerGap(12, Short.MAX_VALUE))
+                                    .addComponent(groupNameLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(groupNameField, GroupLayout.PREFERRED_SIZE, 186, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, Short.MAX_VALUE)
+                                    .addComponent(submitBtn))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addGroup(contentPanelLayout.createParallelGroup()
+                                        .addComponent(locationLbl)
+                                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 351, GroupLayout.PREFERRED_SIZE))
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                                    .addGap(0, 0, Short.MAX_VALUE)
+                                    .addComponent(removeGroup)))
+                            .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(groupNameLbl)
-                                                .addComponent(groupNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(submitBtn))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(locationLbl)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(removeGroup)
-                                        .addContainerGap(17, Short.MAX_VALUE))
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(groupNameLbl)
+                                .addComponent(submitBtn)
+                                .addComponent(groupNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(locationLbl)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(removeGroup)
+                            .addContainerGap(17, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -127,22 +136,15 @@ class GroupManager extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 85, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 5), 0, 0));
-
-                //---- cancelButton ----
-                cancelButton.setText("Cancel");
-                cancelButton.setFont(new Font("Arial", cancelButton.getFont().getStyle(), cancelButton.getFont().getSize() + 1));
-                buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -215,6 +217,5 @@ class GroupManager extends JFrame {
     private JButton removeGroup;
     private JPanel buttonBar;
     private JButton okButton;
-    private JButton cancelButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
