@@ -67,12 +67,12 @@ class ClientBrowserFileProperties extends JFrame {
         if (itemContents.get("type").equals("directory")) {
 
 
-            Pair<String, String> folderProperties= JSONUtils.folderProperties(userObj, itemPath);
+            Pair<String, String> folderProperties = JSONUtils.folderProperties(userObj, itemPath);
             fileSize = folderProperties.getKey();
             creationDate = folderProperties.getValue();
-        }else{
+        } else {
             fileName = (String) itemContents.get("fileName");
-            fileSize = JSONUtils.humanReadableByteCount((long)itemContents.get("fileSize"));
+            fileSize = JSONUtils.humanReadableByteCount((long) itemContents.get("fileSize"));
             creationDate = (String) itemContents.get("creationDate");
         }
 
@@ -111,7 +111,7 @@ class ClientBrowserFileProperties extends JFrame {
         initComponents(fileName, fileSize, creationDate);
         frameListeners();
 
-        if(userAccount.equals("guest")){
+        if (userAccount.equals("guest")) {
             shareBtn.setEnabled(false);
         }
 

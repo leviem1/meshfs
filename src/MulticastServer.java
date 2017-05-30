@@ -232,7 +232,8 @@ class MulticastServerInit implements Runnable {
 
                         try {
                             Thread.sleep(180000);
-                        } catch (InterruptedException ignored) {}
+                        } catch (InterruptedException ignored) {
+                        }
 
                         masterDown = false;
                     }
@@ -297,32 +298,32 @@ class MulticastServerInit implements Runnable {
                 new TimerTask() {
                     @Override
                     public void run() {
-                    Long currentTimeStamp = new Date().getTime();
-                    if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
-                            .exists())) {
-                        try {
-                            JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    JSONObject manifest =
-                            JSONUtils.getJSONObject(
-                                    MeshFS.properties.getProperty("repository") + ".manifest.json");
-                    for (Object computer : manifest.keySet()) {
-                        Long nodeTimeStamp =
-                                (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
-                        if (currentTimeStamp > nodeTimeStamp + 32000) {
+                        Long currentTimeStamp = new Date().getTime();
+                        if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
+                                .exists())) {
                             try {
-                                JSONUtils.deleteManifestItem(computer.toString());
+                                JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            System.out.println(computer.toString() + " was removed from the manifest");
+                        }
+                        JSONObject manifest =
+                                JSONUtils.getJSONObject(
+                                        MeshFS.properties.getProperty("repository") + ".manifest.json");
+                        for (Object computer : manifest.keySet()) {
+                            Long nodeTimeStamp =
+                                    (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
+                            if (currentTimeStamp > nodeTimeStamp + 32000) {
+                                try {
+                                    JSONUtils.deleteManifestItem(computer.toString());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                System.out.println(computer.toString() + " was removed from the manifest");
+                            }
                         }
                     }
-                }
-        };
+                };
 
         MeshFS.manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
 
@@ -369,7 +370,8 @@ class MulticastServerInit implements Runnable {
             try {
                 socket.receive(dp);
                 processRequest(new String(dp.getData()).trim(), dp);
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         }
         voteCastScheduler.cancel();
         System.out.println("Multicast socket closed");

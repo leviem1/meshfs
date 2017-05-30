@@ -2,9 +2,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.Timer;
 
 class MeshFS {
@@ -18,6 +20,7 @@ class MeshFS {
     static Timer nodePanicTimer = new Timer();
     static Timer discoveryBroadcastTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
+    static int activeWindows = 0;
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
@@ -161,15 +164,16 @@ class MeshFS {
                         new TimerTask() {
                             @Override
                             public void run() {
-                            if (numFailedConn[0] >= 3) {
-                                try {
-                                    MulticastClient.masterDownInform(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
-                                } catch (IOException ignored) {}
-                            }
+                                if (numFailedConn[0] >= 3) {
+                                    try {
+                                        MulticastClient.masterDownInform(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
+                                    } catch (IOException ignored) {
+                                    }
+                                }
                             }
                         };
 
-                nodePanicTimer.scheduleAtFixedRate(nodePanic,0, 3000);
+                nodePanicTimer.scheduleAtFixedRate(nodePanic, 0, 3000);
                 scheduledReportingTimer.scheduleAtFixedRate(scheduledReporting, 0, 30000);
             }
 
@@ -228,6 +232,26 @@ class MeshFS {
             } else {
                 GreetingsWindow.run(false, null);
             }
+
+
+
+            TimerTask windowCheck =
+                    new TimerTask() {
+                        @Override
+                        public void run() {
+                            activeWindows = Window.getWindows().length;
+                            for(Window w: Window.getWindows()){
+                                if(!w.isShowing()){
+                                    activeWindows -= 1;
+                                }
+                            }
+                            if(activeWindows < 1){
+                                System.exit(0);
+                            }
+                        }
+                    };
+            Timer frameTimer = new Timer();
+            frameTimer.scheduleAtFixedRate(windowCheck, 0, 1000);
         }
     }
 }

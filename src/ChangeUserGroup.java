@@ -9,7 +9,7 @@ import java.util.*;
 
 
 /**
- * @author User #1
+ * @author Mark Hedrick
  */
 class ChangeUserGroup extends JFrame {
     private static JFrame changeUserGroup;
@@ -41,7 +41,7 @@ class ChangeUserGroup extends JFrame {
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
         contentPanel = new JPanel();
-        titleLbl2 = new JLabel();
+        changeUserGroupTitle = new JLabel();
         newGroupsLbl = new JLabel();
         currentGroupsLbl = new JLabel();
         splitPane1 = new JSplitPane();
@@ -72,10 +72,10 @@ class ChangeUserGroup extends JFrame {
             //======== contentPanel ========
             {
 
-                //---- titleLbl2 ----
-                titleLbl2.setText("Change User Group");
-                titleLbl2.setFont(new Font("Arial", titleLbl2.getFont().getStyle(), titleLbl2.getFont().getSize() + 9));
-                titleLbl2.setHorizontalAlignment(SwingConstants.CENTER);
+                //---- changeUserGroupTitle ----
+                changeUserGroupTitle.setText("Change User Group");
+                changeUserGroupTitle.setFont(new Font("Arial", changeUserGroupTitle.getFont().getStyle(), changeUserGroupTitle.getFont().getSize() + 9));
+                changeUserGroupTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
                 //---- newGroupsLbl ----
                 newGroupsLbl.setText("New Group Membership");
@@ -148,9 +148,9 @@ class ChangeUserGroup extends JFrame {
                                         .addGroup(panel3Layout.createParallelGroup()
                                             .addGroup(panel3Layout.createSequentialGroup()
                                                 .addComponent(addGroupLbl, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap(164, Short.MAX_VALUE))
+                                                .addContainerGap(159, Short.MAX_VALUE))
                                             .addGroup(panel3Layout.createSequentialGroup()
-                                                .addComponent(userGroupBox, GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
+                                                .addComponent(userGroupBox, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
                                                 .addGap(3, 3, 3)
                                                 .addComponent(addGroupBtn)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
@@ -180,7 +180,7 @@ class ChangeUserGroup extends JFrame {
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(titleLbl2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(changeUserGroupTitle, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addContainerGap()
                                     .addComponent(currentGroupsLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -196,13 +196,13 @@ class ChangeUserGroup extends JFrame {
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addComponent(titleLbl2)
+                            .addComponent(changeUserGroupTitle)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(currentGroupsLbl)
                                 .addComponent(newGroupsLbl))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))
+                            .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -329,7 +329,7 @@ class ChangeUserGroup extends JFrame {
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel titleLbl2;
+    private JLabel changeUserGroupTitle;
     private JLabel newGroupsLbl;
     private JLabel currentGroupsLbl;
     private JSplitPane splitPane1;

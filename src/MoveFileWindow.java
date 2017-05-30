@@ -84,8 +84,8 @@ class MoveFileWindow extends JFrame {
         Enumeration<DefaultMutableTreeNode> e = tree.depthFirstEnumeration();
         while (e.hasMoreElements()) {
             DefaultMutableTreeNode node = e.nextElement();
-            if(node.toString().equals(fileName)){
-                if(node.getParent().getChildCount() == 1){
+            if (node.toString().equals(fileName)) {
+                if (node.getParent().getChildCount() == 1) {
                     node.getPreviousNode().add(new DefaultMutableTreeNode("(no files)"));
                 }
                 node.removeFromParent();
@@ -221,7 +221,7 @@ class MoveFileWindow extends JFrame {
                                     .replaceAll("[ ]*, ", "/")
                                     + "/";
                     try {
-                        if (currentJsonPath.equals(newJsonPath.substring(0, newJsonPath.lastIndexOf("/"))+ "/" + fileName)) {
+                        if (currentJsonPath.equals(newJsonPath.substring(0, newJsonPath.lastIndexOf("/")) + "/" + fileName)) {
                             JOptionPane.showMessageDialog(
                                     moveFileWindow,
                                     "Cannot move directory to this location!",

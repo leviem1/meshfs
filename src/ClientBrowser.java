@@ -112,7 +112,7 @@ ClientBrowser extends JFrame {
 
     private void initComponents() {
         userType = false;
-        if (userAccount.equals("admin")){
+        if (userAccount.equals("admin")) {
             userType = true;
         }
         DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(catalogObj, userType);
@@ -361,7 +361,7 @@ ClientBrowser extends JFrame {
                         return;
                     }
 
-                    if(node.toString().equals(userAccount) || node.toString().equals("Shared") || node.toString().equals("root")){
+                    if (node.toString().equals(userAccount) || node.toString().equals("Shared") || node.toString().equals("root")) {
                         tree1.setSelectionPath(null);
                         return;
                     }
@@ -383,7 +383,7 @@ ClientBrowser extends JFrame {
                         } else if (type.toString().equals("tempFile")) {
                             clientBrowserButtonModifier(false);
                             tree1.setSelectionPath(null);
-                        } else if (type.toString().equals("directory")){
+                        } else if (type.toString().equals("directory")) {
                             clientBrowserButtonModifier(true);
                             propertiesBtn.setEnabled(true);
                         } else {

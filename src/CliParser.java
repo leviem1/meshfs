@@ -501,7 +501,7 @@ class CliParser {
             if (response.isEmpty() || !response.toLowerCase().equals("admin") && !response.toLowerCase().equals("user")) {
                 System.out.println("Please enter \"admin\" or \"user\"");
                 System.exit(0);
-            }else{
+            } else {
                 for (UserAccounts account : accounts) {
                     if (account.getUsername().equals(username)) {
                         account.setAccountType(response);
