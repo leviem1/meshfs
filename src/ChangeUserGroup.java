@@ -20,7 +20,7 @@ class ChangeUserGroup extends JFrame {
     private final DefaultListModel newGroupModel;
 
     public ChangeUserGroup(String userAccount, String serverAddress, int port) {
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;

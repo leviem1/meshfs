@@ -245,6 +245,7 @@ class MeshFS {
                                 if(!w.isShowing()){
                                     activeWindows -= 1;
                                 }
+
                             }
                             if(activeWindows < 1){
                                 System.exit(0);
@@ -252,7 +253,7 @@ class MeshFS {
                         }
                     };
             Timer frameTimer = new Timer();
-            frameTimer.scheduleAtFixedRate(windowCheck, 0, 1000);
+            frameTimer.scheduleAtFixedRate(windowCheck, 0, 2000);
         }
     }
 }

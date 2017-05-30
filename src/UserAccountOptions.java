@@ -11,7 +11,7 @@ class UserAccountOptions extends JFrame {
     private String userAccount;
     private String serverAddress;
     private int port;
-    private JFrame parentSender;
+    private static JFrame parentSender;
     private boolean previousRunType;
 
     //GEN-BEGIN:variables
@@ -34,6 +34,7 @@ class UserAccountOptions extends JFrame {
         this.port = port;
         this.parentSender = parentSender;
         this.previousRunType = previousRunType;
+
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -60,9 +61,16 @@ class UserAccountOptions extends JFrame {
             changePasswordBtn.setToolTipText("Changing the guest password is not allowed");
             changeGroupBtn.setEnabled(false);
             changeGroupBtn.setToolTipText("Changing guest groups is not allowed");
-        } else if (!userType.equals("admin")) {
+            deleteAccount.setEnabled(false);
+            deleteAccount.setToolTipText("Deleting the guest account is not allowed");
+
+        }else if (!userType.equals("admin")) {
             changeGroupBtn.setEnabled(false);
             changeGroupBtn.setToolTipText("Changing guest groups is not allowed");
+        }
+        if(userAccount.equals("admin")){
+            deleteAccount.setEnabled(false);
+            deleteAccount.setToolTipText("Deleting the admin account is not allowed");
         }
     }
 
@@ -222,10 +230,12 @@ class UserAccountOptions extends JFrame {
                     if (confirmResult == 0) {
                         try {
                             FileClient.deleteAccount(serverAddress, port, userAccount);
-                            dispose();
-                            parentSender.dispose();
                             ClientModeConfiguration.run(userAccountOptions, serverAddress, previousRunType);
-                        } catch (IOException | MalformedRequestException e1) {
+                            parentSender.dispose();
+                            dispose();
+                        } catch (IOException ioe){
+                            ioe.printStackTrace();
+                        }catch (MalformedRequestException e1) {
                             e1.printStackTrace();
                         }
                     } else {

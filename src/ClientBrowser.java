@@ -56,7 +56,7 @@ ClientBrowser extends JFrame {
 
     private ClientBrowser(
             String serverAddress, int port, String userAccount, JSONObject catalogObj, boolean previousRunType) {
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         if (Reporting.getSystemOS().contains("Windows")) {
@@ -577,6 +577,7 @@ ClientBrowser extends JFrame {
         SwingUtilities.invokeLater(
                 () -> {
                     try {
+                        if(!clientBrowser.isVisible()) return;
                         String localCatalog = catalogObj.toString();
                         String latestCatalog = null;
                         try {
