@@ -104,7 +104,7 @@ ClientBrowser extends JFrame {
         moveBtn = new JMenuItem("Move...");
         renameBtn = new JMenuItem("Rename...");
         removeBtn = new JMenuItem("Delete...");
-        propertiesBtn = new JMenuItem("Properties Item");
+        propertiesBtn = new JMenuItem("Properties");
 
         frameListeners();
 
@@ -507,7 +507,7 @@ ClientBrowser extends JFrame {
             JSONObject contents = JSONUtils.getItemContents(catalogObj, jsonPath.toString());
             String type = contents.get("type").toString();
 
-            if(type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
+            if(type.equals("file") ||  type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
                 rightClickMenu = new JPopupMenu();
                 rightClickMenu.add(renameBtn);
                 rightClickMenu.add(moveBtn);
