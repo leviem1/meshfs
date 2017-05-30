@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 /**
@@ -213,7 +214,7 @@ class CliParser {
 
             username = username.toLowerCase();
             String pass = new String(password);
-            accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass), "user", new ArrayList<>(Arrays.asList(username))));
+            accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, pass), "user", new ArrayList<>(Collections.singletonList(username))));
             Crypt.writeAuthFile(accounts);
 
             System.out.println("User Added!");
@@ -230,7 +231,7 @@ class CliParser {
         } else {
             String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             String pw = RandomStringUtils.random(8, characters);
-            accounts.add(new UserAccounts("admin", Crypt.generateEncryptedPass(username, pw), "admin", new ArrayList<>(Arrays.asList(username))));
+            accounts.add(new UserAccounts("admin", Crypt.generateEncryptedPass(username, pw), "admin", new ArrayList<>(Collections.singletonList(username))));
             Crypt.writeAuthFile(accounts);
             System.out.println("Admin account generated!");
             System.out.println("Username: admin (non case-sensitive)");
@@ -250,7 +251,7 @@ class CliParser {
             accounts = new ArrayList<>();
         }
 
-        accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, password), "user", new ArrayList<>(Arrays.asList(username))));
+        accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, password), "user", new ArrayList<>(Collections.singletonList(username))));
         Crypt.writeAuthFile(accounts);
     }
 

@@ -111,10 +111,7 @@ ClientBrowser extends JFrame {
     }
 
     private void initComponents() {
-        userType = false;
-        if (userAccount.equals("admin")) {
-            userType = true;
-        }
+        userType = userAccount.equals("admin");
         DefaultMutableTreeNode root = JSONUtils.JTreeBuilder(catalogObj, userType);
         if (isLoaded) {
             dialogPane.repaint();
@@ -323,7 +320,7 @@ ClientBrowser extends JFrame {
                             userFiles = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
                         } catch (MalformedRequestException e1) {
                             e1.printStackTrace();
-                        } catch (IOException e1) {
+                        } catch (IOException ignored) {
                         }
                         Map<String, String> folderMap = JSONUtils.getMapOfFolderContents(userFiles, null);
 

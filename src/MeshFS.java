@@ -21,6 +21,7 @@ class MeshFS {
     static Timer discoveryBroadcastTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
     static int activeWindows = 0;
+    static TimerTask manifestCheck;
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
@@ -102,7 +103,7 @@ class MeshFS {
                     }
                 }
 
-                TimerTask manifestCheck =
+                manifestCheck =
                         new TimerTask() {
                             @Override
                             public void run() {

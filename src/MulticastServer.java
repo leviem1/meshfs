@@ -294,38 +294,8 @@ class MulticastServerInit implements Runnable {
             }
         }
 
-        TimerTask manifestCheck =
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        Long currentTimeStamp = new Date().getTime();
-                        if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
-                                .exists())) {
-                            try {
-                                JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        JSONObject manifest =
-                                JSONUtils.getJSONObject(
-                                        MeshFS.properties.getProperty("repository") + ".manifest.json");
-                        for (Object computer : manifest.keySet()) {
-                            Long nodeTimeStamp =
-                                    (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
-                            if (currentTimeStamp > nodeTimeStamp + 32000) {
-                                try {
-                                    JSONUtils.deleteManifestItem(computer.toString());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                System.out.println(computer.toString() + " was removed from the manifest");
-                            }
-                        }
-                    }
-                };
 
-        MeshFS.manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
+        MeshFS.manifestTimer.scheduleAtFixedRate(MeshFS.manifestCheck, 0, 1000);
 
         MeshFS.scheduledReportingTimer.cancel();
         MeshFS.nodePanicTimer.cancel();
