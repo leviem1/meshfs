@@ -124,8 +124,7 @@ public class FileRestore {
 
         if (pullIP == null){
             //change catalog to read "corrupted"
-
-
+            corruptFilesInCatalog(catalogReferences);
             return;
         }
         
@@ -145,7 +144,7 @@ public class FileRestore {
         String destinationCompMAC = null;
         for (Object macAddress : storageMap.keySet()){
             String ipAddress = (((JSONObject) manifest.get(macAddress)).get("IP")).toString();
-            if (FileClient.ping(ipAddress, portNumber) > -1){
+            if (FileClient.ping(ipAddress, portNumber) > -1 && storageMap.get(macAddress.toString()) > FileUtils.getSize(MeshFS.properties.getProperty("repository") + File.separator + alphanumericFileName)){
                 destinationCompIP = ipAddress;
                 destinationCompMAC = macAddress.toString();
                 break;
@@ -168,6 +167,7 @@ public class FileRestore {
                     portNumber);
         } catch (IOException | MalformedRequestException e) {
             //update to say corrupted
+            corruptFilesInCatalog(catalogReferences);
             return;
         }
         
