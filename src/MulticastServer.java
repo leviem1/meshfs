@@ -16,20 +16,25 @@ import java.util.concurrent.*;
  */
 
 class MulticastServer {
-    private Thread mcast;
+    private final ArrayList<Thread> sockets = new ArrayList<>();
     private MulticastSocket socket;
     private Timer checkMastersTimer;
 
-    void startServer(String groupAddress, int port) throws IOException {
+    void startServer(String groupAddress, int port, int maxThreads) throws IOException {
         InetAddress group = InetAddress.getByName(groupAddress);
         socket = new MulticastSocket(port);
         socket.setReuseAddress(true);
         socket.joinGroup(group);
 
-        mcast = new Thread(new MulticastServerInit(socket));
-        System.out.println("Multicast server initialized...");
-        mcast.start();
-        System.out.println("Multicast server started!");
+        for (int threads = 0; threads < maxThreads; threads++) {
+            sockets.add(new Thread(new MulticastServerInit(socket)));
+            System.out.println("Multicast socket " + threads + " initialized...");
+        }
+
+        for (int socket = 0; socket < sockets.size(); socket++) {
+            (sockets.get(socket)).start();
+            System.out.println("Multicast socket " + socket + " started!");
+        }
 
         TimerTask checkMasters = new TimerTask() {
             ArrayList<String> mastersToRemove = new ArrayList<>();
@@ -50,16 +55,37 @@ class MulticastServer {
 
         checkMastersTimer = new Timer();
         checkMastersTimer.scheduleAtFixedRate(checkMasters, 0, 1000);
+
+        TimerTask removeReportedDown = new TimerTask() {
+            @Override
+            public void run() {
+                for (Map.Entry reportedDownEntry : MulticastServerInit.reportedDown.entrySet()) {
+                    if (Instant.now().toEpochMilli() > (long) reportedDownEntry.getValue() + 15000) {
+                        MulticastServerInit.reportedDown.remove(reportedDownEntry.getKey());
+                    }
+                }
+            }
+        };
+
+        Timer removeReportedDownTimer = new Timer();
+        removeReportedDownTimer.scheduleAtFixedRate(removeReportedDown, 0, 5000);
+
     }
 
     void stopServer() {
         if (socket.isBound()) {
-            mcast.interrupt();
+            for (Thread socket : sockets) {
+                socket.interrupt();
+            }
+
             socket.close();
-            try {
-                mcast.join();
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
+
+            for (Thread socket : sockets) {
+                try {
+                    socket.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             checkMastersTimer.cancel();
         }
@@ -74,12 +100,12 @@ class MulticastServer {
 class MulticastServerInit implements Runnable {
 
     private final DatagramSocket socket;
-    private volatile boolean masterDown = false;
-    private volatile boolean recordVotes = false;
-    private Timer voteCastScheduler = new Timer();
-    static List<String> foundMasters = new ArrayList<>();
-    private HashMap<InetAddress, Long> reportedDown = new HashMap<>();
-    private volatile ConcurrentHashMap<String, String> newMasterVotes = new ConcurrentHashMap<>();
+    private static volatile boolean masterDown = false;
+    private static volatile boolean recordVotes = false;
+    private static Timer voteCastScheduler = new Timer();
+    private static ConcurrentHashMap<String, String> newMasterVotes = new ConcurrentHashMap<>();
+    static CopyOnWriteArrayList<String> foundMasters = new CopyOnWriteArrayList<>();
+    static ConcurrentHashMap<InetAddress, Long> reportedDown = new ConcurrentHashMap<>();
 
     MulticastServerInit(DatagramSocket socket) {
         this.socket = socket;
@@ -94,7 +120,7 @@ class MulticastServerInit implements Runnable {
     private void masterDownRecord(InetAddress address) {
         reportedDown.put(address, Instant.now().toEpochMilli());
         if ((reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json").size() / 2) && !masterDown) {
-            System.out.println("Master is offline");
+            System.err.println("Master is offline");
             Thread thread = new Thread(
                     () -> {
                         masterDown = true;
@@ -349,20 +375,6 @@ class MulticastServerInit implements Runnable {
     }
 
     public void run() {
-        TimerTask removeReportedDown = new TimerTask() {
-            @Override
-            public void run() {
-                for (Map.Entry reportedDownEntry : reportedDown.entrySet()) {
-                    if (Instant.now().toEpochMilli() > (long) reportedDownEntry.getValue() + 15000) {
-                        reportedDown.remove(reportedDownEntry.getKey());
-                    }
-                }
-            }
-        };
-
-        Timer removeReportedDownTimer = new Timer();
-        removeReportedDownTimer.scheduleAtFixedRate(removeReportedDown, 0, 5000);
-
         while (!Thread.interrupted()) {
             byte data[] = new byte[4096];
             DatagramPacket dp = new DatagramPacket(data, data.length);

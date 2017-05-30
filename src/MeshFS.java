@@ -30,7 +30,7 @@ class MeshFS {
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));
         multicastServer = new MulticastServer();
         try {
-            multicastServer.startServer(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
+            multicastServer.startServer(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")), Integer.parseInt(properties.getProperty("serverThreads")));
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

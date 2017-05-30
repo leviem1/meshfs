@@ -35,12 +35,12 @@ class FileServer {
 
         for (int threads = 0; threads < maxThreads; threads++) {
             sockets.add(new Thread(new ServerInit(fileServer, timeout)));
-            System.out.println("Socket " + threads + " initialized...");
+            System.out.println("Unicast socket " + threads + " initialized...");
         }
 
         for (int socket = 0; socket < sockets.size(); socket++) {
             (sockets.get(socket)).start();
-            System.out.println("Socket " + socket + " started!");
+            System.out.println("Unicast socket " + socket + " started!");
         }
     }
 
