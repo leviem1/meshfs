@@ -60,77 +60,8 @@ class MeshFS {
                     System.out.println("Starting Initial Authentication Generator");
                     cliParser.addUser(true);
                 }
-                File manifestFile = new File(MeshFS.properties.getProperty("repository") + ".manifest.json");
-                manifestFile.delete();
-                File catalog = new File(properties.getProperty("repository") + ".catalog.json");
 
-                TimerTask discoveryBroadcast = new TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            MulticastClient.notifyClients(properties.getProperty("multicastGroup"), Integer.parseInt(properties.getProperty("multicastPort")));
-                        } catch (IOException ignored) {
-                        }
-                    }
-                };
-
-                discoveryBroadcastTimer.scheduleAtFixedRate(discoveryBroadcast, 0, 1000);
-
-                if (!catalog.exists()) {
-                    JSONObject newCatalog = new JSONObject();
-                    JSONObject folder = new JSONObject();
-                    JSONObject newRoot = new JSONObject();
-                    JSONArray groups = new JSONArray();
-                    groups.add("all");
-
-                    newCatalog.put("currentName", "0000000000000000");
-                    folder.put("type", "directory");
-                    folder.put("groups", groups);
-                    folder.put("blacklist", new JSONArray());
-                    folder.put("admins", new JSONArray());
-                    newRoot.put("Users", folder);
-                    newRoot.put("Shared", folder);
-                    newRoot.put("type", "directory");
-                    newRoot.put("groups", groups);
-                    newRoot.put("blacklist", new JSONArray());
-                    newRoot.put("admins", new JSONArray());
-                    newCatalog.put("root", newRoot);
-
-                    try {
-                        JSONUtils.writeJSONObject(
-                                properties.getProperty("repository") + ".catalog.json", newCatalog);
-                    } catch (IOException ignored) {
-                    }
-                }
-
-                manifestCheck =
-                        new TimerTask() {
-                            @Override
-                            public void run() {
-                                Long currentTimeStamp = new Date().getTime();
-                                if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
-                                        .exists())) {
-                                    try {
-                                        JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                                JSONObject manifest =
-                                        JSONUtils.getJSONObject(
-                                                MeshFS.properties.getProperty("repository") + ".manifest.json");
-                                for (Object computer : manifest.keySet()) {
-                                    Long nodeTimeStamp =
-                                            (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
-                                    if (currentTimeStamp > nodeTimeStamp + 32000) {
-                                        FileRestore.restoreAllFilesFromComputer(computer.toString());
-                                        System.out.println(computer.toString() + " was removed from the manifest");
-                                    }
-                                }
-                            }
-                        };
-
-                manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
+                startAsMaster();
             } else {
                 final int[] numFailedConn = {0};
                 TimerTask scheduledReporting =
@@ -251,6 +182,81 @@ class MeshFS {
             Timer frameTimer = new Timer();
             frameTimer.scheduleAtFixedRate(windowCheck, 0, 2000);
         }
+    }
+
+    static void startAsMaster() {
+        MeshFS.isMaster = true;
+        new File(MeshFS.properties.getProperty("repository") + ".manifest.json").delete();
+        File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
+
+        TimerTask discoveryBroadcast = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    MulticastClient.notifyClients(MeshFS.properties.getProperty("multicastGroup"), Integer.parseInt(MeshFS.properties.getProperty("multicastPort")));
+                } catch (IOException ignored) {
+                }
+            }
+        };
+
+        MeshFS.discoveryBroadcastTimer.scheduleAtFixedRate(discoveryBroadcast, 0, 1000);
+
+        if (!catalog.exists()) {
+            JSONObject newCatalog = new JSONObject();
+            JSONObject folder = new JSONObject();
+            JSONObject newRoot = new JSONObject();
+            JSONArray groups = new JSONArray();
+            groups.add("all");
+
+            newCatalog.put("currentName", "0000000000000000");
+            folder.put("type", "directory");
+            folder.put("groups", groups);
+            folder.put("blacklist", new JSONArray());
+            folder.put("admins", new JSONArray());
+            newRoot.put("Users", folder);
+            newRoot.put("Shared", folder);
+            newRoot.put("type", "directory");
+            newRoot.put("groups", groups);
+            newRoot.put("blacklist", new JSONArray());
+            newRoot.put("admins", new JSONArray());
+            newCatalog.put("root", newRoot);
+
+            try {
+                JSONUtils.writeJSONObject(
+                        MeshFS.properties.getProperty("repository") + ".catalog.json", newCatalog);
+            } catch (IOException ignored) {
+            }
+        }
+
+        TimerTask manifestCheck =
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        Long currentTimeStamp = new Date().getTime();
+                        if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
+                                .exists())) {
+                            try {
+                                JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        JSONObject manifest =
+                                JSONUtils.getJSONObject(
+                                        MeshFS.properties.getProperty("repository") + ".manifest.json");
+                        for (Object computer : manifest.keySet()) {
+                            Long nodeTimeStamp =
+                                    (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
+                            if (currentTimeStamp > nodeTimeStamp + 32000) {
+                                FileRestore.restoreAllFilesFromComputer(computer.toString());
+                                System.out.println(computer.toString() + " was removed from the manifest");
+                            }
+                        }
+                    }
+                };
+
+
+        manifestTimer.scheduleAtFixedRate(MeshFS.manifestCheck, 0, 1000);
     }
 }
 
