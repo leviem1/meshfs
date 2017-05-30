@@ -210,6 +210,11 @@ class ServerInit implements Runnable {
 
                         break;
 
+                    case "121": //121: Get node intended files
+                        getNodeIntendedFiles(requestParts[2], out);
+
+                        break;
+
                     default:
                         badRequest(out, request, "Invalid Request");
                         break;
@@ -673,6 +678,14 @@ class ServerInit implements Runnable {
 
         out.close();
         dos.close();
+    }
+
+    private void getNodeIntendedFiles(String macAddr, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+        out.println("201");
+        out.println(FileRestore.getFilesOnComputerFromCatalog(macAddr) + "\n");
+        out.close();
     }
 
 

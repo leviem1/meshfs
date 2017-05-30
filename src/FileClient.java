@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The FileClient class handles connecting to other servers in the cluster
@@ -622,13 +624,29 @@ final class FileClient {
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "|" + add + "|" + edit + "|" + view + "\n");
-        if ((input.readLine().trim()).equals("202")) {
+        if (!(input.readLine().trim()).equals("202")) {
+            //TODO: Malformed request exception here
             client.close();
-        } else {
-            return true;
+            return false;
         }
+
         client.close();
-        return false;
+        return true;
+    }
+
+    static List<String> getNodeIntendedFiles(String serverAddress, int port, String macAddr, String uuid) throws MalformedRequestException, IOException {
+        String response;
+        Socket client = new Socket(serverAddress, port);
+        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        out.println("121|" + uuid + "|" + macAddr + "\n");
+
+        if (!(response = input.readLine().trim()).equals("201")) {
+            throw new MalformedRequestException(response);
+        }
+
+        return Arrays.asList(response.substring(1,response.length()-1).split(", "));
     }
 
 }
