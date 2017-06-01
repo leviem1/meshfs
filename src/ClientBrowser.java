@@ -545,7 +545,6 @@ ClientBrowser extends JFrame {
                     path,
                     path.substring(path.lastIndexOf(File.separator)),
                     serverAddress,
-                    port,
                     catalogObj);
             JOptionPane.showMessageDialog(
                     null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);

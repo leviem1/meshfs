@@ -58,7 +58,7 @@ public class FileRestore {
         }
     }
 
-    static void restorePartialFile(String alphanumericFileName, String oldComputerMAC){
+    private static void restorePartialFile(String alphanumericFileName, String oldComputerMAC){
         JSONObject manifest = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         String manifestString = manifest.toString();
         String pullIP = null;
@@ -209,11 +209,11 @@ public class FileRestore {
         return null;
     }
 
-    static List<String> findFileReferencesInCatalog(JSONObject catalog, String alphanumericName){
+    private static List<String> findFileReferencesInCatalog(JSONObject catalog, String alphanumericName){
         return fileReferenceFinderRecursive((JSONObject) catalog.get("root"), alphanumericName, "root");
     }
 
-    static List<String> fileReferenceFinderRecursive(JSONObject folder, String alphanumericName, String folderLocation){
+    private static List<String> fileReferenceFinderRecursive(JSONObject folder, String alphanumericName, String folderLocation){
         List<String> references = new ArrayList<>();
         LinkedHashMap<String, String> folderMap = JSONUtils.getMapOfFolderContents(folder, null);
         for (String item : folderMap.keySet()){
@@ -226,7 +226,7 @@ public class FileRestore {
         return references;
     }
 
-    static void corruptFilesInCatalog(List<String> catalogReferences){
+    private static void corruptFilesInCatalog(List<String> catalogReferences){
         for (String reference : catalogReferences){
             try {
                 JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")) + " (Corrupted)");
@@ -244,7 +244,7 @@ public class FileRestore {
         return new ArrayList<>();
     }
 
-    static List<String> computerReferenceFinderRecursive(JSONObject folder, String MACAddress){
+    private static List<String> computerReferenceFinderRecursive(JSONObject folder, String MACAddress){
         List<String> fileNames = new ArrayList<>();
         LinkedHashMap<String, String> folderMap = JSONUtils.getMapOfFolderContents(folder, null);
         for (String item : folderMap.keySet()){

@@ -63,14 +63,41 @@ class MeshFS {
 
                 startAsMaster();
             } else {
-                final int[] numFailedConn = {0};
+
+                final int[] numFailedConn = {-1};
                 TimerTask scheduledReporting =
                         new TimerTask() {
                             @Override
                             public void run() {
+
                                 if (FileClient.ping(
                                         properties.getProperty("masterIP"),
                                         Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
+                                    if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
+                                        List<String> filesToRetrieve = new ArrayList<>();
+                                        try {
+                                            filesToRetrieve = FileClient.getNodeIntendedFiles(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), Reporting.getMacAddress());
+                                        } catch (MalformedRequestException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        String currentFiles = Reporting.getRepositoryContents();
+                                        List<String> files = Arrays.asList(currentFiles.substring(1, currentFiles.length() - 1).split(", "));
+                                        List<String> filesToRemove = files;
+                                        filesToRemove.removeAll(filesToRetrieve);
+                                        filesToRetrieve.removeAll(files);
+                                        for (String file : filesToRemove){
+                                            FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + file);
+                                        }
+                                        for (String fileName : filesToRetrieve){
+                                            try {
+                                                FileClient.receiveFile(FileRestore.findComputerWithFile(fileName), Integer.parseInt(properties.getProperty("portNumber")), fileName);
+                                            } catch (NullPointerException npe){
+                                                System.out.println(fileName + " was not found");
+                                            } catch (IOException | FileTransferException | MalformedRequestException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
                                     numFailedConn[0] = 0;
                                     try {
                                         FileClient.sendReport(
@@ -84,6 +111,7 @@ class MeshFS {
                                     }
                                 } else {
                                     numFailedConn[0]++;
+
                                 }
                             }
                         };
@@ -228,7 +256,7 @@ class MeshFS {
             }
         }
 
-        TimerTask manifestCheck =
+        manifestCheck =
                 new TimerTask() {
                     @Override
                     public void run() {
@@ -247,7 +275,7 @@ class MeshFS {
                         for (Object computer : manifest.keySet()) {
                             Long nodeTimeStamp =
                                     (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
-                            if (currentTimeStamp > nodeTimeStamp + 32000) {
+                            if (currentTimeStamp > nodeTimeStamp + 62000) {
                                 FileRestore.restoreAllFilesFromComputer(computer.toString());
                                 System.out.println(computer.toString() + " was removed from the manifest");
                             }

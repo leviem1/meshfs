@@ -634,13 +634,13 @@ final class FileClient {
         return true;
     }
 
-    static List<String> getNodeIntendedFiles(String serverAddress, int port, String macAddr, String uuid) throws MalformedRequestException, IOException {
+    static List<String> getNodeIntendedFiles(String serverAddress, int port, String macAddr) throws MalformedRequestException, IOException {
         String response;
         Socket client = new Socket(serverAddress, port);
         client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
         BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("121|" + uuid + "|" + macAddr + "\n");
+        out.println("121|" + MeshFS.properties.getProperty("uuid") + "|" + macAddr + "\n");
 
         if (!(response = input.readLine().trim()).equals("201")) {
             throw new MalformedRequestException(response);
