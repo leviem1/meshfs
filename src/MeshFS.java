@@ -12,16 +12,17 @@ import java.util.Timer;
 class MeshFS {
     static Properties properties;
     static FileServer fileServer;
+    static String masterMAC;
     static boolean nogui = false;
-    static boolean isMaster = false;
     static boolean configure = false;
     static MulticastServer multicastServer;
-    static Timer manifestTimer = new Timer();
     static Timer nodePanicTimer = new Timer();
-    static Timer discoveryBroadcastTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
     static int activeWindows = 0;
-    static TimerTask manifestCheck;
+    private static TimerTask manifestCheck;
+    private static boolean isMaster = false;
+    private static Timer manifestTimer = new Timer();
+    private static Timer discoveryBroadcastTimer = new Timer();
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
@@ -63,6 +64,15 @@ class MeshFS {
 
                 startAsMaster();
             } else {
+
+                if (FileClient.ping(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
+                    try {
+                        masterMAC = FileClient.receiveReportAsJSON(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber"))).get(0).toString();
+                    } catch (IOException | MalformedRequestException e) {
+                        e.printStackTrace();
+                    }
+                }
+
                 final int[] numFailedConn = {0};
                 TimerTask scheduledReporting =
                         new TimerTask() {
@@ -256,7 +266,7 @@ class MeshFS {
                 };
 
 
-        manifestTimer.scheduleAtFixedRate(MeshFS.manifestCheck, 0, 1000);
+        manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
     }
 }
 

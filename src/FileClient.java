@@ -316,7 +316,7 @@ final class FileClient {
     }
 
     /**
-     * This method is used to request a report from a server.
+     * This method is used to request a report from a server and write to .manifest.json.
      *
      * @param serverAddress the IP address of the server to connect to
      * @param port          the port of the server to connect to
@@ -362,6 +362,42 @@ final class FileClient {
             out.close();
             client.close();
         }
+    }
+
+    /**
+     * This method is used to request a report from a server as JSONArray.
+     *
+     * @param serverAddress the IP address of the server to connect to
+     * @param port          the port of the server to connect to
+     * @throws IOException on error connecting or writing to manifest file
+     */
+    static JSONArray receiveReportAsJSON(String serverAddress, int port) throws IOException, MalformedRequestException {
+        String response;
+        String reportPart;
+        StringBuilder reportFull = new StringBuilder();
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+            out.println("107|" + MeshFS.properties.getProperty("uuid") + "\n");
+
+            if (!(response = input.readLine().trim()).equals("201")) {
+                throw new MalformedRequestException(response);
+            }
+            while (true) {
+                reportPart = input.readLine();
+                if ((reportPart == null) || (reportPart.equals("\n"))) break;
+                reportFull.append(reportPart).append("\n");
+            }
+            reportFull = new StringBuilder(reportFull.toString().trim());
+
+        } catch (SocketTimeoutException ignored) {}
+
+        return Reporting.splitter(reportFull.toString());
+
     }
 
     /**

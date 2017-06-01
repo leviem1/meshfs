@@ -1,4 +1,3 @@
-import org.apache.commons.lang3.ObjectUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -7,7 +6,6 @@ import java.net.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -713,6 +711,6 @@ class ServerInit implements Runnable {
                 io.printStackTrace();
             }
         }
-        System.out.println("Socket closed");
+        System.out.println("Unicast socket closed");
     }
 }
