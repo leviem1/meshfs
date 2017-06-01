@@ -311,9 +311,9 @@ class JSONUtils {
     static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile) {
         LinkedHashMap<String, Long> storageMap = new LinkedHashMap();
         for (Object MACAddress : manifestFile.keySet()) {
-            storageMap.put(
-                    MACAddress.toString(),
-                    Long.valueOf((((JSONObject) manifestFile.get(MACAddress)).get("FreeSpace")).toString()));
+            if (FileClient.ping(((((JSONObject) manifestFile.get(MACAddress)).get("IP")).toString()), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) > -1) {
+                storageMap.put(MACAddress.toString(), Long.valueOf((((JSONObject) manifestFile.get(MACAddress)).get("FreeSpace")).toString()));
+            }
         }
         return sortMapByValue(storageMap);
     }
@@ -362,17 +362,16 @@ class JSONUtils {
      * @param path          where the download file is to be saved to
      * @param outFile       the name that the download file is to be saved as
      * @param serverAddress the address of the the master server
-     * @param port          the port that MeshFS uses
      * @param catalogObj    the catalog object to read from
      * @return true on success, false on failure
      * @throws IOException if a socket cannot be initialized
      */
-    static void pullFile(String itemLocation, String path, String outFile, String serverAddress, int port, JSONObject catalogObj) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
+    static void pullFile(String itemLocation, String path, String outFile, String serverAddress, JSONObject catalogObj) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
         itemLocation = catalogStringFixer(itemLocation);
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
         tempManifest.deleteOnExit();
-        FileClient.receiveFile(serverAddress, port, ".manifest.json", tempManifest.getAbsolutePath());
+        FileClient.receiveFile(serverAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), ".manifest.json", tempManifest.getAbsolutePath());
 
         JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
         List<String> stripeNames = new ArrayList<>();
@@ -399,7 +398,7 @@ class JSONUtils {
                                     new Thread(
                                             () -> {
                                                 try {
-                                                    FileClient.receiveFile(IPAddress, port, fileNameWNum, outFileDir + File.separator + "." + fileNameWNum);
+                                                    FileClient.receiveFile(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameWNum, outFileDir + File.separator + "." + fileNameWNum);
                                                 } catch (IOException | MalformedRequestException | FileTransferException ioe) {
                                                     ioe.printStackTrace();
                                                 }
@@ -430,7 +429,7 @@ class JSONUtils {
                     if (((JSONArray) (((JSONObject) compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)) {
                         String IPAddress = ((JSONObject) compInfoFile.get(MACAddress)).get("IP").toString();
                         try {
-                            FileClient.receiveFile(IPAddress, port, fileNameW, outFileDir + File.separator + "." + outFile);
+                            FileClient.receiveFile(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameW, outFileDir + File.separator + "." + outFile);
                         } catch (MalformedRequestException e) {
                             e.printStackTrace();
                         }
