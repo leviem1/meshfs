@@ -1,4 +1,3 @@
-import org.apache.commons.lang3.ObjectUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -7,7 +6,6 @@ import java.net.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -212,6 +210,11 @@ class ServerInit implements Runnable {
 
                     case "121": //121: Get node intended files
                         getNodeIntendedFiles(requestParts[2], out);
+
+                        break;
+
+                    case "122": //122: Check file's existence
+                        doesFileExist(requestParts[2], out);
 
                         break;
 
@@ -663,6 +666,7 @@ class ServerInit implements Runnable {
     }
 
     private void setItemPermissions(String itemLocation, String groups, String add, String edit, String view, Socket client) throws IOException {
+        //TODO: fix arguments
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
@@ -685,6 +689,14 @@ class ServerInit implements Runnable {
 
         out.println("201");
         out.println(FileRestore.getFilesOnComputerFromCatalog(macAddr) + "\n");
+        out.close();
+    }
+
+    private void doesFileExist(String fileName, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+        out.println("201");
+        out.println(new File(MeshFS.properties.getProperty("repository") + fileName).exists() + "\n");
         out.close();
     }
 
@@ -713,6 +725,6 @@ class ServerInit implements Runnable {
                 io.printStackTrace();
             }
         }
-        System.out.println("Socket closed");
+        System.out.println("Unicast socket closed");
     }
 }
