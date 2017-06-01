@@ -19,7 +19,6 @@ class MeshFS {
     static Timer nodePanicTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
     static int activeWindows = 0;
-    private static TimerTask manifestCheck;
     private static boolean isMaster = false;
     private static Timer manifestTimer = new Timer();
     private static Timer discoveryBroadcastTimer = new Timer();
@@ -265,32 +264,31 @@ class MeshFS {
             }
         }
 
-        manifestCheck =
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        Long currentTimeStamp = new Date().getTime();
-                        if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
-                                .exists())) {
-                            try {
-                                JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        JSONObject manifest =
-                                JSONUtils.getJSONObject(
-                                        MeshFS.properties.getProperty("repository") + ".manifest.json");
-                        for (Object computer : manifest.keySet()) {
-                            Long nodeTimeStamp =
-                                    (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
-                            if (currentTimeStamp > nodeTimeStamp + 62000) {
-                                FileRestore.restoreAllFilesFromComputer(computer.toString());
-                                System.out.println(computer.toString() + " was removed from the manifest");
-                            }
-                        }
+        TimerTask manifestCheck = new TimerTask() {
+            @Override
+            public void run() {
+                Long currentTimeStamp = new Date().getTime();
+                if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
+                        .exists())) {
+                    try {
+                        JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                };
+                }
+                JSONObject manifest =
+                        JSONUtils.getJSONObject(
+                                MeshFS.properties.getProperty("repository") + ".manifest.json");
+                for (Object computer : manifest.keySet()) {
+                    Long nodeTimeStamp =
+                            (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
+                    if (currentTimeStamp > nodeTimeStamp + 62000) {
+                        FileRestore.restoreAllFilesFromComputer(computer.toString());
+                        System.out.println(computer.toString() + " was removed from the manifest");
+                    }
+                }
+            }
+        };
 
 
         manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);

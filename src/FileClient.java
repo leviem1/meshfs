@@ -661,7 +661,7 @@ final class FileClient {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "|" + add + "|" + edit + "|" + view + "\n");
         if (!(input.readLine().trim()).equals("202")) {
-            //TODO: Malformed request exception here
+            //TODO: Malformed request exception here and in other requests
             client.close();
             return false;
         }
@@ -683,6 +683,24 @@ final class FileClient {
         }
 
         return Arrays.asList(response.substring(1,response.length()-1).split(", "));
+    }
+
+    static boolean doesFileExist(String serverAddress, int port, String fileName) throws MalformedRequestException, IOException {
+        String response;
+        try (
+            Socket client = new Socket(serverAddress, port);
+            BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+            out.println("122|" + MeshFS.properties.getProperty("uuid") + "|" + fileName + "\n");
+
+            if (!(response = input.readLine().trim()).equals("201")) {
+                throw new MalformedRequestException(response);
+            }
+
+            return Boolean.parseBoolean(input.readLine().trim());
+        }
     }
 
 }

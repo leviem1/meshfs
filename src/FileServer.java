@@ -213,6 +213,11 @@ class ServerInit implements Runnable {
 
                         break;
 
+                    case "122": //122: Check file's existence
+                        doesFileExist(requestParts[2], out);
+
+                        break;
+
                     default:
                         badRequest(out, request, "Invalid Request");
                         break;
@@ -661,6 +666,7 @@ class ServerInit implements Runnable {
     }
 
     private void setItemPermissions(String itemLocation, String groups, String add, String edit, String view, Socket client) throws IOException {
+        //TODO: fix arguments
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
@@ -683,6 +689,14 @@ class ServerInit implements Runnable {
 
         out.println("201");
         out.println(FileRestore.getFilesOnComputerFromCatalog(macAddr) + "\n");
+        out.close();
+    }
+
+    private void doesFileExist(String fileName, Socket client) throws IOException {
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
+        out.println("201");
+        out.println(new File(MeshFS.properties.getProperty("repository") + fileName).exists() + "\n");
         out.close();
     }
 
