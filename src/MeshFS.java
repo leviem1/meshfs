@@ -74,27 +74,21 @@ class MeshFS {
                                         properties.getProperty("masterIP"),
                                         Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
                                     if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
-                                        List<String> filesToRetrieve = new ArrayList<>();
+                                        List<String> filesToRestore = new ArrayList<>();
                                         try {
-                                            filesToRetrieve = FileClient.getNodeIntendedFiles(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), Reporting.getMacAddress());
+                                            filesToRestore = FileClient.getNodeIntendedFiles(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), Reporting.getMacAddress());
                                         } catch (MalformedRequestException | IOException e) {
                                             e.printStackTrace();
                                         }
                                         String currentFiles = Reporting.getRepositoryContents();
-                                        List<String> files = Arrays.asList(currentFiles.substring(1, currentFiles.length() - 1).split(", "));
-                                        List<String> filesToRemove = files;
-                                        filesToRemove.removeAll(filesToRetrieve);
-                                        filesToRetrieve.removeAll(files);
+                                        List<String> filesToRemove = Arrays.asList(currentFiles.substring(1, currentFiles.length() - 1).split(", "));
+                                        filesToRemove.removeAll(filesToRestore);
                                         for (String file : filesToRemove){
-                                            FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + file);
+                                            FileUtils.removeFile(MeshFS.properties.getProperty("repository") + file);
                                         }
-                                        for (String fileName : filesToRetrieve){
-                                            try {
-                                                FileClient.receiveFile(FileRestore.findComputerWithFile(fileName), Integer.parseInt(properties.getProperty("portNumber")), fileName);
-                                            } catch (NullPointerException npe){
-                                                System.out.println(fileName + " was not found");
-                                            } catch (IOException | FileTransferException | MalformedRequestException e) {
-                                                e.printStackTrace();
+                                        for (String fileName : filesToRestore){
+                                            if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()){
+
                                             }
                                         }
                                     }

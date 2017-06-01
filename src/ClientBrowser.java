@@ -15,10 +15,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * @author Mark Hedrick
@@ -533,33 +531,34 @@ ClientBrowser extends JFrame {
 
 
     private void downloadFile(String path) {
+        java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
+        StringBuilder jsonPath = new StringBuilder();
+        for (Object item : treeList) {
+            jsonPath.append(item.toString()).append("/");
+        }
+        jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
         try {
-            java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
-            StringBuilder jsonPath = new StringBuilder();
-            for (Object item : treeList) {
-                jsonPath.append(item.toString()).append("/");
-            }
-            jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
             JSONUtils.pullFile(
                     jsonPath.toString(),
                     path,
-                    path.substring(path.lastIndexOf(File.separator)),
-                    serverAddress,
-                    catalogObj);
+                    path.substring(path.lastIndexOf(File.separator)));
             JOptionPane.showMessageDialog(
                     null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
             statusLbl.setText("Download Completed!");
             Thread.sleep(1000);
             statusLbl.setText("");
         } catch (IOException ignored) {
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | MalformedRequestException | FileTransferException e) {
             e.printStackTrace();
         } catch (PullRequestException e) {
-            e.printStackTrace();
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        } catch (FileTransferException e) {
-            e.printStackTrace();
+            try {
+                java.util.List<String> locationsToCorrupt = FileRestore.findFileReferencesInCatalog(catalogObj, JSONUtils.getItemContents(catalogObj, jsonPath.toString()).get("alphanumericName").toString());
+                for (String location: locationsToCorrupt){
+                    FileClient.renameFile(serverAddress, port, location, location.substring(location.lastIndexOf("/")) + " (Corrupted)");
+                }
+            } catch (IOException | MalformedRequestException e1) {
+                e1.printStackTrace();
+            }
         }
     }
 

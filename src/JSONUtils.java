@@ -361,24 +361,22 @@ class JSONUtils {
      * @param itemLocation  the source virtual path within the JSONObject
      * @param path          where the download file is to be saved to
      * @param outFile       the name that the download file is to be saved as
-     * @param serverAddress the address of the the master server
-     * @param catalogObj    the catalog object to read from
      * @return true on success, false on failure
      * @throws IOException if a socket cannot be initialized
      */
-    static void pullFile(String itemLocation, String path, String outFile, String serverAddress, JSONObject catalogObj) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
+    static void pullFile(String itemLocation, String path, String outFile) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
         itemLocation = catalogStringFixer(itemLocation);
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
         tempManifest.deleteOnExit();
-        FileClient.receiveFile(serverAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), ".manifest.json", tempManifest.getAbsolutePath());
+        FileClient.receiveFile(MeshFS.properties.getProperty("masterIP"), Integer.parseInt(MeshFS.properties.getProperty("portNumber")), ".manifest.json", tempManifest.getAbsolutePath());
 
         JSONObject compInfoFile = getJSONObject(tempManifest.getAbsolutePath());
         List<String> stripeNames = new ArrayList<>();
         List<Thread> childThreads = new ArrayList<>();
         boolean wholeNecessary = true;
 
-        JSONObject fileInfo = getItemContents(catalogObj, itemLocation);
+        JSONObject fileInfo = getItemContents(getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog"), itemLocation);
         String fileName = fileInfo.get("alphanumericName").toString();
 
         for (Object stripe : fileInfo.keySet()) {
@@ -394,22 +392,24 @@ class JSONUtils {
                         if (((JSONArray) (((JSONObject) compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameWNum)) {
                             String IPAddress = (((JSONObject) compInfoFile.get(MACAddress)).get("IP")).toString();
 
-                            Thread child =
-                                    new Thread(
-                                            () -> {
-                                                try {
-                                                    FileClient.receiveFile(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameWNum, outFileDir + File.separator + "." + fileNameWNum);
-                                                } catch (IOException | MalformedRequestException | FileTransferException ioe) {
-                                                    ioe.printStackTrace();
-                                                }
-                                            });
+                            if (FileClient.doesFileExist(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameWNum)) {
+                                Thread child =
+                                        new Thread(
+                                                () -> {
+                                                    try {
+                                                        FileClient.receiveFile(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameWNum, outFileDir + File.separator + "." + fileNameWNum);
+                                                    } catch (IOException | MalformedRequestException | FileTransferException ioe) {
+                                                        ioe.printStackTrace();
+                                                    }
+                                                });
 
-                            childThreads.add(child);
-                            child.start();
-                            stripeNames.add(outFileDir + File.separator + "." + fileNameWNum);
+                                childThreads.add(child);
+                                child.start();
+                                stripeNames.add(outFileDir + File.separator + "." + fileNameWNum);
 
-                            cantContinue = false;
-                            break;
+                                cantContinue = false;
+                                break;
+                            }
                         }
                     }
                 }
