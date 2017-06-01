@@ -364,7 +364,7 @@ class JSONUtils {
      * @return true on success, false on failure
      * @throws IOException if a socket cannot be initialized
      */
-    static void pullFile(String itemLocation, String path, String outFile) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
+    static void pullFile(String itemLocation, String path, String outFile, boolean download) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
         itemLocation = catalogStringFixer(itemLocation);
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
@@ -393,18 +393,19 @@ class JSONUtils {
                             String IPAddress = (((JSONObject) compInfoFile.get(MACAddress)).get("IP")).toString();
 
                             if (FileClient.doesFileExist(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameWNum)) {
-                                Thread child =
-                                        new Thread(
-                                                () -> {
-                                                    try {
-                                                        FileClient.receiveFile(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameWNum, outFileDir + File.separator + "." + fileNameWNum);
-                                                    } catch (IOException | MalformedRequestException | FileTransferException ioe) {
-                                                        ioe.printStackTrace();
-                                                    }
-                                                });
-
-                                childThreads.add(child);
-                                child.start();
+                                if (download) {
+                                    Thread child =
+                                            new Thread(
+                                                    () -> {
+                                                        try {
+                                                            FileClient.receiveFile(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameWNum, outFileDir + File.separator + "." + fileNameWNum);
+                                                        } catch (IOException | MalformedRequestException | FileTransferException ioe) {
+                                                            ioe.printStackTrace();
+                                                        }
+                                                    });
+                                    childThreads.add(child);
+                                    child.start();
+                                }
                                 stripeNames.add(outFileDir + File.separator + "." + fileNameWNum);
 
                                 cantContinue = false;
@@ -428,14 +429,18 @@ class JSONUtils {
                 if (compInfoFile.containsKey(MACAddress)) {
                     if (((JSONArray) (((JSONObject) compInfoFile.get(MACAddress)).get("RepoContents"))).contains(fileNameW)) {
                         String IPAddress = ((JSONObject) compInfoFile.get(MACAddress)).get("IP").toString();
-                        try {
-                            FileClient.receiveFile(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameW, outFileDir + File.separator + "." + outFile);
-                        } catch (MalformedRequestException e) {
-                            e.printStackTrace();
+                        if (FileClient.doesFileExist(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameW)) {
+                            if (download) {
+                                try {
+                                    FileClient.receiveFile(IPAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), fileNameW, outFileDir + File.separator + "." + outFile);
+                                } catch (MalformedRequestException e) {
+                                    e.printStackTrace();
+                                }
+                                new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFile));
+                            }
+                            cantContinue = false;
+                            break;
                         }
-                        new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFile));
-                        cantContinue = false;
-                        break;
                     }
                 }
             }
@@ -452,30 +457,34 @@ class JSONUtils {
                     }
                 }
             }
-            FileUtils.combineStripes(numberSorter(stripeNames), outFileDir + File.separator + "." + outFile);
+            if (download) {
+                FileUtils.combineStripes(numberSorter(stripeNames), outFileDir + File.separator + "." + outFile);
 
-            String outFileNew = outFile;
+                String outFileNew = outFile;
 
-            if (!(new File(outFileDir + File.separator + outFile)).exists()) {
-                String fileNew;
-                int count = 1;
-                while (true) {
-                    fileNew = outFile.substring(0, outFile.lastIndexOf(".")) + " (" + count + ")" + outFile.substring(outFile.lastIndexOf("."));
+                if (!(new File(outFileDir + File.separator + outFile)).exists()) {
+                    String fileNew;
+                    int count = 1;
+                    while (true) {
+                        fileNew = outFile.substring(0, outFile.lastIndexOf(".")) + " (" + count + ")" + outFile.substring(outFile.lastIndexOf("."));
 
-                    if (!new File(fileNew).exists()) {
-                        break;
+                        if (!new File(fileNew).exists()) {
+                            break;
+                        }
+
+                        count++;
+
                     }
-
-                    count++;
-
+                    outFileNew = fileNew;
                 }
-                outFileNew = fileNew;
-            }
 
-            new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFileNew));
+                new File(outFileDir + File.separator + "." + outFile).renameTo(new File(outFileDir + File.separator + outFileNew));
+            }
         }
-        for (String filePath : stripeNames) {
-            Files.deleteIfExists(Paths.get(filePath));
+        if (download) {
+            for (String filePath : stripeNames) {
+                Files.deleteIfExists(Paths.get(filePath));
+            }
         }
     }
 

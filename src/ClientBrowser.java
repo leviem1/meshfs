@@ -541,7 +541,8 @@ ClientBrowser extends JFrame {
             JSONUtils.pullFile(
                     jsonPath.toString(),
                     path,
-                    path.substring(path.lastIndexOf(File.separator)));
+                    path.substring(path.lastIndexOf(File.separator)),
+                    true);
             JOptionPane.showMessageDialog(
                     null, "Download Complete", "MeshFS - Success", JOptionPane.INFORMATION_MESSAGE);
             statusLbl.setText("Download Completed!");

@@ -201,8 +201,12 @@ public class FileRestore {
             JSONObject computer = (JSONObject) manifest.get(key);
             if (computer.toString().contains(filename)){
                 String IP = computer.get("IP").toString();
-                if (FileClient.doesFileExist(IP, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), filename) > -1){
-                    return IP;
+                try {
+                    if (FileClient.doesFileExist(IP, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), filename)){
+                        return IP;
+                    }
+                } catch (MalformedRequestException | IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -230,6 +234,16 @@ public class FileRestore {
         for (String reference : catalogReferences){
             try {
                 JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")) + " (Corrupted)");
+            } catch (IOException | MalformedRequestException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    static void uncorruptFilesInCatalog(List<String> catalogReferences){
+        for (String reference : catalogReferences){
+            try {
+                JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/"), reference.lastIndexOf(" ")) + " (Corrupted)");
             } catch (IOException | MalformedRequestException e) {
                 e.printStackTrace();
             }
