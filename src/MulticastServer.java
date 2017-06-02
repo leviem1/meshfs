@@ -109,7 +109,8 @@ class MulticastServerInit implements Runnable {
     private void evaluateMaster(String ip, String port, String MACAddress) {
         if ((!MeshFS.nogui) && (FileClient.ping(ip, Integer.parseInt(port)) > -1) && !foundMasters.contains(ip)) {
             foundMasters.add(ip);
-        } else if (MACAddress.equals(MeshFS.masterMAC) && FileClient.ping(ip, Integer.parseInt(port)) > -1) {
+        } else if (MACAddress.equals(MeshFS.masterMAC) && FileClient.ping(MeshFS.properties.getProperty("masterIP"), Integer.parseInt(MeshFS.properties.getProperty("port"))) == -1 && FileClient.ping(ip, Integer.parseInt(port)) > -1) {
+            System.out.println("Switched");
             MeshFS.properties.setProperty("masterIP", ip);
             MeshFS.properties.setProperty("portNumber", port);
             ConfigParser.write(MeshFS.properties);
