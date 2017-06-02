@@ -55,6 +55,10 @@ class MeshFS {
                 }
             }
 
+            File repo = new File(properties.getProperty("repository"));
+
+            if (!repo.exists() && !repo.mkdirs()) System.exit(1);
+
             if (isMaster) {
                 if (((configure && !cliParser.cmd.hasOption("adduser"))) || !new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
                     System.out.println("Starting Initial Authentication Generator");
@@ -141,11 +145,6 @@ class MeshFS {
                 scheduledReportingTimer.scheduleAtFixedRate(scheduledReporting, 0, 30000);
             }
 
-            File repo = new File(properties.getProperty("repository"));
-
-            if (!repo.exists()) {
-                if (!repo.mkdirs()) System.exit(1);
-            }
 
             try {
                 fileServer = new FileServer();
