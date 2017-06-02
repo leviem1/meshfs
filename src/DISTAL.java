@@ -51,6 +51,7 @@ class DISTAL {
 
         //create a map of the amount of available storage on each computer
         LinkedHashMap<String, Long> sortedCompStorageMap = JSONUtils.createStorageMap(manifestFile);
+        System.out.println(sortedCompStorageMap);
 
         //don't use stripes if a file is less than 4096 byte
         if (sizeOfFile <= 4096L) {
@@ -68,11 +69,9 @@ class DISTAL {
                 if (computersForWholes.size() == numOfWholeCopies) {
                     break;
                 }
-                if ((!computersForWholes.contains(macAddress))
-                        && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
+                if ((!computersForWholes.contains(macAddress)) && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
                     computersForWholes.add(macAddress);
-                    sortedCompStorageMap.replace(
-                            macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
+                    sortedCompStorageMap.remove(macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
                 }
             }
 
@@ -92,11 +91,6 @@ class DISTAL {
                 numOfStripedCopies = 0;
             }
 
-            //dynamic resigning of number of Wholes by number of computers that are on
-            if (numOfComputersUsed < numOfWholeCopies) {
-                numOfWholeCopies = numOfComputersUsed;
-            }
-
             //dynamic resigning of number of Stripes by number of computers that are on
             if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
                 numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
@@ -113,7 +107,7 @@ class DISTAL {
             boolean finalComputerCount = true;
             if (sizeOfStripe != 0L) {
                 for (String macAddress : sortedCompStorageMap.keySet()) {
-                    if (sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
+                    if (!computersForWholes.contains(macAddress) && sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
                         sortedCompStorageMap.remove(macAddress);
                         finalComputerCount = false;
                     }

@@ -1223,15 +1223,6 @@ class ServerModeConfiguration extends JFrame {
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("Username:")
                                             + 10,
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>"));
-            StringBuilder pass =
-                    new StringBuilder(userAccountDataList
-                            .getModel()
-                            .getElementAt(i)
-                            .toString()
-                            .substring(
-                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")
-                                            + 10,
-                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>")));
             String passOrig =
                     userAccountDataList
                             .getModel()
@@ -1261,7 +1252,7 @@ class ServerModeConfiguration extends JFrame {
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
 
             out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>, Group: <i>" + group.toLowerCase() + "</i>, Type: <i>" + type + "<br>";
-            accountsEnc.add(new UserAccounts(user, Crypt.generateEncryptedPass(user, pass.toString()), type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
+            accountsEnc.add(new UserAccounts(user, Crypt.generateEncryptedPass(user, passOrig), type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
             accountsPlain.add(new UserAccounts(user, passOrig, type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
         }
         if (out.equals("")) {
