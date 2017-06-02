@@ -63,6 +63,7 @@ ClientBrowser extends JFrame {
     private JPanel buttonBar;
     private JButton logoutBtn;
     private JButton optionsBtn;
+    private JButton optionsBtn2;
     private JLabel statusLbl;
     private JButton quitBtn;
     //GEN-END:variables
@@ -152,6 +153,7 @@ ClientBrowser extends JFrame {
         buttonBar = new JPanel();
         logoutBtn = new JButton();
         optionsBtn = new JButton();
+        optionsBtn2 = new JButton();
         statusLbl = new JLabel();
         quitBtn = new JButton();
 
@@ -241,8 +243,8 @@ ClientBrowser extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 374, 0};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 374, 0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0};
 
                 //---- logoutBtn ----
                 logoutBtn.setText("Logout");
@@ -258,16 +260,23 @@ ClientBrowser extends JFrame {
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
+                //---- optionsBtn2 ----
+                optionsBtn2.setText("Save from Drive...");
+                optionsBtn2.setFont(new Font("Arial", optionsBtn2.getFont().getStyle(), optionsBtn2.getFont().getSize() + 1));
+                buttonBar.add(optionsBtn2, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+
                 //---- statusLbl ----
                 statusLbl.setHorizontalAlignment(SwingConstants.CENTER);
-                buttonBar.add(statusLbl, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(statusLbl, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- quitBtn ----
                 quitBtn.setText("Quit");
                 quitBtn.setFont(new Font("Arial", quitBtn.getFont().getStyle(), quitBtn.getFont().getSize() + 1));
-                buttonBar.add(quitBtn, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(quitBtn, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }

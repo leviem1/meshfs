@@ -49,7 +49,7 @@ new FormModel {
 					"value": "Center"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0, 0, 369:1.0, 0"
+					"$columnSpecs": "0, 0, 0, 369:1.0, 0"
 					"$rowSpecs": "0"
 					"$hGap": 5
 					"$vGap": 5
@@ -68,18 +68,25 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "optionsBtn2"
+						"text": "Save from Drive..."
+						"font": #SwingDerivedFont1
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "statusLbl"
 						"horizontalAlignment": 0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 2
+						"gridx": 3
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "quitBtn"
 						"text": "Quit"
 						"font": #SwingDerivedFont0
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 3
+						"gridx": 4
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "South"
@@ -93,4 +100,3 @@ new FormModel {
 		} )
 	}
 }
-
