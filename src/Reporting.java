@@ -102,7 +102,7 @@ class Reporting {
         return System.getProperty("user.name");
     }
 
-    private static String getMacAddress() {
+    static String getMacAddress() {
         String macAddress = null;
         try {
             Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
@@ -123,7 +123,7 @@ class Reporting {
         return macAddress;
     }
 
-    private static String getRepositoryContents() {
+    static String getRepositoryContents() {
         File[] repoContents = new File(MeshFS.properties.getProperty("repository")).listFiles();
         List<String> contents = new ArrayList<>();
         assert repoContents != null;

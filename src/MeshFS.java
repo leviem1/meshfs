@@ -12,16 +12,16 @@ import java.util.Timer;
 class MeshFS {
     static Properties properties;
     static FileServer fileServer;
+    static String masterMAC;
     static boolean nogui = false;
-    static boolean isMaster = false;
     static boolean configure = false;
     static MulticastServer multicastServer;
-    static Timer manifestTimer = new Timer();
     static Timer nodePanicTimer = new Timer();
-    static Timer discoveryBroadcastTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
     static int activeWindows = 0;
-    static TimerTask manifestCheck;
+    private static boolean isMaster = false;
+    private static Timer manifestTimer = new Timer();
+    private static Timer discoveryBroadcastTimer = new Timer();
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
@@ -63,14 +63,49 @@ class MeshFS {
 
                 startAsMaster();
             } else {
-                final int[] numFailedConn = {0};
+
+                if (FileClient.ping(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
+                    try {
+                        masterMAC = FileClient.receiveReportAsJSON(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber"))).get(0).toString();
+                    } catch (IOException | MalformedRequestException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                final int[] numFailedConn = {-1};
                 TimerTask scheduledReporting =
                         new TimerTask() {
                             @Override
                             public void run() {
+
                                 if (FileClient.ping(
                                         properties.getProperty("masterIP"),
                                         Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
+                                    if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
+                                        List<String> filesToRestore = new ArrayList<>();
+                                        try {
+                                            filesToRestore = FileClient.getNodeIntendedFiles(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), Reporting.getMacAddress());
+                                        } catch (MalformedRequestException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        String currentFiles = Reporting.getRepositoryContents();
+                                        List<String> filesToRemove = Arrays.asList(currentFiles.substring(1, currentFiles.length() - 1).split(", "));
+                                        filesToRemove.removeAll(filesToRestore);
+                                        for (String file : filesToRemove){
+                                            FileUtils.removeFile(MeshFS.properties.getProperty("repository") + file);
+                                        }
+                                        for (String fileName : filesToRestore){
+                                            if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()){
+                                                try{
+                                                    List<String> catalogReferences = FileRestore.findFileReferencesInCatalog(JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog"), fileName.substring(0,fileName.indexOf("_")));
+                                                    JSONUtils.pullFile(catalogReferences.get(0), "test", "test.txt", false);
+                                                    FileRestore.uncorruptFilesInCatalog(catalogReferences);
+                                                } catch (PullRequestException | IOException | FileTransferException | MalformedRequestException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    }
                                     numFailedConn[0] = 0;
                                     try {
                                         FileClient.sendReport(
@@ -84,6 +119,7 @@ class MeshFS {
                                     }
                                 } else {
                                     numFailedConn[0]++;
+
                                 }
                             }
                         };
@@ -228,35 +264,34 @@ class MeshFS {
             }
         }
 
-        TimerTask manifestCheck =
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        Long currentTimeStamp = new Date().getTime();
-                        if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
-                                .exists())) {
-                            try {
-                                JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        JSONObject manifest =
-                                JSONUtils.getJSONObject(
-                                        MeshFS.properties.getProperty("repository") + ".manifest.json");
-                        for (Object computer : manifest.keySet()) {
-                            Long nodeTimeStamp =
-                                    (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
-                            if (currentTimeStamp > nodeTimeStamp + 32000) {
-                                FileRestore.restoreAllFilesFromComputer(computer.toString());
-                                System.out.println(computer.toString() + " was removed from the manifest");
-                            }
-                        }
+        TimerTask manifestCheck = new TimerTask() {
+            @Override
+            public void run() {
+                Long currentTimeStamp = new Date().getTime();
+                if (!(new File(MeshFS.properties.getProperty("repository") + ".manifest.json")
+                        .exists())) {
+                    try {
+                        JSONUtils.writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", new JSONObject());
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                };
+                }
+                JSONObject manifest =
+                        JSONUtils.getJSONObject(
+                                MeshFS.properties.getProperty("repository") + ".manifest.json");
+                for (Object computer : manifest.keySet()) {
+                    Long nodeTimeStamp =
+                            (Long) ((JSONObject) manifest.get(computer)).get("checkInTimestamp");
+                    if (currentTimeStamp > nodeTimeStamp + 62000) {
+                        FileRestore.restoreAllFilesFromComputer(computer.toString());
+                        System.out.println(computer.toString() + " was removed from the manifest");
+                    }
+                }
+            }
+        };
 
 
-        manifestTimer.scheduleAtFixedRate(MeshFS.manifestCheck, 0, 1000);
+        manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
     }
 }
 

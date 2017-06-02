@@ -334,7 +334,7 @@ class sendFilesThreading implements Runnable {
             //send the last stripe, taking into account that he the last stripe to usually smaller than other stripes.
             FileUtils.writeStripe(
                     sourceFileLocation,
-                    MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe,
+                    MeshFS.properties.getProperty("repository") + outName + "_s" + stripe,
                     (sizeOfStripe * stripe),
                     sizeOfStripe - ((sizeOfStripe * (stripes.size() - 1)) - fileSize));
             for (String computerToReceive : stripes.get(stripe + 1)) {
@@ -366,7 +366,7 @@ class sendFilesThreading implements Runnable {
             //send all other stripes
             FileUtils.writeStripe(
                     sourceFileLocation,
-                    MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe,
+                    MeshFS.properties.getProperty("repository") + outName + "_s" + stripe,
                     (sizeOfStripe * stripe),
                     sizeOfStripe);
             for (String computerToReceive : stripes.get(stripe + 1)) {
@@ -412,7 +412,7 @@ class sendFilesThreading implements Runnable {
             }
         }
         FileUtils.removeFile(
-                MeshFS.properties.getProperty("repository") + File.separator + outName + "_s" + stripe);
+                MeshFS.properties.getProperty("repository") + outName + "_s" + stripe);
     }
 
     public void run() {

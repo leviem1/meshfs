@@ -58,7 +58,7 @@ public class FileRestore {
         }
     }
 
-    static void restorePartialFile(String alphanumericFileName, String oldComputerMAC){
+    private static void restorePartialFile(String alphanumericFileName, String oldComputerMAC){
         JSONObject manifest = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         String manifestString = manifest.toString();
         String pullIP = null;
@@ -70,7 +70,7 @@ public class FileRestore {
             //find and pull the stripe
             pullIP = findComputerWithFile(alphanumericFileName);
             try {
-                FileClient.receiveFile(pullIP,portNumber, alphanumericFileName, MeshFS.properties.getProperty("repository") + File.separator + alphanumericFileName);
+                FileClient.receiveFile(pullIP,portNumber, alphanumericFileName, MeshFS.properties.getProperty("repository") + alphanumericFileName);
             } catch (IOException | MalformedRequestException | FileTransferException e) {
                 pullIP = null;
             }
@@ -86,7 +86,7 @@ public class FileRestore {
             //find, pull, and split a whole
             pullIP = findComputerWithFile(wholeFileName);
             try {
-                FileClient.receiveFile(pullIP,portNumber, wholeFileName, MeshFS.properties.getProperty("repository") + File.separator + wholeFileName);
+                FileClient.receiveFile(pullIP,portNumber, wholeFileName, MeshFS.properties.getProperty("repository") + wholeFileName);
 
                 //reference catalog to find number of stripes
                 int numberOfStripes = 0;
@@ -101,20 +101,20 @@ public class FileRestore {
 
                 if (stripeNum == numberOfStripes){
                     FileUtils.writeStripe(
-                            MeshFS.properties.getProperty("repository") + File.separator + wholeFileName,
-                            MeshFS.properties.getProperty("repository") + File.separator + alphanumericFileName,
+                            MeshFS.properties.getProperty("repository") + wholeFileName,
+                            MeshFS.properties.getProperty("repository") + alphanumericFileName,
                             (sizeOfStripe * stripeNum),
                             sizeOfStripe - ((sizeOfStripe * numberOfStripes) - fileSize));
                 } else {
                     FileUtils.writeStripe(
-                            MeshFS.properties.getProperty("repository") + File.separator + wholeFileName,
-                            MeshFS.properties.getProperty("repository") + File.separator + alphanumericFileName,
+                            MeshFS.properties.getProperty("repository") + wholeFileName,
+                            MeshFS.properties.getProperty("repository") + alphanumericFileName,
                             (sizeOfStripe * stripeNum),
                             sizeOfStripe);
                 }
                 
                 //delete whole file
-                FileUtils.removeFile(MeshFS.properties.getProperty("repository") + File.separator + wholeFileName);
+                FileUtils.removeFile(MeshFS.properties.getProperty("repository") + wholeFileName);
 
 
             } catch (IOException | MalformedRequestException | FileTransferException e) {
@@ -144,7 +144,7 @@ public class FileRestore {
         String destinationCompMAC = null;
         for (Object macAddress : storageMap.keySet()){
             String ipAddress = (((JSONObject) manifest.get(macAddress)).get("IP")).toString();
-            if (FileClient.ping(ipAddress, portNumber) > -1 && storageMap.get(macAddress.toString()) > FileUtils.getSize(MeshFS.properties.getProperty("repository") + File.separator + alphanumericFileName)){
+            if (FileClient.ping(ipAddress, portNumber) > -1 && storageMap.get(macAddress.toString()) > FileUtils.getSize(MeshFS.properties.getProperty("repository") + alphanumericFileName)){
                 destinationCompIP = ipAddress;
                 destinationCompMAC = macAddress.toString();
                 break;
@@ -201,8 +201,12 @@ public class FileRestore {
             JSONObject computer = (JSONObject) manifest.get(key);
             if (computer.toString().contains(filename)){
                 String IP = computer.get("IP").toString();
-                if (FileClient.ping(IP, Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) > -1){
-                    return IP;
+                try {
+                    if (FileClient.doesFileExist(IP, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), filename)){
+                        return IP;
+                    }
+                } catch (MalformedRequestException | IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -213,7 +217,7 @@ public class FileRestore {
         return fileReferenceFinderRecursive((JSONObject) catalog.get("root"), alphanumericName, "root");
     }
 
-    static List<String> fileReferenceFinderRecursive(JSONObject folder, String alphanumericName, String folderLocation){
+    private static List<String> fileReferenceFinderRecursive(JSONObject folder, String alphanumericName, String folderLocation){
         List<String> references = new ArrayList<>();
         LinkedHashMap<String, String> folderMap = JSONUtils.getMapOfFolderContents(folder, null);
         for (String item : folderMap.keySet()){
@@ -226,10 +230,20 @@ public class FileRestore {
         return references;
     }
 
-    static void corruptFilesInCatalog(List<String> catalogReferences){
+    private static void corruptFilesInCatalog(List<String> catalogReferences){
         for (String reference : catalogReferences){
             try {
                 JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")) + " (Corrupted)");
+            } catch (IOException | MalformedRequestException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    static void uncorruptFilesInCatalog(List<String> catalogReferences){
+        for (String reference : catalogReferences){
+            try {
+                JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/"), reference.lastIndexOf(" ")) + " (Corrupted)");
             } catch (IOException | MalformedRequestException e) {
                 e.printStackTrace();
             }
@@ -244,7 +258,7 @@ public class FileRestore {
         return new ArrayList<>();
     }
 
-    static List<String> computerReferenceFinderRecursive(JSONObject folder, String MACAddress){
+    private static List<String> computerReferenceFinderRecursive(JSONObject folder, String MACAddress){
         List<String> fileNames = new ArrayList<>();
         LinkedHashMap<String, String> folderMap = JSONUtils.getMapOfFolderContents(folder, null);
         for (String item : folderMap.keySet()){

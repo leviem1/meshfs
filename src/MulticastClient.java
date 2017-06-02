@@ -12,7 +12,7 @@ class MulticastClient {
     }
 
     static void notifyClients(String groupAddress, int port) throws IOException {
-        byte[] request = ("151|" + Reporting.getIpAddresses().get(0) + "|" + MeshFS.properties.getProperty("portNumber")).getBytes();
+        byte[] request = ("151|" + Reporting.getIpAddresses().get(0) + "|" + MeshFS.properties.getProperty("portNumber") + "|" + Reporting.getMacAddress()).getBytes();
 
         MulticastSocket socket = new MulticastSocket(port);
         socket.setBroadcast(true);

@@ -1,4 +1,3 @@
-import org.apache.commons.lang3.ObjectUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -7,7 +6,6 @@ import java.net.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -139,8 +137,7 @@ class ServerInit implements Runnable {
 
                         break;
                     case "106": //106:Make directory (virtual only)
-                        createDirectory(
-                                requestParts[2], requestParts[3], requestParts[4], out);
+                        createDirectory(requestParts[2], requestParts[3], out);
 
                         break;
                     case "107": //107:Get report
@@ -159,57 +156,46 @@ class ServerInit implements Runnable {
                         renameFile(requestParts[2], requestParts[3], out);
 
                         break;
-
                     case "111": //111:Change Password
                         changePassword(requestParts[2], requestParts[3], requestParts[4], out);
 
                         break;
-
-                    case "112": //112:Get Master UUID
-                        getServerUUID(out);
+                    case "112": //122: Check file's existence
+                        doesFileExist(requestParts[2], out);
 
                         break;
-
                     case "113": //113:Send Auth Info
                         sendAuthInfo(requestParts[1], requestParts[2], out);
 
                         break;
-
                     case "114": //114:Delete Account
                         deleteAccount(requestParts[2], out);
 
                         break;
-
                     case "115": //115:Get User Files
                         getUserFiles(requestParts[2], out);
 
                         break;
-
                     case "116": //116:Get User Groups
                         getUserGroups(requestParts[2], out);
 
                         break;
-
                     case "117": //117:Get All Groups
                         getGroups(out);
 
                         break;
-
                     case "118": //118:Update user Groups
                         setUserGroup(requestParts[2], requestParts[3], out);
 
                         break;
-
                     case "119": //119: Get User Type
                         getUserType(requestParts[2], out);
 
                         break;
-
                     case "120": //120: Set item permissions
-                        setItemPermissions(requestParts[2], requestParts[3], requestParts[4], requestParts[5], requestParts[6], out);
+                        setItemPermissions(requestParts[2], requestParts[3], out);
 
                         break;
-
                     case "121": //121: Get node intended files
                         getNodeIntendedFiles(requestParts[2], out);
 
@@ -227,156 +213,155 @@ class ServerInit implements Runnable {
     }
 
     private void ping(Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("201");
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            out.println("201");
+        }
     }
 
     private void sendReport(Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("201");
-        out.println(Reporting.generate() + "\n");
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            out.println("201");
+            out.println(Reporting.generate() + "\n");
+        }
     }
 
+    @SuppressWarnings("unchecked")
     private synchronized void receiveReport(Socket client) throws IOException {
         String reportPart;
         StringBuilder reportFull = new StringBuilder();
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
-        out.println("201");
+        try (
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
 
-        while (true) {
-            reportPart = input.readLine();
-            if ((reportPart == null) || (reportPart.equals("\n"))) break;
-            reportFull.append(reportPart).append("\n");
+            out.println("201");
+
+            while (true) {
+                reportPart = input.readLine();
+                if ((reportPart == null) || (reportPart.equals("\n"))) break;
+                reportFull.append(reportPart).append("\n");
+            }
+            reportFull = new StringBuilder(reportFull.toString().trim());
+
+            JSONObject manifest = new JSONObject();
+            if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
+                manifest =
+                        JSONUtils.getJSONObject(
+                                MeshFS.properties.getProperty("repository") + ".manifest.json");
+            }
+            JSONArray reportArray = Reporting.splitter(reportFull.toString());
+
+            manifest.put(reportArray.get(0), reportArray.get(1));
+            JSONUtils.writeJSONObject(
+                    MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
         }
-        reportFull = new StringBuilder(reportFull.toString().trim());
-
-        JSONObject manifest = new JSONObject();
-        if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
-            manifest =
-                    JSONUtils.getJSONObject(
-                            MeshFS.properties.getProperty("repository") + ".manifest.json");
-        }
-        JSONArray reportArray = Reporting.splitter(reportFull.toString());
-
-        manifest.put(reportArray.get(0), reportArray.get(1));
-        JSONUtils.writeJSONObject(
-                MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
     private void moveFile(String currentPath, String newPath, Socket client)
             throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
-        out.println("201");
-        out.flush();
-        try {
-            JSONUtils.moveItem(currentPath, newPath);
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void deleteFile(String filePath, boolean physical, Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
-        out.println("201");
-        out.flush();
-
-        if (physical) {
-            FileUtils.removeFile(MeshFS.properties.getProperty("repository") + filePath);
-        } else {
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            out.println("201");
             try {
-                JSONUtils.deleteItem(filePath);
+                JSONUtils.moveItem(currentPath, newPath); //TODO: Someone please explain how this works...
             } catch (MalformedRequestException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    private void deleteFile(String filePath, boolean physical, Socket client) throws IOException {
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            out.println("201");
+
+            if (physical) {
+                FileUtils.removeFile(MeshFS.properties.getProperty("repository") + filePath);
+            } else {
+                try {
+                    JSONUtils.deleteItem(filePath); //TODO: and this....
+                } catch (MalformedRequestException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private void duplicateFile(String currentPath, Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
-        out.println("201");
-        out.flush();
-        JSONUtils.duplicateItem(currentPath);
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            out.println("201");
+            JSONUtils.duplicateItem(currentPath);
+        }
     }
 
     private void sendFile(String filename, Socket client) throws IOException {
-        int br;
-        byte[] data = new byte[4096];
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        FileInputStream fis =
-                new FileInputStream(MeshFS.properties.getProperty("repository") + filename);
+        try (
+                DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + filename)
+        ) {
+            int br;
+            byte[] data = new byte[4096];
 
-        try {
             out.println("201|" + FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename));
 
             while ((br = fis.read(data, 0, data.length)) != -1) {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (NoSuchAlgorithmException ignored) {
-        }
-
-        out.close();
-        fis.close();
-        dos.close();
+        } catch (NoSuchAlgorithmException ignored) {}
     }
 
     private void receiveFile(String filename, String md5, Socket client) throws IOException, FileTransferException {
-        int br;
-        byte[] data = new byte[4096];
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        DataInputStream dis = new DataInputStream(client.getInputStream());
-        FileOutputStream fos =
-                new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
+        try (
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                DataInputStream dis = new DataInputStream(client.getInputStream());
+                FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename)
+        ) {
+            int br;
+            byte[] data = new byte[4096];
 
-        out.println("201");
+            out.println("201");
 
-        while ((br = dis.read(data, 0, data.length)) != -1) {
-            fos.write(data, 0, br);
-            fos.flush();
-        }
+            while ((br = dis.read(data, 0, data.length)) != -1) {
+                fos.write(data, 0, br);
+                fos.flush();
+            }
 
-        try {
             if (!md5.equals(FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename))) {
                 throw new FileTransferException();
             }
-        } catch (NoSuchAlgorithmException ignored) {
-        }
-
-        out.close();
-        fos.close();
-        dis.close();
+        } catch (NoSuchAlgorithmException ignored) {}
     }
 
     private void receiveFile(String filename, String md5, String userAccount, Socket client)
             throws IOException, FileTransferException {
-        int br;
-        byte[] data = new byte[4096];
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        DataInputStream dis = new DataInputStream(client.getInputStream());
-        FileOutputStream fos =
-                new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
+        try (
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                DataInputStream dis = new DataInputStream(client.getInputStream())
+        ) {
+            int br;
+            byte[] data = new byte[4096];
+            FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + filename);
 
-        out.println("201");
 
-        if ((new File(filename)).exists()) {
-            String fileNew;
-            int count = 1;
-            while (true) {
-                fileNew = filename.substring(0, filename.lastIndexOf(".")) + " (" + count + ")" + filename.substring(filename.lastIndexOf("."));
+            out.println("201");
 
-                if (!new File(fileNew).exists()) {
-                    break;
+            if ((new File(filename)).exists()) {
+                String fileNew;
+                int count = 1;
+                while (true) {
+                    fileNew = filename.substring(0, filename.lastIndexOf(".")) + " (" + count + ")" + filename.substring(filename.lastIndexOf("."));
+
+                    if (!new File(fileNew).exists()) {
+                        break;
+                    }
+
+                    count++;
+
                 }
-
-                count++;
-
+                filename = fileNew;
+                fos = new FileOutputStream(filename);
             }
-            filename = fileNew;
-            fos = new FileOutputStream(filename);
-        }
 
         final String filenameTrue = filename;
 
@@ -387,16 +372,11 @@ class ServerInit implements Runnable {
             fos.flush();
         }
 
-        out.close();
         fos.close();
-        dis.close();
 
-        try {
             if (!md5.equals(FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename))) {
                 throw new FileTransferException();
             }
-        } catch (NoSuchAlgorithmException ignored) {
-        }
 
         Thread distributor = new Thread(() -> {
             try {
@@ -406,263 +386,234 @@ class ServerInit implements Runnable {
             }
         });
         distributor.start();
+        } catch (NoSuchAlgorithmException ignored) {}
+
     }
 
     private void createDirectory(
-            String directoryPath, String directoryName, String userAccount, Socket client)
+            String directoryPath, String directoryName, Socket client)
             throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
-        out.println("201");
-        out.flush();
-        JSONUtils.createNewFolder(directoryPath, directoryName);
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            out.println("201");
+            JSONUtils.createNewFolder(directoryPath, directoryName);
+        }
     }
 
     private void renameFile(String jsonPath, String newName, Socket client)
             throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
-        out.println("201");
-        out.flush();
-
-        try {
-            JSONUtils.renameItem(jsonPath, newName);
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            out.println("201");
+            JSONUtils.renameItem(jsonPath, newName); //TODO: ...and here...
         } catch (MalformedRequestException e) {
             e.printStackTrace();
         }
     }
 
-    private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException, ClassNotFoundException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
-        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
-        FileInputStream fis = new FileInputStream(auth);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        ArrayList<UserAccounts> accounts = null;
+    @SuppressWarnings("unchecked")
+    private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException {
+        ArrayList<UserAccounts> accounts;
         UserAccounts accountToRemove;
         String accountType;
         ArrayList<String> accountGroups;
-        try {
+        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
+
+        try (
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth))
+        ) {
             accounts = (ArrayList) ois.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (auth.exists() && !username.equals("guest")) {
-            for (UserAccounts userAccount : accounts) {
-                if (userAccount.getUsername().equals(username)) {
-                    if (userAccount.getPassword().equals(Crypt.generateEncryptedPass(username, oldPassword))) {
-                        accountToRemove = userAccount;
-                        accountType = userAccount.getAccountType();
-                        accountGroups = userAccount.getGroups();
-                        accounts.remove(accountToRemove);
-                        accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, newPassword), accountType, accountGroups));
-                        Crypt.writeAuthFile(accounts);
-                        out.println("201");
-                        out.flush();
-                    } else {
-                        out.println("202");
-                        out.flush();
+
+            if (auth.exists() && !username.equals("guest")) {
+                for (UserAccounts userAccount : accounts) {
+                    if (userAccount.getUsername().equals(username)) {
+                        if (userAccount.getPassword().equals(Crypt.generateEncryptedPass(username, oldPassword))) {
+                            accountToRemove = userAccount;
+                            accountType = userAccount.getAccountType();
+                            accountGroups = userAccount.getGroups();
+                            accounts.remove(accountToRemove);
+                            accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, newPassword), accountType, accountGroups));
+                            Crypt.writeAuthFile(accounts);
+                            out.println("201");
+                        } else {
+                            out.println("203");
+                        }
                     }
                 }
             }
-            ois.close();
-            fis.close();
+        } catch (ClassNotFoundException ignored) {}
+    }
+
+    private void doesFileExist(String fileName, Socket client) throws IOException {
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            out.println("201");
+            out.println(new File(MeshFS.properties.getProperty("repository") + fileName).exists() + "\n");
+            out.close();
         }
     }
 
-    private void getServerUUID(Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("201");
-        out.println(MeshFS.properties.getProperty("uuid"));
-    }
-
+    @SuppressWarnings("unchecked")
     private void sendAuthInfo(String username, String password, Socket client) throws IOException {
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
-        FileInputStream fis = new FileInputStream(auth);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        ArrayList<UserAccounts> accounts = null;
-        try {
+        ArrayList<UserAccounts> accounts;
+
+        try (
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth))
+        ) {
             accounts = (ArrayList) ois.readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (auth.exists()) {
-            for (UserAccounts userAccount : accounts) {
-                String un = userAccount.getUsername();
-                String pw = userAccount.getPassword();
+            if (auth.exists()) {
+                for (UserAccounts userAccount : accounts) {
+                    String un = userAccount.getUsername();
+                    String pw = userAccount.getPassword();
 
-                if (username.toLowerCase().trim().equals(un) && password.trim().equals(pw)) {
-                    out.println("201");
-                    out.println(MeshFS.properties.getProperty("uuid") + "\n");
+                    if (username.toLowerCase().trim().equals(un) && password.trim().equals(pw)) {
+                        out.println("201");
+                        out.println(MeshFS.properties.getProperty("uuid") + "\n");
+                        break;
+                    }
                 }
+                out.println("203");
+            } else {
+                out.println("203");
             }
-            out.println("202\n");
-        } else {
-            out.println("202\n");
-        }
-        fis.close();
-        ois.close();
-        out.close();
-        dos.close();
+        } catch (ClassNotFoundException ignored) {}
     }
 
-    private void deleteAccount(String username, Socket client) throws IOException, ClassNotFoundException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
-        FileInputStream fis = new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth");
-        ObjectInputStream ois = new ObjectInputStream(fis);
+    @SuppressWarnings("unchecked")
+    private void deleteAccount(String username, Socket client) throws IOException {
         ArrayList<UserAccounts> userAccounts;
-        userAccounts = (ArrayList) ois.readObject();
-        fis.close();
-        ois.close();
         ArrayList<UserAccounts> toRemove = new ArrayList<>();
-        for (UserAccounts userAccount : userAccounts) {
-            if (!(username.equals("guest") || username.equals("admin"))) {
-                if (userAccount.getUsername().equals(username)) {
-                    toRemove.add(userAccount);
+
+        try (
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth"));
+                FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
+                ObjectOutputStream oos = new ObjectOutputStream(fos)
+        ) {
+            userAccounts = (ArrayList) ois.readObject();
+
+            for (UserAccounts userAccount : userAccounts) {
+                if (!(username.equals("guest") || username.equals("admin"))) {
+                    if (userAccount.getUsername().equals(username)) {
+                        toRemove.add(userAccount);
+                    }
                 }
             }
-        }
-        userAccounts.removeAll(toRemove);
-        FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(userAccounts);
-        oos.flush();
-        fos.close();
-        out.println("201");
-        out.flush();
+
+            userAccounts.removeAll(toRemove);
+            oos.writeObject(userAccounts);
+            oos.flush();
+            out.println("201");
+        } catch (ClassNotFoundException ignored) {}
     }
 
+    @SuppressWarnings("unchecked")
     private void getUserFiles(String userAccount, Socket client) throws IOException {
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        File catalog = new File(MeshFS.properties.getProperty("repository") + ".catalog.json");
-        FileInputStream fis = new FileInputStream(catalog);
-        ArrayList<UserAccounts> accounts = null;
         UserAccounts user = null;
-        try {
+        ArrayList<UserAccounts> accounts;
+        JSONObject userObj;
+
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
             accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         for (UserAccounts account : accounts) {
             if (account.getUsername().equals(userAccount)) {
                 user = account;
             }
         }
-        JSONObject userObj;
-        try{
+
+        if (user != null) {
             userObj = JSONUtils.buildUserCatalog(user);
-        }catch (NullPointerException npe){
+        } else {
             userObj = new JSONObject();
         }
 
-        out.println("201");
-        out.println(userObj.toString() + "\n");
-
-        fis.close();
-        out.close();
-        dos.close();
+            out.println("201");
+            out.println(userObj.toString() + "\n");
+        } catch (ClassNotFoundException ignored) {}
     }
 
+    @SuppressWarnings("unchecked")
     private void getUserGroups(String userAccount, Socket client) throws IOException {
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        ArrayList<UserAccounts> accounts = null;
+        ArrayList<UserAccounts> accounts;
         ArrayList<String> groups = new ArrayList<>();
-        try {
+
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
             accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        for (UserAccounts account : accounts) {
-            if (account.getUsername().equals(userAccount)) {
+            for (UserAccounts account : accounts) {
+                if (account.getUsername().equals(userAccount)) {
+                    groups.addAll(account.getGroups());
+                }
+            }
+            out.println("201");
+            out.println(groups.toString() + "\n");
+        } catch (ClassNotFoundException ignored) {}
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getGroups(Socket client) throws IOException {
+        ArrayList<UserAccounts> accounts;
+        ArrayList<String> groups = new ArrayList<>();
+
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            for (UserAccounts account : accounts) {
                 groups.addAll(account.getGroups());
             }
-        }
-        out.println("201");
-        out.println(groups.toString() + "\n");
 
-        out.close();
-        dos.close();
+            out.println("201");
+            out.println(groups.toString() + "\n");
+        } catch (ClassNotFoundException ignored) {}
     }
 
-    private void getGroups(Socket client) throws IOException {
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        ArrayList<UserAccounts> accounts = null;
-        ArrayList<String> groups = new ArrayList<>();
-        try {
-            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        for (UserAccounts account : accounts) {
-            groups.addAll(account.getGroups());
-        }
-
-        out.println("201");
-        out.println(groups.toString() + "\n");
-
-        out.close();
-        dos.close();
-    }
-
+    @SuppressWarnings("unchecked")
     private void setUserGroup(String userAccount, String userGroups, Socket client) throws IOException {
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        ArrayList<UserAccounts> accounts = null;
-        try {
-            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        List<String> newGroupsList = Arrays.asList(userGroups.split(", "));
         String un = null;
         String pw = null;
         String at = null;
+        ArrayList<UserAccounts> accounts;
 
-
-        for (UserAccounts account : accounts) {
-            if (account.getUsername().equals(userAccount.toLowerCase())) {
-                un = account.getUsername();
-                pw = account.getPassword();
-                at = account.getAccountType();
-                accounts.remove(account);
-                break;
-            }
-        }
-
-        accounts.add(new UserAccounts(un, pw, at, new ArrayList<>(newGroupsList)));
-        Crypt.writeAuthFile(accounts);
-
-        out.println("201");
-
-        out.close();
-        dos.close();
-    }
-
-    private void getUserType(String userAccount, Socket client) throws IOException {
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        ArrayList<UserAccounts> accounts = null;
-        String userType = null;
-        try {
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
             accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        for (UserAccounts account : accounts) {
-            if (account.getUsername().equals(userAccount)) {
-                userType = account.getAccountType();
-            }
-        }
-        out.println("201");
-        out.println(userType + "\n");
+            List<String> newGroupsList = Arrays.asList(userGroups.split(", "));
 
-        out.close();
-        dos.close();
+            for (UserAccounts account : accounts) {
+                if (account.getUsername().equals(userAccount.toLowerCase())) {
+                    un = account.getUsername();
+                    pw = account.getPassword();
+                    at = account.getAccountType();
+                    accounts.remove(account);
+                    break;
+                }
+            }
+
+            accounts.add(new UserAccounts(un, pw, at, new ArrayList<>(newGroupsList)));
+            Crypt.writeAuthFile(accounts);
+
+            out.println("201");
+
+        } catch (ClassNotFoundException ignored) {}
     }
 
-    private void setItemPermissions(String itemLocation, String groups, String add, String edit, String view, Socket client) throws IOException {
+    @SuppressWarnings("unchecked")
+    private void getUserType(String userAccount, Socket client) throws IOException {
+        String userType = null;
+        ArrayList<UserAccounts> accounts;
+
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+
+            for (UserAccounts account : accounts) {
+                if (account.getUsername().equals(userAccount)) {
+                    userType = account.getAccountType();
+                }
+            }
+
+            out.println("201");
+            out.println(userType + "\n");
+        } catch (ClassNotFoundException ignored) {}
+    }
+
+    private void setItemPermissions(String itemLocation, String groups, Socket client) throws IOException {
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
@@ -680,26 +631,23 @@ class ServerInit implements Runnable {
         dos.close();
     }
 
-    private void getNodeIntendedFiles(String macAddr, Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-
-        out.println("201");
-        out.println(FileRestore.getFilesOnComputerFromCatalog(macAddr) + "\n");
-        out.close();
+    private void getNodeIntendedFiles(String macAddress, Socket client) throws IOException {
+        try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+            out.println("201");
+            out.println(FileRestore.getFilesOnComputerFromCatalog(macAddress) + "\n");
+        }
     }
-
 
     private void badRequest(Socket client, String request, String message) {
         try {
             if (client.isClosed()) return;
-            PrintWriter out = new PrintWriter(client.getOutputStream());
-            out.println(request + ";" + message);
-            out.flush();
+            try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
+                out.println("202;" + request + ";" + message);
+            }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
-
 
     public void run() {
         while (!Thread.interrupted()) {
@@ -713,6 +661,6 @@ class ServerInit implements Runnable {
                 io.printStackTrace();
             }
         }
-        System.out.println("Socket closed");
+        System.out.println("Unicast socket closed");
     }
 }

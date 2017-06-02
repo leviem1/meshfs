@@ -1,12 +1,7 @@
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.net.*;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
@@ -111,9 +106,13 @@ class MulticastServerInit implements Runnable {
         this.socket = socket;
     }
 
-    private void evaluateMaster(String ip, String port) {
+    private void evaluateMaster(String ip, String port, String MACAddress) {
         if ((!MeshFS.nogui) && (FileClient.ping(ip, Integer.parseInt(port)) > -1) && !foundMasters.contains(ip)) {
             foundMasters.add(ip);
+        } else if (MACAddress.equals(MeshFS.masterMAC) && FileClient.ping(ip, Integer.parseInt(port)) > -1) {
+            MeshFS.properties.setProperty("masterIP", ip);
+            MeshFS.properties.setProperty("portNumber", port);
+            ConfigParser.write(MeshFS.properties);
         }
     }
 
@@ -289,7 +288,7 @@ class MulticastServerInit implements Runnable {
 
         switch (requestParts[0]) {
             case "151":
-                evaluateMaster(requestParts[1], requestParts[2]);
+                evaluateMaster(requestParts[1], requestParts[2], requestParts[3]);
                 break;
             case "152":
                 masterDownRecord(dp.getAddress());

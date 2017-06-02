@@ -37,30 +37,33 @@ class FileUtils {
      * @throws IOException on error reading or writing files
      */
     static void writeStripe(String filePath, String outFile, long off, long len) throws IOException {
-        int br = 0;
-        int read;
-        byte[] data = new byte[4096];
-        FileInputStream fis = new FileInputStream(filePath);
-        FileOutputStream fos = new FileOutputStream(outFile);
+        try (
+                FileInputStream fis = new FileInputStream(filePath);
+                FileOutputStream fos = new FileOutputStream(outFile)
 
-        fis.skip(off);
+        ) {
+            int br = 0;
+            int read;
+            byte[] data = new byte[4096];
 
-        while ((br != -1) && (len > 0)) {
-            if (len <= 4096) {
-                read = Math.toIntExact(len);
-            } else {
-                read = data.length;
+            if (fis.skip(off) != off) {
+                throw new IOException("Did not skip expected number of bytes");
             }
 
-            br = fis.read(data, 0, read);
-            fos.write(data, 0, br);
-            fos.flush();
+            while ((br != -1) && (len > 0)) {
+                if (len <= 4096) {
+                    read = Math.toIntExact(len);
+                } else {
+                    read = data.length;
+                }
 
-            len -= br;
+                br = fis.read(data, 0, read);
+                fos.write(data, 0, br);
+                fos.flush();
+
+                len -= br;
+            }
         }
-
-        fis.close();
-        fos.close();
     }
 
     /**
@@ -71,55 +74,54 @@ class FileUtils {
      * @throws IOException on error reading or writing files
      */
     static void combineStripes(List<String> stripes, String outFile) throws IOException {
-        FileOutputStream fos = new FileOutputStream(outFile);
+        try (FileOutputStream fos = new FileOutputStream(outFile)) {
+            for (String stripe : stripes) {
+                int br;
+                byte[] data = new byte[4096];
+                FileInputStream fis = new FileInputStream(stripe);
 
-        for (String stripe : stripes) {
-            int br;
-            byte[] data = new byte[4096];
-            FileInputStream fis = new FileInputStream(stripe);
+                while ((br = fis.read(data, 0, data.length)) != -1) {
+                    fos.write(data, 0, br);
+                    fos.flush();
+                }
 
-            while ((br = fis.read(data, 0, data.length)) != -1) {
-                fos.write(data, 0, br);
-                fos.flush();
+                fis.close();
             }
-
-            fis.close();
         }
-
-        fos.close();
     }
 
     /**
      * This method deletes a file.
      *
      * @param path path of the file to delete
-     * @return true on success, false on failure
      */
     static void removeFile(String path) {
         new File(path).delete();
     }
 
     static String getMD5Hash(String path) throws IOException, NoSuchAlgorithmException {
-        int br;
-        MessageDigest md = MessageDigest.getInstance("SHA1");
-        FileInputStream fis = new FileInputStream(path);
-        byte[] data = new byte[1024];
+        try (
+                FileInputStream fis = new FileInputStream(path)
+        ) {
+            MessageDigest md = MessageDigest.getInstance("SHA1");
 
-        while ((br = fis.read(data, 0, data.length)) != -1) {
-            md.update(data, 0, br);
+            int br;
+            byte[] data = new byte[1024];
+
+            while ((br = fis.read(data, 0, data.length)) != -1) {
+                md.update(data, 0, br);
+            }
+
+            byte[] mdData = md.digest();
+
+            StringBuilder hash = new StringBuilder("");
+
+            for (byte aMdData : mdData) {
+                hash.append(Integer.toString((aMdData & 0xff) + 0x100, 16).substring(1));
+            }
+
+            return hash.toString();
         }
-
-        byte[] mdData = md.digest();
-
-        StringBuilder hash = new StringBuilder("");
-
-        for (byte aMdData : mdData) {
-            hash.append(Integer.toString((aMdData & 0xff) + 0x100, 16).substring(1));
-        }
-
-        fis.close();
-
-        return hash.toString();
     }
 
     static long getModificationDate(String path) {
@@ -128,9 +130,11 @@ class FileUtils {
 
     static void emptyRepo() {
         File repository = new File(MeshFS.properties.getProperty("repository"));
-        for (File file : repository.listFiles()) {
-            if (file.getName().equals(".manifest.json") && file.getName().equals(".catalog.json") && file.getName().equals(".auth")) {
-                file.delete();
+        if (repository.listFiles() != null) {
+            for (File file : repository.listFiles()) {
+                if (file.getName().equals(".manifest.json") && file.getName().equals(".catalog.json") && file.getName().equals(".auth")) {
+                    file.delete();
+                }
             }
         }
     }
