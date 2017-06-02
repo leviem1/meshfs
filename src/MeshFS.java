@@ -95,6 +95,9 @@ class MeshFS {
                                         String currentFiles = Reporting.getRepositoryContents();
                                         List<String> filesToRemove = Arrays.asList(currentFiles.substring(1, currentFiles.length() - 1).split(", "));
                                         filesToRemove.removeAll(filesToRestore);
+                                        filesToRemove.remove(".catalog.json");
+                                        filesToRemove.remove(".auth");
+                                        filesToRemove.remove(".manifest.json");
                                         for (String file : filesToRemove){
                                             FileUtils.removeFile(MeshFS.properties.getProperty("repository") + file);
                                         }
