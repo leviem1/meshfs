@@ -468,7 +468,7 @@ class ServerInit implements Runnable {
                     if (username.toLowerCase().trim().equals(un) && password.trim().equals(pw)) {
                         out.println("201");
                         out.println(MeshFS.properties.getProperty("uuid") + "\n");
-                        break;
+                        return;
                     }
                 }
                 out.println("203");
