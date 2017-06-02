@@ -1,6 +1,12 @@
+import org.json.simple.JSONObject;
+
 import java.awt.*;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.tree.DefaultTreeModel;
 /*
  * Created by JFormDesigner on Fri Jun 02 08:36:58 MDT 2017
  */
@@ -11,8 +17,23 @@ import javax.swing.border.*;
  * @author Mark Hedrick
  */
 class DownloadFromDrive extends JFrame {
-    public DownloadFromDrive() {
+
+    private static JFrame downloadFromDrive;
+    private final String serverAddress;
+    private final int port;
+
+
+    public DownloadFromDrive(String serverAddress, int port) {
+        this.serverAddress = serverAddress;
+        this.port = port;
         initComponents();
+        try {
+            tree1.setModel(new DefaultTreeModel(DriveAPI.driveJTreeBuilder("user")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initComponents() {
@@ -22,7 +43,7 @@ class DownloadFromDrive extends JFrame {
         contentPanel = new JPanel();
         titleLbl = new JLabel();
         scrollPane1 = new JScrollPane();
-        list1 = new JList();
+        tree1 = new JTree();
         buttonBar = new JPanel();
         okButton = new JButton();
 
@@ -46,10 +67,7 @@ class DownloadFromDrive extends JFrame {
 
                 //======== scrollPane1 ========
                 {
-
-                    //---- list1 ----
-                    list1.setFont(new Font("Arial", list1.getFont().getStyle(), list1.getFont().getSize() + 1));
-                    scrollPane1.setViewportView(list1);
+                    scrollPane1.setViewportView(tree1);
                 }
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
@@ -97,13 +115,19 @@ class DownloadFromDrive extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
+    public static void run(String serverAddress, int port, JFrame sender) {
+        downloadFromDrive = new DownloadFromDrive(serverAddress, port);
+        CenterWindow.centerOnWindow(sender, downloadFromDrive);
+        downloadFromDrive.setVisible(true);
+    }
+
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JLabel titleLbl;
     private JScrollPane scrollPane1;
-    private JList list1;
+    private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

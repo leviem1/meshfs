@@ -69,7 +69,7 @@ new FormModel {
 						"gridx": 1
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "optionsBtn2"
+						name: "saveFromDriveBtn"
 						"text": "Save from Drive..."
 						"font": #SwingDerivedFont1
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {

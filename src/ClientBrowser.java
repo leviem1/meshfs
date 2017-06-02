@@ -63,7 +63,7 @@ ClientBrowser extends JFrame {
     private JPanel buttonBar;
     private JButton logoutBtn;
     private JButton optionsBtn;
-    private JButton optionsBtn2;
+    private JButton saveFromDriveBtn;
     private JLabel statusLbl;
     private JButton quitBtn;
     //GEN-END:variables
@@ -153,7 +153,7 @@ ClientBrowser extends JFrame {
         buttonBar = new JPanel();
         logoutBtn = new JButton();
         optionsBtn = new JButton();
-        optionsBtn2 = new JButton();
+        saveFromDriveBtn = new JButton();
         statusLbl = new JLabel();
         quitBtn = new JButton();
 
@@ -260,10 +260,10 @@ ClientBrowser extends JFrame {
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
-                //---- optionsBtn2 ----
-                optionsBtn2.setText("Save from Drive...");
-                optionsBtn2.setFont(new Font("Arial", optionsBtn2.getFont().getStyle(), optionsBtn2.getFont().getSize() + 1));
-                buttonBar.add(optionsBtn2, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+                //---- saveFromDriveBtn ----
+                saveFromDriveBtn.setText("Save from Drive...");
+                saveFromDriveBtn.setFont(new Font("Arial", saveFromDriveBtn.getFont().getStyle(), saveFromDriveBtn.getFont().getSize() + 1));
+                buttonBar.add(saveFromDriveBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
 
@@ -539,7 +539,7 @@ ClientBrowser extends JFrame {
                         e1.printStackTrace();
                     }
                     try {
-                        DriveAPI.uploadFile(tempFile, node.toString(), Files.probeContentType(Paths.get(tempFile.getAbsolutePath())), userAccount);
+                        DriveAPI.uploadFile(tempFile, node.toString(), Files.probeContentType(Paths.get(tempFile.getAbsolutePath())), "root", userAccount);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     } catch (GeneralSecurityException e1) {
@@ -563,6 +563,10 @@ ClientBrowser extends JFrame {
                         e1.printStackTrace();
                     }
 
+                });
+        saveFromDriveBtn.addActionListener(
+                e -> {
+                    DownloadFromDrive.run(serverAddress, port, clientBrowser);
                 });
     }
 
