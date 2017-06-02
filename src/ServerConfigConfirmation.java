@@ -226,7 +226,7 @@ class ServerConfigConfirmation extends JFrame {
     }
 
     private void onOk() throws IOException {
-        properties.setProperty("remoteUUID", serverIdentifierField.getText());
+        properties.setProperty("uuid", serverIdentifierField.getText());
         try {
             ServerModeConfiguration.writeConfig(properties);
             JOptionPane.showMessageDialog(
