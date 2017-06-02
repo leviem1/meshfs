@@ -113,11 +113,15 @@ class DriveAPI {
     private static DefaultMutableTreeNode driveJTreeBuilderRecursion(String parentId, String user, DefaultMutableTreeNode branch) throws IOException, GeneralSecurityException{
         List<File> folders = listFolders(parentId, user);
         for (File folder : folders){
-            branch.add(driveJTreeBuilderRecursion(folder.getId(), user, new DefaultMutableTreeNode(folder.getTitle())));
+            branch.add(new DefaultMutableTreeNode("(more files)"));
+            //branch.add(driveJTreeBuilderRecursion(folder.getId(), user, new DefaultMutableTreeNode(folder.getTitle())));
         }
         List<File> files = listFiles(parentId, user);
         for (File file : files) {
             branch.add(new DefaultMutableTreeNode(file.getTitle()));
+        }
+        if (folders.isEmpty() && files.isEmpty()){
+            branch.add(new DefaultMutableTreeNode("(no files)"));
         }
         return branch;
     }
