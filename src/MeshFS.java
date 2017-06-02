@@ -89,7 +89,7 @@ class MeshFS {
                                 if (FileClient.ping(
                                         properties.getProperty("masterIP"),
                                         Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
-                                    /*if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
+                                    if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
                                         List<String> filesToRestore = new ArrayList<>();
                                         try {
                                             filesToRestore = FileClient.getNodeIntendedFiles(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), Reporting.getMacAddress());
@@ -98,13 +98,22 @@ class MeshFS {
                                         }
                                         String currentFiles = Reporting.getRepositoryContents();
                                         List<String> filesToRemove = Arrays.asList(currentFiles.substring(1, currentFiles.length() - 1).split(", "));
+
+
+
                                         filesToRemove.removeAll(filesToRestore);
                                         filesToRemove.remove(".catalog.json");
                                         filesToRemove.remove(".auth");
                                         filesToRemove.remove(".manifest.json");
-                                        for (String file : filesToRemove){
-                                            FileUtils.removeFile(MeshFS.properties.getProperty("repository") + file);
+
+                                        System.out.println(filesToRemove.toString());
+                                        if(!filesToRemove.contains("")){
+                                            for (String file : filesToRemove){
+                                                System.out.println("removing: '" + file +"'");
+                                                FileUtils.removeFile(MeshFS.properties.getProperty("repository") + file);
+                                            }
                                         }
+
                                         for (String fileName : filesToRestore){
                                             if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()){
                                                 try{
@@ -116,7 +125,7 @@ class MeshFS {
                                                 }
                                             }
                                         }
-                                    }*/
+                                    }
                                     numFailedConn[0] = 0;
                                     try {
                                         FileClient.sendReport(
