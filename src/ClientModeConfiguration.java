@@ -391,9 +391,10 @@ class ClientModeConfiguration extends JFrame {
             MeshFS.properties.setProperty("uuid", uuid);
             //Crypt.generateEncryptedAuth(username, password));
             return uuid;
-
         } catch (IOException | MalformedRequestException e) {
             e.printStackTrace();
+        } catch (IncorrectCredentialException ice) {
+            ice.printStackTrace();
         }
         return "-1";
     }

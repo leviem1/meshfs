@@ -137,8 +137,7 @@ class ServerInit implements Runnable {
 
                         break;
                     case "106": //106:Make directory (virtual only)
-                        createDirectory(
-                                requestParts[2], requestParts[3], requestParts[4], out);
+                        createDirectory(requestParts[2], requestParts[3], out);
 
                         break;
                     case "107": //107:Get report
@@ -157,64 +156,48 @@ class ServerInit implements Runnable {
                         renameFile(requestParts[2], requestParts[3], out);
 
                         break;
-
                     case "111": //111:Change Password
                         changePassword(requestParts[2], requestParts[3], requestParts[4], out);
 
                         break;
-
-                    case "112": //112:Get Master UUID
-                        getServerUUID(out);
+                    case "112": //122: Check file's existence
+                        doesFileExist(requestParts[2], out);
 
                         break;
-
                     case "113": //113:Send Auth Info
                         sendAuthInfo(requestParts[1], requestParts[2], out);
 
                         break;
-
                     case "114": //114:Delete Account
                         deleteAccount(requestParts[2], out);
 
                         break;
-
                     case "115": //115:Get User Files
                         getUserFiles(requestParts[2], out);
 
                         break;
-
                     case "116": //116:Get User Groups
                         getUserGroups(requestParts[2], out);
 
                         break;
-
                     case "117": //117:Get All Groups
                         getGroups(out);
 
                         break;
-
                     case "118": //118:Update user Groups
                         setUserGroup(requestParts[2], requestParts[3], out);
 
                         break;
-
                     case "119": //119: Get User Type
                         getUserType(requestParts[2], out);
 
                         break;
-
                     case "120": //120: Set item permissions
-                        setItemPermissions(requestParts[2], requestParts[3], requestParts[4], requestParts[5], requestParts[6], out);
+                        setItemPermissions(requestParts[2], requestParts[3], out);
 
                         break;
-
                     case "121": //121: Get node intended files
                         getNodeIntendedFiles(requestParts[2], out);
-
-                        break;
-
-                    case "122": //122: Check file's existence
-                        doesFileExist(requestParts[2], out);
 
                         break;
 
@@ -412,7 +395,7 @@ class ServerInit implements Runnable {
     }
 
     private void createDirectory(
-            String directoryPath, String directoryName, String userAccount, Socket client)
+            String directoryPath, String directoryName, Socket client)
             throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream());
         out.println("201");
@@ -434,7 +417,7 @@ class ServerInit implements Runnable {
     }
 
     private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException, ClassNotFoundException {
-        PrintWriter out = new PrintWriter(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
         FileInputStream fis = new FileInputStream(auth);
         ObjectInputStream ois = new ObjectInputStream(fis);
@@ -458,10 +441,8 @@ class ServerInit implements Runnable {
                         accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, newPassword), accountType, accountGroups));
                         Crypt.writeAuthFile(accounts);
                         out.println("201");
-                        out.flush();
                     } else {
-                        out.println("202");
-                        out.flush();
+                        out.println("203");
                     }
                 }
             }
@@ -470,10 +451,12 @@ class ServerInit implements Runnable {
         }
     }
 
-    private void getServerUUID(Socket client) throws IOException {
+    private void doesFileExist(String fileName, Socket client) throws IOException {
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+
         out.println("201");
-        out.println(MeshFS.properties.getProperty("uuid"));
+        out.println(new File(MeshFS.properties.getProperty("repository") + fileName).exists() + "\n");
+        out.close();
     }
 
     private void sendAuthInfo(String username, String password, Socket client) throws IOException {
@@ -496,11 +479,12 @@ class ServerInit implements Runnable {
                 if (username.toLowerCase().trim().equals(un) && password.trim().equals(pw)) {
                     out.println("201");
                     out.println(MeshFS.properties.getProperty("uuid") + "\n");
+                    break;
                 }
             }
-            out.println("202\n");
+            out.println("203");
         } else {
-            out.println("202\n");
+            out.println("203");
         }
         fis.close();
         ois.close();
@@ -665,8 +649,7 @@ class ServerInit implements Runnable {
         dos.close();
     }
 
-    private void setItemPermissions(String itemLocation, String groups, String add, String edit, String view, Socket client) throws IOException {
-        //TODO: fix arguments
+    private void setItemPermissions(String itemLocation, String groups, Socket client) throws IOException {
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
@@ -692,20 +675,11 @@ class ServerInit implements Runnable {
         out.close();
     }
 
-    private void doesFileExist(String fileName, Socket client) throws IOException {
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-
-        out.println("201");
-        out.println(new File(MeshFS.properties.getProperty("repository") + fileName).exists() + "\n");
-        out.close();
-    }
-
-
     private void badRequest(Socket client, String request, String message) {
         try {
             if (client.isClosed()) return;
             PrintWriter out = new PrintWriter(client.getOutputStream());
-            out.println(request + ";" + message);
+            out.println("202;" + request + ";" + message);
             out.flush();
         } catch (IOException ioe) {
             ioe.printStackTrace();
