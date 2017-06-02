@@ -195,8 +195,7 @@ class MoveFileWindow extends JFrame {
                     DefaultMutableTreeNode node =
                             (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                     buttonBar.getRootPane().setDefaultButton(okButton);
-                    if (node.toString().equals("(no files)")) {
-                        tree1.setSelectionPath(null);
+                    if (node.toString().equals("(no files)") || node.toString().equals("root")) {
                         okButton.setEnabled(false);
                     } else {
                         try {
