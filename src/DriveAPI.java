@@ -92,7 +92,7 @@ class DriveAPI {
         Credential credential = authorize(JSONFactory, httpTransport, user);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
         List<File> files = new ArrayList<>();
-        files.addAll(drive.files().list().setQ("trashed = false and mimeType != 'application/vnd.google-apps.folder' and '" + parentId + "' in parent").execute().getItems());
+        files.addAll(drive.files().list().setQ("trashed = false and mimeType != 'application/vnd.google-apps.folder' and '" + parentId + "' in parents").execute().getItems());
         return files;
     }
 
@@ -102,7 +102,7 @@ class DriveAPI {
         Credential credential = authorize(JSONFactory, httpTransport, user);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
         List<File> files = new ArrayList<>();
-        files.addAll(drive.files().list().setQ("trashed = false and mimeType = 'application/vnd.google-apps.folder' and '" + parentId + "' in parent").execute().getItems());
+        files.addAll(drive.files().list().setQ("trashed = false and mimeType = 'application/vnd.google-apps.folder' and '" + parentId + "' in parents").execute().getItems());
         return files;
     }
 
