@@ -56,8 +56,12 @@ class MeshFS {
             }
 
             File repo = new File(properties.getProperty("repository"));
+            System.out.println(repo.exists());
+            boolean test = false;
+            if (!repo.exists() && !(test = repo.mkdirs())) System.exit(1);
+            System.out.println(test);
 
-            if (!repo.exists() && !repo.mkdirs()) System.exit(1);
+            System.out.println("Master:" + isMaster);
 
             if (isMaster) {
                 if (((configure && !cliParser.cmd.hasOption("adduser"))) || !new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
@@ -85,7 +89,7 @@ class MeshFS {
                                 if (FileClient.ping(
                                         properties.getProperty("masterIP"),
                                         Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
-                                    if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
+                                    /*if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
                                         List<String> filesToRestore = new ArrayList<>();
                                         try {
                                             filesToRestore = FileClient.getNodeIntendedFiles(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), Reporting.getMacAddress());
@@ -109,7 +113,7 @@ class MeshFS {
                                                 }
                                             }
                                         }
-                                    }
+                                    }*/
                                     numFailedConn[0] = 0;
                                     try {
                                         FileClient.sendReport(
