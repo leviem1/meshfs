@@ -46,6 +46,7 @@ ClientBrowser extends JFrame {
     private JMenuItem removeBtn;
     private JMenuItem propertiesBtn;
     private JMenuItem sendToDriveBtn;
+    private JMenuItem blacklistUserBtn;
 
 
 
@@ -74,7 +75,6 @@ ClientBrowser extends JFrame {
         if (Reporting.getSystemOS().contains("Windows")) {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
-
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
@@ -111,6 +111,8 @@ ClientBrowser extends JFrame {
         removeBtn = new JMenuItem("Delete...");
         propertiesBtn = new JMenuItem("Properties");
         sendToDriveBtn = new JMenuItem("Send to My Drive");
+        blacklistUserBtn = new JMenuItem("Hide this File");
+
 
 
         frameListeners();
@@ -535,9 +537,24 @@ ClientBrowser extends JFrame {
                         e1.printStackTrace();
                     }
                 });
+        blacklistUserBtn.addActionListener(
+                e -> {
+                    java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
+                    StringBuilder jsonPath = new StringBuilder();
+                    for (Object item : treeList) {
+                        jsonPath.append(item.toString()).append("/");
+                    }
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
 
+                    try {
+                        FileClient.blacklistUser(serverAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), JSONUtils.catalogStringFixer(jsonPath.toString()), userAccount, MeshFS.properties.getProperty("uuid"));
+                    } catch (MalformedRequestException e1) {
+                        e1.printStackTrace();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
 
-
+                });
     }
 
     MouseAdapter ma = new MouseAdapter() {
@@ -561,6 +578,7 @@ ClientBrowser extends JFrame {
                 rightClickMenu.add(duplicateBtn);
                 rightClickMenu.add(new JPopupMenu.Separator());
                 rightClickMenu.add(removeBtn);
+                rightClickMenu.add(blacklistUserBtn);
                 rightClickMenu.add(sendToDriveBtn);
                 rightClickMenu.add(new JPopupMenu.Separator());
                 rightClickMenu.add(propertiesBtn);
@@ -588,9 +606,6 @@ ClientBrowser extends JFrame {
             if (e.isPopupTrigger()) myPopupEvent(e);
         }
     };
-
-
-
 
     private void downloadFile(String path) {
         java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());

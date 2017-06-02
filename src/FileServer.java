@@ -6,6 +6,7 @@ import java.net.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -198,6 +199,10 @@ class ServerInit implements Runnable {
                         break;
                     case "121": //121: Get node intended files
                         getNodeIntendedFiles(requestParts[2], out);
+
+                        break;
+                    case "122": //122: Blacklist a user
+                        blacklistUser(requestParts[2], requestParts[3], out);
 
                         break;
 
@@ -637,6 +642,18 @@ class ServerInit implements Runnable {
             out.println(FileRestore.getFilesOnComputerFromCatalog(macAddress) + "\n");
         }
     }
+
+    private void blacklistUser(String itemLocation, String username, Socket client) throws IOException {
+        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+        JSONUtils.blacklistUsers(itemLocation, new ArrayList<>(Collections.singletonList(username)), true);
+
+        out.println("201");
+
+        out.close();
+        dos.close();
+    }
+
 
     private void badRequest(Socket client, String request, String message) {
         try {

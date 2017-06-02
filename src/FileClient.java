@@ -659,4 +659,21 @@ final class FileClient {
         }
     }
 
+    static void blacklistUser(String serverAddress, int port, String itemLocation, String username, String uuid) throws MalformedRequestException, IOException {
+        String response;
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+            out.println("122|" + uuid + "|" + itemLocation + "|" + username + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            }
+        }
+    }
+
 }
