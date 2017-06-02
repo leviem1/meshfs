@@ -15,6 +15,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Timer;
@@ -42,6 +45,8 @@ ClientBrowser extends JFrame {
     private JMenuItem renameBtn;
     private JMenuItem removeBtn;
     private JMenuItem propertiesBtn;
+    private JMenuItem sendToDriveBtn;
+
 
 
     //GEN-BEGIN:variables
@@ -105,6 +110,8 @@ ClientBrowser extends JFrame {
         renameBtn = new JMenuItem("Rename...");
         removeBtn = new JMenuItem("Delete...");
         propertiesBtn = new JMenuItem("Properties");
+        sendToDriveBtn = new JMenuItem("Send to My Drive");
+
 
         frameListeners();
 
@@ -490,6 +497,48 @@ ClientBrowser extends JFrame {
                 e -> UserAccountOptions.run(clientBrowser, userAccount, serverAddress, port, previousRunType));
 
         tree1.addMouseListener(ma);
+        sendToDriveBtn.addActionListener(
+                e -> {
+                    java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
+                    StringBuilder jsonPath = new StringBuilder();
+                    for (Object item : treeList) {
+                        jsonPath.append(item.toString()).append("/");
+                    }
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                    File tempFile = null;
+                    try {
+                        tempFile = File.createTempFile(node.toString(), "");
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        JSONUtils.pullFile(
+                                jsonPath.toString(),
+                                tempFile.getAbsolutePath(),
+                                tempFile.getAbsolutePath().substring(tempFile.getAbsolutePath().lastIndexOf(File.separator)),
+                                serverAddress,
+                                port,
+                                catalogObj);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (MalformedRequestException e1) {
+                        e1.printStackTrace();
+                    } catch (PullRequestException e1) {
+                        e1.printStackTrace();
+                    } catch (FileTransferException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        DriveAPI.uploadFile(tempFile, node.toString(), Files.probeContentType(Paths.get(tempFile.getAbsolutePath())), userAccount);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (GeneralSecurityException e1) {
+                        e1.printStackTrace();
+                    }
+                });
+
+
 
     }
 
@@ -507,7 +556,20 @@ ClientBrowser extends JFrame {
             JSONObject contents = JSONUtils.getItemContents(catalogObj, jsonPath.toString());
             String type = contents.get("type").toString();
 
-            if(type.equals("file") ||  type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
+            if(type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
+                rightClickMenu = new JPopupMenu();
+                rightClickMenu.add(renameBtn);
+                rightClickMenu.add(moveBtn);
+                rightClickMenu.add(duplicateBtn);
+                rightClickMenu.add(new JPopupMenu.Separator());
+                rightClickMenu.add(removeBtn);
+                rightClickMenu.add(sendToDriveBtn);
+                rightClickMenu.add(new JPopupMenu.Separator());
+                rightClickMenu.add(propertiesBtn);
+                if (path == null) return;
+                tree.setSelectionPath(path);
+                rightClickMenu.show(tree, x, y);
+            } else if(type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
                 rightClickMenu = new JPopupMenu();
                 rightClickMenu.add(renameBtn);
                 rightClickMenu.add(moveBtn);
