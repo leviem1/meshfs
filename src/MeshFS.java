@@ -19,7 +19,7 @@ class MeshFS {
     static Timer nodePanicTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
     static int activeWindows = 0;
-    private static boolean isMaster = false;
+    static boolean isMaster = false;
     private static Timer manifestTimer = new Timer();
     private static Timer discoveryBroadcastTimer = new Timer();
 
