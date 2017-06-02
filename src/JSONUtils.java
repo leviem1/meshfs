@@ -66,36 +66,21 @@ class JSONUtils {
      * in the format of "itemName", "itemType".
      *
      * @param jsonObject     the JSONObject that is being read
-     * @param folderLocation the virtual path within the catalog file
-     * @param user           the UserAccount object of the user
+     * @param user           the UserAccount object of the user, if null, the folder is read as if the user was an admin
      * @return a map of the folder's contents
      */
     @SuppressWarnings("unchecked")
-    static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, String folderLocation, UserAccounts user) {
-        folderLocation = catalogStringFixer(folderLocation);
-        List<String> Tree = new ArrayList<>();
-        if (folderLocation.contains("/")) {
-            Tree = Arrays.asList(folderLocation.split("/"));
-        }
-
-        JSONObject folderToRead = jsonObject;
-
-        for (String folder : Tree) {
-            folderToRead = (JSONObject) folderToRead.get(folder);
-        }
-
-
+    static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, UserAccounts user) {
         LinkedHashMap<String, String> contents = new LinkedHashMap<>();
-
-        for (Object key : folderToRead.keySet()) {
+        for (Object key : jsonObject.keySet()) {
             String keyStr = key.toString();
             try {
                 if ((user == null)
                         || (user.getUsername().equals("admin")
-                        || ((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))).contains("all")
-                        || (!Collections.disjoint(((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("groups"))), user.getGroups()))
-                        && !((JSONArray) (((JSONObject) folderToRead.get(keyStr)).get("blacklist"))).contains(user.getUsername()))) {
-                    contents.put(keyStr, (((JSONObject) folderToRead.get(keyStr)).get("type")).toString());
+                        || ((JSONArray) (((JSONObject) jsonObject.get(keyStr)).get("groups"))).contains("all")
+                        || (!Collections.disjoint(((JSONArray) (((JSONObject) jsonObject.get(keyStr)).get("groups"))), user.getGroups()))
+                        && !((JSONArray) (((JSONObject) jsonObject.get(keyStr)).get("blacklist"))).contains(user.getUsername()))) {
+                    contents.put(keyStr, (((JSONObject) jsonObject.get(keyStr)).get("type")).toString());
                 }
             } catch (Exception ignored) {
             }
@@ -104,11 +89,13 @@ class JSONUtils {
         return contents;
     }
 
-    static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, UserAccounts user) {
-        return getMapOfFolderContents(jsonObject, "", user);
-    }
-
-
+    /**
+     * This method adds a reference to the catalog when a file is uploaded.
+     *
+     * @param stripes       the List of Lists that shows what computer each stripe was sent to
+     * @param fileName      the name the the file will have in the JTree
+     * @param JSONFilePath  the virtual path of the folder in the catalog that the file will be put into
+     */
     @SuppressWarnings("unchecked")
     static void addFileToCatalog(List<List<String>> stripes, String itemDestinationLocation, String fileName, String JSONFilePath, String alphanumericName, String username, long fileSize) throws IOException {
         itemDestinationLocation = catalogStringFixer(itemDestinationLocation);
@@ -156,7 +143,13 @@ class JSONUtils {
         writeJSONObject(JSONFilePath, catalog);
     }
 
-
+    /**
+     * This method changes the permissions of a folder or file in the catalog.
+     *
+     * @param itemLocation  the virtual path of the item in the catalog that is to be changed
+     * @param fileUsers     the List of user groups that can view the file
+     * @param fileAdmins    the List of user groups that can edit the file  (not implemented yet)
+     */
     static void editPermissions(String itemLocation, List<String> fileUsers, List<String> fileAdmins) throws IOException {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -177,6 +170,13 @@ class JSONUtils {
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
     }
 
+    /**
+     * This method adds user groups to a blacklist that prevents them from seeing a folder or file in the catalog.
+     *
+     * @param itemLocation  the virtual path of the item in the catalog that is to be changed
+     * @param userNames     the List of user groups that should be added or removed to the viewing blacklist for the item
+     * @param add           if true the users are added to the blacklist, if false they are removed from the blacklist
+     */
     static void blacklistUsers(String itemLocation, List<String> userNames, boolean add) {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -197,10 +197,9 @@ class JSONUtils {
     }
 
     /**
-     * This method creates a new reference of the given item to the designated path within the JSONObject.
+     * This method creates a new reference of the given item within the catalog.
      *
-     * @param itemLocation the source virtual path within the catalog
-     * @return updated JSONObject that the item was read from
+     * @param itemLocation the source virtual path of the item within the catalog
      */
     static void duplicateItem(String itemLocation) throws IOException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -209,11 +208,12 @@ class JSONUtils {
         System.out.println(getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json"));
     }
 
-    static void deleteItem(String itemLocation) throws IOException, MalformedRequestException {
-        JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
-        deleteItem(catalog, itemLocation, true);
-    }
-
+    /**
+     * This method removes the given item from the catalog the catalog.
+     *
+     * @param itemLocation  the source virtual path of the item within the catalog
+     * @param smart         if true, if no other references of the file exists, the file is removed from all nodes. If false, other references
+     */
     static void deleteItem(String itemLocation, boolean smart) throws IOException, MalformedRequestException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         deleteItem(catalog, itemLocation, smart);
@@ -274,13 +274,12 @@ class JSONUtils {
     }
 
     /**
-     * This method adds a new file, with all of its properties, to the JSONObject.
+     * This method adds a new temporary file, to the JSONObject.
      *
      * @param itemLocation the source virtual path within the JSONObject
      * @param fileName     the name of the file, the way it appears in the file browser
      * @param username     the account name that uploaded the file
      */
-
     @SuppressWarnings("unchecked")
     static void addTempFile(String itemLocation, String fileName, String username) throws IOException {
         itemLocation = catalogStringFixer(itemLocation);
@@ -302,10 +301,10 @@ class JSONUtils {
 
     /**
      * This method produces a LinkedHashMap where each element is comprised of the computers' MAC
-     * address and its available storage, with all of its properties, to the JSONObject.
+     * address and its available storage.
      *
      * @param manifestFile The JSONObject that contains the information from the manifest file
-     * @return map of computers' properties
+     * @return             LinkedHashMap of online computers' MACAddress and available storage, ordered by descending available storage
      */
     @SuppressWarnings("unchecked")
     static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile) {
@@ -315,12 +314,10 @@ class JSONUtils {
                 storageMap.put(MACAddress.toString(), Long.valueOf((((JSONObject) manifestFile.get(MACAddress)).get("FreeSpace")).toString()));
             }
         }
-        return sortMapByValue(storageMap);
+        return sortMapByValue(storageMap, false);
     }
 
-
-    @SuppressWarnings("unchecked")
-    static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> storageMap) {
+    static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> storageMap, boolean ascending) {
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
 
@@ -332,7 +329,7 @@ class JSONUtils {
             boolean isBroken = false;
 
             for (String sortedKey : sortedMap.keySet()) {
-                if (storageAmount >= sortedMap.get(sortedKey)) {
+                if ((!ascending && storageAmount >= sortedMap.get(sortedKey)) || (ascending && storageAmount <= sortedMap.get(sortedKey))) {
                     //reorder the map when a storage value is larger than one that is already in the map
                     LinkedHashMap<String, Long> reorderStorageMap =
                             (LinkedHashMap<String, Long>) sortedMap.clone();
@@ -356,13 +353,15 @@ class JSONUtils {
     }
 
     /**
-     * This method adds a new file, with all of its properties, to the JSONObject.
+     * This method pulls a file from the file system.
      *
-     * @param itemLocation  the source virtual path within the JSONObject
+     * @param itemLocation  the source virtual path within the catalog
      * @param path          where the download file is to be saved to
-     * @param outFile       the name that the download file is to be saved as
-     * @return true on success, false on failure
-     * @throws IOException if a socket cannot be initialized
+     * @param outFile       the name that the downloaded file is to be saved as
+     * @throws IOException  if client cannot connect to server
+     * @throws MalformedRequestException if file does not exist
+     * @throws PullRequestException if the full file cannot be combined from all the files in the file system
+     * @throws FileTransferException if md5 of sending file did not match received file md5
      */
     static void pullFile(String itemLocation, String path, String outFile, boolean download) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
         itemLocation = catalogStringFixer(itemLocation);
@@ -488,6 +487,12 @@ class JSONUtils {
         }
     }
 
+    /**
+     * This method produces a partial catalog that only contains the folders and files that the given user can see.
+     *
+     * @param user  The UserAccount Object of the user
+     * @return      the JSONObject of the User's Catalog
+     */
     static JSONObject buildUserCatalog(UserAccounts user) {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONObject users = (JSONObject) ((JSONObject) catalog.get("root")).get("Users");
@@ -513,8 +518,14 @@ class JSONUtils {
         return catalogBuilder(catalog, user);
     }
 
+    /**
+     * This method creates the Object for the JTree based on the user's catalog
+     *
+     * @param userCatalog   The UserCatalog for the user
+     * @return              the TreeNode Object for the JTree
+     */
     static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog, boolean adminFormat) {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+        DefaultMutableTreeNode root;
         if (adminFormat) {
             root = JTreeBuilderRecursive((JSONObject) userCatalog.get("root"), new DefaultMutableTreeNode("root"));
 
@@ -600,7 +611,6 @@ class JSONUtils {
         return branch;
     }
 
-
     private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccounts user) {
         LinkedHashMap<String, String> items = getMapOfFolderContents(jsonObject, user);
         JSONObject catalog = new JSONObject();
@@ -621,18 +631,7 @@ class JSONUtils {
         return catalog;
     }
 
-    /**
-     * This method copies the given item to the designated path within the JSONObject.
-     *
-     * @param catalog             the JSONObject that is being read
-     * @param destinationLocation the source virtual path within the JSONObject (the name of the
-     *                            item should not be in this path)
-     * @param fileName            the destination virtual path within the JSONObject
-     * @param itemContents        this is the JSONObject the contains all the information about the file
-     * @return JSONObject that item is written to
-     */
-
-    //@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     private static JSONObject putItemInFolder(JSONObject catalog, String destinationLocation, String fileName, JSONObject itemContents) {
         String[] folders = destinationLocation.split("/");
         JSONObject folderToRead = catalog;
@@ -666,15 +665,7 @@ class JSONUtils {
         return catalog;
     }
 
-    /**
-     * This method deletes the designated item within the JSONObject.
-     *
-     * @param catalog      the JSONObject of the entire catalog
-     * @param itemLocation the virtual path within the JSONObject
-     * @param smart
-     * @return JSONObject in which the item was removed
-     */
-    static void deleteItem(JSONObject catalog, String itemLocation, boolean smart) throws IOException, MalformedRequestException {
+    private static void deleteItem(JSONObject catalog, String itemLocation, boolean smart) throws IOException, MalformedRequestException {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject folderToRead = catalog;
         String item;
@@ -713,13 +704,6 @@ class JSONUtils {
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
     }
 
-    static void deleteManifestItem(String MACAddress) throws IOException {
-        JSONObject manifest = getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
-        manifest.remove(MACAddress);
-        writeJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
-    }
-
-
     private static void moveFile(String itemLocation, String destinationLocation, String newName, boolean updatePermissions) throws IOException, MalformedRequestException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         catalog = copyFile(catalog, itemLocation, destinationLocation, newName, updatePermissions);
@@ -740,6 +724,12 @@ class JSONUtils {
         return removedFiles;
     }
 
+    /**
+     * This method turns a number of bytes into the a format that humans can read, uses base 1024
+     *
+     * @param bytes The number of bytes
+     * @return      The string of how humans read file size, rounded to ______ decimal places
+     */
     static String humanReadableByteCount(long bytes) {
         int unit = 1024;
         if (bytes < unit) return bytes + " B";

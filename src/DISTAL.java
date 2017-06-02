@@ -75,7 +75,6 @@ class DISTAL {
                             macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
                 }
             }
-            sortedCompStorageMap = JSONUtils.sortMapByValue(sortedCompStorageMap);
 
             int numOfComputersUsed = sortedCompStorageMap.size();
 

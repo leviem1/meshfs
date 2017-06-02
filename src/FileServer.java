@@ -289,7 +289,7 @@ class ServerInit implements Runnable {
             FileUtils.removeFile(MeshFS.properties.getProperty("repository") + filePath);
         } else {
             try {
-                JSONUtils.deleteItem(filePath);
+                JSONUtils.deleteItem(filePath, true);
             } catch (MalformedRequestException e) {
                 e.printStackTrace();
             }
