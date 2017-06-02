@@ -342,8 +342,7 @@ class sendFilesThreading implements Runnable {
                                                         + File.separator
                                                         + outName
                                                         + "_s"
-                                                        + stripe,
-                                                MeshFS.properties.getProperty("uuid"));
+                                                        + stripe);
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
@@ -374,8 +373,7 @@ class sendFilesThreading implements Runnable {
                                                         + File.separator
                                                         + outName
                                                         + "_s"
-                                                        + stripe,
-                                                MeshFS.properties.getProperty("uuid"));
+                                                        + stripe);
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
