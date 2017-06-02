@@ -1240,7 +1240,7 @@ class ServerModeConfiguration extends JFrame {
                             .substring(
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("Password:")
                                             + 10,
-                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("Group:"));
+                                    userAccountDataList.getModel().getElementAt(i).toString().indexOf("<br>Group:"));
             String group =
                     userAccountDataList
                             .getModel()
@@ -1260,48 +1260,17 @@ class ServerModeConfiguration extends JFrame {
                                             + 6,
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
 
-            for (int x = 0; x < user.length() - 1; x = x + 2) {
-                try {
-                    pass.append(user.charAt(x));
-                } catch (IndexOutOfBoundsException ignored) {
-                }
-            }
-            MessageDigest messageDigest = null;
-            try {
-                messageDigest = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-            assert messageDigest != null;
-            messageDigest.update(pass.toString().getBytes(), 0, pass.length());
             out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>, Group: <i>" + group.toLowerCase() + "</i>, Type: <i>" + type + "<br>";
-            accountsEnc.add(new UserAccounts(user, new BigInteger(1, messageDigest.digest()).toString(256), type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
+            accountsEnc.add(new UserAccounts(user, Crypt.generateEncryptedPass(user, pass.toString()), type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
             accountsPlain.add(new UserAccounts(user, passOrig, type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
         }
         if (out.equals("")) {
             out = "(none)";
         }
         if (allowGuestBox.isSelected()) {
-            String user = "guest";
-            StringBuilder pass = new StringBuilder("guest");
-            String passOrig = "guest";
-            for (int x = 0; x < user.length() - 1; x = x + 2) {
-                try {
-                    pass.append(user.charAt(x));
-                } catch (IndexOutOfBoundsException ignored) {
-                }
-            }
-            MessageDigest messageDigest = null;
-            try {
-                messageDigest = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-            assert messageDigest != null;
-            messageDigest.update(pass.toString().getBytes(), 0, pass.length());
-            out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>" + "</i>, Group: <i>none</i>, Type: <i>User" + "<br>";
-            accountsEnc.add(new UserAccounts(user, new BigInteger(1, messageDigest.digest()).toString(256), "user", new ArrayList<>(Collections.singletonList("guest"))));
-            accountsPlain.add(new UserAccounts(user, passOrig, "user", new ArrayList<>(Collections.singletonList("guest"))));
+            out += "Username: <i>guest</i>, Password: <i>N/A</i>" + "</i>, Group: <i>none</i>, Type: <i>User" + "<br>";
+            accountsEnc.add(new UserAccounts("guest", Crypt.generateEncryptedPass("guest", "guest"), "user", new ArrayList<>(Collections.singletonList("guest"))));
+            accountsPlain.add(new UserAccounts("guest", "guest", "user", new ArrayList<>(Collections.singletonList("guest"))));
         }
     }
 
