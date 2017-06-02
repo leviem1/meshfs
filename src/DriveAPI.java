@@ -119,6 +119,9 @@ class DriveAPI {
         for (File file : files) {
             branch.add(new DefaultMutableTreeNode(file.getTitle()));
         }
+        if (folders.isEmpty() && files.isEmpty()){
+            branch.add(new DefaultMutableTreeNode("(no files)"));
+        }
         return branch;
     }
 }
