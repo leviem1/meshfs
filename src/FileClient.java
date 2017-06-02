@@ -19,8 +19,7 @@ import java.util.List;
  */
 final class FileClient {
 
-    private FileClient() {
-    }
+    private FileClient() {}
 
     /**
      * This method is used to request to download a file from the server.
@@ -28,7 +27,7 @@ final class FileClient {
      * @param serverAddress the IP address of the server to connect to
      * @param port          the port of the server to connect to
      * @param fileName      the name of the file that is requested and
-     *                      name to be used to write as in repo
+     *                      name to be used to write in repo
      * @throws IOException on error connecting or writing file
      */
     static void receiveFile(
@@ -44,26 +43,28 @@ final class FileClient {
      * @param port          the port of the server to connect to
      * @param fileName      the name of the file that is requested
      * @param fileOut       the file name to write the received file as
-     * @throws IOException on error connecting or writing file
+     * @throws IOException  on error connecting or writing file
      */
     @SuppressWarnings("deprecation")
     static void receiveFile(
             String serverAddress, int port, String fileName, String fileOut)
             throws IOException, MalformedRequestException, FileTransferException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        DataInputStream dis = new DataInputStream(client.getInputStream());
-        FileOutputStream fos = new FileOutputStream(fileOut);
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                DataInputStream dis = new DataInputStream(client.getInputStream());
+                FileOutputStream fos = new FileOutputStream(fileOut)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-        try {
             out.println("101|" + MeshFS.properties.getProperty("uuid") + "|" + fileName + "\n");
             String response = dis.readLine().trim();
             String[] responseParts = response.split("\\|");
 
-            if (!responseParts[0].equals("201")) {
+            if (response.split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
+
             int br;
             byte[] data = new byte[4096];
 
@@ -76,14 +77,7 @@ final class FileClient {
                 if (!responseParts[1].equals(FileUtils.getMD5Hash(fileOut))) {
                     throw new FileTransferException();
                 }
-            } catch (NoSuchAlgorithmException ignored) {
-            }
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            out.close();
-            dis.close();
-            fos.close();
-            client.close();
+            } catch (NoSuchAlgorithmException ignored) {}
         }
     }
 
@@ -98,19 +92,22 @@ final class FileClient {
     static void sendFile(String serverAddress, int port, String filepath)
             throws IOException, MalformedRequestException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-        FileInputStream fis = new FileInputStream(filepath);
 
-        try {
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+                FileInputStream fis = new FileInputStream(filepath)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "|" + FileUtils.getMD5Hash(filepath) + "\n");
 
-            if (!(response = input.readLine().trim()).equals("201")) {
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
+
             int br;
             byte[] data = new byte[4096];
 
@@ -118,14 +115,7 @@ final class FileClient {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (SocketTimeoutException | NoSuchAlgorithmException ignored) {
-        } finally {
-            input.close();
-            out.close();
-            fis.close();
-            dos.close();
-            client.close();
-        }
+        } catch (NoSuchAlgorithmException ignored) {}
     }
 
     /**
@@ -141,19 +131,22 @@ final class FileClient {
             String serverAddress, int port, String filepath, String userAccount)
             throws IOException, MalformedRequestException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        DataOutputStream dos = new DataOutputStream(client.getOutputStream());
-        FileInputStream fis = new FileInputStream(filepath);
 
-        try {
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                DataOutputStream dos = new DataOutputStream(client.getOutputStream());
+                FileInputStream fis = new FileInputStream(filepath)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "|" + FileUtils.getMD5Hash(filepath) + "|" + userAccount + "\n");
 
-            if (!(response = input.readLine().trim()).equals("201")) {
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
+
             int br;
             byte[] data = new byte[4096];
 
@@ -161,14 +154,7 @@ final class FileClient {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (SocketTimeoutException | NoSuchAlgorithmException ignored) {
-        } finally {
-            out.close();
-            input.close();
-            dos.close();
-            fis.close();
-            client.close();
-        }
+        } catch (NoSuchAlgorithmException ignored) {}
     }
 
     /**
@@ -184,23 +170,19 @@ final class FileClient {
             String serverAddress, int port, String currFile, String destFile)
             throws IOException, MalformedRequestException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-        try {
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println("103|" + MeshFS.properties.getProperty("uuid") + "|" + currFile + "|" + destFile + "\n");
 
-            if (!(response = input.readLine().trim()).equals("201")) {
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
-
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            input.close();
-            out.close();
-            client.close();
         }
     }
 
@@ -215,23 +197,17 @@ final class FileClient {
     static void duplicateFile(String serverAddress, int port, String currFile)
             throws IOException, MalformedRequestException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-        try {
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
             out.println("104|" + MeshFS.properties.getProperty("uuid") + "|" + currFile + "\n");
 
-            if (!(response = input.readLine().trim()).equals("201")) {
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
-
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            input.close();
-            out.close();
-            client.close();
         }
     }
 
@@ -260,20 +236,19 @@ final class FileClient {
     static void deleteFile(String serverAddress, int port, String currFile, boolean physical)
             throws IOException, MalformedRequestException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        try {
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println("105|" + MeshFS.properties.getProperty("uuid") + "|" + currFile + "|" + physical + "\n");
-            if (!(response = input.readLine().trim()).equals("201")) {
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            input.close();
-            out.close();
-            client.close();
         }
     }
 
@@ -284,34 +259,29 @@ final class FileClient {
      * @param port          the port of the server to connect to
      * @param directoryPath the location to add the folder to
      * @param directoryName the name of folder
-     * @param userAccount   the name of the user to add the folder for
      * @throws IOException on error connecting
      */
     static void addFolder(
             String serverAddress,
             int port,
             String directoryPath,
-            String directoryName,
-            String userAccount)
+            String directoryName)
             throws IOException, MalformedRequestException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-        try {
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println(
-                    "106|" + MeshFS.properties.getProperty("uuid") + "|" + directoryPath + "|" + directoryName + "|" + userAccount + "\n");
-            if (!(response = input.readLine().trim()).equals("201")) {
+                    "106|" + MeshFS.properties.getProperty("uuid") + "|" + directoryPath + "|" + directoryName + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
-
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            input.close();
-            out.close();
-            client.close();
         }
     }
 
@@ -322,46 +292,19 @@ final class FileClient {
      * @param port          the port of the server to connect to
      * @throws IOException on error connecting or writing to manifest file
      */
+    @SuppressWarnings("unchecked")
     static void receiveReport(String serverAddress, int port) throws IOException, MalformedRequestException {
-        String response;
-        String reportPart;
-        StringBuilder reportFull = new StringBuilder();
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-
-
-        try {
-            out.println("107|" + MeshFS.properties.getProperty("uuid") + "\n");
-
-            if (!(response = input.readLine().trim()).equals("201")) {
-                throw new MalformedRequestException(response);
-            }
-            while (true) {
-                reportPart = input.readLine();
-                if ((reportPart == null) || (reportPart.equals("\n"))) break;
-                reportFull.append(reportPart).append("\n");
-            }
-            reportFull = new StringBuilder(reportFull.toString().trim());
-
-            JSONObject manifest = new JSONObject();
-            if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
-                manifest =
-                        JSONUtils.getJSONObject(
-                                MeshFS.properties.getProperty("repository") + ".manifest.json");
-            }
-            JSONArray reportArray = Reporting.splitter(reportFull.toString());
-
-            manifest.put(reportArray.get(0), reportArray.get(1));
-            JSONUtils.writeJSONObject(
-                    MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            input.close();
-            out.close();
-            client.close();
+        JSONObject manifest = new JSONObject();
+        if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
+            manifest =
+                    JSONUtils.getJSONObject(
+                            MeshFS.properties.getProperty("repository") + ".manifest.json");
         }
+        JSONArray reportArray = receiveReportAsJSON(serverAddress, port);
+
+        manifest.put(reportArray.get(0), reportArray.get(1));
+        JSONUtils.writeJSONObject(
+                MeshFS.properties.getProperty("repository") + ".manifest.json", manifest);
     }
 
     /**
@@ -382,22 +325,23 @@ final class FileClient {
                 PrintWriter out = new PrintWriter(client.getOutputStream(), true)
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println("107|" + MeshFS.properties.getProperty("uuid") + "\n");
 
-            if (!(response = input.readLine().trim()).equals("201")) {
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
+
             while (true) {
                 reportPart = input.readLine();
                 if ((reportPart == null) || (reportPart.equals("\n"))) break;
                 reportFull.append(reportPart).append("\n");
             }
-            reportFull = new StringBuilder(reportFull.toString().trim());
+        }
 
-        } catch (SocketTimeoutException ignored) {}
+        reportFull = new StringBuilder(reportFull.toString().trim());
 
         return Reporting.splitter(reportFull.toString());
-
     }
 
     /**
@@ -409,23 +353,20 @@ final class FileClient {
      */
     static void sendReport(String serverAddress, int port) throws IOException, MalformedRequestException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-        try {
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println("108|" + MeshFS.properties.getProperty("uuid") + "\n");
-            if (!(response = input.readLine().trim()).equals("201")) {
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
 
             out.println(Reporting.generate() + "\n");
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            input.close();
-            out.close();
-            client.close();
         }
     }
 
@@ -438,20 +379,21 @@ final class FileClient {
      * @return latency in milliseconds, -1 if cannot connect
      */
     static int ping(String serverAddress, int port) {
-        try {
-            Socket client = new Socket(serverAddress, port);
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-            PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-            BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
             long initial = Instant.now().toEpochMilli();
+
             out.println("109\n");
 
             if (!(input.readLine().trim()).equals("201")) {
-                client.close();
                 return -1;
             }
 
-            client.close();
             return (int) (Instant.now().toEpochMilli() - initial);
         } catch (IOException ioe) {
             return -1;
@@ -471,113 +413,124 @@ final class FileClient {
             String serverAddress, int port, String jsonObj, String newName)
             throws IOException, MalformedRequestException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-        try {
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println("110|" + MeshFS.properties.getProperty("uuid") + "|" + jsonObj + "|" + newName + "\n");
-            if (!(response = input.readLine().trim()).equals("201")) {
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
-
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            input.close();
-            out.close();
-            client.close();
         }
     }
 
-    static boolean changePassword(
+    static void changePassword(
             String serverAddress, int port, String username, String oldPassword, String newPassword)
-            throws IOException, MalformedRequestException {
+            throws IOException, MalformedRequestException, IncorrectCredentialException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        try {
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println("111|" + MeshFS.properties.getProperty("uuid") + "|" + username + "|" + oldPassword + "|" + newPassword + "\n");
-            response = input.readLine().trim();
-            client.close();
-            if (response.equals("202")) {
-                return false;
-            }
-            if (!(response.equals("201"))) {
+
+
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
-            } else {
-                return true;
+            } else if (response.equals("203")) {
+                throw new IncorrectCredentialException();
             }
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            out.close();
-            input.close();
-            client.close();
         }
-        return false;
     }
 
-    static String loginAsUser(String serverAddress, int port, String username, String password) throws IOException, MalformedRequestException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        String uuid;
-        out.println("113|" + username + "|" + password + "\n");
+    static boolean doesFileExist(String serverAddress, int port, String fileName) throws MalformedRequestException, IOException {
+        String response;
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-        if ((input.readLine().trim()).equals("202")) {
-            client.close();
-            return "-1";
+            out.println("112|" + MeshFS.properties.getProperty("uuid") + "|" + fileName + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            }
+
+            return Boolean.parseBoolean(input.readLine().trim());
         }
-        uuid = input.readLine().trim();
-        client.close();
-        return uuid;
+    }
+
+    static String loginAsUser(String serverAddress, int port, String username, String password) throws IOException, MalformedRequestException, IncorrectCredentialException {
+        String response;
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+            out.println("113|" + username + "|" + password + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            } else if (response.split(";")[0].equals("203")) {
+                throw new IncorrectCredentialException();
+            }
+
+            return input.readLine().trim();
+        }
     }
 
     static void deleteAccount(String serverAddress, int port, String userAccount) throws IOException, MalformedRequestException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        try {
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
             out.println("114|" + MeshFS.properties.getProperty("uuid") + "|" + userAccount + "\n");
-            response = input.readLine().trim();
-            if (!(response.equals("201"))) {
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
-            client.close();
-        } catch (SocketTimeoutException ignored) {
-        } finally {
-            out.close();
-            input.close();
-            client.close();
         }
     }
 
     static JSONObject getUserFiles(String serverAddress, int port, String userAccount, String uuid) throws MalformedRequestException, IOException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("115|" + uuid + "|" + userAccount + "\n");
-        if ((input.readLine().trim()).equals("202")) {
-            client.close();
-            return new JSONObject();
-        }
-        String jsonObj = input.readLine().trim();
+        String response;
+        JSONObject jsonObject = new JSONObject();
 
-        client.close();
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
 
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-        JSONObject jsonObject = null;
-        JSONParser reader = new JSONParser();
+            out.println("115|" + uuid + "|" + userAccount + "\n");
 
-        try {
-            Object obj = reader.parse(jsonObj);
-            jsonObject = (JSONObject) obj;
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            }
+
+            jsonObject = (JSONObject) new JSONParser().parse(input.readLine().trim());
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -586,120 +539,140 @@ final class FileClient {
     }
 
     static String getUserGroups(String serverAddress, int port, String userAccount, String uuid) throws MalformedRequestException, IOException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("116|" + uuid + "|" + userAccount + "\n");
-        if ((input.readLine().trim()).equals("202")) {
-            client.close();
-            return "";
+        String response;
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
+            out.println("116|" + uuid + "|" + userAccount + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            }
+
+            String groups = input.readLine().trim();
+
+            return groups.replace("[", "").replace("]", "");
         }
-        String groups = input.readLine().trim();
-
-        client.close();
-
-        return groups.replace("[", "").replace("]", "");
-
     }
 
     static String getGroups(String serverAddress, int port, String uuid) throws MalformedRequestException, IOException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("117|" + uuid + "\n");
-        if ((input.readLine().trim()).equals("202")) {
-            client.close();
-            return "";
+        String response;
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
+            out.println("117|" + uuid + "\n");
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            }
+
+            String groups = input.readLine().trim();
+
+            return groups.replace("[", "").replace("]", "");
         }
-        String groups = input.readLine().trim();
-
-        client.close();
-
-        return groups.replace("[", "").replace("]", "");
 
     }
 
-    static boolean updateUserGroupMembership(String serverAddress, int port, String userAccount, String newGroups, String uuid) throws MalformedRequestException, IOException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("118|" + uuid + "|" + userAccount + "|" + newGroups + "\n");
-        if ((input.readLine().trim()).equals("201")) {
-            client.close();
-            return true;
+    static void updateUserGroupMembership(String serverAddress, int port, String userAccount, String newGroups, String uuid) throws MalformedRequestException, IOException {
+        String response;
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
+            out.println("118|" + uuid + "|" + userAccount + "|" + newGroups + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            }
         }
-
-        return false;
-
     }
 
     static String getUserType(String serverAddress, int port, String userAccount, String uuid) throws MalformedRequestException, IOException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("119|" + uuid + "|" + userAccount + "\n");
-        if ((input.readLine().trim()).equals("202")) {
-            client.close();
-            return "";
+        String response;
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
+            out.println("119|" + uuid + "|" + userAccount + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            }
+
+            return input.readLine().trim();
         }
-        String userType = input.readLine().trim();
-
-        client.close();
-
-        return userType;
-
     }
 
-    static boolean editPermissions(String serverAddress, int port, String itemLocation, String groups, String add, String edit, String view, String uuid) throws MalformedRequestException, IOException {
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "|" + add + "|" + edit + "|" + view + "\n");
-        if (!(input.readLine().trim()).equals("202")) {
-            //TODO: Malformed request exception here and in other requests
-            client.close();
-            return false;
-        }
+    static void editPermissions(String serverAddress, int port, String itemLocation, String groups, String uuid) throws MalformedRequestException, IOException {
+        String response;
 
-        client.close();
-        return true;
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+
+            out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            }
+        }
     }
 
     static List<String> getNodeIntendedFiles(String serverAddress, int port, String macAddr) throws MalformedRequestException, IOException {
         String response;
-        Socket client = new Socket(serverAddress, port);
-        client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-        BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        out.println("121|" + MeshFS.properties.getProperty("uuid") + "|" + macAddr + "\n");
 
-        if (!(response = input.readLine().trim()).equals("201")) {
-            throw new MalformedRequestException(response);
-        }
-
-        return Arrays.asList(response.substring(1,response.length()-1).split(", "));
-    }
-
-    static boolean doesFileExist(String serverAddress, int port, String fileName) throws MalformedRequestException, IOException {
-        String response;
         try (
-            Socket client = new Socket(serverAddress, port);
-            BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-            out.println("122|" + MeshFS.properties.getProperty("uuid") + "|" + fileName + "\n");
 
-            if (!(response = input.readLine().trim()).equals("201")) {
+            out.println("121|" + MeshFS.properties.getProperty("uuid") + "|" + macAddr + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
 
-            return Boolean.parseBoolean(input.readLine().trim());
+            return Arrays.asList(response.substring(1, response.length() - 1).split(", "));
+        }
+    }
+
+    static void blacklistUser(String serverAddress, int port, String itemLocation, String username, String uuid) throws MalformedRequestException, IOException {
+        String response;
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+            out.println("122|" + uuid + "|" + itemLocation + "|" + username + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
+                throw new MalformedRequestException(response);
+            }
         }
     }
 

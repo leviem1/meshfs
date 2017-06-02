@@ -218,7 +218,7 @@ class NewDirectoryWindow extends JFrame {
                     }
                     try {
                         FileClient.addFolder(
-                                serverAddress, port, newFolderPath, directoryName, userAccount);
+                                serverAddress, port, newFolderPath, directoryName);
                     } catch (IOException ignored) {
 
                     } catch (MalformedRequestException e1) {

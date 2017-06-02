@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Aaron Duran on 5/22/2017.
  */
-public class FileRestore {
+class FileRestore {
 
     private FileRestore(){}
 

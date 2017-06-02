@@ -15,6 +15,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.*;
 import java.util.Timer;
 
@@ -40,6 +45,9 @@ ClientBrowser extends JFrame {
     private JMenuItem renameBtn;
     private JMenuItem removeBtn;
     private JMenuItem propertiesBtn;
+    private JMenuItem sendToDriveBtn;
+    private JMenuItem blacklistUserBtn;
+
 
 
     //GEN-BEGIN:variables
@@ -67,7 +75,6 @@ ClientBrowser extends JFrame {
         if (Reporting.getSystemOS().contains("Windows")) {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
-
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
@@ -103,6 +110,10 @@ ClientBrowser extends JFrame {
         renameBtn = new JMenuItem("Rename...");
         removeBtn = new JMenuItem("Delete...");
         propertiesBtn = new JMenuItem("Properties");
+        sendToDriveBtn = new JMenuItem("Send to My Drive");
+        blacklistUserBtn = new JMenuItem("Hide this File");
+
+
 
         frameListeners();
 
@@ -488,7 +499,62 @@ ClientBrowser extends JFrame {
                 e -> UserAccountOptions.run(clientBrowser, userAccount, serverAddress, port, previousRunType));
 
         tree1.addMouseListener(ma);
+        sendToDriveBtn.addActionListener(
+                e -> {
+                    java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
+                    StringBuilder jsonPath = new StringBuilder();
+                    for (Object item : treeList) {
+                        jsonPath.append(item.toString()).append("/");
+                    }
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                    File tempFile = null;
+                    try {
+                        tempFile = File.createTempFile(node.toString(), "");
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        JSONUtils.pullFile(
+                                jsonPath.toString(),
+                                tempFile.getAbsolutePath(),
+                                tempFile.getAbsolutePath().substring(tempFile.getAbsolutePath().lastIndexOf(File.separator)),
+                                true);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (MalformedRequestException e1) {
+                        e1.printStackTrace();
+                    } catch (PullRequestException e1) {
+                        e1.printStackTrace();
+                    } catch (FileTransferException e1) {
+                        e1.printStackTrace();
+                    }
+                    try {
+                        DriveAPI.uploadFile(tempFile, node.toString(), Files.probeContentType(Paths.get(tempFile.getAbsolutePath())), userAccount);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (GeneralSecurityException e1) {
+                        e1.printStackTrace();
+                    }
+                });
+        blacklistUserBtn.addActionListener(
+                e -> {
+                    java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
+                    StringBuilder jsonPath = new StringBuilder();
+                    for (Object item : treeList) {
+                        jsonPath.append(item.toString()).append("/");
+                    }
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
 
+                    try {
+                        FileClient.blacklistUser(serverAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), JSONUtils.catalogStringFixer(jsonPath.toString()), userAccount, MeshFS.properties.getProperty("uuid"));
+                    } catch (MalformedRequestException e1) {
+                        e1.printStackTrace();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+                });
     }
 
     MouseAdapter ma = new MouseAdapter() {
@@ -505,7 +571,21 @@ ClientBrowser extends JFrame {
             JSONObject contents = JSONUtils.getItemContents(catalogObj, jsonPath.toString());
             String type = contents.get("type").toString();
 
-            if(type.equals("file") ||  type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
+            if(type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
+                rightClickMenu = new JPopupMenu();
+                rightClickMenu.add(renameBtn);
+                rightClickMenu.add(moveBtn);
+                rightClickMenu.add(duplicateBtn);
+                rightClickMenu.add(new JPopupMenu.Separator());
+                rightClickMenu.add(removeBtn);
+                rightClickMenu.add(blacklistUserBtn);
+                rightClickMenu.add(sendToDriveBtn);
+                rightClickMenu.add(new JPopupMenu.Separator());
+                rightClickMenu.add(propertiesBtn);
+                if (path == null) return;
+                tree.setSelectionPath(path);
+                rightClickMenu.show(tree, x, y);
+            } else if(type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
                 rightClickMenu = new JPopupMenu();
                 rightClickMenu.add(renameBtn);
                 rightClickMenu.add(moveBtn);
@@ -526,9 +606,6 @@ ClientBrowser extends JFrame {
             if (e.isPopupTrigger()) myPopupEvent(e);
         }
     };
-
-
-
 
     private void downloadFile(String path) {
         java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());

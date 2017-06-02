@@ -193,10 +193,9 @@ class SharingSettings extends JFrame {
             members.add(groupsList.getModel().getElementAt(i).toString());
         }
         try {
-            FileClient.editPermissions(serverAddress, port, itemPath, members.toString(), "true", "true", "true", MeshFS.properties.getProperty("uuid"));
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            FileClient.editPermissions(serverAddress, port, itemPath, members.toString(), MeshFS.properties.getProperty("uuid"));
+        } catch (MalformedRequestException | IOException e) {
+            //TODO: Some sort of error?
             e.printStackTrace();
         }
         sender.dispose();

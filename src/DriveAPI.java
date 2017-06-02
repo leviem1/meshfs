@@ -48,14 +48,14 @@ class DriveAPI {
         FileUtils.removeFile(System.getProperty("user.home") + java.io.File.separator + ".store/MeshFS/StoredCredential");
     }
 
-    static File uploadFile(java.io.File filePath, String type, String user) throws IOException, GeneralSecurityException {
+    static File uploadFile(java.io.File filePath, String name, String type, String user) throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Credential credential = authorize(JSONFactory, httpTransport, user);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
 
         File fileMetadata = new File();
-        fileMetadata.setTitle(filePath.getName());
+        fileMetadata.setTitle(name);
 
         FileContent mediaContent = new FileContent(type, filePath);
 

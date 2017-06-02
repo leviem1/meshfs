@@ -192,8 +192,11 @@ class JSONUtils {
         } else {
             blacklist.removeAll(userNames);
         }
-
-
+        try {
+            writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

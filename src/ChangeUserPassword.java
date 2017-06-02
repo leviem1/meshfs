@@ -282,12 +282,12 @@ class ChangeUserPassword extends JFrame {
         if (String.valueOf(newPasswordField.getPassword())
                 .equals(String.valueOf(newPasswordFieldConfirm.getPassword()))) {
             try {
-                if (FileClient.changePassword(
+                FileClient.changePassword(
                         serverAddress,
                         port,
                         userAccount,
                         String.valueOf(currPasswordField.getPassword()),
-                        String.valueOf(newPasswordFieldConfirm.getPassword()))) {
+                        String.valueOf(newPasswordFieldConfirm.getPassword()));
                     JOptionPane.showMessageDialog(
                             changeUserPassword,
                             "Password Updated Successfully!",
@@ -296,19 +296,17 @@ class ChangeUserPassword extends JFrame {
                     dispose();
                     sender.dispose();
                     ClientModeConfiguration.run(changeUserPassword, serverAddress, previousRunType);
-                } else {
-                    JOptionPane.showMessageDialog(
-                            changeUserPassword,
-                            "Current Password is Incorrect!",
-                            "MeshFS - Failure",
-                            JOptionPane.ERROR_MESSAGE);
-                    currPasswordField.setText("");
-                    newPasswordField.setText("");
-                    newPasswordFieldConfirm.setText("");
-                }
-            } catch (IOException e) {
+            } catch (IncorrectCredentialException e) {
                 e.printStackTrace();
-            } catch (MalformedRequestException e) {
+                JOptionPane.showMessageDialog(
+                        changeUserPassword,
+                        "Current Password is Incorrect!",
+                        "MeshFS - Failure",
+                        JOptionPane.ERROR_MESSAGE);
+                currPasswordField.setText("");
+                newPasswordField.setText("");
+                newPasswordFieldConfirm.setText("");
+            } catch (IOException | MalformedRequestException e) {
                 e.printStackTrace();
             }
 

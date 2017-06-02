@@ -256,19 +256,15 @@ class ChangeUserGroup extends JFrame {
                     }
                     if (!newGroups.isEmpty()) {
                         try {
-                            if (FileClient.updateUserGroupMembership(serverAddress, port, userAccount, newGroups.toString().replace("[", "").replace("]", ""), MeshFS.properties.getProperty("uuid"))) {
-                                dispose();
-                            } else {
-                                JOptionPane.showMessageDialog(
-                                        changeUserGroup,
-                                        "Error updating groups",
-                                        "MeshFS - Error",
-                                        JOptionPane.ERROR_MESSAGE);
-                            }
-                        } catch (MalformedRequestException e1) {
+                            FileClient.updateUserGroupMembership(serverAddress, port, userAccount, newGroups.toString().replace("[", "").replace("]", ""), MeshFS.properties.getProperty("uuid"));
+                            dispose();
+                        } catch (IOException | MalformedRequestException e1) {
                             e1.printStackTrace();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
+                            JOptionPane.showMessageDialog(
+                                    changeUserGroup,
+                                    "Error updating groups",
+                                    "MeshFS - Error",
+                                    JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 });
@@ -287,6 +283,7 @@ class ChangeUserGroup extends JFrame {
             e.printStackTrace();
         }
 
+        //TODO: Assertions don't work at runtime, need "if" or something if null
         assert myGroups != null;
         java.util.List<String> myGroupsList = Arrays.asList(myGroups.split(", "));
         assert allGroups != null;
