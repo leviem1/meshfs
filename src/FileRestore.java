@@ -195,7 +195,7 @@ class FileRestore {
         return;
     }
 
-    static String findComputerWithFile (String filename){
+    private static String findComputerWithFile (String filename){
         JSONObject manifest = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         for (Object key : manifest.keySet()) {
             JSONObject computer = (JSONObject) manifest.get(key);
@@ -232,21 +232,13 @@ class FileRestore {
 
     private static void corruptFilesInCatalog(List<String> catalogReferences){
         for (String reference : catalogReferences){
-            try {
-                JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")) + " (Corrupted)");
-            } catch (IOException | MalformedRequestException e) {
-                e.printStackTrace();
-            }
+            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")) + " (Corrupted)");
         }
     }
 
-    static void uncorruptFilesInCatalog(List<String> catalogReferences){
+    static void unCorruptFilesInCatalog(List<String> catalogReferences){
         for (String reference : catalogReferences){
-            try {
-                JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/"), reference.lastIndexOf(" ")) + " (Corrupted)");
-            } catch (IOException | MalformedRequestException e) {
-                e.printStackTrace();
-            }
+            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/"), reference.lastIndexOf(" ")) + " (Corrupted)");
         }
     }
 

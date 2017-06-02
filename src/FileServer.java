@@ -267,11 +267,7 @@ class ServerInit implements Runnable {
             throws IOException {
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
             out.println("201");
-            try {
-                JSONUtils.moveItem(currentPath, newPath); //TODO: Someone please explain how this works...
-            } catch (MalformedRequestException e) {
-                e.printStackTrace();
-            }
+            JSONUtils.moveItem(currentPath, newPath); //TODO: Someone please explain how this works...
         }
     }
 
@@ -409,8 +405,6 @@ class ServerInit implements Runnable {
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
             out.println("201");
             JSONUtils.renameItem(jsonPath, newName); //TODO: ...and here...
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
         }
     }
 

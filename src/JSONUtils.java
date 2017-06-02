@@ -230,7 +230,7 @@ class JSONUtils {
      *                            the name of the item in this path)
      * @return updated JSONObject that item was read from
      */
-    static void moveItem(String itemLocation, String destinationLocation) throws IOException, MalformedRequestException {
+    static void moveItem(String itemLocation, String destinationLocation) {
         moveFile(itemLocation, destinationLocation, itemLocation.substring(itemLocation.lastIndexOf("/") + 1), true);
     }
 
@@ -241,7 +241,7 @@ class JSONUtils {
      * @param newName      what the item should be called
      * @return updated JSONObject that item was read from
      */
-    static void renameItem(String itemLocation, String newName) throws IOException, MalformedRequestException {
+    static void renameItem(String itemLocation, String newName) {
         System.out.println(itemLocation);
         System.out.println(newName);
         moveFile(itemLocation, itemLocation.substring(0, itemLocation.lastIndexOf("/")), newName, false);
@@ -707,10 +707,14 @@ class JSONUtils {
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
     }
 
-    private static void moveFile(String itemLocation, String destinationLocation, String newName, boolean updatePermissions) throws IOException, MalformedRequestException {
+    private static void moveFile(String itemLocation, String destinationLocation, String newName, boolean updatePermissions) {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         catalog = copyFile(catalog, itemLocation, destinationLocation, newName, updatePermissions);
-        deleteItem(catalog, itemLocation, false);
+        try {
+            deleteItem(catalog, itemLocation, false);
+        } catch (IOException | MalformedRequestException e) {
+            e.printStackTrace();
+        }
     }
 
     private static List<JSONObject> smartDelete(JSONObject itemToRemove) {

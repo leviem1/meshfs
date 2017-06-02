@@ -99,7 +99,7 @@ class MeshFS {
                                                 try{
                                                     List<String> catalogReferences = FileRestore.findFileReferencesInCatalog(JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog"), fileName.substring(0,fileName.indexOf("_")));
                                                     JSONUtils.pullFile(catalogReferences.get(0), "test", "test.txt", false);
-                                                    FileRestore.uncorruptFilesInCatalog(catalogReferences);
+                                                    FileRestore.unCorruptFilesInCatalog(catalogReferences);
                                                 } catch (PullRequestException | IOException | FileTransferException | MalformedRequestException e) {
                                                     e.printStackTrace();
                                                 }
