@@ -5,7 +5,6 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Arrays;
@@ -17,7 +16,7 @@ import java.util.List;
  * @author Levi Muniz
  * @version 1.0.0
  */
-final class FileClient {
+class FileClient {
 
     private FileClient() {}
 
