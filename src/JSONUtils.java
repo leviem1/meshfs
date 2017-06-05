@@ -525,6 +525,7 @@ class JSONUtils {
      * This method creates the Object for the JTree based on the user's catalog
      *
      * @param userCatalog   The UserCatalog for the user
+     * @param adminFormat   if true, the JTree will be formatted as "root/Users/username". if false, the JTree will be formatted as "root/username"
      * @return              the TreeNode Object for the JTree
      */
     static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog, boolean adminFormat) {
@@ -538,6 +539,7 @@ class JSONUtils {
         }
         return root;
     }
+
 
     static String catalogStringFixer(String itemLocationString) {
         if ((itemLocationString.contains("/")) && ((StringUtils.countMatches(itemLocationString, "/") == 1) || (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users") && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))))) {

@@ -23,6 +23,7 @@ class DISTAL {
      *
      * @param uploadFilePath    the file path of the file that is to be distributed
      * @param filePathInCatalog where the file is to be put in the catalog.
+     * @param username          who uploaded the file
      */
     static void distributor(String uploadFilePath, String filePathInCatalog, String username) throws IOException, MalformedRequestException {
 
