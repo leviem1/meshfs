@@ -20,6 +20,7 @@ class MeshFS {
     static Timer scheduledReportingTimer = new Timer();
     static int activeWindows = 0;
     static boolean isMaster = false;
+    final static int[] numFailedConn = {-1};
     private static Timer manifestTimer = new Timer();
     private static Timer discoveryBroadcastTimer = new Timer();
 
@@ -80,7 +81,6 @@ class MeshFS {
                     }
                 }
 
-                final int[] numFailedConn = {-1};
                 TimerTask scheduledReporting =
                         new TimerTask() {
                             @Override

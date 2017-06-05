@@ -110,7 +110,6 @@ class MulticastServerInit implements Runnable {
         if ((!MeshFS.nogui) && (FileClient.ping(ip, Integer.parseInt(port)) > -1) && !foundMasters.contains(ip)) {
             foundMasters.add(ip);
         } else if (!MeshFS.isMaster && MACAddress.equals(MeshFS.masterMAC) && FileClient.ping(MeshFS.properties.getProperty("masterIP"), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))) == -1 && FileClient.ping(ip, Integer.parseInt(port)) > -1) {
-            System.out.println("Switched");
             MeshFS.properties.setProperty("masterIP", ip);
             MeshFS.properties.setProperty("portNumber", port);
             ConfigParser.write(MeshFS.properties);
@@ -119,7 +118,7 @@ class MulticastServerInit implements Runnable {
 
     private void masterDownRecord(InetAddress address) {
         reportedDown.put(address, Instant.now().toEpochMilli());
-        if (!MeshFS.isMaster && (reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json").size() / 2) && !masterDown) {
+        if (!MeshFS.isMaster && !masterDown && MeshFS.numFailedConn[0] > 3 && (reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json").size() / 2)) {
             System.err.println("Master is offline");
             Thread thread = new Thread(
                     () -> {
