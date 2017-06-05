@@ -9,6 +9,14 @@ import java.util.*;
 import java.util.List;
 import java.util.Timer;
 
+/**
+ * This is the main class of MeshFS and starts all services
+ * for each run mode of MeshFS
+ *
+ * @author Aaron Duran, Mark Hedrick, and Levi Muniz
+ * @version 1.0.0
+ */
+
 class MeshFS {
     static Properties properties;
     static FileServer fileServer;
@@ -18,11 +26,18 @@ class MeshFS {
     static MulticastServer multicastServer;
     static Timer nodePanicTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
-    static int activeWindows = 0;
     static boolean isMaster = false;
     final static int[] numFailedConn = {-1};
+    private static int activeWindows = 0;
     private static Timer manifestTimer = new Timer();
     private static Timer discoveryBroadcastTimer = new Timer();
+
+    /**
+     * This method is responsible for determining the run mode
+     * of the session and starting the respective services.
+     *
+     * @param args Command line arguments
+     */
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) {
@@ -232,6 +247,11 @@ class MeshFS {
         }
     }
 
+    /**
+     * This method starts the required services for the master
+     * run mode
+     */
+
     static void startAsMaster() {
         MeshFS.isMaster = true;
         new File(MeshFS.properties.getProperty("repository") + ".manifest.json").delete();
@@ -306,6 +326,14 @@ class MeshFS {
         manifestTimer.scheduleAtFixedRate(manifestCheck, 0, 1000);
     }
 }
+
+/**
+ * This class is responsible for shutting down the servers started by
+ * certain modes.
+ *
+ * @author Levi Muniz
+ * @version 1.0.0
+ */
 
 class onQuit implements Runnable {
     public void run() {
