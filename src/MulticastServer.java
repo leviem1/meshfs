@@ -124,45 +124,18 @@ class MulticastServerInit implements Runnable {
                     () -> {
                         masterDown = true;
                         recordVotes = true;
-                        LinkedHashMap<String, Integer> speeds = new LinkedHashMap();
-                        LinkedHashMap<String, Integer> sortedSpeeds = new LinkedHashMap();
-                        sortedSpeeds.put("temp", -1);
+                        LinkedHashMap<String, Long> speeds = new LinkedHashMap();
 
                         JSONObject manifestFile = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
 
                         for (Object MACAddress : manifestFile.keySet()) {
                             if (Long.parseLong((((JSONObject) manifestFile.get(MACAddress)).get("FreeSpace")).toString()) > 21474836480L) {
-                                speeds.put((((JSONObject) manifestFile.get(MACAddress)).get("IP")).toString(), FileClient.ping((((JSONObject) manifestFile.get(MACAddress)).get("IP")).toString(), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))));
+                                speeds.put((((JSONObject) manifestFile.get(MACAddress)).get("IP")).toString(), (long) FileClient.ping((((JSONObject) manifestFile.get(MACAddress)).get("IP")).toString(), Integer.parseInt(MeshFS.properties.getProperty("portNumber"))));
                             }
                         }
 
-                        for (String key : speeds.keySet()) {
-                            Integer latency = speeds.get(key);
-                            boolean isBroken = false;
-                            if (latency == -1) {
-                                continue;
-                            }
-                            for (String sortedKey : sortedSpeeds.keySet()) {
-                                if (latency <= sortedSpeeds.get(sortedKey)) {
-                                    LinkedHashMap<String, Integer> reorderStorageMap = (LinkedHashMap<String, Integer>) sortedSpeeds.clone();
-                                    sortedSpeeds.clear();
-                                    for (String reorderKey : reorderStorageMap.keySet()) {
-                                        if (reorderKey.equals(sortedKey)) {
-                                            sortedSpeeds.put(key, latency);
-                                        }
-                                        sortedSpeeds.put(reorderKey, reorderStorageMap.get(reorderKey));
-                                    }
-                                    isBroken = true;
-                                    break;
-                                }
-                            }
+                        LinkedHashMap<String, Long> sortedSpeeds = JSONUtils.sortMapByValue(speeds, true);
 
-                            if (!isBroken) {
-                                sortedSpeeds.put(key, speeds.get(key));
-                            }
-                        }
-
-                        sortedSpeeds.remove("temp");
                         String idealMaster = sortedSpeeds.entrySet().iterator().next().getKey();
 
                         TimerTask voteCaster = new TimerTask() {
@@ -200,45 +173,18 @@ class MulticastServerInit implements Runnable {
                             voteCastScheduler.cancel();
                         }
 
-                        HashMap<String, Integer> voteResults = new HashMap<>();
+                        LinkedHashMap<String, Long> voteResults = new LinkedHashMap<>();
 
                         for (Map.Entry vote : newMasterVotes.entrySet()) {
                             if (voteResults.containsKey(vote.getValue().toString())) {
-                                Integer currValue = voteResults.get(vote.getValue().toString());
+                                Long currValue = voteResults.get(vote.getValue().toString());
                                 voteResults.put(vote.getValue().toString(), ++currValue);
                             } else {
-                                voteResults.put(vote.getValue().toString(), 1);
+                                voteResults.put(vote.getValue().toString(), 1L);
                             }
                         }
 
-                        LinkedHashMap<String, Integer> sortedVoteResults = new LinkedHashMap<>();
-
-                        sortedVoteResults.put("temp", -1);
-
-                        for (String key : voteResults.keySet()) {
-                            Integer storageAmount = voteResults.get(key);
-                            boolean isBroken = false;
-
-                            for (String sortedKey : sortedVoteResults.keySet()) {
-                                if (storageAmount >= sortedVoteResults.get(sortedKey)) {
-                                    LinkedHashMap<String, Integer> reorderStorageMap =
-                                            (LinkedHashMap<String, Integer>) sortedVoteResults.clone();
-                                    sortedVoteResults.clear();
-                                    for (String reorderKey : reorderStorageMap.keySet()) {
-                                        if (reorderKey.equals(sortedKey)) {
-                                            sortedVoteResults.put(key, storageAmount);
-                                        }
-                                        sortedVoteResults.put(reorderKey, reorderStorageMap.get(reorderKey));
-                                    }
-                                    isBroken = true;
-                                    break;
-                                }
-                            }
-
-                            if (!isBroken) {
-                                sortedVoteResults.put(key, voteResults.get(key));
-                            }
-                        }
+                        LinkedHashMap<String, Long> sortedVoteResults = JSONUtils.sortMapByValue(voteResults, false);
 
                         String newMasterIP = sortedVoteResults.entrySet().iterator().next().getKey();
 
