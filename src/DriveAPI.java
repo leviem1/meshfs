@@ -109,9 +109,11 @@ class DriveAPI {
     static JSONObject googleJsonBuilder(String user, JSONObject masterJson, String parentFolderLocation) throws IOException, GeneralSecurityException {
         JSONObject itemToRead = masterJson;
         String[] parentFolders = parentFolderLocation.split("/");
+        System.out.println("test14: " + itemToRead);
         for (String parentFolder : parentFolders) {
             itemToRead = (JSONObject) itemToRead.get(parentFolder);
         }
+        System.out.println("test15: " + itemToRead);
         if (itemToRead.get("generated").toString().equals("false")) {
             String parentId = itemToRead.get("ID").toString();
             List<String> itemTitles = new ArrayList<>();
@@ -131,7 +133,7 @@ class DriveAPI {
                 folderInfo.put("type", "directory");
                 folderInfo.put("ID", folder.getId());
                 folderInfo.put("generated", "false");
-                itemToRead.put(itemName, folderInfo);
+                itemToRead.put(itemName.toString(), folderInfo);
             }
 
             List<File> files = listFiles(parentId, user);
@@ -148,7 +150,7 @@ class DriveAPI {
                 JSONObject folderInfo = new JSONObject();
                 folderInfo.put("type", "file");
                 folderInfo.put("ID", file.getId());
-                itemToRead.put(itemName, folderInfo);
+                itemToRead.put(itemName.toString(), folderInfo);
             }
 
             itemToRead.replace("generated", "true");
