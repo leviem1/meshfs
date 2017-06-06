@@ -51,7 +51,7 @@ class JSONUtils {
      * @param itemLocation the virtual path within the JSONObject
      * @return the JSONObject associated with the designated item
      */
-    static JSONObject getItemContents(JSONObject jsonObject, String itemLocation) {
+    static JSONObject getItemContents(JSONObject jsonObject, String itemLocation){
         itemLocation = catalogStringFixer(itemLocation);
         String[] folders = itemLocation.split("/");
         JSONObject folderToRead = jsonObject;
@@ -59,6 +59,22 @@ class JSONUtils {
             folderToRead = (JSONObject) folderToRead.get(folder);
         }
         return folderToRead;
+    }
+
+    /**
+     * This method returns the ID associated with the designated google file from a JSONObject.
+     *
+     * @param masterJSON    the JSONObject of google drive
+     * @param itemLocation  the virtual path within the google drive JSONObject
+     * @return              the google drive file id
+     */
+    static String getGoogleFileID(JSONObject masterJSON, String itemLocation){
+        String[] folders = itemLocation.split("/");
+        JSONObject folderToRead = masterJSON;
+        for (String folder : folders) {
+            folderToRead = (JSONObject) folderToRead.get(folder);
+        }
+        return folderToRead.get("ID").toString();
     }
 
     /**

@@ -140,16 +140,15 @@ class DriveAPI {
 
             List<File> folders = listFolders(parentId, user);
             for (File folder : folders) {
-
-                String itemName = folder.getTitle();
-                if (itemTitles.contains(itemName)) {
+                StringBuilder itemName = new StringBuilder(folder.getTitle());
+                if (itemTitles.contains(itemName.toString())) {
                     int duplicateCount = 1;
                     while (itemTitles.contains(itemName + " (" + duplicateCount + ")")) {
                         duplicateCount++;
                     }
-                    itemName = itemName + " (" + duplicateCount + ")";
+                    itemName.append(" (").append(duplicateCount).append(")");
                 }
-                itemTitles.add(itemName);
+                itemTitles.add(itemName.toString());
                 JSONObject folderInfo = new JSONObject();
                 folderInfo.put("type", "directory");
                 folderInfo.put("ID", folder.getId());
@@ -159,15 +158,15 @@ class DriveAPI {
 
             List<File> files = listFiles(parentId, user);
             for (File file : files) {
-                String itemName = file.getTitle();
-                if (itemTitles.contains(itemName)) {
+                StringBuilder itemName = new StringBuilder(file.getTitle());
+                if (itemTitles.contains(itemName.toString())) {
                     int duplicateCount = 1;
                     while (itemTitles.contains(itemName + " (" + duplicateCount + ")")) {
                         duplicateCount++;
                     }
-                    itemName = itemName + " (" + duplicateCount + ")";
+                    itemName.append(" (").append(duplicateCount).append(")");
                 }
-                itemTitles.add(itemName);
+                itemTitles.add(itemName.toString());
                 JSONObject folderInfo = new JSONObject();
                 folderInfo.put("type", "file");
                 folderInfo.put("ID", file.getId());
