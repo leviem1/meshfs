@@ -415,7 +415,6 @@ class ServerInit implements Runnable {
     @SuppressWarnings("unchecked")
     private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException {
         ArrayList<UserAccount> accounts;
-        UserAccount accountToRemove;
         String accountType;
         ArrayList<String> accountGroups;
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
@@ -433,9 +432,7 @@ class ServerInit implements Runnable {
                         if (userAccount.getPassword().equals(Crypt.generateEncryptedPass(username, oldPassword))) {
                             accountType = userAccount.getAccountType();
                             accountGroups = userAccount.getGroups();
-                            for (UserAccount account : accounts) {
-                                newAccounts.add(account);
-                            }
+                            newAccounts.addAll(accounts);
                             newAccounts.remove(userAccount);
                             newAccounts.add(new UserAccount(username, Crypt.generateEncryptedPass(username, newPassword), accountType, accountGroups));
                             Crypt.writeAuthFile(newAccounts);
