@@ -98,7 +98,7 @@ class FileRestore {
                 //reference catalog to find number of stripes
                 int numberOfStripes = 0;
                 for (Object key : fileInfo.keySet()){
-                    if (key.toString().contains("_s")){
+                    if (key.toString().contains("_")){
                         numberOfStripes++;
                     }
                 }

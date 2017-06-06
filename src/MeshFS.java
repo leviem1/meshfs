@@ -127,9 +127,10 @@ class MeshFS {
                                         String currentFiles = Reporting.getRepositoryContents();
                                         List<String> filesToRemove = Arrays.asList(currentFiles.substring(1, currentFiles.length() - 1).split(", "));
                                         
-                                        filesToRemove.removeAll(filesToRestore);
 
-                                        if(!filesToRemove.contains("")){
+
+                                        if(!filesToRestore.get(0).equals("")){
+                                            filesToRemove.removeAll(filesToRestore);
                                             for (String file : filesToRemove){
                                                 if(!file.equals(".catalog.json") && !file.equals(".auth") && !file.equals(".manifest.json")){
                                                     System.out.println("removing: '" + file +"'");
@@ -137,8 +138,6 @@ class MeshFS {
                                                 }
 
                                             }
-                                        }
-                                        if (!filesToRestore.get(0).equals("")) {
                                             for (String fileName : filesToRestore) {
                                                 if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()) {
                                                     try {
