@@ -943,6 +943,9 @@ class ServerModeConfiguration extends JFrame {
         removeUserBtn.addActionListener(
                 e -> {
                     int index = userAccountDataList.getSelectedIndex();
+                    if(userAccountDataList.getSelectedValue().toString().contains("admin")){
+                        return;
+                    }
                     if (index > -1) {
                         model.remove(index);
                     }
@@ -977,7 +980,7 @@ class ServerModeConfiguration extends JFrame {
                         });
         userAccountDataList.addListSelectionListener(
                 listSelectionEvent -> {
-                    if (userAccountDataList.isSelectionEmpty()) {
+                    if (userAccountDataList.isSelectionEmpty() || userAccountDataList.getSelectedValue().toString().contains("admin")) {
                         removeUserBtn.setEnabled(false);
                     } else {
                         removeUserBtn.setEnabled(true);

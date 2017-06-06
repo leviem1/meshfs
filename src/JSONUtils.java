@@ -91,6 +91,8 @@ class JSONUtils {
         for (Object key : jsonObject.keySet()) {
             String keyStr = key.toString();
             try {
+                System.out.println("groups: " + ((JSONArray) (((JSONObject) jsonObject.get(keyStr)).get("groups"))));
+                System.out.println("usersgroups: " + user.getGroups());
                 if ((user == null)
                         || (user.getUsername().equals("admin")
                         || ((JSONArray) (((JSONObject) jsonObject.get(keyStr)).get("groups"))).contains("all")
@@ -534,6 +536,8 @@ class JSONUtils {
 
             catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         }
+        System.out.println(catalogBuilder(catalog, user));
+
         return catalogBuilder(catalog, user);
     }
 
@@ -652,7 +656,9 @@ class JSONUtils {
 
     @SuppressWarnings("unchecked")
     private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccount user) {
+        System.out.println(jsonObject + " " + user.getUsername());
         LinkedHashMap<String, String> items = getMapOfFolderContents(jsonObject, user);
+        System.out.println(items);
         JSONObject catalog = new JSONObject();
         for (String item : items.keySet()) {
             if (items.get(item).equals("directory")) {
