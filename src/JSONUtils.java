@@ -113,7 +113,7 @@ class JSONUtils {
      * @param JSONFilePath  the virtual path of the folder in the catalog that the file will be put into
      */
     @SuppressWarnings("unchecked")
-    static void addFileToCatalog(List<List<String>> stripes, String itemDestinationLocation, String fileName, String JSONFilePath, String alphanumericName, String username, long fileSize) throws IOException {
+    static void addFileToCatalog(List<List<String>> stripes, String itemDestinationLocation, String fileName, String JSONFilePath, String alphanumericName, long fileSize) throws IOException {
         itemDestinationLocation = catalogStringFixer(itemDestinationLocation);
         JSONObject catalog = getJSONObject(JSONFilePath);
 
@@ -134,9 +134,6 @@ class JSONUtils {
         }
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy h:mm a");
         String creationDate = df.format(new Date());
-
-        JSONArray userArray = new JSONArray();
-        userArray.add(username);
 
         objChild.put("type", "file");
 
@@ -166,6 +163,8 @@ class JSONUtils {
      * @param fileUsers     the List of user groups that can view the file
      * @param fileAdmins    the List of user groups that can edit the file  (not implemented yet)
      */
+
+    @SuppressWarnings("unchecked")
     static void editPermissions(String itemLocation, List<String> fileUsers, List<String> fileAdmins) throws IOException {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -181,7 +180,7 @@ class JSONUtils {
         JSONArray admins = new JSONArray();
         groups.addAll(fileAdmins);
 
-        item = changePermissions(item, groups, admins, false);
+        changePermissions(item, groups, admins, false);
 
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
     }
@@ -193,6 +192,8 @@ class JSONUtils {
      * @param userNames     the List of user groups that should be added or removed to the viewing blacklist for the item
      * @param add           if true the users are added to the blacklist, if false they are removed from the blacklist
      */
+
+    @SuppressWarnings("unchecked")
     static void blacklistUsers(String itemLocation, List<String> userNames, boolean add) {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -244,7 +245,6 @@ class JSONUtils {
      * @param itemLocation        the source virtual path within the JSONObject
      * @param destinationLocation the destination virtual path within the JSONObject (should not have
      *                            the name of the item in this path)
-     * @return updated JSONObject that item was read from
      */
     static void moveItem(String itemLocation, String destinationLocation) {
         moveFile(itemLocation, destinationLocation, itemLocation.substring(itemLocation.lastIndexOf("/") + 1), true);
@@ -255,7 +255,6 @@ class JSONUtils {
      *
      * @param itemLocation the source virtual path within the JSONObject
      * @param newName      what the item should be called
-     * @return updated JSONObject that item was read from
      */
     static void renameItem(String itemLocation, String newName) {
         System.out.println(itemLocation);
@@ -276,6 +275,7 @@ class JSONUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
     static void createNewFolder(String parentFolderLocation, String folderName) throws IOException {
         parentFolderLocation = catalogStringFixer(parentFolderLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -336,6 +336,7 @@ class JSONUtils {
         return sortMapByValue(storageMap, false);
     }
 
+    @SuppressWarnings("unchecked")
     static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> storageMap, boolean ascending) {
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
@@ -512,6 +513,8 @@ class JSONUtils {
      * @param user  The UserAccount Object of the user
      * @return      the JSONObject of the User's Catalog
      */
+
+    @SuppressWarnings("unchecked")
     static JSONObject buildUserCatalog(UserAccount user) {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONObject users = (JSONObject) ((JSONObject) catalog.get("root")).get("Users");
@@ -651,6 +654,7 @@ class JSONUtils {
         return branch;
     }
 
+    @SuppressWarnings("unchecked")
     private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccount user) {
         LinkedHashMap<String, String> items = getMapOfFolderContents(jsonObject, user);
         JSONObject catalog = new JSONObject();
@@ -782,6 +786,7 @@ class JSONUtils {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
+    @SuppressWarnings("unchecked")
     private static JSONObject changePermissions(JSONObject jsonObject, JSONArray newUserArray, JSONArray newAdminArray, boolean removeBlacklist) {
         jsonObject.put("groups", newUserArray);
         jsonObject.put("admins", newAdminArray);

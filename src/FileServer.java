@@ -385,7 +385,7 @@ class ServerInit implements Runnable {
 
         Thread distributor = new Thread(() -> {
             try {
-                DISTAL.distributor(filenameTrue, "root/Users/" + userAccount, userAccount);
+                DISTAL.distributor(filenameTrue, "root/Users/" + userAccount);
             } catch (IOException | MalformedRequestException e) {
                 e.printStackTrace();
             }

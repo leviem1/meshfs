@@ -64,6 +64,7 @@ class FileRestore {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void restorePartialFile(String alphanumericFileName, String oldComputerMAC){
         JSONObject manifest = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         String manifestString = manifest.toString();
@@ -198,7 +199,6 @@ class FileRestore {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return;
     }
 
     private static String findComputerWithFile (String filename){
