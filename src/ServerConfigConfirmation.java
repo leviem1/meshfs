@@ -220,6 +220,7 @@ class ServerConfigConfirmation extends JFrame {
                                     okButton.setEnabled(false);
                                 } else if (!serverIdentifierField.getText().isEmpty()) {
                                     okButton.setEnabled(true);
+                                    buttonBar.getRootPane().setDefaultButton(okButton);
                                 }
                             }
                         });
