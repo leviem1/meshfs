@@ -34,7 +34,7 @@ class Crypt {
         return new BigInteger(1, messageDigest.digest()).toString(256);
     }
 
-    public static void writeAuthFile(ArrayList<UserAccounts> accountsArrayList) {
+    public static void writeAuthFile(ArrayList<UserAccount> accountsArrayList) {
         try {
             File repo = new File(MeshFS.properties.getProperty("repository"));
             if (!repo.getAbsoluteFile().exists()) {

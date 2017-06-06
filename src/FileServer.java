@@ -410,8 +410,8 @@ class ServerInit implements Runnable {
 
     @SuppressWarnings("unchecked")
     private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException {
-        ArrayList<UserAccounts> accounts;
-        UserAccounts accountToRemove;
+        ArrayList<UserAccount> accounts;
+        UserAccount accountToRemove;
         String accountType;
         ArrayList<String> accountGroups;
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
@@ -423,14 +423,14 @@ class ServerInit implements Runnable {
             accounts = (ArrayList) ois.readObject();
 
             if (auth.exists() && !username.equals("guest")) {
-                for (UserAccounts userAccount : accounts) {
+                for (UserAccount userAccount : accounts) {
                     if (userAccount.getUsername().equals(username)) {
                         if (userAccount.getPassword().equals(Crypt.generateEncryptedPass(username, oldPassword))) {
                             accountToRemove = userAccount;
                             accountType = userAccount.getAccountType();
                             accountGroups = userAccount.getGroups();
                             accounts.remove(accountToRemove);
-                            accounts.add(new UserAccounts(username, Crypt.generateEncryptedPass(username, newPassword), accountType, accountGroups));
+                            accounts.add(new UserAccount(username, Crypt.generateEncryptedPass(username, newPassword), accountType, accountGroups));
                             Crypt.writeAuthFile(accounts);
                             out.println("201");
                         } else {
@@ -453,7 +453,7 @@ class ServerInit implements Runnable {
     @SuppressWarnings("unchecked")
     private void sendAuthInfo(String username, String password, Socket client) throws IOException {
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
-        ArrayList<UserAccounts> accounts;
+        ArrayList<UserAccount> accounts;
 
         try (
                 PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -461,7 +461,7 @@ class ServerInit implements Runnable {
         ) {
             accounts = (ArrayList) ois.readObject();
             if (auth.exists()) {
-                for (UserAccounts userAccount : accounts) {
+                for (UserAccount userAccount : accounts) {
                     String un = userAccount.getUsername();
                     String pw = userAccount.getPassword();
 
@@ -480,8 +480,8 @@ class ServerInit implements Runnable {
 
     @SuppressWarnings("unchecked")
     private void deleteAccount(String username, Socket client) throws IOException {
-        ArrayList<UserAccounts> userAccounts;
-        ArrayList<UserAccounts> toRemove = new ArrayList<>();
+        ArrayList<UserAccount> userAccounts;
+        ArrayList<UserAccount> toRemove = new ArrayList<>();
 
         try (
                 PrintWriter out = new PrintWriter(client.getOutputStream(), true);
@@ -491,7 +491,7 @@ class ServerInit implements Runnable {
         ) {
             userAccounts = (ArrayList) ois.readObject();
 
-            for (UserAccounts userAccount : userAccounts) {
+            for (UserAccount userAccount : userAccounts) {
                 if (!(username.equals("guest") || username.equals("admin"))) {
                     if (userAccount.getUsername().equals(username)) {
                         toRemove.add(userAccount);
@@ -508,13 +508,13 @@ class ServerInit implements Runnable {
 
     @SuppressWarnings("unchecked")
     private void getUserFiles(String userAccount, Socket client) throws IOException {
-        UserAccounts user = null;
-        ArrayList<UserAccounts> accounts;
+        UserAccount user = null;
+        ArrayList<UserAccount> accounts;
         JSONObject userObj;
 
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
-            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        for (UserAccounts account : accounts) {
+            accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+        for (UserAccount account : accounts) {
             if (account.getUsername().equals(userAccount)) {
                 user = account;
             }
@@ -533,12 +533,12 @@ class ServerInit implements Runnable {
 
     @SuppressWarnings("unchecked")
     private void getUserGroups(String userAccount, Socket client) throws IOException {
-        ArrayList<UserAccounts> accounts;
+        ArrayList<UserAccount> accounts;
         ArrayList<String> groups = new ArrayList<>();
 
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
-            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-            for (UserAccounts account : accounts) {
+            accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            for (UserAccount account : accounts) {
                 if (account.getUsername().equals(userAccount)) {
                     groups.addAll(account.getGroups());
                 }
@@ -550,12 +550,12 @@ class ServerInit implements Runnable {
 
     @SuppressWarnings("unchecked")
     private void getGroups(Socket client) throws IOException {
-        ArrayList<UserAccounts> accounts;
+        ArrayList<UserAccount> accounts;
         ArrayList<String> groups = new ArrayList<>();
 
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
-            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-            for (UserAccounts account : accounts) {
+            accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            for (UserAccount account : accounts) {
                 groups.addAll(account.getGroups());
             }
 
@@ -569,13 +569,13 @@ class ServerInit implements Runnable {
         String un = null;
         String pw = null;
         String at = null;
-        ArrayList<UserAccounts> accounts;
+        ArrayList<UserAccount> accounts;
 
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
-            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
             List<String> newGroupsList = Arrays.asList(userGroups.split(", "));
 
-            for (UserAccounts account : accounts) {
+            for (UserAccount account : accounts) {
                 if (account.getUsername().equals(userAccount.toLowerCase())) {
                     un = account.getUsername();
                     pw = account.getPassword();
@@ -585,7 +585,7 @@ class ServerInit implements Runnable {
                 }
             }
 
-            accounts.add(new UserAccounts(un, pw, at, new ArrayList<>(newGroupsList)));
+            accounts.add(new UserAccount(un, pw, at, new ArrayList<>(newGroupsList)));
             Crypt.writeAuthFile(accounts);
 
             out.println("201");
@@ -596,12 +596,12 @@ class ServerInit implements Runnable {
     @SuppressWarnings("unchecked")
     private void getUserType(String userAccount, Socket client) throws IOException {
         String userType = null;
-        ArrayList<UserAccounts> accounts;
+        ArrayList<UserAccount> accounts;
 
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
-            accounts = (ArrayList<UserAccounts>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
 
-            for (UserAccounts account : accounts) {
+            for (UserAccount account : accounts) {
                 if (account.getUsername().equals(userAccount)) {
                     userType = account.getAccountType();
                 }

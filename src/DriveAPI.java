@@ -40,16 +40,16 @@ class DriveAPI {
 
     private DriveAPI() {}
 
-    private static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport, String user) throws IOException {
+    private static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport, String userId) throws IOException {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSONFactory, new InputStreamReader(MeshFS.class.getResourceAsStream(java.io.File.separator + "client_id.json")));
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSONFactory, clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store" + java.io.File.separator + "MeshFS"))).build();
-        return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize(user);
+        return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize(userId);
     }
 
-    static File uploadFile(java.io.File filePath, String name, String type, String parentId, String user) throws IOException, GeneralSecurityException {
+    static File uploadFile(java.io.File filePath, String name, String type, String parentId, String userId) throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        Credential credential = authorize(JSONFactory, httpTransport, user);
+        Credential credential = authorize(JSONFactory, httpTransport, userId);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
 
         File fileMetadata = new File();
@@ -65,7 +65,7 @@ class DriveAPI {
         return insert.execute();
     }
 
-    static void downloadFile(String fileID, String user) throws IOException, GeneralSecurityException {
+    static void downloadFile(String fileID, String userId) throws IOException, GeneralSecurityException {
 
         java.io.File parentDir = new java.io.File(System.getProperty("user.home") + java.io.File.separator + "Downloads" + java.io.File.separator);
         if (!parentDir.exists() && !parentDir.mkdirs()) {
@@ -74,7 +74,7 @@ class DriveAPI {
 
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        Credential credential = authorize(JSONFactory, httpTransport, user);
+        Credential credential = authorize(JSONFactory, httpTransport, userId);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
 
         File uploadedFile = drive.files().get(fileID).execute();
@@ -87,10 +87,10 @@ class DriveAPI {
         downloader.download(new GenericUrl(uploadedFile.getDownloadUrl()), out);
     }
 
-    private static List<File> listFiles(String parentId, String user) throws IOException, GeneralSecurityException {
+    private static List<File> listFiles(String parentId, String userId) throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        Credential credential = authorize(JSONFactory, httpTransport, user);
+        Credential credential = authorize(JSONFactory, httpTransport, userId);
         Drive drive = new Drive.Builder(httpTransport, JSONFactory, credential).setApplicationName("MeshFS-MeshFS/1.0").build();
         List<File> files = new ArrayList<>();
         files.addAll(drive.files().list().setQ("trashed = false and mimeType != 'application/vnd.google-apps.folder' and '" + parentId + "' in parents").execute().getItems());
@@ -127,6 +127,7 @@ class DriveAPI {
         return branch;
     }
 
+    @SuppressWarnings("unchecked")
     static JSONObject googleJsonBuilder(String user, JSONObject masterJson, String parentFolderLocation) throws IOException, GeneralSecurityException {
         JSONObject itemToRead = masterJson;
         String[] parentFolders = parentFolderLocation.split("/");

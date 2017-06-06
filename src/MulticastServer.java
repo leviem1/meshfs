@@ -102,6 +102,11 @@ class MulticastServer {
         }
     }
 
+    /**
+     * This method is used to get the list of currently broadcasting masters
+     *
+     * @return current list of known available masters
+     */
     List<String> getFoundMasters() {
         return MulticastServerInit.foundMasters;
     }

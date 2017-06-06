@@ -70,7 +70,7 @@ class JSONUtils {
      * @return a map of the folder's contents
      */
     @SuppressWarnings("unchecked")
-    static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, UserAccounts user) {
+    static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, UserAccount user) {
         LinkedHashMap<String, String> contents = new LinkedHashMap<>();
         for (Object key : jsonObject.keySet()) {
             String keyStr = key.toString();
@@ -496,7 +496,7 @@ class JSONUtils {
      * @param user  The UserAccount Object of the user
      * @return      the JSONObject of the User's Catalog
      */
-    static JSONObject buildUserCatalog(UserAccounts user) {
+    static JSONObject buildUserCatalog(UserAccount user) {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONObject users = (JSONObject) ((JSONObject) catalog.get("root")).get("Users");
         if (!users.containsKey(user.getUsername())) {
@@ -616,7 +616,7 @@ class JSONUtils {
         return branch;
     }
 
-    private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccounts user) {
+    private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccount user) {
         LinkedHashMap<String, String> items = getMapOfFolderContents(jsonObject, user);
         JSONObject catalog = new JSONObject();
         for (String item : items.keySet()) {
