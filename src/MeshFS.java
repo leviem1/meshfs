@@ -124,20 +124,22 @@ class MeshFS {
                                         }
                                         String currentFiles = Reporting.getRepositoryContents();
                                         List<String> filesToRemove = Arrays.asList(currentFiles.substring(1, currentFiles.length() - 1).split(", "));
+                                        System.out.println(filesToRemove.toString());
 
+                                        System.out.println("test");
+                                        for (String fileName : filesToRestore){
+                                            if (filesToRemove.contains(fileName)){
+                                                filesToRemove.remove(fileName);
+                                            }
+                                        }
+                                        System.out.println(filesToRemove);
+                                        for (String file : filesToRemove){
+                                            if(!file.equals(".catalog.json") && !file.equals(".auth") && !file.equals(".manifest.json")){
+                                                System.out.println("removing: '" + file +"'");
+                                                FileUtils.removeFile(MeshFS.properties.getProperty("repository") + file);
+                                            }
+                                        }
                                         if(!filesToRestore.get(0).equals("")){
-                                            for (String fileName : filesToRestore){
-                                                if (filesToRemove.contains(fileName)){
-                                                    filesToRemove.remove(fileName);
-                                                }
-                                            }
-                                            System.out.println(filesToRemove);
-                                            for (String file : filesToRemove){
-                                                if(!file.equals(".catalog.json") && !file.equals(".auth") && !file.equals(".manifest.json")){
-                                                    System.out.println("removing: '" + file +"'");
-                                                    FileUtils.removeFile(MeshFS.properties.getProperty("repository") + file);
-                                                }
-                                            }
                                             for (String fileName : filesToRestore) {
                                                 if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()) {
                                                     try {

@@ -61,9 +61,9 @@ class DISTAL {
 
         //create a list of computers that can store a whole copy.
         List<String> computersForWholes = new ArrayList<>();
-        int numOfComputersUsed = sortedCompStorageMap.size();
-        while (true) {
 
+        while (true) {
+            int numOfComputersUsed = sortedCompStorageMap.size();
 
             //use stripes only when the number of computers available exceeds the number of requested redundancies
             if (numOfComputersUsed <= numOfStripedCopies + numOfWholeCopies) {
@@ -108,7 +108,7 @@ class DISTAL {
             if (sizeOfStripe != 0L) {
                 List<String> removedIPs = new ArrayList<>();
                 for (String macAddress : sortedCompStorageMap.keySet()) {
-                    if (sortedCompStorageMap.get(macAddress) >= sizeOfStripe) {
+                    if (sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
                         removedIPs.add(macAddress);
                         finalComputerCount = false;
                     }
