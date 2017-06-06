@@ -529,6 +529,7 @@ ClientBrowser extends JFrame {
                     }
                     try {
                         JSONUtils.pullFile(
+                                catalogObj,
                                 jsonPath.toString(),
                                 tempFile.getAbsolutePath(),
                                 tempFile.getAbsolutePath().substring(tempFile.getAbsolutePath().lastIndexOf(File.separator)),
@@ -633,6 +634,7 @@ ClientBrowser extends JFrame {
         jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
         try {
             JSONUtils.pullFile(
+                    catalogObj,
                     jsonPath.toString(),
                     path,
                     path.substring(path.lastIndexOf(File.separator)),

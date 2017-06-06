@@ -107,6 +107,18 @@ class MeshFS {
                                         Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
                                     if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
                                         List<String> filesToRestore = new ArrayList<>();
+                                        numFailedConn[0] = 0;
+                                        try {
+                                            FileClient.sendReport(
+                                                    properties.getProperty("masterIP"),
+                                                    Integer.parseInt(properties.getProperty("portNumber")));
+                                            FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".auth");
+                                            FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest.json");
+                                            FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog.json");
+                                        } catch (IOException | MalformedRequestException | FileTransferException ioe) {
+                                            ioe.printStackTrace();
+                                        }
+
                                         try {
                                             filesToRestore = FileClient.getNodeIntendedFiles(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), Reporting.getMacAddress());
                                         } catch (MalformedRequestException | IOException e) {
@@ -131,7 +143,7 @@ class MeshFS {
                                             if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()){
                                                 try{
                                                     List<String> catalogReferences = FileRestore.findFileReferencesInCatalog(JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog"), fileName.substring(0,fileName.indexOf("_")));
-                                                    JSONUtils.pullFile(catalogReferences.get(0), "test", "test.txt", false);
+                                                    JSONUtils.pullFile(JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json"), catalogReferences.get(0), "test", "test.txt", false);
                                                     FileRestore.unCorruptFilesInCatalog(catalogReferences);
                                                 } catch (PullRequestException | IOException | FileTransferException | MalformedRequestException e) {
                                                     e.printStackTrace();
@@ -139,17 +151,7 @@ class MeshFS {
                                             }
                                         }
                                     }
-                                    numFailedConn[0] = 0;
-                                    try {
-                                        FileClient.sendReport(
-                                                properties.getProperty("masterIP"),
-                                                Integer.parseInt(properties.getProperty("portNumber")));
-                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".auth");
-                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest.json");
-                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog.json");
-                                    } catch (IOException | MalformedRequestException | FileTransferException ioe) {
-                                        ioe.printStackTrace();
-                                    }
+
                                 } else {
                                     numFailedConn[0]++;
 

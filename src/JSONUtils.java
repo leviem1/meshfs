@@ -379,7 +379,7 @@ class JSONUtils {
      * @throws PullRequestException if the full file cannot be combined from all the files in the file system
      * @throws FileTransferException if md5 of sending file did not match received file md5
      */
-    static void pullFile(String itemLocation, String path, String outFile, boolean download) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
+    static void pullFile(JSONObject catalog, String itemLocation, String path, String outFile, boolean download) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
         itemLocation = catalogStringFixer(itemLocation);
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
         File tempManifest = File.createTempFile(".manifest", ".json");
@@ -391,7 +391,7 @@ class JSONUtils {
         List<Thread> childThreads = new ArrayList<>();
         boolean wholeNecessary = true;
 
-        JSONObject fileInfo = getItemContents(getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog"), itemLocation);
+        JSONObject fileInfo = getItemContents(catalog, itemLocation);
         String fileName = fileInfo.get("alphanumericName").toString();
 
         for (Object stripe : fileInfo.keySet()) {
