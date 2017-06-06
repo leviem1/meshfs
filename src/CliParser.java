@@ -125,28 +125,9 @@ class CliParser {
         System.exit(0);
     }
 
-    void addUser(boolean initial) {
-        Scanner input = new Scanner(System.in);
-        if (!initial) {
-            while (true) {
-                System.out.print("Username: ");
-                String username = new Scanner(System.in).nextLine();
-
-                try {
-                    addUser(username, initial);
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                System.out.println("User Added!");
-                System.out.println("Add another user? [y/N]");
-                String response = input.nextLine();
-
-                if (response.isEmpty() || response.toLowerCase().equals("n")) {
-                    break;
-                }
-            }
-        } else {
+    @SuppressWarnings("unchecked")
+    void addUser(String username) throws IOException, ClassNotFoundException {
+        if (username.equals("admin")) {
             System.out.println("Adding administrator account...");
             try {
                 addUser("admin", true);
@@ -157,27 +138,35 @@ class CliParser {
             String response = new Scanner(System.in).nextLine();
             if (response.isEmpty() || response.toLowerCase().equals("y")) {
                 try {
-                    addUser("guest", "guest");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
+                    addUser("guest");
+                } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
-        }
 
-        System.out.println("Do you wish to start the server? [Y/n]");
-        String response = new Scanner(System.in).nextLine();
-        if (!response.isEmpty()) {
-            if (!response.toLowerCase().equals("y")) {
-                System.out.println("Exiting!");
-                System.exit(0);
+            System.out.println("Do you wish to start the server? [Y/n]");
+            response = new Scanner(System.in).nextLine();
+            if (!response.isEmpty()) {
+                if (!response.toLowerCase().equals("y")) {
+                    System.out.println("Exiting!");
+                    System.exit(0);
+                }
             }
+        } else if (username.equals("guest")) {
+            ArrayList<UserAccount> accounts;
+            if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
+                accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+            } else {
+                accounts = new ArrayList<>();
+            }
+
+            accounts.add(new UserAccount(username, Crypt.generateEncryptedPass("guest", "guest"), "user", new ArrayList<>(Collections.singletonList(username))));
+            Crypt.writeAuthFile(accounts);
         }
     }
 
     @SuppressWarnings("unchecked")
-    void addUser(String username, boolean initial) throws IOException, ClassNotFoundException {
+    private void addUser(String username, boolean initial) throws IOException, ClassNotFoundException {
         ArrayList<UserAccount> accounts;
         if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
             accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
@@ -243,19 +232,8 @@ class CliParser {
 
     }
 
-    void addUser(String username, String password) throws IOException, ClassNotFoundException {
-        ArrayList<UserAccount> accounts;
-        if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
-            accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        } else {
-            accounts = new ArrayList<>();
-        }
-
-        accounts.add(new UserAccount(username, Crypt.generateEncryptedPass(username, password), "user", new ArrayList<>(Collections.singletonList(username))));
-        Crypt.writeAuthFile(accounts);
-    }
-
-    void removeUser(String username) throws IOException, ClassNotFoundException {
+    @SuppressWarnings("unchecked")
+    private void removeUser(String username) throws IOException, ClassNotFoundException {
         if (username.equals("admin")) {
             System.out.println("The user 'admin' cannot be deleted!");
             return;
@@ -283,7 +261,7 @@ class CliParser {
         Crypt.writeAuthFile(accounts);
     }
 
-    void updateAccount(String username) throws IOException, ClassNotFoundException {
+    private void updateAccount(String username) throws IOException, ClassNotFoundException {
         if (username.equals("admin")) {
             System.out.println("The password for 'admin' cannot be changed!");
             return;
@@ -298,6 +276,7 @@ class CliParser {
         System.exit(0);
     }
 
+    @SuppressWarnings("unchecked")
     void addGroup(String username) {
         Scanner input = new Scanner(System.in);
         while (true) {
@@ -330,9 +309,7 @@ class CliParser {
                     System.exit(1);
                 }
                 Crypt.writeAuthFile(accounts);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
 
@@ -347,7 +324,8 @@ class CliParser {
         }
     }
 
-    void removeGroup(String username) {
+    @SuppressWarnings("unchecked")
+    private void removeGroup(String username) {
         Scanner input = new Scanner(System.in);
         while (true) {
             System.out.println("Hint: typing 'all' below will result in removing all non-primary user groups");
@@ -422,7 +400,8 @@ class CliParser {
         }
     }
 
-    void listUsers() {
+    @SuppressWarnings("unchecked")
+    private void listUsers() {
         try {
             ArrayList<UserAccount> accounts;
             if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
@@ -442,7 +421,8 @@ class CliParser {
         }
     }
 
-    void listGroups(String username) {
+    @SuppressWarnings("unchecked")
+    private void listGroups(String username) {
         try {
             ArrayList<UserAccount> accounts;
             if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
@@ -465,7 +445,8 @@ class CliParser {
         }
     }
 
-    void getAccountType(String username) {
+    @SuppressWarnings("unchecked")
+    private void getAccountType(String username) {
         try {
             ArrayList<UserAccount> accounts;
             if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
@@ -487,7 +468,8 @@ class CliParser {
         }
     }
 
-    void changeAccountType(String username) {
+    @SuppressWarnings("unchecked")
+    private void changeAccountType(String username) {
         try {
             ArrayList<UserAccount> accounts;
             Scanner input = new Scanner(System.in);
@@ -519,8 +501,8 @@ class CliParser {
         }
     }
 
-
-    void resetAuth() {
+    @SuppressWarnings("unchecked")
+    private void resetAuth() {
         System.out.println("Do you still wish to reset all accounts? NOTE: This will remove all users and groups.");
         System.out.println("Proceed? [y/N]");
         String response = new Scanner(System.in).nextLine();
@@ -530,13 +512,11 @@ class CliParser {
             System.exit(0);
         }
 
-        ArrayList<UserAccount> accounts = null;
+        ArrayList<UserAccount> accounts = new ArrayList<>();
         if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
             try {
                 accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         } else {
@@ -546,21 +526,19 @@ class CliParser {
         new File(MeshFS.properties.getProperty("repo") + ".catalog.json").delete();
         new File(MeshFS.properties.getProperty("repo") + ".manifest.json").delete();
         Crypt.writeAuthFile(accounts);
-        addUser(true);
+        try {
+            addUser("admin");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         System.out.println("Do you wish to enable the guest account? [Y/n]");
         response = new Scanner(System.in).nextLine();
         if (response.isEmpty() || response.toLowerCase().equals("y")) {
             try {
-                addUser("guest", "guest");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+                addUser("guest");
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
-
-
     }
-
-
 }

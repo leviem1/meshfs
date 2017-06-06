@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -11,7 +8,7 @@ import java.util.ArrayList;
  * Created by markhedrick on 5/10/17.
  */
 class Crypt {
-    public static String generateEncryptedPass(String username, String password) {
+    static String generateEncryptedPass(String username, String password) {
         MessageDigest messageDigest = null;
 
         StringBuilder passwordBuilder = new StringBuilder(password);
@@ -34,7 +31,7 @@ class Crypt {
         return new BigInteger(1, messageDigest.digest()).toString(256);
     }
 
-    public static void writeAuthFile(ArrayList<UserAccount> accountsArrayList) {
+    static void writeAuthFile(ArrayList<UserAccount> accountsArrayList) {
         try {
             File repo = new File(MeshFS.properties.getProperty("repository"));
             if (!repo.getAbsoluteFile().exists()) {

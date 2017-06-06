@@ -25,7 +25,7 @@ class DISTAL {
      * @param filePathInCatalog where the file is to be put in the catalog.
      * @param username          who uploaded the file
      */
-    static void distributor(String uploadFilePath, String filePathInCatalog, String username) throws IOException, MalformedRequestException {
+    static void distributor(String uploadFilePath, String filePathInCatalog) throws IOException, MalformedRequestException {
 
         filePathInCatalog = JSONUtils.catalogStringFixer(filePathInCatalog);
 
@@ -169,10 +169,10 @@ class DISTAL {
                 fileName,
                 catalogFileLocation,
                 newName,
-                username,
                 sizeOfFile);
     }
 
+    @SuppressWarnings("unchecked")
     private static String incrementName() throws IOException {
         JSONObject catalog = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         String name = catalog.get("currentName").toString();
@@ -347,10 +347,8 @@ class sendFilesThreading implements Runnable {
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
-                                    } catch (IOException ioe) {
+                                    } catch (IOException | MalformedRequestException ioe) {
                                         ioe.printStackTrace();
-                                    } catch (MalformedRequestException e) {
-                                        e.printStackTrace();
                                     }
                                 });
                 childThreads.add(child);
@@ -378,13 +376,10 @@ class sendFilesThreading implements Runnable {
                                         FileClient.receiveReport(
                                                 (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
                                                 Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
-                                    } catch (IOException ioe) {
+                                    } catch (IOException | MalformedRequestException ioe) {
                                         ioe.printStackTrace();
-                                    } catch (MalformedRequestException e) {
-                                        e.printStackTrace();
                                     }
                                 });
-
                 childThreads.add(child);
             }
         }
