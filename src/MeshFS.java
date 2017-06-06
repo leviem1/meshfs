@@ -73,7 +73,6 @@ class MeshFS {
             }
 
             File repo = new File(properties.getProperty("repository"));
-            System.out.println(repo.exists());
 
             if (!repo.exists() && !(repo.mkdirs())) System.exit(1);
 
