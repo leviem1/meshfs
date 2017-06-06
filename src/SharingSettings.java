@@ -195,7 +195,6 @@ class SharingSettings extends JFrame {
         try {
             FileClient.editPermissions(serverAddress, port, itemPath, members.toString(), MeshFS.properties.getProperty("uuid"));
         } catch (MalformedRequestException | IOException e) {
-            //TODO: Some sort of error?
             e.printStackTrace();
         }
         sender.dispose();
