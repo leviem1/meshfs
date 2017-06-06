@@ -719,7 +719,6 @@ class ServerModeConfiguration extends JFrame {
         minSpaceField.addKeyListener(
                 new KeyAdapter() {
                     public void keyReleased(KeyEvent ke) {
-                        spaceSldr.setValue(0);
                         spaceSldr.setValue(Integer.parseInt(minSpaceField.getText()));
                     }
                 });
