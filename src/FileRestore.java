@@ -169,7 +169,7 @@ class FileRestore {
                             + File.separator
                             + alphanumericFileName);
             FileClient.receiveReport(
-                    (((JSONObject) manifest.get(destinationCompIP)).get("IP")).toString(),
+                    destinationCompIP,
                     portNumber);
         } catch (IOException | MalformedRequestException e) {
             //update to say corrupted
