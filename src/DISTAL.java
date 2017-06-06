@@ -65,17 +65,6 @@ class DISTAL {
         List<String> computersForWholes = new ArrayList<>();
 
         while (true) {
-
-            for (String macAddress : sortedCompStorageMap.keySet()) {
-                if (computersForWholes.size() == numOfWholeCopies) {
-                    break;
-                }
-                if ((!computersForWholes.contains(macAddress)) && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
-                    computersForWholes.add(macAddress);
-                    sortedCompStorageMap.remove(macAddress, sortedCompStorageMap.get(macAddress) - sizeOfFile);
-                }
-            }
-
             int numOfComputersUsed = sortedCompStorageMap.size();
 
             //use stripes only when the number of computers available exceeds the number of requested redundancies
@@ -104,11 +93,21 @@ class DISTAL {
                 sizeOfStripe = 0L;
             }
 
+            for (String macAddress : sortedCompStorageMap.keySet()) {
+                if (computersForWholes.size() == numOfWholeCopies) {
+                    break;
+                }
+                if ((!computersForWholes.contains(macAddress)) && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
+                    computersForWholes.add(macAddress);
+                    sortedCompStorageMap.remove(macAddress);
+                }
+            }
+
             //remove any computer that cannot store a stripe
             boolean finalComputerCount = true;
             if (sizeOfStripe != 0L) {
                 for (String macAddress : sortedCompStorageMap.keySet()) {
-                    if (!computersForWholes.contains(macAddress) && sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
+                    if (sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
                         sortedCompStorageMap.remove(macAddress);
                         finalComputerCount = false;
                     }
