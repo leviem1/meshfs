@@ -283,10 +283,10 @@ class ChangeUserGroup extends JFrame {
             e.printStackTrace();
         }
 
-        //TODO: Assertions don't work at runtime, need "if" or something if null
-        assert myGroups != null;
+        if(myGroups == null || allGroups == null){
+            return;
+        }
         java.util.List<String> myGroupsList = Arrays.asList(myGroups.split(", "));
-        assert allGroups != null;
         java.util.List<String> allGroupsList = new ArrayList<>();
         allGroupsList.addAll(Arrays.asList(allGroups.split(", ")));
         Set<String> allGroupsDistinct = new HashSet<>();
