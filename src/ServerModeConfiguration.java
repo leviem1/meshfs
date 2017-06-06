@@ -10,9 +10,6 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,9 +25,9 @@ class ServerModeConfiguration extends JFrame {
 
     private static JFrame serverModeConfiguration;
     private final DefaultListModel model;
-    private final ArrayList<UserAccounts> accountsEnc;
-    private final ArrayList<UserAccounts> accountsPlain;
-    private ArrayList<UserAccounts> accountsImported;
+    private final ArrayList<UserAccount> accountsEnc;
+    private final ArrayList<UserAccount> accountsPlain;
+    private ArrayList<UserAccount> accountsImported;
     private String out;
 
     //GEN-BEGIN:variables
@@ -1094,7 +1091,7 @@ class ServerModeConfiguration extends JFrame {
                 importedObjects = (ArrayList<Object>) ois.readObject();
                 properties = (Properties) importedObjects.get(0);
 
-                accountsImported = (ArrayList<UserAccounts>) importedObjects.get(1);
+                accountsImported = (ArrayList<UserAccount>) importedObjects.get(1);
                 isMasterBox.setSelected((boolean) importedObjects.get(2));
                 ois.close();
                 fis.close();
@@ -1116,11 +1113,11 @@ class ServerModeConfiguration extends JFrame {
             model.removeAllElements();
             allowGuestBox.setSelected(false);
 
-            for (UserAccounts userAccounts : accountsImported) {
-                String username = userAccounts.getUsername();
-                String password = userAccounts.getPassword();
-                String type = userAccounts.getAccountType();
-                String group = userAccounts.getGroups().toString().replace("[", "").replace("]", "");
+            for (UserAccount userAccount : accountsImported) {
+                String username = userAccount.getUsername();
+                String password = userAccount.getPassword();
+                String type = userAccount.getAccountType();
+                String group = userAccount.getGroups().toString().replace("[", "").replace("]", "");
                 String value = "";
                 if (!(username.equals("guest"))) {
                     value = "<html>Username: " + username + "<br>Password: " + password + "Group: " + group + "<br>Type: " + type + "</html>";
@@ -1252,16 +1249,16 @@ class ServerModeConfiguration extends JFrame {
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
 
             out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>, Group: <i>" + group.toLowerCase() + "</i>, Type: <i>" + type + "<br>";
-            accountsEnc.add(new UserAccounts(user, Crypt.generateEncryptedPass(user, passOrig), type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
-            accountsPlain.add(new UserAccounts(user, passOrig, type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
+            accountsEnc.add(new UserAccount(user, Crypt.generateEncryptedPass(user, passOrig), type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
+            accountsPlain.add(new UserAccount(user, passOrig, type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
         }
         if (out.equals("")) {
             out = "(none)";
         }
         if (allowGuestBox.isSelected()) {
             out += "Username: <i>guest</i>, Password: <i>N/A</i>" + "</i>, Group: <i>none</i>, Type: <i>User" + "<br>";
-            accountsEnc.add(new UserAccounts("guest", Crypt.generateEncryptedPass("guest", "guest"), "user", new ArrayList<>(Collections.singletonList("guest"))));
-            accountsPlain.add(new UserAccounts("guest", "guest", "user", new ArrayList<>(Collections.singletonList("guest"))));
+            accountsEnc.add(new UserAccount("guest", Crypt.generateEncryptedPass("guest", "guest"), "user", new ArrayList<>(Collections.singletonList("guest"))));
+            accountsPlain.add(new UserAccount("guest", "guest", "user", new ArrayList<>(Collections.singletonList("guest"))));
         }
     }
 

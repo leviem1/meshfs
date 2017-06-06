@@ -7,13 +7,26 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /**
- * Created by Levi Muniz on 3/1/17.
+ * The MulticastServer class starts a server on a
+ * group address, port, and with a specific number of threads
+ *
+ * @author Levi Muniz
+ * @version 1.0.0
  */
 
 class MulticastServer {
     private final ArrayList<Thread> sockets = new ArrayList<>();
     private MulticastSocket socket;
     private Timer checkMastersTimer;
+
+    /**
+     * This method is used to start the multicast server.
+     *
+     * @param groupAddress  the address to listen on
+     * @param port          the port number to listen on
+     * @param maxThreads    the amount of sockets
+     * @throws IOException  if a socket cannot be initialized
+     */
 
     void startServer(String groupAddress, int port, int maxThreads) throws IOException {
         InetAddress group = InetAddress.getByName(groupAddress);
@@ -67,6 +80,9 @@ class MulticastServer {
 
     }
 
+    /**
+     * This method is used to halt a server.
+     */
     void stopServer() {
         if (socket.isBound()) {
             for (Thread socket : sockets) {
@@ -86,6 +102,11 @@ class MulticastServer {
         }
     }
 
+    /**
+     * This method is used to get the list of currently broadcasting masters
+     *
+     * @return current list of known available masters
+     */
     List<String> getFoundMasters() {
         return MulticastServerInit.foundMasters;
     }

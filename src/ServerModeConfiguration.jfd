@@ -211,7 +211,7 @@ new FormModel {
 						"$horizontalGroup": "par l {seq l {par l:::p {comp groupManagerBtn::t:p:105:p, par l:t {seq {space :p:238:p, comp textArea1:::p::p}, seq l {space :::p, comp usernameLbl:::p::p, space :::p, comp usernameValueField:::p:194:p}, seq l {space :::p, comp passwordLbl:::p::p, space :::p, comp passwordValueField:::p:198:p}, seq l {space :::p, comp groupLbl:::p:48:p, space :::p, comp groupBox:::p:216:p}}, seq {space :::p, par l {seq {comp accountTypeLbl:::p::p, space :::p, comp accountTypeBox:::::x}, seq {comp allowGuestBox:::p::p, space :::x, comp submitBtn:::p::p}}}}, space :p:12:p, par l {seq l {space :0:0:x, comp removeUserBtn:::p::p}, comp scrollPane2::::326:x}, space :::p}}"
 						"$verticalGroup": "par l {seq l {space :::p, par l {seq l {comp scrollPane2:::p:189:p, space :p:12:p, par b {comp removeUserBtn::b:p::p, comp allowGuestBox::b:p::p, comp submitBtn::b:p::p}}, seq l {par b {comp usernameLbl::b:p::p, comp usernameValueField::b:p::p}, space :::p, par b {comp passwordLbl::b:p::p, comp passwordValueField::b:p::p}, space :::p, par b {comp groupLbl::b:p::p, comp groupBox::b:p:31:p}, space :::p, comp groupManagerBtn:::p:28:p, space :::p, par b {comp accountTypeLbl::b:p:22:p, comp accountTypeBox::b:p:31:p}}}, space :p:55:p, comp textArea1:::p::p, space :0:0:x}}"
 					} ) {
-						name: "userAccounts"
+						name: "userAccount"
 						"background": new java.awt.Color( 229, 229, 229, 255 )
 						add( new FormComponent( "javax.swing.JTextArea" ) {
 							name: "textArea1"
