@@ -272,6 +272,7 @@ class sendFilesThreading implements Runnable {
     private final int stripe;
     private final String outName;
 
+    
     sendFilesThreading(
             long sizeOfStripe,
             long fileSize,

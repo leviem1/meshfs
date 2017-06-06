@@ -540,7 +540,12 @@ class JSONUtils {
         return root;
     }
 
-
+    /**
+     * This method fixes a formatting error in a virtual file path that results from creating the filepath from the JTree.
+     *
+     * @param itemLocationString    the virtual file path string that is to be fixed
+     * @return                      the fixed virtual file path string
+     */
     static String catalogStringFixer(String itemLocationString) {
         if ((itemLocationString.contains("/")) && ((StringUtils.countMatches(itemLocationString, "/") == 1) || (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users") && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))))) {
             itemLocationString = itemLocationString.substring(0, itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/"));
@@ -549,6 +554,13 @@ class JSONUtils {
         return itemLocationString;
     }
 
+    /**
+     * This method finds the total size and last modification date of a folder.
+     *
+     * @param catalog           the JSONObject of the catalog
+     * @param folderLocation    the virtual location of the specified folder
+     * @return                  a pair where the key is the human readable size of the file, and the value is the last modification time of the folder
+     */
     static Pair<String, String> folderProperties(JSONObject catalog, String folderLocation) {
         folderLocation = catalogStringFixer(folderLocation);
         String[] folders = folderLocation.split("/");
