@@ -23,7 +23,6 @@ class DISTAL {
      *
      * @param uploadFilePath    the file path of the file that is to be distributed
      * @param filePathInCatalog where the file is to be put in the catalog.
-     * @param username          who uploaded the file
      */
     static void distributor(String uploadFilePath, String filePathInCatalog) throws IOException, MalformedRequestException {
 
@@ -63,9 +62,9 @@ class DISTAL {
 
         //create a list of computers that can store a whole copy.
         List<String> computersForWholes = new ArrayList<>();
-
+        int numOfComputersUsed = sortedCompStorageMap.size();
         while (true) {
-            int numOfComputersUsed = sortedCompStorageMap.size();
+
 
             //use stripes only when the number of computers available exceeds the number of requested redundancies
             if (numOfComputersUsed <= numOfStripedCopies + numOfWholeCopies) {
@@ -109,7 +108,7 @@ class DISTAL {
             boolean finalComputerCount = true;
             if (sizeOfStripe != 0L) {
                 for (String macAddress : sortedCompStorageMap.keySet()) {
-                    if (sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
+                    if (sortedCompStorageMap.get(macAddress) >= sizeOfStripe) {
                         sortedCompStorageMap.remove(macAddress);
                         finalComputerCount = false;
                     }
