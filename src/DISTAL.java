@@ -99,8 +99,10 @@ class DISTAL {
                 }
                 if ((!computersForWholes.contains(macAddress)) && sortedCompStorageMap.get(macAddress) >= sizeOfFile) {
                     computersForWholes.add(macAddress);
-                    sortedCompStorageMap.remove(macAddress);
                 }
+            }
+            for (String macAddress : computersForWholes) {
+                sortedCompStorageMap.remove(macAddress);
             }
 
             //remove any computer that cannot store a stripe
