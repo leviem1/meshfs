@@ -6,6 +6,7 @@ import java.security.GeneralSecurityException;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 /*
  * Created by JFormDesigner on Fri Jun 02 08:36:58 MDT 2017
@@ -21,19 +22,33 @@ class DownloadFromDrive extends JFrame {
     private static JFrame downloadFromDrive;
     private final String serverAddress;
     private final int port;
+    private JSONObject masterJSON;
+    private JSONObject root;
 
 
     public DownloadFromDrive(String serverAddress, int port) {
         this.serverAddress = serverAddress;
         this.port = port;
+
+        masterJSON = new JSONObject();
+        root = new JSONObject();
+
         initComponents();
         try {
-            tree1.setModel(new DefaultTreeModel(DriveAPI.driveJTreeBuilder("user")));
+            root.put("type", "directory");
+            root.put("ID", "root");
+            root.put("generated", "false");
+            masterJSON.put("root", root);
+
+            masterJSON = DriveAPI.googleJsonBuilder("user", masterJSON, "root");
+            tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
+        frameListeners();
     }
 
     private void initComponents() {
@@ -113,6 +128,30 @@ class DownloadFromDrive extends JFrame {
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
+    }
+
+    private void frameListeners(){
+        tree1.addTreeSelectionListener(
+                e -> {
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
+                    if (node == null) {
+                        return;
+                    }
+                    if (node.equals("root")){
+                        tree1.setSelectionPath(null);
+                    }
+
+                    if(node.getChildAt(0).equals("(loading...)")){
+                        try {
+                            masterJSON = DriveAPI.googleJsonBuilder("user", masterJSON, "root");
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        } catch (GeneralSecurityException e1) {
+                            e1.printStackTrace();
+                        }
+                        tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
+                    }
+                });
     }
 
     public static void run(String serverAddress, int port, JFrame sender) {

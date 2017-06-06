@@ -613,8 +613,15 @@ class JSONUtils {
     private static DefaultMutableTreeNode JTreeBuilderRecursive(JSONObject jsonObject, DefaultMutableTreeNode branch) {
         Map<String, String> folderContents = getMapOfFolderContents(jsonObject, null);
         if (folderContents.keySet().isEmpty()) {
-            DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
-            branch.add(leaf);
+            try{
+               if(folderContents.get("generated").equals("false")){
+                   DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(loading...)");
+                   branch.add(leaf);
+               }
+            }catch(NullPointerException npe){
+                DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(no files)");
+                branch.add(leaf);
+            }
         } else {
             for (String name : folderContents.keySet()) {
                 DefaultMutableTreeNode leaf = new DefaultMutableTreeNode(name);
