@@ -1,3 +1,4 @@
+import com.google.api.services.drive.model.User;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -12,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -1252,8 +1254,24 @@ class ServerModeConfiguration extends JFrame {
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
 
             out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>, Group: <i>" + group.toLowerCase() + "</i>, Type: <i>" + type + "<br>";
-            accountsEnc.add(new UserAccount(user, Crypt.generateEncryptedPass(user, passOrig), type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
-            accountsPlain.add(new UserAccount(user, passOrig, type, new ArrayList<>(Collections.singletonList(group.substring(0, group.lastIndexOf("<br>"))))));
+
+
+            String primaryGroup = group.substring(0, group.lastIndexOf("<br>"));
+
+            if(!primaryGroup.equals("none")){
+                accountsEnc.add(new UserAccount(user, Crypt.generateEncryptedPass(user, passOrig), type, new ArrayList<>(Arrays.asList(user, primaryGroup))));
+                accountsPlain.add(new UserAccount(user, passOrig, type, new ArrayList<>(Arrays.asList(user, primaryGroup))));
+
+            }else{
+                accountsEnc.add(new UserAccount(user, Crypt.generateEncryptedPass(user, passOrig), type, new ArrayList<>(Arrays.asList(user))));
+                accountsPlain.add(new UserAccount(user, passOrig, type, new ArrayList<>(Arrays.asList(user))));
+
+            }
+
+
+
+
+
         }
         if (out.equals("")) {
             out = "(none)";
