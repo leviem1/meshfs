@@ -151,6 +151,13 @@ class MeshFS {
                                                 }
                                             }
                                         }
+                                        try {
+                                            FileClient.sendReport(
+                                                    properties.getProperty("masterIP"),
+                                                    Integer.parseInt(properties.getProperty("portNumber")));
+                                        } catch (IOException | MalformedRequestException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
 
                                 } else {
