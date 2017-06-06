@@ -277,9 +277,8 @@ class FileRestore {
     private static List<String> computerReferenceFinderRecursive(JSONObject folder, String MACAddress){
         List<String> fileNames = new ArrayList<>();
         LinkedHashMap<String, String> folderMap = JSONUtils.getMapOfFolderContents(folder, null);
-        for (String item : folderMap.keySet()){
-
-            if (folder.toString().contains(MACAddress)){
+        if (folder.toString().contains(MACAddress)){
+            for (String item : folderMap.keySet()){
                 if (folderMap.get(item).equals("directory")){
                     fileNames.addAll(computerReferenceFinderRecursive((JSONObject) folder.get(item), MACAddress));
                 } else if (folderMap.get(item).equals("file")){

@@ -138,15 +138,16 @@ class MeshFS {
 
                                             }
                                         }
-
-                                        for (String fileName : filesToRestore){
-                                            if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()){
-                                                try{
-                                                    List<String> catalogReferences = FileRestore.findFileReferencesInCatalog(JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog"), fileName.substring(0,fileName.indexOf("_")));
-                                                    JSONUtils.pullFile(JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json"), catalogReferences.get(0), "test", "test.txt", false);
-                                                    FileRestore.unCorruptFilesInCatalog(catalogReferences);
-                                                } catch (PullRequestException | IOException | FileTransferException | MalformedRequestException e) {
-                                                    e.printStackTrace();
+                                        if (!filesToRestore.get(0).equals("")) {
+                                            for (String fileName : filesToRestore) {
+                                                if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()) {
+                                                    try {
+                                                        List<String> catalogReferences = FileRestore.findFileReferencesInCatalog(JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json"), fileName.substring(0, fileName.indexOf("_")));
+                                                        JSONUtils.pullFile(JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json"), catalogReferences.get(0), "test", "test.txt", false);
+                                                        FileRestore.unCorruptFilesInCatalog(catalogReferences);
+                                                    } catch (PullRequestException | IOException | FileTransferException | MalformedRequestException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
                                             }
                                         }

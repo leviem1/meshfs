@@ -655,7 +655,8 @@ class FileClient {
                 throw new MalformedRequestException(response);
             }
 
-            return Arrays.asList(response.substring(1, response.length() - 1).split(", "));
+            String intendedFileList = input.readLine().trim();
+            return Arrays.asList(intendedFileList.substring(1, intendedFileList.length() - 1).split(", "));
         }
     }
 
