@@ -365,6 +365,7 @@ class JSONUtils {
                 sortedMap.put(key, storageMap.get(key));
             }
         }
+        sortedMap.remove("temp");
         return sortedMap;
     }
 
