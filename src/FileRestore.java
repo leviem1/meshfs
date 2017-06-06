@@ -167,7 +167,7 @@ class FileRestore {
                     portNumber,
                     MeshFS.properties.getProperty("repository")
                             + File.separator
-                            + alphanumericFileName;
+                            + alphanumericFileName);
             FileClient.receiveReport(
                     (((JSONObject) manifest.get(destinationCompIP)).get("IP")).toString(),
                     portNumber);
