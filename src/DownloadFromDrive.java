@@ -1,13 +1,20 @@
+import com.google.api.services.drive.Drive;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.TreeExpansionEvent;
+import javax.swing.event.TreeExpansionListener;
+import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.ExpandVetoException;
+import javax.swing.tree.TreePath;
 /*
  * Created by JFormDesigner on Fri Jun 02 08:36:58 MDT 2017
  */
@@ -24,11 +31,13 @@ class DownloadFromDrive extends JFrame {
     private final int port;
     private JSONObject masterJSON;
     private JSONObject root;
+    private String username;
 
 
-    public DownloadFromDrive(String serverAddress, int port) {
+    public DownloadFromDrive(String serverAddress, int port, String username) {
         this.serverAddress = serverAddress;
         this.port = port;
+        this.username = username;
 
         masterJSON = new JSONObject();
         root = new JSONObject();
@@ -40,7 +49,9 @@ class DownloadFromDrive extends JFrame {
             root.put("generated", "false");
             masterJSON.put("root", root);
 
-            masterJSON = DriveAPI.googleJsonBuilder("user", masterJSON, "root");
+            masterJSON = DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, "root");
+
+            System.out.println(masterJSON);
             tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
 
         } catch (IOException e) {
@@ -60,6 +71,7 @@ class DownloadFromDrive extends JFrame {
         scrollPane1 = new JScrollPane();
         tree1 = new JTree();
         buttonBar = new JPanel();
+        downloadBtn = new JButton();
         okButton = new JButton();
 
         //======== this ========
@@ -102,7 +114,7 @@ class DownloadFromDrive extends JFrame {
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addComponent(titleLbl)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
                             .addContainerGap())
                 );
             }
@@ -112,13 +124,20 @@ class DownloadFromDrive extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+
+                //---- downloadBtn ----
+                downloadBtn.setText("Save to Mesh...");
+                downloadBtn.setFont(new Font("Arial", downloadBtn.getFont().getStyle(), downloadBtn.getFont().getSize() + 1));
+                buttonBar.add(downloadBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
             }
@@ -131,31 +150,79 @@ class DownloadFromDrive extends JFrame {
     }
 
     private void frameListeners(){
-        tree1.addTreeSelectionListener(
-                e -> {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
-                    if (node == null) {
-                        return;
+        TreeWillExpandListener treeWillExpandListener = new TreeWillExpandListener() {
+            @Override
+            public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+
+                if(node.getChildCount() == 1 && node.getChildAt(0).toString().equals("(loading...)")) {
+                    java.util.List<Object> treeList = Arrays.asList(event.getPath().getPath());
+                    StringBuilder treePath = new StringBuilder();
+                    for (Object item : treeList) {
+                        treePath.append(item.toString()).append("/");
                     }
-                    if (node.equals("root")){
-                        tree1.setSelectionPath(null);
+                    treePath = new StringBuilder(treePath.substring(0, treePath.length() - 1));
+                    try {
+                        masterJSON = DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, treePath.toString());
+                    } catch (IOException | GeneralSecurityException e1) {
+                        e1.printStackTrace();
+                    }
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < tree1.getRowCount(); i++){
+                        if (tree1.isExpanded(i)){
+                            sb.append(i).append(",");
+                        }
+                    }
+                    tree1.setSelectionPath(new TreePath(node.getPath()));
+                    sb.append(tree1.getLeadSelectionRow());
+                    tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
+                    String[] indexes = sb.toString().split(",");
+                        for ( String st : indexes ){
+                            int row = Integer.parseInt(st);
+                            tree1.expandRow(row);
+
+                        }
                     }
 
-                    if(node.getChildAt(0).equals("(loading...)")){
-                        try {
-                            masterJSON = DriveAPI.googleJsonBuilder("user", masterJSON, "root");
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        } catch (GeneralSecurityException e1) {
-                            e1.printStackTrace();
-                        }
-                        tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
+                tree1.setSelectionPath(new TreePath(node.getPath()));
+                tree1.scrollPathToVisible(new TreePath(node.getPath()));
+            }
+
+            @Override
+            public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+
+            }
+        };
+        tree1.addTreeWillExpandListener(treeWillExpandListener);
+
+        downloadBtn.addActionListener(
+                e -> {
+                    java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
+                    StringBuilder jsonPath = new StringBuilder();
+                    for (Object item : treeList) {
+                        jsonPath.append(item.toString()).append("/");
                     }
+                    jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
+
+                    try {
+                        File driveFile = DriveAPI.downloadFile(JSONUtils.getGoogleFileID(masterJSON, jsonPath.toString()), MeshFS.userUUID);
+                        FileClient.sendFile(serverAddress, port, driveFile.getAbsolutePath(), username);
+                        driveFile.delete();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    } catch (MalformedRequestException e1) {
+                        e1.printStackTrace();
+                    } catch (GeneralSecurityException e1) {
+                        e1.printStackTrace();
+                    }
+
                 });
+
+
     }
 
-    public static void run(String serverAddress, int port, JFrame sender) {
-        downloadFromDrive = new DownloadFromDrive(serverAddress, port);
+    public static void run(String serverAddress, int port, JFrame sender, String username) {
+        downloadFromDrive = new DownloadFromDrive(serverAddress, port, username);
         CenterWindow.centerOnWindow(sender, downloadFromDrive);
         downloadFromDrive.setVisible(true);
     }
@@ -168,6 +235,7 @@ class DownloadFromDrive extends JFrame {
     private JScrollPane scrollPane1;
     private JTree tree1;
     private JPanel buttonBar;
+    private JButton downloadBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

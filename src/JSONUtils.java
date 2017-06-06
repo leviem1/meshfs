@@ -630,7 +630,7 @@ class JSONUtils {
         Map<String, String> folderContents = getMapOfFolderContents(jsonObject, null);
         if (folderContents.keySet().isEmpty()) {
             try{
-               if(folderContents.get("generated").equals("false")){
+               if(jsonObject.get("generated").toString().equals("false")){
                    DefaultMutableTreeNode leaf = new DefaultMutableTreeNode("(loading...)");
                    branch.add(leaf);
                }

@@ -19,10 +19,7 @@ import com.google.api.services.drive.model.ParentReference;
 import org.json.simple.JSONObject;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,7 +62,7 @@ class DriveAPI {
         return insert.execute();
     }
 
-    static void downloadFile(String fileID, String userId) throws IOException, GeneralSecurityException {
+    static java.io.File downloadFile(String fileID, String userId) throws IOException, GeneralSecurityException {
 
         java.io.File parentDir = new java.io.File(System.getProperty("user.home") + java.io.File.separator + "Downloads" + java.io.File.separator);
         if (!parentDir.exists() && !parentDir.mkdirs()) {
@@ -79,12 +76,14 @@ class DriveAPI {
 
         File uploadedFile = drive.files().get(fileID).execute();
 
-        OutputStream out = new FileOutputStream(new java.io.File(parentDir, uploadedFile.getTitle()));
+        java.io.File outputFile = new java.io.File(parentDir, uploadedFile.getTitle());
+        OutputStream out = new FileOutputStream(outputFile);
 
         MediaHttpDownloader downloader =
                 new MediaHttpDownloader(httpTransport, drive.getRequestFactory().getInitializer());
         downloader.setDirectDownloadEnabled(false);
         downloader.download(new GenericUrl(uploadedFile.getDownloadUrl()), out);
+        return outputFile;
     }
 
     private static List<File> listFiles(String parentId, String userId) throws IOException, GeneralSecurityException {
@@ -105,26 +104,6 @@ class DriveAPI {
         List<File> files = new ArrayList<>();
         files.addAll(drive.files().list().setQ("trashed = false and mimeType = 'application/vnd.google-apps.folder' and '" + parentId + "' in parents").execute().getItems());
         return files;
-    }
-
-    static DefaultMutableTreeNode driveJTreeBuilder(String user) throws IOException, GeneralSecurityException{
-        return driveJTreeBuilderRecursion("root", user, new DefaultMutableTreeNode("root"));
-    }
-
-    private static DefaultMutableTreeNode driveJTreeBuilderRecursion(String parentId, String user, DefaultMutableTreeNode branch) throws IOException, GeneralSecurityException{
-        List<File> folders = listFolders(parentId, user);
-        for (File folder : folders){
-            branch.add(new DefaultMutableTreeNode("(more files)"));
-            //branch.add(driveJTreeBuilderRecursion(folder.getId(), user, new DefaultMutableTreeNode(folder.getTitle())));
-        }
-        List<File> files = listFiles(parentId, user);
-        for (File file : files) {
-            branch.add(new DefaultMutableTreeNode(file.getTitle()));
-        }
-        if (folders.isEmpty() && files.isEmpty()){
-            branch.add(new DefaultMutableTreeNode("(no files)"));
-        }
-        return branch;
     }
 
     @SuppressWarnings("unchecked")

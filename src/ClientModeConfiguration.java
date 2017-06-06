@@ -1,3 +1,4 @@
+import javafx.scene.shape.Mesh;
 import org.json.simple.JSONObject;
 
 import javax.swing.*;
@@ -337,6 +338,8 @@ class ClientModeConfiguration extends JFrame {
         }
         try {
             String uuid = connectAsUser(usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())));
+            MeshFS.userUUID = FileClient.getUserUUID(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())), uuid);
+
             if (uuid.equals("-1")) {
                 JOptionPane.showMessageDialog(
                         clientModeConfiguration, "Login Failure!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
@@ -359,6 +362,8 @@ class ClientModeConfiguration extends JFrame {
             }
         } catch (IOException ignored) {
         } catch (MalformedRequestException e) {
+            e.printStackTrace();
+        } catch (IncorrectCredentialException e) {
             e.printStackTrace();
         }
     }

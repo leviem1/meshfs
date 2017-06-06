@@ -31,6 +31,7 @@ class MeshFS {
     private static int activeWindows = 0;
     private static Timer manifestTimer = new Timer();
     private static Timer discoveryBroadcastTimer = new Timer();
+    static String userUUID = null;
 
     /**
      * This method is responsible for determining the run mode

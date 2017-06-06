@@ -427,6 +427,10 @@ ClientBrowser extends JFrame {
                     }
                     jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
                     try {
+
+                        tree1.collapsePath(tree1.getSelectionPath());
+
+
                         FileClient.deleteFile(serverAddress, port, jsonPath.toString());
                         catalogCheck();
                     } catch (IOException ignored) {
@@ -566,7 +570,7 @@ ClientBrowser extends JFrame {
                 });
         saveFromDriveBtn.addActionListener(
                 e -> {
-                    DownloadFromDrive.run(serverAddress, port, clientBrowser);
+                    DownloadFromDrive.run(serverAddress, port, clientBrowser, userAccount);
                 });
     }
 
@@ -669,7 +673,19 @@ ClientBrowser extends JFrame {
                         }
 
                         if (!localCatalog.equals(latestCatalog) && latestCatalog != null) {
+                            StringBuilder sb = new StringBuilder();
+                            for (int i = 0; i < tree1.getRowCount(); i++){
+                                if (tree1.isExpanded(i)){
+                                    sb.append(i).append(",");
+                                }
+                            }
                             tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder((JSONObject) new JSONParser().parse(latestCatalog), userType)));
+                            String[] indexes = sb.toString().split(",");
+                            for ( String st : indexes ){
+                                int row = Integer.parseInt(st);
+                                tree1.expandRow(row);
+
+                            }
                             try {
                                 catalogObj = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
                             } catch (MalformedRequestException e) {
