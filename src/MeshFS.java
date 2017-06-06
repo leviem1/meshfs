@@ -74,11 +74,8 @@ class MeshFS {
 
             File repo = new File(properties.getProperty("repository"));
             System.out.println(repo.exists());
-            boolean test = false;
-            if (!repo.exists() && !(test = repo.mkdirs())) System.exit(1);
-            System.out.println(test);
 
-            System.out.println("Master:" + isMaster);
+            if (!repo.exists() && !(repo.mkdirs())) System.exit(1);
 
             if (isMaster) {
                 if (((configure && !cliParser.cmd.hasOption("adduser"))) || !new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
