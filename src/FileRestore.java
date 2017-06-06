@@ -86,7 +86,7 @@ class FileRestore {
         String wholeFileName = alphanumericFileName.substring(0,alphanumericFileName.indexOf("_")) + "_w";
         JSONObject fileInfo = JSONUtils.getItemContents(catalog, catalogReferences.get(0));
         int stripeNum = -1;
-        if (alphanumericFileName.contains("-")) {
+        if (alphanumericFileName.contains("_")) {
             stripeNum = Integer.parseInt(alphanumericFileName.substring(alphanumericFileName.indexOf("_") + 2));
         }
         if (pullIP == null && !alphanumericFileName.contains("_w") && manifestString.contains(wholeFileName)){

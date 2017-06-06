@@ -105,19 +105,20 @@ class MeshFS {
                                 if (FileClient.ping(
                                         properties.getProperty("masterIP"),
                                         Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
+                                    try {
+                                        FileClient.sendReport(
+                                                properties.getProperty("masterIP"),
+                                                Integer.parseInt(properties.getProperty("portNumber")));
+                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".auth");
+                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest.json");
+                                        FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog.json");
+                                    } catch (IOException | MalformedRequestException | FileTransferException ioe) {
+                                        ioe.printStackTrace();
+                                    }
                                     if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
                                         List<String> filesToRestore = new ArrayList<>();
                                         numFailedConn[0] = 0;
-                                        try {
-                                            FileClient.sendReport(
-                                                    properties.getProperty("masterIP"),
-                                                    Integer.parseInt(properties.getProperty("portNumber")));
-                                            FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".auth");
-                                            FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest.json");
-                                            FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog.json");
-                                        } catch (IOException | MalformedRequestException | FileTransferException ioe) {
-                                            ioe.printStackTrace();
-                                        }
+
 
                                         try {
                                             filesToRestore = FileClient.getNodeIntendedFiles(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), Reporting.getMacAddress());
