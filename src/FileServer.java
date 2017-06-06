@@ -205,6 +205,10 @@ class ServerInit implements Runnable {
                         blacklistUser(requestParts[2], requestParts[3], out);
 
                         break;
+                    case "123": //123: Get user UUID
+                        getUserUUID(requestParts[2], requestParts[3], out);
+
+                        break;
 
                     default:
                         badRequest(out, request, "Invalid Request");
@@ -267,7 +271,7 @@ class ServerInit implements Runnable {
             throws IOException {
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
             out.println("201");
-            JSONUtils.moveItem(currentPath, newPath); //TODO: Someone please explain how this works...
+            JSONUtils.moveItem(currentPath, newPath);
         }
     }
 
@@ -279,7 +283,7 @@ class ServerInit implements Runnable {
                 FileUtils.removeFile(MeshFS.properties.getProperty("repository") + filePath);
             } else {
                 try {
-                    JSONUtils.deleteItem(filePath, true); //TODO: and this....
+                    JSONUtils.deleteItem(filePath, true);
                 } catch (MalformedRequestException e) {
                     e.printStackTrace();
                 }
@@ -404,7 +408,7 @@ class ServerInit implements Runnable {
             throws IOException {
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
             out.println("201");
-            JSONUtils.renameItem(jsonPath, newName); //TODO: ...and here...
+            JSONUtils.renameItem(jsonPath, newName);
         }
     }
 
@@ -646,6 +650,34 @@ class ServerInit implements Runnable {
 
         out.close();
         dos.close();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getUserUUID(String username, String password, Socket client) throws IOException {
+        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
+        ArrayList<UserAccount> accounts;
+
+        try (
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth))
+        ) {
+            accounts = (ArrayList) ois.readObject();
+            if (auth.exists()) {
+                for (UserAccount userAccount : accounts) {
+                    String un = userAccount.getUsername();
+                    String pw = userAccount.getPassword();
+
+                    if (username.toLowerCase().trim().equals(un) && password.trim().equals(pw)) {
+                        out.println("201");
+                        out.println(userAccount.getUUID() + "\n");
+                        return;
+                    }
+                }
+                out.println("203");
+            } else {
+                out.println("203");
+            }
+        } catch (ClassNotFoundException ignored) {}
     }
 
 

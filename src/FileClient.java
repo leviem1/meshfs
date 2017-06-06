@@ -4,6 +4,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -675,4 +676,24 @@ class FileClient {
         }
     }
 
+    static String getUserUUID(String serverAddress, int port, String username, String passwordHash, String uuid) throws IOException, MalformedRequestException, IncorrectCredentialException {
+        String response;
+
+        try (
+                Socket client = new Socket(serverAddress, port);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                PrintWriter out = new PrintWriter(client.getOutputStream(), true)
+        ) {
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
+            out.println("123|" + uuid + "|" + username + "|" + passwordHash + "\n");
+
+            if ((response = input.readLine().trim()).split(";")[0].equals("203")) {
+                throw new IncorrectCredentialException();
+            } else if (response.equals("202")) {
+                throw new MalformedURLException(response);
+            }
+
+            return input.readLine().trim();
+        }
+    }
 }
