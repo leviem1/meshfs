@@ -244,7 +244,7 @@ class FileRestore {
 
     private static void corruptFilesInCatalog(List<String> catalogReferences){
         for (String reference : catalogReferences){
-            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")) + " (Corrupted)");
+            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")+1) + " (corrupted)");
         }
     }
 
@@ -255,7 +255,7 @@ class FileRestore {
      */
     static void unCorruptFilesInCatalog(List<String> catalogReferences){
         for (String reference : catalogReferences){
-            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/"), reference.lastIndexOf(" ")) + " (Corrupted)");
+            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")+1, reference.lastIndexOf(" (corrupted)")));
         }
     }
 

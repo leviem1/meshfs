@@ -651,7 +651,7 @@ ClientBrowser extends JFrame {
             try {
                 java.util.List<String> locationsToCorrupt = FileRestore.findFileReferencesInCatalog(catalogObj, JSONUtils.getItemContents(catalogObj, jsonPath.toString()).get("alphanumericName").toString());
                 for (String location: locationsToCorrupt){
-                    FileClient.renameFile(serverAddress, port, location, location.substring(location.lastIndexOf("/")) + " (Corrupted)");
+                    FileClient.renameFile(serverAddress, port, location, location.substring(location.lastIndexOf("/")) + " (corrupted)");
                 }
             } catch (IOException | MalformedRequestException e1) {
                 e1.printStackTrace();
