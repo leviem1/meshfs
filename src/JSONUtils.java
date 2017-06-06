@@ -732,7 +732,11 @@ class JSONUtils {
                     for (Object infoKey : file.keySet()) {
                         if (infoKey.toString().contains("_")) {
                             for (Object MACAddress : (JSONArray) file.get(infoKey)) {
-                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), file.get("alphanumericName").toString() + infoKey.toString().substring(infoKey.toString().indexOf("_")), true);
+                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), file.get("alphanumericName").toString() + "s" + infoKey.toString().substring(infoKey.toString().indexOf("_")), true);
+                            }
+                        } else if (infoKey.toString().equals("whole")){
+                            for (Object MACAddress : (JSONArray) file.get(infoKey)) {
+                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), file.get("alphanumericName").toString() + "w", true);
                             }
                         }
                     }
