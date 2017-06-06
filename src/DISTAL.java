@@ -51,7 +51,6 @@ class DISTAL {
 
         //create a map of the amount of available storage on each computer
         LinkedHashMap<String, Long> sortedCompStorageMap = JSONUtils.createStorageMap(manifestFile);
-        System.out.println(sortedCompStorageMap);
 
         //don't use stripes if a file is less than 4096 byte
         if (sizeOfFile <= 4096L) {
@@ -107,11 +106,15 @@ class DISTAL {
             //remove any computer that cannot store a stripe
             boolean finalComputerCount = true;
             if (sizeOfStripe != 0L) {
+                List<String> removedIPs = new ArrayList<>();
                 for (String macAddress : sortedCompStorageMap.keySet()) {
                     if (sortedCompStorageMap.get(macAddress) >= sizeOfStripe) {
-                        sortedCompStorageMap.remove(macAddress);
+                        removedIPs.add(macAddress);
                         finalComputerCount = false;
                     }
+                }
+                for (String IP : removedIPs) {
+                    sortedCompStorageMap.remove(IP);
                 }
             }
 

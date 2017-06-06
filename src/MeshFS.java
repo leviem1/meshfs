@@ -131,13 +131,12 @@ class MeshFS {
                                                     filesToRemove.remove(fileName);
                                                 }
                                             }
-
+                                            System.out.println(filesToRemove);
                                             for (String file : filesToRemove){
                                                 if(!file.equals(".catalog.json") && !file.equals(".auth") && !file.equals(".manifest.json")){
                                                     System.out.println("removing: '" + file +"'");
                                                     FileUtils.removeFile(MeshFS.properties.getProperty("repository") + file);
                                                 }
-
                                             }
                                             for (String fileName : filesToRestore) {
                                                 if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()) {
