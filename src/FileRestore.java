@@ -77,7 +77,7 @@ class FileRestore {
             //find and pull the stripe
             pullIP = findComputerWithFile(alphanumericFileName);
             try {
-                FileClient.receiveFile(pullIP,portNumber, alphanumericFileName, MeshFS.properties.getProperty("repository") + alphanumericFileName);
+                FileClient.receiveFile(pullIP, portNumber, alphanumericFileName, MeshFS.properties.getProperty("repository") + alphanumericFileName);
             } catch (IOException | MalformedRequestException | FileTransferException e) {
                 pullIP = null;
             }
@@ -86,22 +86,33 @@ class FileRestore {
         String wholeFileName = alphanumericFileName.substring(0,alphanumericFileName.indexOf("_")) + "_w";
         JSONObject fileInfo = JSONUtils.getItemContents(catalog, catalogReferences.get(0));
         int stripeNum = -1;
-        if (alphanumericFileName.contains("_")) {
+        if (alphanumericFileName.contains("_s")) {
             stripeNum = Integer.parseInt(alphanumericFileName.substring(alphanumericFileName.indexOf("_") + 2));
         }
-        if (pullIP == null && !alphanumericFileName.contains("_w") && manifestString.contains(wholeFileName)){
+
+        //reference catalog to find number of stripes
+        int numberOfStripes = 0;
+        for (Object key : fileInfo.keySet()){
+            if (key.toString().contains("_")){
+                numberOfStripes++;
+            }
+        }
+        if (pullIP == null && stripeNum == -1){
+            try {
+                JSONUtils.pullFile(catalog, catalogReferences.get(0), MeshFS.properties.getProperty("repository"), alphanumericFileName, true);
+                pullIP = "success";
+            } catch (IOException | MalformedRequestException | PullRequestException | FileTransferException ignored) {}
+        }
+
+
+        if (pullIP == null && stripeNum != -1 && manifestString.contains(wholeFileName)){
             //find, pull, and split a whole
             pullIP = findComputerWithFile(wholeFileName);
             try {
                 FileClient.receiveFile(pullIP,portNumber, wholeFileName, MeshFS.properties.getProperty("repository") + wholeFileName);
 
-                //reference catalog to find number of stripes
-                int numberOfStripes = 0;
-                for (Object key : fileInfo.keySet()){
-                    if (key.toString().contains("_")){
-                        numberOfStripes++;
-                    }
-                }
+
+
                 long fileSize = Long.parseLong(fileInfo.get("fileSize").toString());
                 long sizeOfStripe = ((fileSize / (numberOfStripes)) + 1);
                 //write stripe
@@ -137,7 +148,7 @@ class FileRestore {
         
         //determine where the file needs to be sent
         
-        LinkedHashMap<String,Long> storageMap = JSONUtils.createStorageMap(manifest);
+        LinkedHashMap<String, Long> storageMap = JSONUtils.createStorageMap(manifest);
         for (Object key : fileInfo.keySet()){
             if (key.toString().equals("whole") || key.toString().contains("stripe_")){
                 JSONArray stripeLocations = (JSONArray) fileInfo.get(key);
