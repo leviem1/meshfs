@@ -293,9 +293,9 @@ class ChangeUserPassword extends JFrame {
                             "Password Updated Successfully!",
                             "MeshFS - Success",
                             JOptionPane.INFORMATION_MESSAGE);
+                    ClientModeConfiguration.run(changeUserPassword, serverAddress, previousRunType);
                     dispose();
                     sender.dispose();
-                    ClientModeConfiguration.run(changeUserPassword, serverAddress, previousRunType);
             } catch (IncorrectCredentialException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(

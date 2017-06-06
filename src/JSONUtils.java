@@ -222,9 +222,7 @@ class JSONUtils {
      */
     static void duplicateItem(String itemLocation) throws IOException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
-        System.out.println(catalog);
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", copyFile(catalog, itemLocation, itemLocation.substring(0, itemLocation.lastIndexOf("/")), null, true));
-        System.out.println(getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json"));
     }
 
     /**
@@ -258,8 +256,6 @@ class JSONUtils {
      * @return updated JSONObject that item was read from
      */
     static void renameItem(String itemLocation, String newName) {
-        System.out.println(itemLocation);
-        System.out.println(newName);
         moveFile(itemLocation, itemLocation.substring(0, itemLocation.lastIndexOf("/")), newName, false);
     }
 
@@ -582,7 +578,6 @@ class JSONUtils {
         String[] folders = folderLocation.split("/");
         JSONObject item = catalog;
         for (String folder : folders) {
-            System.out.println("folder: " + folder);
             item = (JSONObject) item.get(folder);
         }
 

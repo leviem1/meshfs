@@ -425,17 +425,20 @@ class ServerInit implements Runnable {
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth))
         ) {
             accounts = (ArrayList) ois.readObject();
+            ArrayList<UserAccount> newAccounts = new ArrayList<>(accounts.size());
 
             if (auth.exists() && !username.equals("guest")) {
                 for (UserAccount userAccount : accounts) {
                     if (userAccount.getUsername().equals(username)) {
                         if (userAccount.getPassword().equals(Crypt.generateEncryptedPass(username, oldPassword))) {
-                            accountToRemove = userAccount;
                             accountType = userAccount.getAccountType();
                             accountGroups = userAccount.getGroups();
-                            accounts.remove(accountToRemove);
-                            accounts.add(new UserAccount(username, Crypt.generateEncryptedPass(username, newPassword), accountType, accountGroups));
-                            Crypt.writeAuthFile(accounts);
+                            for (UserAccount account : accounts) {
+                                newAccounts.add(account);
+                            }
+                            newAccounts.remove(userAccount);
+                            newAccounts.add(new UserAccount(username, Crypt.generateEncryptedPass(username, newPassword), accountType, accountGroups));
+                            Crypt.writeAuthFile(newAccounts);
                             out.println("201");
                         } else {
                             out.println("203");
@@ -487,9 +490,11 @@ class ServerInit implements Runnable {
         ArrayList<UserAccount> userAccounts;
         ArrayList<UserAccount> toRemove = new ArrayList<>();
 
+        File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
+
         try (
                 PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(MeshFS.properties.getProperty("repository") + ".auth"));
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth));
                 FileOutputStream fos = new FileOutputStream(MeshFS.properties.getProperty("repository") + ".auth");
                 ObjectOutputStream oos = new ObjectOutputStream(fos)
         ) {
@@ -662,6 +667,7 @@ class ServerInit implements Runnable {
                 ObjectInputStream ois = new ObjectInputStream(new FileInputStream(auth))
         ) {
             accounts = (ArrayList) ois.readObject();
+
             if (auth.exists()) {
                 for (UserAccount userAccount : accounts) {
                     String un = userAccount.getUsername();
