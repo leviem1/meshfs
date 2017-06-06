@@ -298,7 +298,7 @@ class FileRestore {
                             if (key.toString().equals("whole")){
                                 fileNames.add(((JSONObject) folder.get(item)).get("alphanumericName").toString() + "_w");
                             } else {
-                                fileNames.add(((JSONObject) folder.get(item)).get("alphanumericName").toString() + "_" + key.toString().substring(key.toString().indexOf("_") + 1));
+                                fileNames.add(((JSONObject) folder.get(item)).get("alphanumericName").toString() + "_s" + key.toString().substring(key.toString().indexOf("_s") + 1));
                             }
                         }
                     }

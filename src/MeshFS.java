@@ -106,9 +106,6 @@ class MeshFS {
                                         properties.getProperty("masterIP"),
                                         Integer.parseInt(properties.getProperty("portNumber"))) > -1) {
                                     try {
-                                        FileClient.sendReport(
-                                                properties.getProperty("masterIP"),
-                                                Integer.parseInt(properties.getProperty("portNumber")));
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".auth");
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".manifest.json");
                                         FileClient.receiveFile(properties.getProperty("masterIP"), Integer.parseInt(properties.getProperty("portNumber")), ".catalog.json");
@@ -127,11 +124,14 @@ class MeshFS {
                                         }
                                         String currentFiles = Reporting.getRepositoryContents();
                                         List<String> filesToRemove = Arrays.asList(currentFiles.substring(1, currentFiles.length() - 1).split(", "));
-                                        
-
 
                                         if(!filesToRestore.get(0).equals("")){
-                                            filesToRemove.removeAll(filesToRestore);
+                                            for (String fileName : filesToRestore){
+                                                if (filesToRemove.contains(fileName)){
+                                                    filesToRemove.remove(fileName);
+                                                }
+                                            }
+
                                             for (String file : filesToRemove){
                                                 if(!file.equals(".catalog.json") && !file.equals(".auth") && !file.equals(".manifest.json")){
                                                     System.out.println("removing: '" + file +"'");
@@ -151,13 +151,14 @@ class MeshFS {
                                                 }
                                             }
                                         }
-                                        try {
-                                            FileClient.sendReport(
-                                                    properties.getProperty("masterIP"),
-                                                    Integer.parseInt(properties.getProperty("portNumber")));
-                                        } catch (IOException | MalformedRequestException e) {
-                                            e.printStackTrace();
-                                        }
+
+                                    }
+                                    try {
+                                        FileClient.sendReport(
+                                                properties.getProperty("masterIP"),
+                                                Integer.parseInt(properties.getProperty("portNumber")));
+                                    } catch (IOException | MalformedRequestException e) {
+                                        e.printStackTrace();
                                     }
 
                                 } else {
