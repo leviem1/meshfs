@@ -313,18 +313,9 @@ class ClientModeConfiguration extends JFrame {
             return;
         }
         try {
-            String uuid = connectAsUser(usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())));
+            connectAsUser(usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())));
             MeshFS.userUUID = FileClient.getUserUUID(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())));
 
-            if (uuid.equals("-1")) {
-                JOptionPane.showMessageDialog(
-                        clientModeConfiguration, "Login Failure!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
-                usernameField.requestFocus();
-                usernameField.setText("");
-                passwordField.setText("");
-                usernameField.setEnabled(true);
-                passwordField.setEnabled(true);
-            }
             if (!(usernameField.getText().isEmpty())) {
                 JSONObject userFiles = FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText());
                 ClientBrowser.run(
@@ -360,7 +351,7 @@ class ClientModeConfiguration extends JFrame {
 
     }
 
-    private String connectAsUser(String username, String password) {
+    private void connectAsUser(String username, String password) {
         try {
             String uuid = FileClient.loginAsUser(
                     serverAddressField.getSelectedItem().toString(),
@@ -369,11 +360,18 @@ class ClientModeConfiguration extends JFrame {
                     password);
             MeshFS.properties.setProperty("uuid", uuid);
             //Crypt.generateEncryptedAuth(username, password));
-            return uuid;
-        } catch (IOException | MalformedRequestException | IncorrectCredentialException e) {
+        } catch (IOException | MalformedRequestException e) {
             e.printStackTrace();
+        } catch (IncorrectCredentialException ice) {
+            JOptionPane.showMessageDialog(
+                    clientModeConfiguration, "Login Failure!", "MeshFS - Error", JOptionPane.ERROR_MESSAGE);
+            usernameField.requestFocus();
+            usernameField.setText("");
+            passwordField.setText("");
+            usernameField.setEnabled(true);
+            passwordField.setEnabled(true);
+
         }
-        return "-1";
     }
 
     /**

@@ -218,6 +218,7 @@ class DownloadFromDrive extends JFrame {
                                 JOptionPane.INFORMATION_MESSAGE);
                         driveFile.delete();
                         dispose();
+                        return;
                     } catch (IOException | GeneralSecurityException | MalformedRequestException e1) {
                         e1.printStackTrace();
                     }
