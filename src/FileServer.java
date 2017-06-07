@@ -15,6 +15,7 @@ import java.util.List;
  * @author Levi Muniz
  * @version 1.0.0
  */
+
 class FileServer {
 
     private final ArrayList<Thread> sockets = new ArrayList<>();
@@ -102,11 +103,6 @@ class ServerInit implements Runnable {
         if (request != null) {
             try {
                 String[] requestParts = request.trim().split("\\|");
-
-                /*for(String x : requestParts){
-                    System.out.println(x);
-                }*/
-
 
                 //format requests in form of #, uuid, parameters
                 if (!(requestParts[0].equals("109") || requestParts[0].equals("113")) && (!requestParts[1].equals(MeshFS.properties.getProperty("uuid")))) {
@@ -313,7 +309,8 @@ class ServerInit implements Runnable {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (NoSuchAlgorithmException ignored) {}
+        } catch (NoSuchAlgorithmException ignored) {
+        }
     }
 
     private void receiveFile(String filename, String md5, Socket client) throws IOException, FileTransferException {
@@ -335,7 +332,8 @@ class ServerInit implements Runnable {
             if (!md5.equals(FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename))) {
                 throw new FileTransferException();
             }
-        } catch (NoSuchAlgorithmException ignored) {}
+        } catch (NoSuchAlgorithmException ignored) {
+        }
     }
 
     private void receiveFile(String filename, String md5, String userAccount, Socket client)
@@ -368,30 +366,31 @@ class ServerInit implements Runnable {
                 fos = new FileOutputStream(filename);
             }
 
-        final String filenameTrue = filename;
+            final String filenameTrue = filename;
 
-        JSONUtils.addTempFile("root/Users/" + userAccount, filenameTrue + " (uploading)", userAccount);
+            JSONUtils.addTempFile("root/Users/" + userAccount, filenameTrue + " (uploading)", userAccount);
 
-        while ((br = dis.read(data, 0, data.length)) != -1) {
-            fos.write(data, 0, br);
-            fos.flush();
-        }
+            while ((br = dis.read(data, 0, data.length)) != -1) {
+                fos.write(data, 0, br);
+                fos.flush();
+            }
 
-        fos.close();
+            fos.close();
 
             if (!md5.equals(FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename))) {
                 throw new FileTransferException();
             }
 
-        Thread distributor = new Thread(() -> {
-            try {
-                DISTAL.distributor(filenameTrue, "root/Users/" + userAccount);
-            } catch (IOException | MalformedRequestException e) {
-                e.printStackTrace();
-            }
-        });
-        distributor.start();
-        } catch (NoSuchAlgorithmException ignored) {}
+            Thread distributor = new Thread(() -> {
+                try {
+                    DISTAL.distributor(filenameTrue, "root/Users/" + userAccount);
+                } catch (IOException | MalformedRequestException e) {
+                    e.printStackTrace();
+                }
+            });
+            distributor.start();
+        } catch (NoSuchAlgorithmException ignored) {
+        }
 
     }
 
@@ -443,7 +442,8 @@ class ServerInit implements Runnable {
                     }
                 }
             }
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     private void doesFileExist(String fileName, Socket client) throws IOException {
@@ -479,7 +479,8 @@ class ServerInit implements Runnable {
             } else {
                 out.println("203");
             }
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -509,7 +510,8 @@ class ServerInit implements Runnable {
             oos.writeObject(userAccounts);
             oos.flush();
             out.println("201");
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -520,21 +522,22 @@ class ServerInit implements Runnable {
 
         try (PrintWriter out = new PrintWriter(client.getOutputStream(), true)) {
             accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-        for (UserAccount account : accounts) {
-            if (account.getUsername().equals(userAccount)) {
-                user = account;
+            for (UserAccount account : accounts) {
+                if (account.getUsername().equals(userAccount)) {
+                    user = account;
+                }
             }
-        }
 
-        if (user != null) {
-            userObj = JSONUtils.buildUserCatalog(user);
-        } else {
-            userObj = new JSONObject();
-        }
+            if (user != null) {
+                userObj = JSONUtils.buildUserCatalog(user);
+            } else {
+                userObj = new JSONObject();
+            }
 
             out.println("201");
             out.println(userObj.toString() + "\n");
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -551,7 +554,8 @@ class ServerInit implements Runnable {
             }
             out.println("201");
             out.println(groups.toString() + "\n");
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -567,7 +571,8 @@ class ServerInit implements Runnable {
 
             out.println("201");
             out.println(groups.toString() + "\n");
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -596,7 +601,8 @@ class ServerInit implements Runnable {
 
             out.println("201");
 
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -615,7 +621,8 @@ class ServerInit implements Runnable {
 
             out.println("201");
             out.println(userType + "\n");
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
     private void setItemPermissions(String itemLocation, String groups, Socket client) throws IOException {
@@ -680,7 +687,8 @@ class ServerInit implements Runnable {
             } else {
                 out.println("203");
             }
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) {
+        }
     }
 
 

@@ -7,6 +7,7 @@ import java.awt.*;
  * @author Levi Muniz
  * @version 1.0.0
  */
+
 final class CenterWindow {
 
     private CenterWindow() {

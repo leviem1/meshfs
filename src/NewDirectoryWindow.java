@@ -13,6 +13,7 @@ import java.io.IOException;
 /**
  * @author Mark Hedrick
  */
+
 class NewDirectoryWindow extends JFrame {
     private static JFrame newDirectoryWindow;
     private final String serverAddress;
@@ -67,7 +68,7 @@ class NewDirectoryWindow extends JFrame {
 
     private void initComponents() {
         boolean userType = false;
-        if(userAccount.equals("admin")) userType = true;
+        if (userAccount.equals("admin")) userType = true;
         DefaultMutableTreeNode tree = JSONUtils.JTreeBuilder(catalogObj, userType);
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license

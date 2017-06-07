@@ -19,6 +19,7 @@ import java.util.*;
  * @author Levi Muniz
  * @version 1.0.0
  */
+
 class Reporting {
 
     private Reporting() {

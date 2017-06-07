@@ -1,6 +1,7 @@
 /**
- * Created by Aaron Duran on 5/16/2017.
+ * @author Aaron Duran
  */
+
 class PullRequestException extends Exception {
     PullRequestException() {
         super("Cannot reconstruct file");

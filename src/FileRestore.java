@@ -9,19 +9,21 @@ import java.util.List;
 
 
 /**
- * Created by Aaron Duran on 5/22/2017.
+ * @author Aaron Duran
  */
+
 class FileRestore {
 
-    private FileRestore(){}
+    private FileRestore() {
+    }
 
     /**
      * This method is used to redistribute all of the files that were on a computer.
      * The method uses redundancies to repair and updates the catalog file respectively.
      *
-     * @param MACAddress    the file path of the file that is to be distributed
+     * @param MACAddress the file path of the file that is to be distributed
      */
-    static void restoreAllFilesFromComputer(String MACAddress){
+    static void restoreAllFilesFromComputer(String MACAddress) {
         JSONObject manifest = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         JSONArray filesToRestore = (JSONArray) ((JSONObject) manifest.get(MACAddress)).get("RepoContents");
         manifest.remove(MACAddress);
@@ -32,9 +34,9 @@ class FileRestore {
             e.printStackTrace();
         }
         List<Thread> childThreads = new ArrayList<>();
-        for (Object fileNameObj : filesToRestore){
+        for (Object fileNameObj : filesToRestore) {
             String fileName = fileNameObj.toString();
-            if (!(fileName.equals(".auth") || fileName.equals(".catalog.json") || fileName.equals(".manifest.json"))){
+            if (!(fileName.equals(".auth") || fileName.equals(".catalog.json") || fileName.equals(".manifest.json"))) {
                 //thread the restorations
                 Thread child = new Thread(
                         () -> restorePartialFile(fileName, MACAddress));
@@ -65,15 +67,15 @@ class FileRestore {
     }
 
     @SuppressWarnings("unchecked")
-    private static void restorePartialFile(String alphanumericFileName, String oldComputerMAC){
+    private static void restorePartialFile(String alphanumericFileName, String oldComputerMAC) {
         JSONObject manifest = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         String manifestString = manifest.toString();
         String pullIP = null;
         JSONObject catalog = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
-        List<String> catalogReferences = findFileReferencesInCatalog(catalog, alphanumericFileName.substring(0,alphanumericFileName.lastIndexOf("_")));
+        List<String> catalogReferences = findFileReferencesInCatalog(catalog, alphanumericFileName.substring(0, alphanumericFileName.lastIndexOf("_")));
         int portNumber = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
 
-        if (manifestString.contains(alphanumericFileName)){
+        if (manifestString.contains(alphanumericFileName)) {
             //find and pull the stripe
             pullIP = findComputerWithFile(alphanumericFileName);
             try {
@@ -83,7 +85,7 @@ class FileRestore {
             }
         }
 
-        String wholeFileName = alphanumericFileName.substring(0,alphanumericFileName.indexOf("_")) + "_w";
+        String wholeFileName = alphanumericFileName.substring(0, alphanumericFileName.indexOf("_")) + "_w";
         JSONObject fileInfo = JSONUtils.getItemContents(catalog, catalogReferences.get(0));
         int stripeNum = -1;
         if (alphanumericFileName.contains("_s")) {
@@ -92,32 +94,32 @@ class FileRestore {
 
         //reference catalog to find number of stripes
         int numberOfStripes = 0;
-        for (Object key : fileInfo.keySet()){
-            if (key.toString().contains("_")){
+        for (Object key : fileInfo.keySet()) {
+            if (key.toString().contains("_")) {
                 numberOfStripes++;
             }
         }
-        if (pullIP == null && stripeNum == -1){
+        if (pullIP == null && stripeNum == -1) {
             try {
                 JSONUtils.pullFile(catalog, catalogReferences.get(0), MeshFS.properties.getProperty("repository"), alphanumericFileName, true);
                 pullIP = "success";
-            } catch (IOException | MalformedRequestException | PullRequestException | FileTransferException ignored) {}
+            } catch (IOException | MalformedRequestException | PullRequestException | FileTransferException ignored) {
+            }
         }
 
 
-        if (pullIP == null && stripeNum != -1 && manifestString.contains(wholeFileName)){
+        if (pullIP == null && stripeNum != -1 && manifestString.contains(wholeFileName)) {
             //find, pull, and split a whole
             pullIP = findComputerWithFile(wholeFileName);
             try {
-                FileClient.receiveFile(pullIP,portNumber, wholeFileName, MeshFS.properties.getProperty("repository") + wholeFileName);
-
+                FileClient.receiveFile(pullIP, portNumber, wholeFileName, MeshFS.properties.getProperty("repository") + wholeFileName);
 
 
                 long fileSize = Long.parseLong(fileInfo.get("fileSize").toString());
                 long sizeOfStripe = ((fileSize / (numberOfStripes)) + 1);
                 //write stripe
 
-                if (stripeNum == numberOfStripes){
+                if (stripeNum == numberOfStripes) {
                     FileUtils.writeStripe(
                             MeshFS.properties.getProperty("repository") + wholeFileName,
                             MeshFS.properties.getProperty("repository") + alphanumericFileName,
@@ -130,7 +132,7 @@ class FileRestore {
                             (sizeOfStripe * stripeNum),
                             sizeOfStripe);
                 }
-                
+
                 //delete whole file
                 FileUtils.removeFile(MeshFS.properties.getProperty("repository") + wholeFileName);
 
@@ -140,19 +142,19 @@ class FileRestore {
             }
         }
 
-        if (pullIP == null){
+        if (pullIP == null) {
             //change catalog to read "corrupted"
             corruptFilesInCatalog(catalogReferences);
             return;
         }
-        
+
         //determine where the file needs to be sent
-        
+
         LinkedHashMap<String, Long> storageMap = JSONUtils.createStorageMap(manifest);
-        for (Object key : fileInfo.keySet()){
-            if (key.toString().equals("whole") || key.toString().contains("stripe_")){
+        for (Object key : fileInfo.keySet()) {
+            if (key.toString().equals("whole") || key.toString().contains("stripe_")) {
                 JSONArray stripeLocations = (JSONArray) fileInfo.get(key);
-                for (Object computer : stripeLocations){
+                for (Object computer : stripeLocations) {
                     storageMap.remove(computer.toString());
                 }
             }
@@ -160,9 +162,9 @@ class FileRestore {
 
         String destinationCompIP = null;
         String destinationCompMAC = null;
-        for (Object macAddress : storageMap.keySet()){
+        for (Object macAddress : storageMap.keySet()) {
             String ipAddress = (((JSONObject) manifest.get(macAddress)).get("IP")).toString();
-            if (FileClient.ping(ipAddress, portNumber) > -1 && storageMap.get(macAddress.toString()) > FileUtils.getSize(MeshFS.properties.getProperty("repository") + alphanumericFileName)){
+            if (FileClient.ping(ipAddress, portNumber) > -1 && storageMap.get(macAddress.toString()) > FileUtils.getSize(MeshFS.properties.getProperty("repository") + alphanumericFileName)) {
                 destinationCompIP = ipAddress;
                 destinationCompMAC = macAddress.toString();
                 break;
@@ -187,7 +189,7 @@ class FileRestore {
             corruptFilesInCatalog(catalogReferences);
             return;
         }
-        
+
         //change the catalog
 
         for (String referenceLocation : catalogReferences) {
@@ -211,14 +213,14 @@ class FileRestore {
         }
     }
 
-    private static String findComputerWithFile (String filename){
+    private static String findComputerWithFile(String filename) {
         JSONObject manifest = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         for (Object key : manifest.keySet()) {
             JSONObject computer = (JSONObject) manifest.get(key);
-            if (computer.toString().contains(filename)){
+            if (computer.toString().contains(filename)) {
                 String IP = computer.get("IP").toString();
                 try {
-                    if (FileClient.doesFileExist(IP, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), filename)){
+                    if (FileClient.doesFileExist(IP, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), filename)) {
                         return IP;
                     }
                 } catch (MalformedRequestException | IOException e) {
@@ -232,51 +234,51 @@ class FileRestore {
     /**
      * This method is used to find all references in the catalog to the specified file.
      *
-     * @param catalog           the JSONObject of the catalog
-     * @param alphanumericName  the unique name of the file
-     * @return                  returns a list of strings of virtual filePaths
+     * @param catalog          the JSONObject of the catalog
+     * @param alphanumericName the unique name of the file
+     * @return returns a list of strings of virtual filePaths
      */
-    static List<String> findFileReferencesInCatalog(JSONObject catalog, String alphanumericName){
+    static List<String> findFileReferencesInCatalog(JSONObject catalog, String alphanumericName) {
         return fileReferenceFinderRecursive((JSONObject) catalog.get("root"), alphanumericName, "root");
     }
 
-    private static List<String> fileReferenceFinderRecursive(JSONObject folder, String alphanumericName, String folderLocation){
+    private static List<String> fileReferenceFinderRecursive(JSONObject folder, String alphanumericName, String folderLocation) {
         List<String> references = new ArrayList<>();
         LinkedHashMap<String, String> folderMap = JSONUtils.getMapOfFolderContents(folder, null);
-        for (String item : folderMap.keySet()){
-            if (folderMap.get(item).equals("directory")){
+        for (String item : folderMap.keySet()) {
+            if (folderMap.get(item).equals("directory")) {
                 references.addAll(fileReferenceFinderRecursive((JSONObject) folder.get(item), alphanumericName, folderLocation + "/" + item));
-            } else if (folderMap.get(item).equals("file") && ((JSONObject) folder.get(item)).get("alphanumericName").toString().equals(alphanumericName)){
+            } else if (folderMap.get(item).equals("file") && ((JSONObject) folder.get(item)).get("alphanumericName").toString().equals(alphanumericName)) {
                 references.add(folderLocation + "/" + item);
             }
         }
         return references;
     }
 
-    private static void corruptFilesInCatalog(List<String> catalogReferences){
-        for (String reference : catalogReferences){
-            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")+1) + " (corrupted)");
+    private static void corruptFilesInCatalog(List<String> catalogReferences) {
+        for (String reference : catalogReferences) {
+            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/") + 1) + " (corrupted)");
         }
     }
 
     /**
      * This method is used to remove the corrupted flag from all the specified files.
      *
-     * @param catalogReferences     the list of strings of virtual filePaths of the specified files.
+     * @param catalogReferences the list of strings of virtual filePaths of the specified files.
      */
-    static void unCorruptFilesInCatalog(List<String> catalogReferences){
-        for (String reference : catalogReferences){
-            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/")+1, reference.lastIndexOf(" (corrupted)")));
+    static void unCorruptFilesInCatalog(List<String> catalogReferences) {
+        for (String reference : catalogReferences) {
+            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/") + 1, reference.lastIndexOf(" (corrupted)")));
         }
     }
 
     /**
      * This method is used to find all files that are supposed to be on a computer according to the catalog.
      *
-     * @param MACAddress    the MAC Address of the specified computer
-     * @return              returns a list of strings of alphanumeric file names
+     * @param MACAddress the MAC Address of the specified computer
+     * @return returns a list of strings of alphanumeric file names
      */
-    static List<String> getFilesOnComputerFromCatalog(String MACAddress){
+    static List<String> getFilesOnComputerFromCatalog(String MACAddress) {
         JSONObject catalog = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         if (catalog.toString().contains(MACAddress)) {
             return computerReferenceFinderRecursive(catalog, MACAddress);
@@ -284,18 +286,18 @@ class FileRestore {
         return new ArrayList<>();
     }
 
-    private static List<String> computerReferenceFinderRecursive(JSONObject folder, String MACAddress){
+    private static List<String> computerReferenceFinderRecursive(JSONObject folder, String MACAddress) {
         List<String> fileNames = new ArrayList<>();
         LinkedHashMap<String, String> folderMap = JSONUtils.getMapOfFolderContents(folder, null);
-        if (folder.toString().contains(MACAddress)){
-            for (String item : folderMap.keySet()){
-                if (folderMap.get(item).equals("directory")){
+        if (folder.toString().contains(MACAddress)) {
+            for (String item : folderMap.keySet()) {
+                if (folderMap.get(item).equals("directory")) {
                     fileNames.addAll(computerReferenceFinderRecursive((JSONObject) folder.get(item), MACAddress));
-                } else if (folderMap.get(item).equals("file")){
+                } else if (folderMap.get(item).equals("file")) {
                     JSONObject fileInfo = ((JSONObject) folder.get(item));
-                    for (Object key : fileInfo.keySet()){
-                        if (fileInfo.get(key).toString().contains(MACAddress)){
-                            if (key.toString().equals("whole")){
+                    for (Object key : fileInfo.keySet()) {
+                        if (fileInfo.get(key).toString().contains(MACAddress)) {
+                            if (key.toString().equals("whole")) {
                                 fileNames.add(((JSONObject) folder.get(item)).get("alphanumericName").toString() + "_w");
                             } else {
                                 fileNames.add(((JSONObject) folder.get(item)).get("alphanumericName").toString() + "_s" + key.toString().substring(key.toString().indexOf("_s") + 1));

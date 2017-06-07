@@ -1,5 +1,5 @@
 /**
- * Created by Levi Muniz on 6/1/17.
+ * @author Levi Muniz
  */
 
 class IncorrectCredentialException extends Exception {

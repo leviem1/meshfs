@@ -321,7 +321,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "titleLbl"
 					"text": "Server Settings"
-					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 9, false )
 					"horizontalAlignment": 0
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "North"

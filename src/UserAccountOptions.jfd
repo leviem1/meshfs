@@ -3,16 +3,12 @@ JFDML JFormDesigner: "6.0.1.0.112" Java: "1.8.0_112-release" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:1:x}}"
-			"$verticalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:0:x}}"
-		} ) {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
-			"$sizePolicy": 1
 			"title": "MeshFS - Account Control Center"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l:::p {comp buttonBar:::p::p, seq l {par t:::p {comp googleAccountBtn:::::x, comp changePasswordBtn:::::x}, space :29::x, par l:::p {comp changeGroupBtn::::134:x, comp deleteAccount::::134:x}}}, space :0:8:x}, seq t {par t {comp titleLbl::l:::x, comp titleLbl2:::::x}, space :p:49:p}}}}"
-				"$verticalGroup": "par l {seq {space :::p, comp titleLbl2:::p::p, space :::p, comp titleLbl:::p::p, space :p:24:p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space :::p, par b {comp changeGroupBtn::b:p::p, comp googleAccountBtn::b:p::p}, space :::x, comp buttonBar:::p::p}}"
+				"$horizontalGroup": "par t {seq {space :0:0:x, comp titleLbl2:::p:324:p}, seq {par t {comp titleLbl::l:::x, seq {space :::p, par t {seq t {space :0:0:x, comp closeBtn:::p::p}, seq l {par l:::p {comp changePasswordBtn:::::x, comp changeGroupBtn:::::x}, space :::x, comp deleteAccount:::p:146:p}}}}, space :::p}}"
+				"$verticalGroup": "par l {seq {comp titleLbl2:::p::p, space :::p, comp titleLbl:::p::p, space :::p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space :::p, comp changeGroupBtn:::p::p, space ::42:x, comp closeBtn:::p::p}}"
 			} ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -22,28 +18,16 @@ new FormModel {
 					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 9, false )
 					"horizontalAlignment": 0
 				} )
+				add( new FormComponent( "javax.swing.JButton" ) {
+					name: "closeBtn"
+					"text": "Close"
+					"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+				} )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "titleLbl"
 					"text": "Welcome <username>!"
 					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
 					"horizontalAlignment": 0
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :229:229:p, comp closeBtn:::p:80:p}}"
-					"$verticalGroup": "par l {seq {space :1:1:p, comp closeBtn:::p::p}}"
-				} ) {
-					name: "buttonBar"
-					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "closeBtn"
-						"text": "Close"
-						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
-					} )
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "deleteAccount"
-					"text": "Delete Account"
-					"font": #SwingDerivedFont0
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "changePasswordBtn"
@@ -51,8 +35,8 @@ new FormModel {
 					"font": #SwingDerivedFont0
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "googleAccountBtn"
-					"text": "Link to Google..."
+					name: "deleteAccount"
+					"text": "Delete Account"
 					"font": #SwingDerivedFont0
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
@@ -60,6 +44,8 @@ new FormModel {
 					"text": "Change Group"
 					"font": #SwingDerivedFont0
 				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )

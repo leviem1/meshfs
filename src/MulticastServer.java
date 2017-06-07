@@ -1,7 +1,10 @@
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.*;
@@ -22,10 +25,10 @@ class MulticastServer {
     /**
      * This method is used to start the multicast server.
      *
-     * @param groupAddress  the address to listen on
-     * @param port          the port number to listen on
-     * @param maxThreads    the amount of sockets
-     * @throws IOException  if a socket cannot be initialized
+     * @param groupAddress the address to listen on
+     * @param port         the port number to listen on
+     * @param maxThreads   the amount of sockets
+     * @throws IOException if a socket cannot be initialized
      */
 
     void startServer(String groupAddress, int port, int maxThreads) throws IOException {
@@ -115,13 +118,13 @@ class MulticastServer {
 @SuppressWarnings("unchecked")
 class MulticastServerInit implements Runnable {
 
-    private final DatagramSocket socket;
+    static CopyOnWriteArrayList<String> foundMasters = new CopyOnWriteArrayList<>();
+    static ConcurrentHashMap<InetAddress, Long> reportedDown = new ConcurrentHashMap<>();
     private static volatile boolean masterDown = false;
     private static volatile boolean recordVotes = false;
     private static Timer voteCastScheduler = new Timer();
     private static ConcurrentHashMap<String, String> newMasterVotes = new ConcurrentHashMap<>();
-    static CopyOnWriteArrayList<String> foundMasters = new CopyOnWriteArrayList<>();
-    static ConcurrentHashMap<InetAddress, Long> reportedDown = new ConcurrentHashMap<>();
+    private final DatagramSocket socket;
 
     MulticastServerInit(DatagramSocket socket) {
         this.socket = socket;

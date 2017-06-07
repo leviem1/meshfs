@@ -8,18 +8,17 @@ import java.util.ArrayList;
 /**
  * @author Mark Hedrick
  */
+
 class SharingSettings extends JFrame {
-    private static JFrame sharingSettings;
-    private ArrayList groups;
+
     private DefaultListModel groupsModel;
     private String serverAddress;
     private int port;
     private String itemPath;
     private JFrame sender;
 
-    public SharingSettings(String userAccount, String serverAddress, int port, ArrayList groups, ArrayList admins, JFrame sender, String itemPath) {
+    public SharingSettings(String serverAddress, int port, ArrayList groups, JFrame sender, String itemPath) {
 
-        this.groups = groups;
         this.serverAddress = serverAddress;
         this.port = port;
         this.itemPath = itemPath;
@@ -31,9 +30,11 @@ class SharingSettings extends JFrame {
         if (Reporting.getSystemOS().contains("Windows")) {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
-        groupsModel = new DefaultListModel();
+
         initComponents();
         frameListeners();
+
+        groupsModel = new DefaultListModel();
         String[] serverGroups = null;
         try {
             serverGroups = FileClient.getGroups(serverAddress, port, MeshFS.properties.getProperty("uuid")).split(",");
@@ -135,7 +136,7 @@ class SharingSettings extends JFrame {
                                 .addComponent(removeGroupBtn, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(addGroupBtn)
                                 .addComponent(addGroupBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap(22, Short.MAX_VALUE))
+                            .addContainerGap(19, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -157,7 +158,7 @@ class SharingSettings extends JFrame {
 
             //---- titleLbl ----
             titleLbl.setText("Sharing Settings");
-            titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 5));
+            titleLbl.setFont(new Font("Arial", titleLbl.getFont().getStyle(), titleLbl.getFont().getSize() + 7));
             titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
             dialogPane.add(titleLbl, BorderLayout.NORTH);
         }
@@ -181,12 +182,6 @@ class SharingSettings extends JFrame {
         );
     }
 
-    public static void run(JFrame sender, String userAccount, String serverAddress, int port, ArrayList groups, ArrayList admins, String itemPath) {
-        sharingSettings = new SharingSettings(userAccount, serverAddress, port, groups, admins, sender, itemPath);
-        CenterWindow.centerOnWindow(sender, sharingSettings);
-        sharingSettings.setVisible(true);
-    }
-
     private void sendPermissions() {
         ArrayList<String> members = new ArrayList<>();
         for (int i = 0; i < groupsList.getModel().getSize(); i++) {
@@ -199,6 +194,12 @@ class SharingSettings extends JFrame {
         }
         sender.dispose();
         dispose();
+    }
+
+    public static void run(JFrame sender, String serverAddress, int port, ArrayList groups, String itemPath) {
+        JFrame sharingSettings = new SharingSettings(serverAddress, port, groups, sender, itemPath);
+        CenterWindow.centerOnWindow(sender, sharingSettings);
+        sharingSettings.setVisible(true);
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
@@ -215,4 +216,5 @@ class SharingSettings extends JFrame {
     private JButton okButton;
     private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

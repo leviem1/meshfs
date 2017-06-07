@@ -17,6 +17,7 @@ import java.util.Scanner;
  * @author Levi Muniz
  * @version 1.0.0
  */
+
 class CliParser {
 
     private final Options opt = new Options();

@@ -3,15 +3,13 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
 import java.util.*;
-/*
- * Created by JFormDesigner on Wed May 17 19:49:53 MDT 2017
- */
-
 
 /**
  * @author Mark Hedrick
  */
+
 class ChangeUserGroup extends JFrame {
+
     private static JFrame changeUserGroup;
     private String userAccount;
     private String serverAddress;
@@ -20,20 +18,20 @@ class ChangeUserGroup extends JFrame {
     private final DefaultListModel newGroupModel;
 
     public ChangeUserGroup(String userAccount, String serverAddress, int port) {
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
-        currentGroupModel = new DefaultListModel();
-        newGroupModel = new DefaultListModel();
+
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         initComponents();
         frameListeners();
 
+        currentGroupModel = new DefaultListModel();
+        newGroupModel = new DefaultListModel();
+
         updateGroupInfo();
-
-
     }
 
     private void initComponents() {
@@ -54,8 +52,8 @@ class ChangeUserGroup extends JFrame {
         panel3 = new JPanel();
         addGroupLbl = new JLabel();
         userGroupBox = new JComboBox();
-        removeMembershipBtn = new JButton();
         addGroupBtn = new JButton();
+        removeMembershipBtn = new JButton();
         buttonBar = new JPanel();
         okButton = new JButton();
 
@@ -131,13 +129,19 @@ class ChangeUserGroup extends JFrame {
                             userGroupBox.setFont(new Font("Arial", userGroupBox.getFont().getStyle(), userGroupBox.getFont().getSize() + 1));
                             userGroupBox.setEditable(true);
 
-                            //---- removeMembershipBtn ----
-                            removeMembershipBtn.setText("-");
-                            removeMembershipBtn.setFont(new Font("Arial", removeMembershipBtn.getFont().getStyle(), removeMembershipBtn.getFont().getSize() + 1));
-
                             //---- addGroupBtn ----
                             addGroupBtn.setText("+");
                             addGroupBtn.setFont(new Font("Arial", addGroupBtn.getFont().getStyle(), addGroupBtn.getFont().getSize() + 1));
+                            addGroupBtn.setPreferredSize(new Dimension(38, 38));
+                            addGroupBtn.setMinimumSize(new Dimension(37, 37));
+                            addGroupBtn.setMaximumSize(new Dimension(37, 37));
+
+                            //---- removeMembershipBtn ----
+                            removeMembershipBtn.setText("-");
+                            removeMembershipBtn.setFont(new Font("Arial", removeMembershipBtn.getFont().getStyle(), removeMembershipBtn.getFont().getSize() + 1));
+                            removeMembershipBtn.setMaximumSize(new Dimension(37, 37));
+                            removeMembershipBtn.setMinimumSize(new Dimension(37, 37));
+                            removeMembershipBtn.setPreferredSize(new Dimension(37, 37));
 
                             GroupLayout panel3Layout = new GroupLayout(panel3);
                             panel3.setLayout(panel3Layout);
@@ -148,13 +152,14 @@ class ChangeUserGroup extends JFrame {
                                         .addGroup(panel3Layout.createParallelGroup()
                                             .addGroup(panel3Layout.createSequentialGroup()
                                                 .addComponent(addGroupLbl, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap(159, Short.MAX_VALUE))
+                                                .addContainerGap(145, Short.MAX_VALUE))
                                             .addGroup(panel3Layout.createSequentialGroup()
-                                                .addComponent(userGroupBox, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                                                .addGap(3, 3, 3)
-                                                .addComponent(addGroupBtn)
+                                                .addComponent(userGroupBox, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(removeMembershipBtn))))
+                                                .addComponent(addGroupBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(removeMembershipBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addGap(3, 3, 3))))
                             );
                             panel3Layout.setVerticalGroup(
                                 panel3Layout.createParallelGroup()
@@ -164,9 +169,9 @@ class ChangeUserGroup extends JFrame {
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                         .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                             .addComponent(userGroupBox, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(removeMembershipBtn)
-                                            .addComponent(addGroupBtn))
-                                        .addContainerGap(8, Short.MAX_VALUE))
+                                            .addComponent(addGroupBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(removeMembershipBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             );
                         }
                         panel2.add(panel3, BorderLayout.SOUTH);
@@ -184,9 +189,9 @@ class ChangeUserGroup extends JFrame {
                                 .addGroup(contentPanelLayout.createSequentialGroup()
                                     .addContainerGap()
                                     .addComponent(currentGroupsLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                     .addComponent(newGroupsLbl, GroupLayout.PREFERRED_SIZE, 225, GroupLayout.PREFERRED_SIZE)
-                                    .addGap(25, 25, 25)))
+                                    .addGap(19, 19, 19)))
                             .addContainerGap())
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
@@ -202,7 +207,7 @@ class ChangeUserGroup extends JFrame {
                                 .addComponent(currentGroupsLbl)
                                 .addComponent(newGroupsLbl))
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE))
+                            .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -283,7 +288,7 @@ class ChangeUserGroup extends JFrame {
             e.printStackTrace();
         }
 
-        if(myGroups == null || allGroups == null){
+        if (myGroups == null || allGroups == null) {
             return;
         }
         java.util.List<String> myGroupsList = Arrays.asList(myGroups.split(", "));
@@ -339,9 +344,10 @@ class ChangeUserGroup extends JFrame {
     private JPanel panel3;
     private JLabel addGroupLbl;
     private JComboBox userGroupBox;
-    private JButton removeMembershipBtn;
     private JButton addGroupBtn;
+    private JButton removeMembershipBtn;
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

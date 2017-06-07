@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by markhedrick on 5/11/17.
+ * @author Mark Hedrick
  */
 class UserAccount implements Serializable {
     private String username;
@@ -31,14 +31,16 @@ class UserAccount implements Serializable {
         return accountType;
     }
 
-    String getUUID() {return UUID;}
+    void setAccountType(String newAccountType) {
+        accountType = newAccountType;
+    }
+
+    String getUUID() {
+        return UUID;
+    }
 
     ArrayList<String> getGroups() {
         return groups;
-    }
-
-    void setAccountType(String newAccountType) {
-        accountType = newAccountType;
     }
 
     void addGroup(String groupName) {

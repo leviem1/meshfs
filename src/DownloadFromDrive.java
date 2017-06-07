@@ -1,38 +1,30 @@
-import com.google.api.services.drive.Drive;
 import org.json.simple.JSONObject;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.*;
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
-/*
- * Created by JFormDesigner on Fri Jun 02 08:36:58 MDT 2017
- */
-
-
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
 
 /**
  * @author Mark Hedrick
  */
+
 class DownloadFromDrive extends JFrame {
 
     private static JFrame downloadFromDrive;
     private final String serverAddress;
     private final int port;
     private JSONObject masterJSON;
-    private JSONObject root;
     private String username;
-
 
     public DownloadFromDrive(String serverAddress, int port, String username) {
         this.serverAddress = serverAddress;
@@ -40,9 +32,11 @@ class DownloadFromDrive extends JFrame {
         this.username = username;
 
         masterJSON = new JSONObject();
-        root = new JSONObject();
+        JSONObject root = new JSONObject();
 
         initComponents();
+        frameListeners();
+
         try {
             root.put("type", "directory");
             root.put("ID", "root");
@@ -51,7 +45,6 @@ class DownloadFromDrive extends JFrame {
 
             masterJSON = DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, "root");
 
-            System.out.println(masterJSON);
             tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
 
         } catch (IOException e) {
@@ -59,7 +52,7 @@ class DownloadFromDrive extends JFrame {
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
-        frameListeners();
+
     }
 
     private void initComponents() {
@@ -135,7 +128,7 @@ class DownloadFromDrive extends JFrame {
                     new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
-                okButton.setText("OK");
+                okButton.setText("Close");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -149,41 +142,46 @@ class DownloadFromDrive extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
-    private void frameListeners(){
+    private void frameListeners() {
         TreeWillExpandListener treeWillExpandListener = new TreeWillExpandListener() {
             @Override
             public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
 
-                if(node.getChildCount() == 1 && node.getChildAt(0).toString().equals("(loading...)")) {
+                if (node.getChildCount() == 1 && node.getChildAt(0).toString().equals("(loading...)")) {
                     java.util.List<Object> treeList = Arrays.asList(event.getPath().getPath());
                     StringBuilder treePath = new StringBuilder();
+
                     for (Object item : treeList) {
                         treePath.append(item.toString()).append("/");
                     }
+
                     treePath = new StringBuilder(treePath.substring(0, treePath.length() - 1));
+
                     try {
                         masterJSON = DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, treePath.toString());
                     } catch (IOException | GeneralSecurityException e1) {
                         e1.printStackTrace();
                     }
+
                     StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < tree1.getRowCount(); i++){
-                        if (tree1.isExpanded(i)){
+
+                    for (int i = 0; i < tree1.getRowCount(); i++) {
+                        if (tree1.isExpanded(i)) {
                             sb.append(i).append(",");
                         }
                     }
+
                     tree1.setSelectionPath(new TreePath(node.getPath()));
                     sb.append(tree1.getLeadSelectionRow());
                     tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
                     String[] indexes = sb.toString().split(",");
-                        for ( String st : indexes ){
-                            int row = Integer.parseInt(st);
-                            tree1.expandRow(row);
 
-                        }
+                    for (String st : indexes) {
+                        int row = Integer.parseInt(st);
+                        tree1.expandRow(row);
                     }
-
+                }
                 tree1.setSelectionPath(new TreePath(node.getPath()));
                 tree1.scrollPathToVisible(new TreePath(node.getPath()));
             }
@@ -199,15 +197,23 @@ class DownloadFromDrive extends JFrame {
                 e -> {
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
                     StringBuilder jsonPath = new StringBuilder();
+
                     for (Object item : treeList) {
                         jsonPath.append(item.toString()).append("/");
                     }
+
                     jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
 
                     try {
                         File driveFile = DriveAPI.downloadFile(JSONUtils.getGoogleFileID(masterJSON, jsonPath.toString()), MeshFS.userUUID);
                         FileClient.sendFile(serverAddress, port, driveFile.getAbsolutePath(), username);
+                        JOptionPane.showMessageDialog(
+                                downloadFromDrive,
+                                "File downloaded and distributed successfully!",
+                                "MeshFS - Success",
+                                JOptionPane.INFORMATION_MESSAGE);
                         driveFile.delete();
+                        dispose();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     } catch (MalformedRequestException e1) {
@@ -215,8 +221,16 @@ class DownloadFromDrive extends JFrame {
                     } catch (GeneralSecurityException e1) {
                         e1.printStackTrace();
                     }
+                    JOptionPane.showMessageDialog(
+                            downloadFromDrive,
+                            "File downloaded and distribution failed!!",
+                            "MeshFS - Failure",
+                            JOptionPane.ERROR_MESSAGE);
+                    dispose();
 
                 });
+
+        okButton.addActionListener(e -> dispose());
 
 
     }
@@ -238,4 +252,5 @@ class DownloadFromDrive extends JFrame {
     private JButton downloadBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

@@ -1,12 +1,16 @@
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
- * Created by markhedrick on 5/10/17.
+ * @author Mark Hedrick
  */
+
 class Crypt {
     static String generateEncryptedPass(String username, String password) {
         MessageDigest messageDigest = null;
@@ -21,14 +25,15 @@ class Crypt {
         password = passwordBuilder.toString();
 
         try {
-            messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
 
         assert messageDigest != null;
         messageDigest.update(password.getBytes(), 0, password.length());
-        return new BigInteger(1, messageDigest.digest()).toString(256);
+
+        return new BigInteger(1, messageDigest.digest()).toString(512);
     }
 
     static void writeAuthFile(ArrayList<UserAccount> accountsArrayList) {

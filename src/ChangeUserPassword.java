@@ -11,56 +11,34 @@ import java.util.ArrayList;
 /**
  * @author Mark Hedrick
  */
+
 class ChangeUserPassword extends JFrame {
+
     private static JFrame changeUserPassword;
-    private static JFrame sender;
+    private JFrame sender;
     private String userAccount;
     private String serverAddress;
     private int port;
     private boolean previousRunType;
-
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel usernameLbl;
-    private JTextField usernameField;
-    private JLabel newPasswordLbl;
-    private JPasswordField newPasswordField;
-    private JLabel currPasswordLbl;
-    private JPasswordField currPasswordField;
-    private JLabel newPasswordConfirmLbl;
-    private JPasswordField newPasswordFieldConfirm;
-    private JLabel validPasswordLbl;
-    private JPanel buttonBar;
-    private JButton okButton;
-    private JLabel titleLbl2;
-    //GEN-END:variables
 
     private ChangeUserPassword(String userAccount, String serverAddress, int port, JFrame sender, boolean previousRunType) {
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
         this.previousRunType = previousRunType;
-        ChangeUserPassword.sender = sender;
+        this.sender = sender;
 
-        setTitle("MeshFS - Change User Password");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         if (Reporting.getSystemOS().contains("Windows")) {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
+
         initComponents();
         frameListeners();
-        usernameField.setText(userAccount);
-    }
 
-    public static void run(
-            JFrame sender, String userAccount, String serverAddress, int port, JFrame parentSender, boolean previousRunType) {
-        changeUserPassword = new ChangeUserPassword(userAccount, serverAddress, port, parentSender, previousRunType);
-        CenterWindow.centerOnWindow(sender, changeUserPassword);
-        changeUserPassword.setVisible(true);
+        usernameField.setText(userAccount);
     }
 
     private void initComponents() {
@@ -82,7 +60,7 @@ class ChangeUserPassword extends JFrame {
         titleLbl2 = new JLabel();
 
         //======== this ========
-        setTitle("MeshFS - Change Password");
+        setTitle("MeshFS - Change User Password");
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
@@ -132,69 +110,69 @@ class ChangeUserPassword extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout.createParallelGroup()
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup()
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(contentPanelLayout.createParallelGroup()
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addComponent(newPasswordLbl)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(newPasswordField))
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addComponent(currPasswordLbl)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(currPasswordField))
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addComponent(newPasswordConfirmLbl)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(newPasswordFieldConfirm, GroupLayout.PREFERRED_SIZE, 283, GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(0, 0, 0)
-                                                        .addComponent(validPasswordLbl, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addComponent(usernameLbl)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(usernameField)))
-                                        .addContainerGap())
+                                    .addComponent(currPasswordLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(currPasswordField))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(usernameLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(usernameField))
+                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                                    .addComponent(newPasswordConfirmLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(newPasswordFieldConfirm, GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(validPasswordLbl, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(newPasswordLbl)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(newPasswordField, GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)))
+                            .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(usernameLbl)
-                                                .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(currPasswordLbl)
-                                                .addComponent(currPasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addGap(11, 11, 11)
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(newPasswordLbl)
-                                                .addComponent(newPasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(newPasswordConfirmLbl, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(newPasswordFieldConfirm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(validPasswordLbl))
-                                        .addContainerGap(129, Short.MAX_VALUE))
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(usernameLbl)
+                                .addComponent(usernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(currPasswordLbl)
+                                .addComponent(currPasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addGap(11, 11, 11)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(newPasswordLbl)
+                                .addComponent(newPasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(newPasswordConfirmLbl, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(validPasswordLbl)
+                                .addComponent(newPasswordFieldConfirm, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addContainerGap(12, Short.MAX_VALUE))
                 );
             }
-            dialogPane.add(contentPanel, BorderLayout.CENTER);
+            dialogPane.add(contentPanel, BorderLayout.EAST);
 
             //======== buttonBar ========
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 okButton.setEnabled(false);
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
@@ -288,14 +266,14 @@ class ChangeUserPassword extends JFrame {
                         userAccount,
                         String.valueOf(currPasswordField.getPassword()),
                         String.valueOf(newPasswordFieldConfirm.getPassword()));
-                    JOptionPane.showMessageDialog(
-                            changeUserPassword,
-                            "Password Updated Successfully!",
-                            "MeshFS - Success",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    ClientModeConfiguration.run(changeUserPassword, serverAddress, previousRunType);
-                    dispose();
-                    sender.dispose();
+                JOptionPane.showMessageDialog(
+                        changeUserPassword,
+                        "Password Updated Successfully!",
+                        "MeshFS - Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                ClientModeConfiguration.run(changeUserPassword, serverAddress, previousRunType);
+                dispose();
+                sender.dispose();
             } catch (IncorrectCredentialException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(
@@ -359,4 +337,30 @@ class ChangeUserPassword extends JFrame {
 
         return ruleResult.isValid();
     }
+
+    public static void run(
+            JFrame sender, String userAccount, String serverAddress, int port, JFrame parentSender, boolean previousRunType) {
+        changeUserPassword = new ChangeUserPassword(userAccount, serverAddress, port, parentSender, previousRunType);
+        CenterWindow.centerOnWindow(sender, changeUserPassword);
+        changeUserPassword.setVisible(true);
+    }
+
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel usernameLbl;
+    private JTextField usernameField;
+    private JLabel newPasswordLbl;
+    private JPasswordField newPasswordField;
+    private JLabel currPasswordLbl;
+    private JPasswordField currPasswordField;
+    private JLabel newPasswordConfirmLbl;
+    private JPasswordField newPasswordFieldConfirm;
+    private JLabel validPasswordLbl;
+    private JPanel buttonBar;
+    private JButton okButton;
+    private JLabel titleLbl2;
+    //GEN-END:variables
+
 }

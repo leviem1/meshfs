@@ -6,26 +6,34 @@ import java.awt.*;
 /**
  * @author Mark Hedrick
  */
+
 class GroupManager extends JFrame {
+
     private static JFrame groupManager;
     private final DefaultListModel model;
     private static JComboBox groupBox;
 
     public GroupManager(JComboBox groupBox) {
-
         GroupManager.groupBox = groupBox;
-        model = new DefaultListModel();
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+
+        if (Reporting.getSystemOS().contains("Windows")) {
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
+
+        initComponents();
+        frameListeners();
+
+        model = new DefaultListModel();
+
         if (groupBox.getItemCount() > 0) {
             for (int x = 0; x < groupBox.getModel().getSize(); x++) {
                 model.add(model.getSize(), groupBox.getItemAt(x));
 
             }
         }
-        initComponents();
-        frameListeners();
-
     }
 
     private void initComponents() {
@@ -56,7 +64,7 @@ class GroupManager extends JFrame {
 
             //---- groupTitle ----
             groupTitle.setText("Group Manager");
-            groupTitle.setFont(new Font("Arial", groupTitle.getFont().getStyle(), groupTitle.getFont().getSize() + 5));
+            groupTitle.setFont(new Font("Arial", groupTitle.getFont().getStyle(), groupTitle.getFont().getSize() + 9));
             groupTitle.setHorizontalAlignment(SwingConstants.CENTER);
             dialogPane.add(groupTitle, BorderLayout.NORTH);
 
@@ -124,10 +132,10 @@ class GroupManager extends JFrame {
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(locationLbl)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(removeGroup)
-                            .addContainerGap(17, Short.MAX_VALUE))
+                            .addContainerGap(5, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -149,19 +157,9 @@ class GroupManager extends JFrame {
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
-        pack();
+        setSize(425, 385);
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
-    }
-
-    public static void run(JFrame sender, JComboBox groupBox) {
-        groupManager = new GroupManager(groupBox);
-        if (!(sender == null)) {
-            CenterWindow.centerOnWindow(sender, groupManager);
-        } else {
-            CenterWindow.centerOnScreen(groupManager);
-        }
-        groupManager.setVisible(true);
     }
 
     private void frameListeners() {
@@ -202,6 +200,15 @@ class GroupManager extends JFrame {
                 });
     }
 
+    public static void run(JFrame sender, JComboBox groupBox) {
+        groupManager = new GroupManager(groupBox);
+        if (!(sender == null)) {
+            CenterWindow.centerOnWindow(sender, groupManager);
+        } else {
+            CenterWindow.centerOnScreen(groupManager);
+        }
+        groupManager.setVisible(true);
+    }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
@@ -218,4 +225,5 @@ class GroupManager extends JFrame {
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

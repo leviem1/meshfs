@@ -13,8 +13,8 @@ import java.util.List;
  * @author Aaron Duran
  * @version 1.0.0
  */
-class DISTAL {
 
+class DISTAL {
 
     /**
      * This method is used determines which load balance which computers will receive a file and its
@@ -24,6 +24,7 @@ class DISTAL {
      * @param uploadFilePath    the file path of the file that is to be distributed
      * @param filePathInCatalog where the file is to be put in the catalog.
      */
+
     static void distributor(String uploadFilePath, String filePathInCatalog) throws IOException, MalformedRequestException {
 
         filePathInCatalog = JSONUtils.catalogStringFixer(filePathInCatalog);
@@ -99,23 +100,28 @@ class DISTAL {
                     computersForWholes.add(macAddress);
                 }
             }
+
             for (String macAddress : computersForWholes) {
                 sortedCompStorageMap.remove(macAddress);
             }
 
             //remove any computer that cannot store a stripe
             boolean finalComputerCount = true;
+
             if (sizeOfStripe != 0L) {
                 List<String> removedIPs = new ArrayList<>();
+
                 for (String macAddress : sortedCompStorageMap.keySet()) {
                     if (sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
                         removedIPs.add(macAddress);
                         finalComputerCount = false;
                     }
                 }
+
                 for (String IP : removedIPs) {
                     sortedCompStorageMap.remove(IP);
                 }
+
             }
 
             //keep dynamically reassigning computers until all listed computers can hold the files that they will be given.
@@ -124,13 +130,14 @@ class DISTAL {
             }
         }
 
-        if (numOfStripedCopies == 0 && numOfWholeCopies == 0){
+        if (numOfStripedCopies == 0 && numOfWholeCopies == 0) {
             JSONUtils.renameItem(filePathInCatalog + "/" + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distributing)", uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distribution failed)");
             return;
         }
 
         //define which computers get stripes
         List<String> computersForStripes = new ArrayList<>();
+
         for (String macAddress : sortedCompStorageMap.keySet()) {
             if (computersForStripes.size() == numOfStripedCopies * numOfStripes) {
                 break;
@@ -219,14 +226,10 @@ class DISTAL {
         }
         //rename the original file to what the distributed whole file will be
 
-        System.out.println("Old: " + sourceFileLocationOld);
-
         final String sourceFileLocation =
                 sourceFileLocationOld.substring(0, sourceFileLocationOld.lastIndexOf(File.separator) + 1)
                         + outName
                         + "_w";
-
-        System.out.println("New: " + sourceFileLocation);
 
         new File(sourceFileLocationOld).renameTo(new File(sourceFileLocation));
 
@@ -275,7 +278,7 @@ class sendFilesThreading implements Runnable {
     private final int stripe;
     private final String outName;
 
-    
+
     sendFilesThreading(
             long sizeOfStripe,
             long fileSize,
