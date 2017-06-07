@@ -85,7 +85,6 @@ class ClientBrowserFileProperties extends JFrame {
         assert blacklist != null;
         permModel.add(permModel.getSize(), "Blacklisted Users: " + blacklist.toString());
 
-        this.setTitle("Properties - " + fileName);
 
         initComponents(fileName, fileSize, creationDate);
         frameListeners();
@@ -125,6 +124,8 @@ class ClientBrowserFileProperties extends JFrame {
 
         model.add(pos, "Stripes: " + stripes);
         model.add(pos, "Wholes: " + wholes);
+        this.setTitle("Properties - " + fileName);
+
     }
 
     private void initComponents(String fileName, String fileSize, String creationDate) {

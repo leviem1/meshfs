@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 
 class SharingSettings extends JFrame {
-    
+
     private DefaultListModel groupsModel;
     private String serverAddress;
     private int port;

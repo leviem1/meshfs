@@ -178,16 +178,7 @@ class MoveFileWindow extends JFrame {
                     if (node.toString().equals("(no files)") || node.toString().equals("root")) {
                         okButton.setEnabled(false);
                     } else {
-                        try {
-                            if (node.getChildCount() == 0) {
-
-                                if (!(node.toString().equals(userAccount))) {
-                                    tree1.setSelectionPath(null);
-                                }
-                            }
-                        } catch (NullPointerException ignored) {
-
-                        }
+                        okButton.setEnabled(true);
                     }
                 });
         okButton.addActionListener(

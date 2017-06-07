@@ -62,7 +62,6 @@ class ClientBrowser extends JFrame {
         }
 
         initComponents();
-        frameListeners();
 
         catalogTimer = new java.util.Timer();
         tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -93,6 +92,9 @@ class ClientBrowser extends JFrame {
         propertiesBtn = new JMenuItem("Properties");
         sendToDriveBtn = new JMenuItem("Send to My Drive");
         blacklistUserBtn = new JMenuItem("Hide this File");
+
+        frameListeners();
+
     }
 
     private void initComponents() {
@@ -419,8 +421,6 @@ class ClientBrowser extends JFrame {
                 });
         propertiesBtn.addActionListener(
                 e -> {
-                    DefaultMutableTreeNode node =
-                            (DefaultMutableTreeNode) tree1.getLastSelectedPathComponent();
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
                     StringBuilder jsonPath = new StringBuilder();
                     for (Object item : treeList) {

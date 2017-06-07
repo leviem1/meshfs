@@ -4,15 +4,15 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:1:x}}"
+			"$horizontalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:167:x}}"
 			"$verticalGroup": "par l {seq l {comp dialogPane:::p::p, space :0:0:x}}"
 		} ) {
 			name: "this"
 			"$sizePolicy": 1
 			"title": "MeshFS - Account Control Center"
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-				"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l:::p {comp buttonBar:::p::p, seq l {par t:::p {comp googleAccountBtn:::::x, comp changePasswordBtn:::::x}, space :29::x, par l:::p {comp changeGroupBtn::::134:x, comp deleteAccount::::134:x}}}, space :0:8:x}, seq t {par t {comp titleLbl::l:::x, comp titleLbl2:::::x}, space :p:49:p}}}}"
-				"$verticalGroup": "par l {seq {space :::p, comp titleLbl2:::p::p, space :::p, comp titleLbl:::p::p, space :p:24:p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space :::p, par b {comp changeGroupBtn::b:p::p, comp googleAccountBtn::b:p::p}, space :::x, comp buttonBar:::p::p}}"
+				"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l:::p {comp buttonBar:::p::p, seq l {comp changePasswordBtn:::p::p, space :29::x, par l:::p {comp changeGroupBtn::::134:x, comp deleteAccount::::134:x}}}, space :0:8:x}, seq t {par t {comp titleLbl::l:::x, comp titleLbl2:::::x}, space :p:49:p}}}}"
+				"$verticalGroup": "par l {seq {space :::p, comp titleLbl2:::p::p, space :::p, comp titleLbl:::p::p, space :p:24:p, par b {comp changePasswordBtn::b:p::p, comp deleteAccount::b:p::p}, space :::p, comp changeGroupBtn:::p::p, space :::x, comp buttonBar:::p::p}}"
 			} ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -48,11 +48,6 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "changePasswordBtn"
 					"text": "Change Password"
-					"font": #SwingDerivedFont0
-				} )
-				add( new FormComponent( "javax.swing.JButton" ) {
-					name: "googleAccountBtn"
-					"text": "Link to Google..."
 					"font": #SwingDerivedFont0
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
