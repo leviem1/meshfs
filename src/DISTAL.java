@@ -31,7 +31,6 @@ class DISTAL {
 
         filePathInCatalog = JSONUtils.catalogStringFixer(filePathInCatalog);
 
-        //import properties
         int numOfStripes = Integer.parseInt(MeshFS.properties.getProperty("numStripes"));
         int numOfStripedCopies = Integer.parseInt(MeshFS.properties.getProperty("numStripeCopy"));
         int numOfWholeCopies = Integer.parseInt(MeshFS.properties.getProperty("numWholeCopy"));
@@ -40,11 +39,8 @@ class DISTAL {
         JSONObject manifestFile = JSONUtils.getJSONObject(manifestFileLocation);
         String catalogFileLocation = MeshFS.properties.getProperty("repository") + ".catalog.json";
 
-
-        //create a unique filename for the uploaded file
         String newName = incrementName();
 
-        //make the JTree show that the file is being distributed
         JSONUtils.renameItem(filePathInCatalog + "/" + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (uploading)",
                 uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distributing)");
 
@@ -52,42 +48,35 @@ class DISTAL {
         long sizeOfFile = FileUtils.getSize(uploadFilePath);
         long sizeOfStripe;
 
-        //create a map of the amount of available storage on each computer
         LinkedHashMap<String, Long> sortedCompStorageMap = JSONUtils.createStorageMap(manifestFile);
 
-        //don't use stripes if a file is less than 4096 byte
         if (sizeOfFile <= 4096L) {
             numOfWholeCopies += numOfStripedCopies;
             numOfStripes = 0;
             numOfStripedCopies = 0;
         }
 
-        //create a list of computers that can store a whole copy.
         List<String> computersForWholes = new ArrayList<>();
 
         while (true) {
             int numOfComputersUsed = sortedCompStorageMap.size();
 
-            //use stripes only when the number of computers available exceeds the number of requested redundancies
             if (numOfComputersUsed <= numOfStripedCopies + numOfWholeCopies) {
                 numOfWholeCopies = numOfComputersUsed;
                 numOfStripes = 0;
                 numOfStripedCopies = 0;
             }
 
-            //don't use stripes if there is only one stripe
             if (numOfStripes == 1) {
                 numOfWholeCopies += numOfStripedCopies;
                 numOfStripes = 0;
                 numOfStripedCopies = 0;
             }
 
-            //dynamic resigning of number of Stripes by number of computers that are on
             if (numOfComputersUsed < (numOfWholeCopies + (numOfStripedCopies * numOfStripes))) {
                 numOfStripes = ((numOfComputersUsed - numOfWholeCopies) / numOfStripedCopies);
             }
 
-            //define how big each stripe should be
             try {
                 sizeOfStripe = ((sizeOfFile / numOfStripes) + 1);
             } catch (Exception e) {
@@ -107,7 +96,6 @@ class DISTAL {
                 sortedCompStorageMap.remove(macAddress);
             }
 
-            //remove any computer that cannot store a stripe
             boolean finalComputerCount = true;
 
             if (sizeOfStripe != 0L) {
@@ -126,7 +114,6 @@ class DISTAL {
 
             }
 
-            //keep dynamically reassigning computers until all listed computers can hold the files that they will be given.
             if (finalComputerCount) {
                 break;
             }
@@ -137,7 +124,6 @@ class DISTAL {
             return;
         }
 
-        //define which computers get stripes
         List<String> computersForStripes = new ArrayList<>();
 
         for (String macAddress : sortedCompStorageMap.keySet()) {
@@ -147,21 +133,16 @@ class DISTAL {
             computersForStripes.add(macAddress);
         }
 
-        //create the list that will be used to distribute the wholes and stripes
         List<List<String>> stripes = new ArrayList<>();
 
-        //first list is for the computers that will receive wholes
         stripes.add(computersForWholes);
 
-        //if only computer is available to hold stripes, then do not use stripes.
-
         if (numOfStripes != 0) {
-            //create a list for each stripe
+
             for (int copy = 0; copy < numOfStripes; copy++) {
                 stripes.add(new ArrayList<>());
             }
 
-            //balancing the number of computers that each stripe is sent to.
             for (int copy = 0; copy < numOfStripedCopies; copy++) {
                 for (int currentStripe = 0; currentStripe < numOfStripes; currentStripe++) {
                     stripes
@@ -171,10 +152,8 @@ class DISTAL {
             }
         }
 
-        //send the files to the respective computers
         sendFiles(stripes, uploadFilePath, sizeOfFile, newName);
 
-        //update the JSON file in order to update the JTree
         JSONUtils.deleteItem(filePathInCatalog + "/" + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distributing)", false);
         JSONUtils.addFileToCatalog(
                 stripes,
@@ -190,19 +169,16 @@ class DISTAL {
         JSONObject catalog = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         String name = catalog.get("currentName").toString();
 
-        //creates a new unique filename
         String alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int incrementReverseIndex = 1;
         StringBuilder toAdd = new StringBuilder();
 
         while (true) {
             try {
-                //advance to the next character.
                 char lastChar = name.charAt(name.length() - incrementReverseIndex);
                 toAdd.append(alphabet.charAt(alphabet.indexOf(lastChar) + 1));
                 break;
             } catch (IndexOutOfBoundsException ioobe) {
-                //if have reached the end of the alphabet, loop back to the beginning and use the next character
                 toAdd.append(alphabet.charAt(0));
                 incrementReverseIndex++;
             }
@@ -227,7 +203,6 @@ class DISTAL {
         } catch (Exception e) {
             sizeOfStripe = 0L;
         }
-        //rename the original file to what the distributed whole file will be
 
         final String sourceFileLocation =
                 sourceFileLocationOld.substring(0, sourceFileLocationOld.lastIndexOf(File.separator) + 1)
@@ -240,7 +215,6 @@ class DISTAL {
                 JSONUtils.getJSONObject(
                         MeshFS.properties.getProperty("repository") + ".manifest.json");
 
-        //create a new thread for each stripe, so all stripes are written simultaneously
         for (int stripe = -1; stripe < (stripes.size() - 1); stripe++) {
             parentThreads.add(
                     new Thread(
@@ -257,7 +231,6 @@ class DISTAL {
             parent.start();
         }
 
-        //wait for all the treads to close
         for (Thread parent : parentThreads) {
             if (parent.isAlive()) {
                 try {
@@ -267,7 +240,6 @@ class DISTAL {
             }
         }
 
-        //delete the original file
         FileUtils.removeFile(sourceFileLocation);
     }
 }
@@ -322,7 +294,6 @@ class sendFilesThreading implements Runnable {
         List<Thread> childThreads = new ArrayList<>();
 
         if (stripe == -1) {
-            //send the wholes
             for (String computerToReceive : stripes.get(stripe + 1)) {
                 Thread child =
                         new Thread(
@@ -355,7 +326,6 @@ class sendFilesThreading implements Runnable {
             }
         } else {
             if (stripe == stripes.size() - 2) {
-                //send the last stripe, taking into account that he the last stripe to usually smaller than other stripes.
                 FileUtils.writeStripe(
                         sourceFileLocation,
                         MeshFS.properties.getProperty("repository") + outName + "_s" + stripe,
@@ -363,7 +333,6 @@ class sendFilesThreading implements Runnable {
                         sizeOfStripe - ((sizeOfStripe * (stripes.size() - 1)) - fileSize));
 
             } else {
-                //send all other stripes
                 FileUtils.writeStripe(
                         sourceFileLocation,
                         MeshFS.properties.getProperty("repository") + outName + "_s" + stripe,
@@ -394,12 +363,10 @@ class sendFilesThreading implements Runnable {
             }
         }
 
-        //send all copies of stripe simultaneously
         for (Thread child : childThreads) {
             child.start();
         }
 
-        //wait for all copies to finish sending before deleting the stripe on the master
         for (Thread child : childThreads) {
             if (child.isAlive()) {
                 try {

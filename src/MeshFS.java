@@ -43,9 +43,7 @@ class MeshFS {
 
     public static void main(String[] args) {
         System.setProperty("java.net.preferIPv4Stack", "true");
-        //check if we already have a config file
         configure = !new File(".config.properties").exists();
-        //load and check for properties
         properties = ConfigParser.loadProperties();
         CliParser cliParser = new CliParser(args);
         Runtime.getRuntime().addShutdownHook(new Thread(new onQuit()));

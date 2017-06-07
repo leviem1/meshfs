@@ -373,7 +373,6 @@ class JSONUtils {
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
 
-        //put something in the map to compare against
         sortedMap.put("temp", -1L);
 
         for (String key : unsortedMap.keySet()) {
@@ -382,7 +381,6 @@ class JSONUtils {
 
             for (String sortedKey : sortedMap.keySet()) {
                 if ((!ascending && storageAmount >= sortedMap.get(sortedKey)) || (ascending && storageAmount <= sortedMap.get(sortedKey))) {
-                    //reorder the map when a storage value is larger than one that is already in the map
                     LinkedHashMap<String, Long> reorderStorageMap =
                             (LinkedHashMap<String, Long>) sortedMap.clone();
                     sortedMap.clear();
