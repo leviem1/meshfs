@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by markhedrick on 5/11/17.
+ * @author Mark Hedrick
  */
 class UserAccount implements Serializable {
     private String username;

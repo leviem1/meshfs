@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
- * Created by markhedrick on 5/10/17.
+ * @author Mark Hedrick
  */
 class Crypt {
     static String generateEncryptedPass(String username, String password) {
