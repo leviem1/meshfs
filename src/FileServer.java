@@ -665,7 +665,7 @@ class ServerInit implements Runnable {
     private void blacklistUser(String itemLocation, String username, Socket client) throws IOException {
         DataOutputStream dos = new DataOutputStream(client.getOutputStream());
         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-        JSONUtils.blacklistUsers(itemLocation, new ArrayList<>(Collections.singletonList(username)), true);
+        JSONUtils.blacklistUsers(itemLocation, new ArrayList<>(Collections.singletonList(username)));
 
         out.println("201");
 

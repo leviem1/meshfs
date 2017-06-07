@@ -535,7 +535,7 @@ class ClientBrowser extends JFrame {
                         e1.printStackTrace();
                     }
                     try {
-                        DriveAPI.uploadFile(tempFile, node.toString(), Files.probeContentType(Paths.get(tempFile.getAbsolutePath())), "root", MeshFS.userUUID);
+                        DriveAPI.uploadFile(tempFile, node.toString(), Files.probeContentType(Paths.get(tempFile.getAbsolutePath())), MeshFS.userUUID);
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     } catch (GeneralSecurityException e1) {

@@ -505,7 +505,6 @@ class FileClient {
      * @param fileName                          the name of the file to check
      * @throws IOException                      on error connecting
      * @throws MalformedRequestException        incorrectly formed request
-     * @throws  IncorrectCredentialException    incorrect current password
      */
     
     static boolean doesFileExist(String serverAddress, int port, String fileName)
