@@ -268,9 +268,9 @@ class FileRestore {
                     if (FileClient.doesFileExist(IP, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), filename)) {
                         return IP;
                     }
-                } catch (MalformedRequestException | IOException e) {
+                } catch (MalformedRequestException e) {
                     e.printStackTrace();
-                }
+                } catch (IOException ignored){}
             }
         }
         return null;
