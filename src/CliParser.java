@@ -126,8 +126,14 @@ class CliParser {
         System.exit(0);
     }
 
+    /**
+     * This method is used to add an admin or guest user on the master.
+     *
+     * @param username  name of user to be created (admin/guest)
+     */
+
     @SuppressWarnings("unchecked")
-    void addUser(String username) throws IOException, ClassNotFoundException {
+    void addUser(String username) {
         if (username.equals("admin")) {
             System.out.println("Adding administrator account...");
             try {
@@ -138,11 +144,7 @@ class CliParser {
             System.out.println("Do you wish to enable the guest account? [Y/n]");
             String response = new Scanner(System.in).nextLine();
             if (response.isEmpty() || response.toLowerCase().equals("y")) {
-                try {
-                    addUser("guest");
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                addUser("guest");
             }
 
             System.out.println("Do you wish to start the server? [Y/n]");
@@ -154,15 +156,68 @@ class CliParser {
                 }
             }
         } else if (username.equals("guest")) {
-            ArrayList<UserAccount> accounts;
+            ArrayList<UserAccount> accounts = new ArrayList<>();
             if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
-                accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-            } else {
-                accounts = new ArrayList<>();
+                try {
+                    accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+                } catch (IOException | ClassNotFoundException ignored) {}
             }
-
             accounts.add(new UserAccount(username, Crypt.generateEncryptedPass("guest", "guest"), "user", new ArrayList<>(Collections.singletonList(username))));
             Crypt.writeAuthFile(accounts);
+        }
+    }
+
+    /**
+     * This method adds a user to a group interactively
+     *
+     * @param username user to add the group to
+     */
+
+    @SuppressWarnings("unchecked")
+    void addGroup(String username) {
+        Scanner input = new Scanner(System.in);
+        while (true) {
+            System.out.print("Group: ");
+            String groupName = new Scanner(System.in).nextLine();
+
+            try {
+                ArrayList<UserAccount> accounts;
+                if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
+                    accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
+                } else {
+                    accounts = new ArrayList<>();
+                }
+
+                if (username.equals("guest")) {
+                    System.out.println("The user guest cannot be modified.");
+                    System.exit(1);
+                }
+                boolean exists = false;
+                for (UserAccount account : accounts) {
+                    if (account.getUsername().equals(username)) {
+                        account.addGroup(groupName);
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    System.out.println("Username " + username + " does not exist!");
+                    System.out.println("Exiting!");
+                    System.exit(1);
+                }
+                Crypt.writeAuthFile(accounts);
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("User group modified!!");
+            System.out.println("Add another group to " + username + "? [y/N]");
+            String response = input.nextLine();
+
+            if (response.isEmpty() || response.toLowerCase().equals("n")) {
+                System.out.println("Exiting!");
+                System.exit(0);
+            }
         }
     }
 
@@ -275,54 +330,6 @@ class CliParser {
             e.printStackTrace();
         }
         System.exit(0);
-    }
-
-    @SuppressWarnings("unchecked")
-    void addGroup(String username) {
-        Scanner input = new Scanner(System.in);
-        while (true) {
-            System.out.print("Group: ");
-            String groupName = new Scanner(System.in).nextLine();
-
-            try {
-                ArrayList<UserAccount> accounts;
-                if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
-                    accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-                } else {
-                    accounts = new ArrayList<>();
-                }
-
-                if (username.equals("guest")) {
-                    System.out.println("The user guest cannot be modified.");
-                    System.exit(1);
-                }
-                boolean exists = false;
-                for (UserAccount account : accounts) {
-                    if (account.getUsername().equals(username)) {
-                        account.addGroup(groupName);
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
-                    System.out.println("Username " + username + " does not exist!");
-                    System.out.println("Exiting!");
-                    System.exit(1);
-                }
-                Crypt.writeAuthFile(accounts);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println("User group modified!!");
-            System.out.println("Add another group to " + username + "? [y/N]");
-            String response = input.nextLine();
-
-            if (response.isEmpty() || response.toLowerCase().equals("n")) {
-                System.out.println("Exiting!");
-                System.exit(0);
-            }
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -527,19 +534,13 @@ class CliParser {
         new File(MeshFS.properties.getProperty("repo") + ".catalog.json").delete();
         new File(MeshFS.properties.getProperty("repo") + ".manifest.json").delete();
         Crypt.writeAuthFile(accounts);
-        try {
-            addUser("admin");
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        addUser("admin");
+
         System.out.println("Do you wish to enable the guest account? [Y/n]");
+
         response = new Scanner(System.in).nextLine();
         if (response.isEmpty() || response.toLowerCase().equals("y")) {
-            try {
-                addUser("guest");
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            addUser("guest");
         }
     }
 }
