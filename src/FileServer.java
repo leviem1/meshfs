@@ -307,7 +307,11 @@ class ServerInit implements Runnable {
             int br;
             byte[] data = new byte[4096];
 
+            client.setSoTimeout(30000);
+
             out.println("201|" + FileUtils.getMD5Hash(MeshFS.properties.getProperty("repository") + filename));
+
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
             while ((br = fis.read(data, 0, data.length)) != -1) {
                 dos.write(data, 0, br);

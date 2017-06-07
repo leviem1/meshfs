@@ -64,12 +64,17 @@ class FileClient {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
             out.println("101|" + MeshFS.properties.getProperty("uuid") + "|" + fileName + "\n");
+
+            client.setSoTimeout(30000);
+
             String response = dis.readLine().trim();
             String[] responseParts = response.split("\\|");
 
             if (response.split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
+
+            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
             int br;
             byte[] data = new byte[4096];
@@ -101,6 +106,11 @@ class FileClient {
     static void sendFile(String serverAddress, int port, String filepath)
             throws IOException, MalformedRequestException {
         String response;
+        String md5 = null;
+
+        try {
+            md5 = FileUtils.getMD5Hash(filepath);
+        } catch (NoSuchAlgorithmException ignored) {}
 
         try (
                 Socket client = new Socket(serverAddress, port);
@@ -111,7 +121,7 @@ class FileClient {
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-            out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "|" + FileUtils.getMD5Hash(filepath) + "\n");
+            out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "|" + md5 + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
@@ -124,7 +134,6 @@ class FileClient {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (NoSuchAlgorithmException ignored) {
         }
     }
 
@@ -143,6 +152,11 @@ class FileClient {
             String serverAddress, int port, String filepath, String userAccount)
             throws IOException, MalformedRequestException {
         String response;
+        String md5 = null;
+
+        try {
+            md5 = FileUtils.getMD5Hash(filepath);
+        } catch (NoSuchAlgorithmException ignored) {}
 
         try (
                 Socket client = new Socket(serverAddress, port);
@@ -151,9 +165,8 @@ class FileClient {
                 DataOutputStream dos = new DataOutputStream(client.getOutputStream());
                 FileInputStream fis = new FileInputStream(filepath)
         ) {
-            client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-            out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "|" + FileUtils.getMD5Hash(filepath) + "|" + userAccount + "\n");
+            out.println("102|" + MeshFS.properties.getProperty("uuid") + "|" + (new File(filepath)).getName() + "|" + md5 + "|" + userAccount + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
@@ -166,7 +179,6 @@ class FileClient {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (NoSuchAlgorithmException ignored) {
         }
     }
 
