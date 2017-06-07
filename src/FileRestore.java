@@ -23,6 +23,7 @@ class FileRestore {
      *
      * @param MACAddress the file path of the file that is to be distributed
      */
+
     static void restoreAllFilesFromComputer(String MACAddress) {
         JSONObject manifest = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json");
         JSONArray filesToRestore = (JSONArray) ((JSONObject) manifest.get(MACAddress)).get("RepoContents");
@@ -64,6 +65,45 @@ class FileRestore {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * This method is used to find all references in the catalog to the specified file.
+     *
+     * @param catalog          the JSONObject of the catalog
+     * @param alphanumericName the unique name of the file
+     * @return returns a list of strings of virtual filePaths
+     */
+
+    static List<String> findFileReferencesInCatalog(JSONObject catalog, String alphanumericName) {
+        return fileReferenceFinderRecursive((JSONObject) catalog.get("root"), alphanumericName, "root");
+    }
+
+    /**
+     * This method is used to remove the corrupted flag from all the specified files.
+     *
+     * @param catalogReferences the list of strings of virtual filePaths of the specified files.
+     */
+
+    static void unCorruptFilesInCatalog(List<String> catalogReferences) {
+        for (String reference : catalogReferences) {
+            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/") + 1, reference.lastIndexOf(" (corrupted)")));
+        }
+    }
+
+    /**
+     * This method is used to find all files that are supposed to be on a computer according to the catalog.
+     *
+     * @param MACAddress the MAC Address of the specified computer
+     * @return returns a list of strings of alphanumeric file names
+     */
+
+    static List<String> getFilesOnComputerFromCatalog(String MACAddress) {
+        JSONObject catalog = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        if (catalog.toString().contains(MACAddress)) {
+            return computerReferenceFinderRecursive(catalog, MACAddress);
+        }
+        return new ArrayList<>();
     }
 
     @SuppressWarnings("unchecked")
@@ -231,17 +271,6 @@ class FileRestore {
         return null;
     }
 
-    /**
-     * This method is used to find all references in the catalog to the specified file.
-     *
-     * @param catalog          the JSONObject of the catalog
-     * @param alphanumericName the unique name of the file
-     * @return returns a list of strings of virtual filePaths
-     */
-    static List<String> findFileReferencesInCatalog(JSONObject catalog, String alphanumericName) {
-        return fileReferenceFinderRecursive((JSONObject) catalog.get("root"), alphanumericName, "root");
-    }
-
     private static List<String> fileReferenceFinderRecursive(JSONObject folder, String alphanumericName, String folderLocation) {
         List<String> references = new ArrayList<>();
         LinkedHashMap<String, String> folderMap = JSONUtils.getMapOfFolderContents(folder, null);
@@ -259,31 +288,6 @@ class FileRestore {
         for (String reference : catalogReferences) {
             JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/") + 1) + " (corrupted)");
         }
-    }
-
-    /**
-     * This method is used to remove the corrupted flag from all the specified files.
-     *
-     * @param catalogReferences the list of strings of virtual filePaths of the specified files.
-     */
-    static void unCorruptFilesInCatalog(List<String> catalogReferences) {
-        for (String reference : catalogReferences) {
-            JSONUtils.renameItem(reference, reference.substring(reference.lastIndexOf("/") + 1, reference.lastIndexOf(" (corrupted)")));
-        }
-    }
-
-    /**
-     * This method is used to find all files that are supposed to be on a computer according to the catalog.
-     *
-     * @param MACAddress the MAC Address of the specified computer
-     * @return returns a list of strings of alphanumeric file names
-     */
-    static List<String> getFilesOnComputerFromCatalog(String MACAddress) {
-        JSONObject catalog = JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
-        if (catalog.toString().contains(MACAddress)) {
-            return computerReferenceFinderRecursive(catalog, MACAddress);
-        }
-        return new ArrayList<>();
     }
 
     private static List<String> computerReferenceFinderRecursive(JSONObject folder, String MACAddress) {
