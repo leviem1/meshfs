@@ -91,8 +91,6 @@ class JSONUtils {
         for (Object key : jsonObject.keySet()) {
             String keyStr = key.toString();
             try {
-                System.out.println("groups: " + ((JSONArray) (((JSONObject) jsonObject.get(keyStr)).get("groups"))));
-                System.out.println("usersgroups: " + user.getGroups());
                 if ((user == null)
                         || (user.getUsername().equals("admin")
                         || ((JSONArray) (((JSONObject) jsonObject.get(keyStr)).get("groups"))).contains("all")
@@ -536,8 +534,6 @@ class JSONUtils {
 
             catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         }
-        System.out.println(catalogBuilder(catalog, user));
-
         return catalogBuilder(catalog, user);
     }
 
