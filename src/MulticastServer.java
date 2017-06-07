@@ -270,6 +270,8 @@ class MulticastServerInit implements Runnable {
             case "153":
                 recordVote(dp.getAddress().toString(), requestParts[1]);
                 break;
+            default:
+                break;
         }
     }
 

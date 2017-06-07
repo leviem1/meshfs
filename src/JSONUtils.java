@@ -96,8 +96,8 @@ class JSONUtils {
      * @param user          the UserAccount object of the user, if null, the folder is read as if the user was an admin
      * @return              a map of the folder's contents
      */
-    @SuppressWarnings("unchecked")
 
+    @SuppressWarnings("unchecked")
     static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, UserAccount user) {
         LinkedHashMap<String, String> contents = new LinkedHashMap<>();
         for (Object key : jsonObject.keySet()) {
@@ -786,15 +786,14 @@ class JSONUtils {
             String catalogString = catalog.toString();
             for (JSONObject file : filesToRemove) {
                 if (!catalogString.contains(file.get("alphanumericName").toString())) {
-                    // actually delete file
                     for (Object infoKey : file.keySet()) {
                         if (infoKey.toString().contains("_")) {
                             for (Object MACAddress : (JSONArray) file.get(infoKey)) {
-                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), file.get("alphanumericName").toString() + "_s" + infoKey.toString().substring(infoKey.toString().indexOf("_") + 1), true);
+                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(), Integer.parseInt(MeshFS.properties.getProperty("portNumber")), file.get("alphanumericName").toString() + "_s" + infoKey.toString().substring(infoKey.toString().indexOf("_") + 1), true);
                             }
                         } else if (infoKey.toString().equals("whole")) {
                             for (Object MACAddress : (JSONArray) file.get(infoKey)) {
-                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(), Integer.valueOf(MeshFS.properties.getProperty("portNumber")), file.get("alphanumericName").toString() + "_w", true);
+                                FileClient.deleteFile(((JSONObject) manifest.get(MACAddress)).get("IP").toString(), Integer.parseInt(MeshFS.properties.getProperty("portNumber")), file.get("alphanumericName").toString() + "_w", true);
                             }
                         }
                     }

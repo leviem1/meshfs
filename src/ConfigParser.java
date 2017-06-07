@@ -94,16 +94,19 @@ class ConfigParser {
 
     private static Properties reader() throws IOException {
         Properties prop = new Properties();
-        InputStream input = new FileInputStream(".config.properties");
-        prop.load(input);
-        if (!(prop.getProperty("repository").substring(prop.getProperty("repository").length() - 1))
-                .equals(File.separator)) {
-            prop.setProperty("repository", prop.getProperty("repository") + File.separator);
-            write(prop);
-        }
 
-        if (prop.getProperty("timeout") == null) prop.setProperty("timeout", "5");
-        input.close();
+        try (
+                InputStream input = new FileInputStream(".config.properties");
+        ) {
+            prop.load(input);
+            if (!(prop.getProperty("repository").substring(prop.getProperty("repository").length() - 1))
+                    .equals(File.separator)) {
+                prop.setProperty("repository", prop.getProperty("repository") + File.separator);
+                write(prop);
+            }
+
+            if (prop.getProperty("timeout") == null) prop.setProperty("timeout", "5");
+        }
         return prop;
     }
 }
