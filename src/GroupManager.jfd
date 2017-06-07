@@ -6,20 +6,21 @@ new FormModel {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			"title": "Group Manager - MeshFS"
+			"$sizePolicy": 1
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "groupTitle"
 					"text": "Group Manager"
-					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 9, false )
 					"horizontalAlignment": 0
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "North"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp groupNameLbl:::p::p, space u:::p, comp groupNameField:::p:186:p, space s:::x, comp submitBtn:::p::p}, seq {par l {comp locationLbl::l:p::p, comp scrollPane1:::p:351:p}, space :0:0:x}, seq t {space :0:0:x, comp removeGroup:::p::p}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp groupNameLbl::b:p::p, comp submitBtn::b:p::p, comp groupNameField::b:p::p}, space u:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p:200:p, space :::p, comp removeGroup:::p::p, space ::17:x}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp groupNameLbl:::p::p, space u:::p, comp groupNameField:::p:186:p, space s:::x, comp submitBtn:::p::p}, seq {par l {comp locationLbl:::p::p, comp scrollPane1:::p:351:p}, space :0:0:x}, seq t {space :0:0:x, comp removeGroup:::p::p}}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp groupNameLbl::b:p::p, comp submitBtn::b:p::p, comp groupNameField::b:p::p}, space u:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p::p, space :::p, comp removeGroup:::p::p, space ::5:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -82,7 +83,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 5, 0 )
-			"size": new java.awt.Dimension( 395, 445 )
+			"size": new java.awt.Dimension( 425, 385 )
 		} )
 	}
 }

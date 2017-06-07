@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.1.0.112" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -10,10 +10,12 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::l::412:x, comp scrollPane2::t::412:x, seq {par l {seq {comp fileNameLbl:::p::p, space :::p, comp fileNameValue:::p::p, space s:::p, comp fileSizeValue:::p:81:p}, seq l {comp creationDateLbl:::p::p, space :::p, comp creationDateValue:::p::p}, comp locationLbl::l:p::p, comp permissionsLbl::l:p:122:p}, space :0:184:x}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, par b {comp fileNameLbl::b:p::p, comp fileNameValue::b:p::p, comp fileSizeValue::b:p::p}, space u:::p, par b {comp creationDateLbl::b:p::p, comp creationDateValue::b:p::p}, space s:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p:62:p, space u:::p, comp permissionsLbl:::p::p, space :::p, comp scrollPane2::::231:x, space :p:33:p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::l::262:x, seq {par l {seq {comp fileNameLbl:::p::p, space :::p, comp fileNameValue:::p::p, space s:::p, comp fileSizeValue:::p:81:p}, seq l {comp creationDateLbl:::p::p, space :::p, comp creationDateValue:::p::p}, comp locationLbl::l:p::p, comp permissionsLbl::l:p:122:p}, space :0:47:x}, comp scrollPane2::t::262:x}, space :::p}}"
+					"$verticalGroup": "par l {seq l {space :::p, par b {comp fileNameLbl::b:p::p, comp fileNameValue::b:p::p, comp fileSizeValue::b:p::p}, space u:::p, par b {comp creationDateLbl::b:p::p, comp creationDateValue::b:p::p}, space s:::p, comp locationLbl:::p::p, space :::p, comp scrollPane1:::p:62:p, space u:::p, comp permissionsLbl:::p::p, space :::p, comp scrollPane2:::p:165:p, space :::x}}"
 				} ) {
 					name: "contentPanel"
+					"minimumSize": new java.awt.Dimension( 227, 325 )
+					"preferredSize": new java.awt.Dimension( 274, 415 )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "fileNameLbl"
 						"text": "Item Name:"
@@ -108,17 +110,17 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "titleLbl"
 					"text": "File Properties"
-					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 9, false )
 					"horizontalAlignment": 0
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "North"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
-				"value": "South"
+				"value": "Center"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 300, 405 )
+			"size": new java.awt.Dimension( 300, 470 )
 		} )
 	}
 }

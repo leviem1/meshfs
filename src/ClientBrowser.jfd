@@ -6,12 +6,13 @@ new FormModel {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
 			"title": "MeshFS - Client Browser"
+			"$sizePolicy": 1
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq t {comp scrollPane1:::p:408:p, space :::p, comp panel1:::p::p, space :::x}}"
-					"$verticalGroup": "par l {seq {par l {comp scrollPane1::::449:x, comp panel1:::::x}, space :::p}}"
+					"$horizontalGroup": "par l {seq t {comp scrollPane1::::471:x, space u:::p, par l {comp uploadBtn::t:p:110:p, comp newDirBtn::t:p:110:p, comp downloadAsBtn::t:p:110:p}, space :::p}}"
+					"$verticalGroup": "par l {seq {comp uploadBtn:::p:33:p, space s:::p, comp newDirBtn:::p:33:p, space s:::p, comp downloadAsBtn:::p:33:p, space ::212:x}, comp scrollPane1::l::347:x}"
 				} ) {
 					name: "contentPanel"
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -24,26 +25,20 @@ new FormModel {
 							}
 						} )
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l:::p {comp newDirBtn::l:::x, comp downloadAsBtn::l:::x, comp uploadBtn::l:::x}, space ::9:x}}"
-						"$verticalGroup": "par l {seq l {space :::p, comp uploadBtn:::p:33:p, space :::p, comp newDirBtn:::p::p, space :::p, comp downloadAsBtn:::p:33:p, space ::336:x}}"
-					} ) {
-						name: "panel1"
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "uploadBtn"
-							"text": "Upload..."
-							"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "newDirBtn"
-							"text": "New Folder"
-							"font": #SwingDerivedFont0
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "downloadAsBtn"
-							"text": "Save As..."
-							"font": #SwingDerivedFont0
-						} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "uploadBtn"
+						"text": "Upload..."
+						"font": &SwingDerivedFont0 new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 1, false )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "newDirBtn"
+						"text": "New Folder"
+						"font": #SwingDerivedFont0
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "downloadAsBtn"
+						"text": "Save As..."
+						"font": #SwingDerivedFont0
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -95,8 +90,8 @@ new FormModel {
 				"value": "Center"
 			} )
 		}, new FormLayoutConstraints( null ) {
-			"location": new java.awt.Point( 74, 4 )
-			"size": new java.awt.Dimension( 383, 378 )
+			"location": new java.awt.Point( 90, 225 )
+			"size": new java.awt.Dimension( 625, 440 )
 		} )
 	}
 }
