@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "6.0.0.0.84" Java: "1.8.0_112-release" encoding: "UTF-8"
+JFDML JFormDesigner: "6.0.1.0.112" Java: "1.8.0_112-release" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -10,7 +10,7 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {comp label1::::562:x, comp configValuesPane:::::x, seq l {comp serverIdentifierLbl:::p::p, space :::p, comp serverIdentifierField::::480:x}}, space :::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {comp label1::::362:x, comp configValuesPane:::::x, seq l {comp serverIdentifierLbl:::p::p, space :::p, comp serverIdentifierField::::290:x}}, space :::p}}"
 					"$verticalGroup": "par l {seq l {space :::p, comp label1:::p::p, space u:::p, comp configValuesPane:::p:174:p, space :::p, par b {comp serverIdentifierLbl::b:p::p, comp serverIdentifierField::b:p::p}, space :::x}}"
 				} ) {
 					name: "contentPanel"
@@ -65,7 +65,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "titleLbl"
 					"text": "Config Parameters"
-					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 7, false )
 					"horizontalAlignment": 0
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "North"

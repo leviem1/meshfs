@@ -52,8 +52,8 @@ class ChangeUserGroup extends JFrame {
         panel3 = new JPanel();
         addGroupLbl = new JLabel();
         userGroupBox = new JComboBox();
-        removeMembershipBtn = new JButton();
         addGroupBtn = new JButton();
+        removeMembershipBtn = new JButton();
         buttonBar = new JPanel();
         okButton = new JButton();
 
@@ -129,42 +129,49 @@ class ChangeUserGroup extends JFrame {
                             userGroupBox.setFont(new Font("Arial", userGroupBox.getFont().getStyle(), userGroupBox.getFont().getSize() + 1));
                             userGroupBox.setEditable(true);
 
-                            //---- removeMembershipBtn ----
-                            removeMembershipBtn.setText("-");
-                            removeMembershipBtn.setFont(new Font("Arial", removeMembershipBtn.getFont().getStyle(), removeMembershipBtn.getFont().getSize() + 1));
-
                             //---- addGroupBtn ----
                             addGroupBtn.setText("+");
                             addGroupBtn.setFont(new Font("Arial", addGroupBtn.getFont().getStyle(), addGroupBtn.getFont().getSize() + 1));
+                            addGroupBtn.setPreferredSize(new Dimension(38, 38));
+                            addGroupBtn.setMinimumSize(new Dimension(37, 37));
+                            addGroupBtn.setMaximumSize(new Dimension(37, 37));
+
+                            //---- removeMembershipBtn ----
+                            removeMembershipBtn.setText("-");
+                            removeMembershipBtn.setFont(new Font("Arial", removeMembershipBtn.getFont().getStyle(), removeMembershipBtn.getFont().getSize() + 1));
+                            removeMembershipBtn.setMaximumSize(new Dimension(37, 37));
+                            removeMembershipBtn.setMinimumSize(new Dimension(37, 37));
+                            removeMembershipBtn.setPreferredSize(new Dimension(37, 37));
 
                             GroupLayout panel3Layout = new GroupLayout(panel3);
                             panel3.setLayout(panel3Layout);
                             panel3Layout.setHorizontalGroup(
-                                    panel3Layout.createParallelGroup()
+                                panel3Layout.createParallelGroup()
+                                    .addGroup(panel3Layout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addGroup(panel3Layout.createParallelGroup()
                                             .addGroup(panel3Layout.createSequentialGroup()
-                                                    .addContainerGap()
-                                                    .addGroup(panel3Layout.createParallelGroup()
-                                                            .addGroup(panel3Layout.createSequentialGroup()
-                                                                    .addComponent(addGroupLbl, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-                                                                    .addContainerGap(159, Short.MAX_VALUE))
-                                                            .addGroup(panel3Layout.createSequentialGroup()
-                                                                    .addComponent(userGroupBox, GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                                                                    .addGap(3, 3, 3)
-                                                                    .addComponent(addGroupBtn)
-                                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                    .addComponent(removeMembershipBtn))))
+                                                .addComponent(addGroupLbl, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                                .addContainerGap(145, Short.MAX_VALUE))
+                                            .addGroup(panel3Layout.createSequentialGroup()
+                                                .addComponent(userGroupBox, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(addGroupBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(removeMembershipBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addGap(3, 3, 3))))
                             );
                             panel3Layout.setVerticalGroup(
-                                    panel3Layout.createParallelGroup()
-                                            .addGroup(panel3Layout.createSequentialGroup()
-                                                    .addContainerGap()
-                                                    .addComponent(addGroupLbl)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                            .addComponent(userGroupBox, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-                                                            .addComponent(removeMembershipBtn)
-                                                            .addComponent(addGroupBtn))
-                                                    .addContainerGap(8, Short.MAX_VALUE))
+                                panel3Layout.createParallelGroup()
+                                    .addGroup(panel3Layout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(addGroupLbl)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(userGroupBox, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(addGroupBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(removeMembershipBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             );
                         }
                         panel2.add(panel3, BorderLayout.SOUTH);
@@ -175,32 +182,32 @@ class ChangeUserGroup extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout.createParallelGroup()
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addComponent(changeUserGroupTitle, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addGroup(contentPanelLayout.createParallelGroup()
-                                                .addComponent(changeUserGroupTitle, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addContainerGap()
-                                                        .addComponent(currentGroupsLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(newGroupsLbl, GroupLayout.PREFERRED_SIZE, 225, GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(25, 25, 25)))
-                                        .addContainerGap())
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(splitPane1, GroupLayout.PREFERRED_SIZE, 512, GroupLayout.PREFERRED_SIZE)
-                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addContainerGap()
+                                    .addComponent(currentGroupsLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(newGroupsLbl, GroupLayout.PREFERRED_SIZE, 225, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(19, 19, 19)))
+                            .addContainerGap())
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(splitPane1, GroupLayout.PREFERRED_SIZE, 512, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addComponent(changeUserGroupTitle)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(currentGroupsLbl)
-                                                .addComponent(newGroupsLbl))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE))
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addComponent(changeUserGroupTitle)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(currentGroupsLbl)
+                                .addComponent(newGroupsLbl))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -209,15 +216,15 @@ class ChangeUserGroup extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -337,8 +344,8 @@ class ChangeUserGroup extends JFrame {
     private JPanel panel3;
     private JLabel addGroupLbl;
     private JComboBox userGroupBox;
-    private JButton removeMembershipBtn;
     private JButton addGroupBtn;
+    private JButton removeMembershipBtn;
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

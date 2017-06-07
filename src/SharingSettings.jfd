@@ -11,7 +11,7 @@ new FormModel {
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {seq l {space :::p, par l {comp scrollPane2::::242:x, seq {comp fileNameLbl:::p:159:p, space :0:83:x}, seq l {comp addGroupBox::::146:x, space u:::p, comp addGroupBtn:::p::p, space :::p, comp removeGroupBtn:::p:40:p}}, space :::p}}"
-					"$verticalGroup": "par l {seq l {space :::p, comp fileNameLbl:::p::p, space u:::p, comp scrollPane2:::p::p, space s:::p, par b {comp removeGroupBtn::b:p:32:p, comp addGroupBtn::b:p::p, comp addGroupBox::b:p::p}, space ::22:x}}"
+					"$verticalGroup": "par l {seq l {space :::p, comp fileNameLbl:::p::p, space u:::p, comp scrollPane2:::p::p, space s:::p, par b {comp removeGroupBtn::b:p:32:p, comp addGroupBtn::b:p::p, comp addGroupBox::b:p::p}, space ::19:x}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormComponent( "javax.swing.JLabel" ) {
@@ -66,7 +66,7 @@ new FormModel {
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "titleLbl"
 					"text": "Sharing Settings"
-					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 5, false )
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Arial", 0, 7, false )
 					"horizontalAlignment": 0
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "North"
