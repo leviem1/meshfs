@@ -11,7 +11,9 @@ import java.util.Enumeration;
 /**
  * @author Mark Hedrick
  */
+
 class MoveFileWindow extends JFrame {
+
     private static JFrame moveFileWindow;
     private final String currentJsonPath;
     private final String serverAddress;
@@ -19,15 +21,6 @@ class MoveFileWindow extends JFrame {
     private final String userAccount;
     private final String fileName;
     private JSONObject catalogObj;
-    //GEN-BEGIN:variables
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JScrollPane scrollPane1;
-    private JTree tree1;
-    private JPanel buttonBar;
-    private JButton okButton;
-    private JLabel label1;
-    //GEN-END:variables
 
     private MoveFileWindow(
             String fileName,
@@ -36,19 +29,19 @@ class MoveFileWindow extends JFrame {
             int port,
             String userAccount,
             JSONObject catalogObj) {
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setResizable(false);
-
-        if (Reporting.getSystemOS().contains("Windows")) {
-            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-        }
-
         this.currentJsonPath = currentJsonPath;
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
         this.fileName = fileName;
         this.catalogObj = catalogObj;
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        if (Reporting.getSystemOS().contains("Windows")) {
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
 
         initComponents();
         frameListeners();
@@ -60,19 +53,6 @@ class MoveFileWindow extends JFrame {
         setTitle("Move - " + fileName);
 
         tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-    }
-
-    public static void run(
-            String fileName,
-            String filePath,
-            String serverAddress,
-            int port,
-            JFrame sender,
-            String userAccount,
-            JSONObject catalogObj) {
-        moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount, catalogObj);
-        CenterWindow.centerOnWindow(sender, moveFileWindow);
-        moveFileWindow.setVisible(true);
     }
 
     private void initComponents() {
@@ -241,5 +221,27 @@ class MoveFileWindow extends JFrame {
                 });
     }
 
+    public static void run(
+            String fileName,
+            String filePath,
+            String serverAddress,
+            int port,
+            JFrame sender,
+            String userAccount,
+            JSONObject catalogObj) {
+        moveFileWindow = new MoveFileWindow(fileName, filePath, serverAddress, port, userAccount, catalogObj);
+        CenterWindow.centerOnWindow(sender, moveFileWindow);
+        moveFileWindow.setVisible(true);
+    }
+
+    //GEN-BEGIN:variables
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JScrollPane scrollPane1;
+    private JTree tree1;
+    private JPanel buttonBar;
+    private JButton okButton;
+    private JLabel label1;
+    //GEN-END:variables
 
 }

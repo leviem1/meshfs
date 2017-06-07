@@ -10,51 +10,30 @@ import java.util.ArrayList;
 /**
  * @author Mark Hedrick
  */
+
 class ClientBrowserFileProperties extends JFrame {
+
     private final DefaultListModel model;
     private final DefaultListModel permModel;
     private static JFrame clientBrowserFileProperties;
-    private String userAccount;
     private String serverAddress;
     private int port;
     private ArrayList<String> groupData;
-    private ArrayList<String> adminData;
-    private ArrayList<String> blacklistData;
     private String itemPath;
 
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel fileNameLbl;
-    private JLabel fileNameValue;
-    private JLabel fileSizeValue;
-    private JLabel creationDateLbl;
-    private JLabel creationDateValue;
-    private JLabel locationLbl;
-    private JScrollPane scrollPane1;
-    private JList locationList;
-    private JLabel permissionsLbl;
-    private JScrollPane scrollPane2;
-    private JList permissionList;
-    private JPanel buttonBar;
-    private JButton shareBtn;
-    private JButton okButton;
-    private JLabel titleLbl;
-    //GEN-END:variables
-
     private ClientBrowserFileProperties(JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath, JSONObject userObj) {
-        this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
         this.itemPath = itemPath;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+
         if (Reporting.getSystemOS().contains("Windows")) {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
+        
 
         model = new DefaultListModel();
         permModel = new DefaultListModel();
@@ -87,14 +66,14 @@ class ClientBrowserFileProperties extends JFrame {
                 groupData.add((String) group);
             }
         }
-        adminData = new ArrayList<>();
+        ArrayList<String> adminData = new ArrayList<>();
         if (admins != null) {
             for (Object admin : admins) {
                 adminData.add((String) admin);
             }
         }
 
-        blacklistData = new ArrayList<>();
+        ArrayList<String> blacklistData = new ArrayList<>();
         if (blacklist != null) {
             for (Object aBlacklist : blacklist) {
                 blacklistData.add((String) aBlacklist);
@@ -146,12 +125,6 @@ class ClientBrowserFileProperties extends JFrame {
 
         model.add(pos, "Stripes: " + stripes);
         model.add(pos, "Wholes: " + wholes);
-    }
-
-    public static void run(JFrame sender, JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath, JSONObject userObj) {
-        clientBrowserFileProperties = new ClientBrowserFileProperties(itemContents, userAccount, serverAddress, port, itemPath, userObj);
-        CenterWindow.centerOnWindow(sender, clientBrowserFileProperties);
-        clientBrowserFileProperties.setVisible(true);
     }
 
     private void initComponents(String fileName, String fileSize, String creationDate) {
@@ -322,7 +295,35 @@ class ClientBrowserFileProperties extends JFrame {
 
     private void frameListeners() {
         okButton.addActionListener(e -> dispose());
-        shareBtn.addActionListener(e -> SharingSettings.run(clientBrowserFileProperties, userAccount, serverAddress, port, groupData, adminData, itemPath));
+        shareBtn.addActionListener(e -> SharingSettings.run(clientBrowserFileProperties, serverAddress, port, groupData, itemPath));
 
     }
+
+    public static void run(JFrame sender, JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath, JSONObject userObj) {
+        clientBrowserFileProperties = new ClientBrowserFileProperties(itemContents, userAccount, serverAddress, port, itemPath, userObj);
+        CenterWindow.centerOnWindow(sender, clientBrowserFileProperties);
+        clientBrowserFileProperties.setVisible(true);
+    }
+
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel fileNameLbl;
+    private JLabel fileNameValue;
+    private JLabel fileSizeValue;
+    private JLabel creationDateLbl;
+    private JLabel creationDateValue;
+    private JLabel locationLbl;
+    private JScrollPane scrollPane1;
+    private JList locationList;
+    private JLabel permissionsLbl;
+    private JScrollPane scrollPane2;
+    private JList permissionList;
+    private JPanel buttonBar;
+    private JButton shareBtn;
+    private JButton okButton;
+    private JLabel titleLbl;
+    //GEN-END:variables
+
 }

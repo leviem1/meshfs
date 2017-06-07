@@ -6,26 +6,34 @@ import java.awt.*;
 /**
  * @author Mark Hedrick
  */
+
 class GroupManager extends JFrame {
+
     private static JFrame groupManager;
     private final DefaultListModel model;
     private static JComboBox groupBox;
 
     public GroupManager(JComboBox groupBox) {
-
         GroupManager.groupBox = groupBox;
-        model = new DefaultListModel();
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+
+        if (Reporting.getSystemOS().contains("Windows")) {
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
+
+        initComponents();
+        frameListeners();
+
+        model = new DefaultListModel();
+
         if (groupBox.getItemCount() > 0) {
             for (int x = 0; x < groupBox.getModel().getSize(); x++) {
                 model.add(model.getSize(), groupBox.getItemAt(x));
 
             }
         }
-        initComponents();
-        frameListeners();
-
     }
 
     private void initComponents() {
@@ -154,16 +162,6 @@ class GroupManager extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
-    public static void run(JFrame sender, JComboBox groupBox) {
-        groupManager = new GroupManager(groupBox);
-        if (!(sender == null)) {
-            CenterWindow.centerOnWindow(sender, groupManager);
-        } else {
-            CenterWindow.centerOnScreen(groupManager);
-        }
-        groupManager.setVisible(true);
-    }
-
     private void frameListeners() {
         submitBtn.addActionListener(
                 actionEvent -> {
@@ -202,6 +200,15 @@ class GroupManager extends JFrame {
                 });
     }
 
+    public static void run(JFrame sender, JComboBox groupBox) {
+        groupManager = new GroupManager(groupBox);
+        if (!(sender == null)) {
+            CenterWindow.centerOnWindow(sender, groupManager);
+        } else {
+            CenterWindow.centerOnScreen(groupManager);
+        }
+        groupManager.setVisible(true);
+    }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
@@ -218,4 +225,5 @@ class GroupManager extends JFrame {
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

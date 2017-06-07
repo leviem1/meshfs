@@ -15,29 +15,11 @@ import java.util.Arrays;
 /**
  * @author Mark Hedrick
  */
+
 class ClientModeConfiguration extends JFrame {
 
     private static JFrame clientModeConfiguration;
     private final boolean runType;
-
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel serverAddressLbl;
-    private JLabel serverPortLbl;
-    private JLabel passwordLbl;
-    private JFormattedTextField serverPortField;
-    private JPasswordField passwordField;
-    private JLabel usernameLbl;
-    private JTextField usernameField;
-    private JCheckBox bindAnonymouslyCheckBox;
-    private JComboBox serverAddressField;
-    private JPanel buttonBar;
-    private JButton backBtn;
-    private JButton okButton;
-    private JLabel titleLbl;
-    //GEN-END:variables
 
     private ClientModeConfiguration(String serverAddress, boolean runType) {
         this.runType = runType;
@@ -49,6 +31,10 @@ class ClientModeConfiguration extends JFrame {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
 
+
+        initComponents();
+        frameListeners();
+
         ArrayList<Object> multicastServers = new ArrayList<>();
         for (int i = 0; i < 1; i++) {
             multicastServers.addAll(Arrays.asList(MeshFS.multicastServer.getFoundMasters().toArray()));
@@ -58,23 +44,9 @@ class ClientModeConfiguration extends JFrame {
                 e.printStackTrace();
             }
         }
-
-        initComponents();
-        frameListeners();
-
         serverAddressField.setSelectedItem(serverAddress);
         serverAddressField.setModel(new DefaultComboBoxModel(multicastServers.toArray()));
 
-    }
-
-    public static void run(JFrame sender, String serverAddress, boolean runType) {
-        clientModeConfiguration = new ClientModeConfiguration(serverAddress, runType);
-        if (!(sender == null)) {
-            CenterWindow.centerOnWindow(sender, clientModeConfiguration);
-        } else {
-            CenterWindow.centerOnScreen(clientModeConfiguration);
-        }
-        clientModeConfiguration.setVisible(true);
     }
 
     private void initComponents() {
@@ -402,5 +374,34 @@ class ClientModeConfiguration extends JFrame {
         }
         return "-1";
     }
+
+    public static void run(JFrame sender, String serverAddress, boolean runType) {
+        clientModeConfiguration = new ClientModeConfiguration(serverAddress, runType);
+        if (!(sender == null)) {
+            CenterWindow.centerOnWindow(sender, clientModeConfiguration);
+        } else {
+            CenterWindow.centerOnScreen(clientModeConfiguration);
+        }
+        clientModeConfiguration.setVisible(true);
+    }
+
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel serverAddressLbl;
+    private JLabel serverPortLbl;
+    private JLabel passwordLbl;
+    private JFormattedTextField serverPortField;
+    private JPasswordField passwordField;
+    private JLabel usernameLbl;
+    private JTextField usernameField;
+    private JCheckBox bindAnonymouslyCheckBox;
+    private JComboBox serverAddressField;
+    private JPanel buttonBar;
+    private JButton backBtn;
+    private JButton okButton;
+    private JLabel titleLbl;
+    //GEN-END:variables
 
 }

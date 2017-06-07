@@ -8,36 +8,26 @@ import java.awt.*;
 /**
  * @author Mark Hedrick
  */
+
 class GreetingsWindow extends JFrame {
 
     private static JFrame greetingsWindow;
     private final boolean runType;
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel titleLbl;
-    private JScrollPane scrollPane1;
-    private JTextPane greetingsPane;
-    private JPanel buttonBar;
-    private JButton quitButton;
-    private JButton configBtn;
-    //GEN-END:variables
-
     private GreetingsWindow(boolean runType) {
+        this.runType = runType;
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
-        toFront();
 
         if (Reporting.getSystemOS().contains("Windows")) {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
 
-        this.runType = runType;
-
         initComponents();
         frameListeners();
+
+        toFront();
 
         if (!runType) {
             configBtn.setText("Continue...");
@@ -49,16 +39,6 @@ class GreetingsWindow extends JFrame {
         SimpleAttributeSet centerAttribute = new SimpleAttributeSet();
         StyleConstants.setAlignment(centerAttribute, StyleConstants.ALIGN_CENTER);
         document.setParagraphAttributes(0, document.getLength(), centerAttribute, false);
-    }
-
-    public static void run(boolean runType, JFrame sender) {
-        greetingsWindow = new GreetingsWindow(runType);
-        if (!(sender == null)) {
-            CenterWindow.centerOnWindow(sender, greetingsWindow);
-        } else {
-            CenterWindow.centerOnScreen(greetingsWindow);
-        }
-        greetingsWindow.setVisible(true);
     }
 
     private void initComponents() {
@@ -174,5 +154,27 @@ class GreetingsWindow extends JFrame {
         InitialConfiguration.run(greetingsWindow);
         dispose();
     }
+
+    public static void run(boolean runType, JFrame sender) {
+        greetingsWindow = new GreetingsWindow(runType);
+        if (!(sender == null)) {
+            CenterWindow.centerOnWindow(sender, greetingsWindow);
+        } else {
+            CenterWindow.centerOnScreen(greetingsWindow);
+        }
+        greetingsWindow.setVisible(true);
+    }
+
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel titleLbl;
+    private JScrollPane scrollPane1;
+    private JTextPane greetingsPane;
+    private JPanel buttonBar;
+    private JButton quitButton;
+    private JButton configBtn;
+    //GEN-END:variables
 
 }

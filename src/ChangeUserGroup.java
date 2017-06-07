@@ -3,15 +3,13 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.IOException;
 import java.util.*;
-/*
- * Created by JFormDesigner on Wed May 17 19:49:53 MDT 2017
- */
-
 
 /**
  * @author Mark Hedrick
  */
+
 class ChangeUserGroup extends JFrame {
+
     private static JFrame changeUserGroup;
     private String userAccount;
     private String serverAddress;
@@ -20,20 +18,20 @@ class ChangeUserGroup extends JFrame {
     private final DefaultListModel newGroupModel;
 
     public ChangeUserGroup(String userAccount, String serverAddress, int port) {
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
-        currentGroupModel = new DefaultListModel();
-        newGroupModel = new DefaultListModel();
+
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         initComponents();
         frameListeners();
 
+        currentGroupModel = new DefaultListModel();
+        newGroupModel = new DefaultListModel();
+
         updateGroupInfo();
-
-
     }
 
     private void initComponents() {
@@ -344,4 +342,5 @@ class ChangeUserGroup extends JFrame {
     private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

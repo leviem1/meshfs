@@ -11,40 +11,33 @@ import java.util.Map;
 /**
  * @author Mark Hedrick
  */
+
 class RenameFileWindow extends JFrame {
+
     private final String serverAddress;
     private final int port;
     private final String jsonObj;
     private final String userAccount;
     private final String originalName;
-    private JSONObject catalogObj;
-    //GEN-BEGIN:variables
-    private JLabel currentNameValue;
-    private JTextField newNameValueField;
-    private JPanel buttonBar;
-    private JButton okButton;
-    //GEN-END:variables
 
     private RenameFileWindow(
             String serverAddress,
             int port,
             String jsonObj,
             String currentName,
-            String userAccount,
-            JSONObject catalogObj) {
+            String userAccount) {
+        this.serverAddress = serverAddress;
+        this.port = port;
+        this.jsonObj = jsonObj;
+        this.userAccount = userAccount;
+        this.originalName = currentName;
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         if (Reporting.getSystemOS().contains("Windows")) {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
-
-        this.serverAddress = serverAddress;
-        this.port = port;
-        this.jsonObj = jsonObj;
-        this.userAccount = userAccount;
-        this.originalName = currentName;
-        this.catalogObj = catalogObj;
 
         initComponents();
         frameListeners();
@@ -62,21 +55,6 @@ class RenameFileWindow extends JFrame {
         newNameValueField.setSelectionStart(0);
         newNameValueField.setSelectionEnd(beginningExtension);
         okButton.setEnabled(false);
-    }
-
-    public static void run(
-            String serverAddress,
-            int port,
-            JFrame sender,
-            String jsonObj,
-            String currentName,
-            String userAccount,
-            JSONObject catalogObj) {
-        JFrame renameFileWindow =
-                new RenameFileWindow(
-                        serverAddress, port, jsonObj, currentName, userAccount, catalogObj);
-        CenterWindow.centerOnWindow(sender, renameFileWindow);
-        renameFileWindow.setVisible(true);
     }
 
     private void initComponents() {
@@ -306,4 +284,26 @@ class RenameFileWindow extends JFrame {
                     dispose();
                 });
     }
+
+    public static void run(
+            String serverAddress,
+            int port,
+            JFrame sender,
+            String jsonObj,
+            String currentName,
+            String userAccount) {
+        JFrame renameFileWindow =
+                new RenameFileWindow(
+                        serverAddress, port, jsonObj, currentName, userAccount);
+        CenterWindow.centerOnWindow(sender, renameFileWindow);
+        renameFileWindow.setVisible(true);
+    }
+
+    //GEN-BEGIN:variables
+    private JLabel currentNameValue;
+    private JTextField newNameValueField;
+    private JPanel buttonBar;
+    private JButton okButton;
+    //GEN-END:variables
+
 }

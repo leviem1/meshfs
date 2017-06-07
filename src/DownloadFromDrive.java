@@ -13,35 +13,30 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-/*
- * Created by JFormDesigner on Fri Jun 02 08:36:58 MDT 2017
- */
-
 
 /**
  * @author Mark Hedrick
  */
+
 class DownloadFromDrive extends JFrame {
 
     private static JFrame downloadFromDrive;
     private final String serverAddress;
     private final int port;
     private JSONObject masterJSON;
-    private JSONObject root;
     private String username;
-    private JFrame sender;
 
-
-    public DownloadFromDrive(String serverAddress, int port, String username, JFrame sender) {
+    public DownloadFromDrive(String serverAddress, int port, String username) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.username = username;
-        this.sender = sender;
 
         masterJSON = new JSONObject();
-        root = new JSONObject();
+        JSONObject root = new JSONObject();
 
         initComponents();
+        frameListeners();
+
         try {
             root.put("type", "directory");
             root.put("ID", "root");
@@ -58,7 +53,7 @@ class DownloadFromDrive extends JFrame {
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
-        frameListeners();
+
     }
 
     private void initComponents() {
@@ -233,7 +228,7 @@ class DownloadFromDrive extends JFrame {
     }
 
     public static void run(String serverAddress, int port, JFrame sender, String username) {
-        downloadFromDrive = new DownloadFromDrive(serverAddress, port, username, sender);
+        downloadFromDrive = new DownloadFromDrive(serverAddress, port, username);
         CenterWindow.centerOnWindow(sender, downloadFromDrive);
         downloadFromDrive.setVisible(true);
     }
@@ -249,4 +244,5 @@ class DownloadFromDrive extends JFrame {
     private JButton downloadBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }

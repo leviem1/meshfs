@@ -24,8 +24,8 @@ import java.util.TimerTask;
 /**
  * @author Mark Hedrick
  */
-class
-ClientBrowser extends JFrame {
+
+class ClientBrowser extends JFrame {
 
     private static JFrame clientBrowser;
     private final String serverAddress;
@@ -46,43 +46,25 @@ ClientBrowser extends JFrame {
     private JMenuItem sendToDriveBtn;
     private JMenuItem blacklistUserBtn;
 
-
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JScrollPane scrollPane1;
-    private JTree tree1;
-    private JPanel panel1;
-    private JButton uploadBtn;
-    private JButton newDirBtn;
-    private JButton downloadAsBtn;
-    private JPanel buttonBar;
-    private JButton logoutBtn;
-    private JButton optionsBtn;
-    private JButton saveFromDriveBtn;
-    private JLabel statusLbl;
-    private JButton quitBtn;
-    //GEN-END:variables
-
     private ClientBrowser(
             String serverAddress, int port, String userAccount, JSONObject catalogObj, boolean previousRunType) {
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
-
-        if (Reporting.getSystemOS().contains("Windows")) {
-            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
-        }
         this.serverAddress = serverAddress;
         this.port = port;
         this.userAccount = userAccount;
         this.catalogObj = catalogObj;
         this.previousRunType = previousRunType;
 
-        catalogTimer = new java.util.Timer();
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        if (Reporting.getSystemOS().contains("Windows")) {
+            setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
+        }
 
         initComponents();
+        frameListeners();
 
+        catalogTimer = new java.util.Timer();
         tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
         TimerTask catalogCheck =
@@ -100,6 +82,7 @@ ClientBrowser extends JFrame {
                         }
                     }
                 };
+
         catalogTimer.scheduleAtFixedRate(catalogCheck, 0, 500);
         uploadBtn.requestFocus();
 
@@ -110,23 +93,6 @@ ClientBrowser extends JFrame {
         propertiesBtn = new JMenuItem("Properties");
         sendToDriveBtn = new JMenuItem("Send to My Drive");
         blacklistUserBtn = new JMenuItem("Hide this File");
-
-
-        frameListeners();
-
-    }
-
-    public static void run(
-            String serverAddress,
-            int port,
-            JFrame sender,
-            String userAccount,
-            JSONObject catalogObj,
-            boolean previousRunType) {
-
-        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogObj, previousRunType);
-        CenterWindow.centerOnWindow(sender, clientBrowser);
-        clientBrowser.setVisible(true);
     }
 
     private void initComponents() {
@@ -286,6 +252,57 @@ ClientBrowser extends JFrame {
     }
 
     private void frameListeners() {
+        MouseAdapter ma = new MouseAdapter() {
+            private void myPopupEvent(MouseEvent e) {
+                int x = e.getX();
+                int y = e.getY();
+                JTree tree = (JTree) e.getSource();
+                TreePath path = tree.getPathForLocation(x, y);
+                java.util.List<Object> treeList = Arrays.asList(path.getPath());
+                StringBuilder jsonPath = new StringBuilder();
+                for (Object item : treeList) {
+                    jsonPath.append(item.toString()).append("/");
+                }
+                JSONObject contents = JSONUtils.getItemContents(catalogObj, jsonPath.toString());
+                String type = contents.get("type").toString();
+
+                if (type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")) {
+                    rightClickMenu = new JPopupMenu();
+                    rightClickMenu.add(renameBtn);
+                    rightClickMenu.add(moveBtn);
+                    rightClickMenu.add(duplicateBtn);
+                    rightClickMenu.add(new JPopupMenu.Separator());
+                    rightClickMenu.add(removeBtn);
+                    rightClickMenu.add(blacklistUserBtn);
+                    rightClickMenu.add(sendToDriveBtn);
+                    rightClickMenu.add(new JPopupMenu.Separator());
+                    rightClickMenu.add(propertiesBtn);
+                    if (path == null) return;
+                    tree.setSelectionPath(path);
+                    rightClickMenu.show(tree, x, y);
+                } else if (type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")) {
+                    rightClickMenu = new JPopupMenu();
+                    rightClickMenu.add(renameBtn);
+                    rightClickMenu.add(moveBtn);
+                    rightClickMenu.add(duplicateBtn);
+                    rightClickMenu.add(new JPopupMenu.Separator());
+                    rightClickMenu.add(removeBtn);
+                    rightClickMenu.add(new JPopupMenu.Separator());
+                    rightClickMenu.add(propertiesBtn);
+                    if (path == null) return;
+                    tree.setSelectionPath(path);
+                    rightClickMenu.show(tree, x, y);
+                }
+            }
+
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) myPopupEvent(e);
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) myPopupEvent(e);
+            }
+        };
         uploadBtn.addActionListener(
                 e -> {
                     final JFileChooser fileChooser = new JFileChooser();
@@ -494,8 +511,7 @@ ClientBrowser extends JFrame {
                             clientBrowser,
                             jsonPath.toString(),
                             node.toString(),
-                            userAccount,
-                            catalogObj);
+                            userAccount);
                 });
         logoutBtn.addActionListener(
                 e -> {
@@ -568,58 +584,6 @@ ClientBrowser extends JFrame {
         saveFromDriveBtn.addActionListener(
                 e -> DownloadFromDrive.run(serverAddress, port, clientBrowser, userAccount));
     }
-
-    MouseAdapter ma = new MouseAdapter() {
-        private void myPopupEvent(MouseEvent e) {
-            int x = e.getX();
-            int y = e.getY();
-            JTree tree = (JTree) e.getSource();
-            TreePath path = tree.getPathForLocation(x, y);
-            java.util.List<Object> treeList = Arrays.asList(path.getPath());
-            StringBuilder jsonPath = new StringBuilder();
-            for (Object item : treeList) {
-                jsonPath.append(item.toString()).append("/");
-            }
-            JSONObject contents = JSONUtils.getItemContents(catalogObj, jsonPath.toString());
-            String type = contents.get("type").toString();
-
-            if (type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")) {
-                rightClickMenu = new JPopupMenu();
-                rightClickMenu.add(renameBtn);
-                rightClickMenu.add(moveBtn);
-                rightClickMenu.add(duplicateBtn);
-                rightClickMenu.add(new JPopupMenu.Separator());
-                rightClickMenu.add(removeBtn);
-                rightClickMenu.add(blacklistUserBtn);
-                rightClickMenu.add(sendToDriveBtn);
-                rightClickMenu.add(new JPopupMenu.Separator());
-                rightClickMenu.add(propertiesBtn);
-                if (path == null) return;
-                tree.setSelectionPath(path);
-                rightClickMenu.show(tree, x, y);
-            } else if (type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")) {
-                rightClickMenu = new JPopupMenu();
-                rightClickMenu.add(renameBtn);
-                rightClickMenu.add(moveBtn);
-                rightClickMenu.add(duplicateBtn);
-                rightClickMenu.add(new JPopupMenu.Separator());
-                rightClickMenu.add(removeBtn);
-                rightClickMenu.add(new JPopupMenu.Separator());
-                rightClickMenu.add(propertiesBtn);
-                if (path == null) return;
-                tree.setSelectionPath(path);
-                rightClickMenu.show(tree, x, y);
-            }
-        }
-
-        public void mousePressed(MouseEvent e) {
-            if (e.isPopupTrigger()) myPopupEvent(e);
-        }
-
-        public void mouseReleased(MouseEvent e) {
-            if (e.isPopupTrigger()) myPopupEvent(e);
-        }
-    };
 
     private void downloadFile(String path) {
         java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
@@ -699,5 +663,36 @@ ClientBrowser extends JFrame {
 
         );
     }
+
+    public static void run(
+            String serverAddress,
+            int port,
+            JFrame sender,
+            String userAccount,
+            JSONObject catalogObj,
+            boolean previousRunType) {
+
+        clientBrowser = new ClientBrowser(serverAddress, port, userAccount, catalogObj, previousRunType);
+        CenterWindow.centerOnWindow(sender, clientBrowser);
+        clientBrowser.setVisible(true);
+    }
+
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JScrollPane scrollPane1;
+    private JTree tree1;
+    private JPanel panel1;
+    private JButton uploadBtn;
+    private JButton newDirBtn;
+    private JButton downloadAsBtn;
+    private JPanel buttonBar;
+    private JButton logoutBtn;
+    private JButton optionsBtn;
+    private JButton saveFromDriveBtn;
+    private JLabel statusLbl;
+    private JButton quitBtn;
+    //GEN-END:variables
 
 }
