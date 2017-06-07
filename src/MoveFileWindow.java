@@ -9,7 +9,12 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 /**
+ * The MoveFileWindow is a window
+ * responsible for letting users move
+ * items
+ *
  * @author Mark Hedrick
+ * @version 1.0.0
  */
 
 class MoveFileWindow extends JFrame {
@@ -211,6 +216,19 @@ class MoveFileWindow extends JFrame {
                     dispose();
                 });
     }
+
+    /**
+     * The run method is responsible for spawning the window when called.
+     *
+     * @param fileName      This is the name of the item being moved
+     * @param filePath      This is the path to the item being moved, relative to the entire JSONObject
+     *                      of the files catalog
+     * @param serverAddress The address used to connect to the master server
+     * @param port          The port number used to connect to the master server
+     * @param sender        The parent window that called this window
+     * @param userAccount   The user account of the active user
+     * @param catalogObj    The JSON catalog object of your user files
+     */
 
     public static void run(
             String fileName,

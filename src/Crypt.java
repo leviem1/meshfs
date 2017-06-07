@@ -8,10 +8,23 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 /**
+ * The Crypt is a window responsible for letting users manipulate and mange their
+ * files across MeshFS
+ *
  * @author Mark Hedrick
+ * @version 1.0.0
  */
 
 class Crypt {
+
+    /**
+     * The generateEncryptedPass method is the algorithm used to generate the
+     * encrypted hash of a user password
+     *
+     * @param username The username of the account to generate a password for
+     * @param password The password of the account to generate a password for
+     */
+
     static String generateEncryptedPass(String username, String password) {
         MessageDigest messageDigest = null;
 
@@ -35,6 +48,14 @@ class Crypt {
 
         return new BigInteger(1, messageDigest.digest()).toString(512);
     }
+
+    /**
+     * The writeAuthFile method created the authentication file used on the server
+     *
+     * @param accountsArrayList The list of UserAccount objects to write out in
+     *                          the authentication file
+     */
+
 
     static void writeAuthFile(ArrayList<UserAccount> accountsArrayList) {
         try {

@@ -3,24 +3,18 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
+ * The InitialConfiguration is a window
+ * responsible for letting users choose
+ * whether or not to start a server or
+ * a client through the GUI
+ *
  * @author Mark Hedrick
+ * @version 1.0.0
  */
 
 class InitialConfiguration extends JFrame {
 
     private static JFrame initialConfiguration;
-
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel titleLbl;
-    private JLabel modeLbl;
-    private JComboBox modeSelectionBox;
-    private JPanel buttonBar;
-    private JButton backBtn;
-    private JButton okButton;
-    //GEN-END:variables
 
     private InitialConfiguration() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -34,19 +28,11 @@ class InitialConfiguration extends JFrame {
         frameListeners();
 
         modeSelectionBox.addItem("none");
-
         modeSelectionBox.addItem("Client Mode");
-
         modeSelectionBox.addItem("Server Mode");
 
         okButton.setEnabled(false);
         modeSelectionBox.requestFocus();
-    }
-
-    public static void run(JFrame sender) {
-        initialConfiguration = new InitialConfiguration();
-        CenterWindow.centerOnWindow(sender, initialConfiguration);
-        initialConfiguration.setVisible(true);
     }
 
     private void initComponents() {
@@ -89,25 +75,25 @@ class InitialConfiguration extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addGap(84, 84, 84)
-                            .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(modeLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addContainerGap())
+                        contentPanelLayout.createParallelGroup()
+                                .addComponent(titleLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addGap(84, 84, 84)
+                                        .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, 137, GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(modeLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addComponent(titleLbl)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(modeLbl)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
-                            .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addComponent(titleLbl)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(modeLbl)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                        .addComponent(modeSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 );
             }
 
@@ -115,42 +101,42 @@ class InitialConfiguration extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 1.0, 0.0};
 
                 //---- backBtn ----
                 backBtn.setText("Back");
                 backBtn.setFont(new Font("Arial", backBtn.getFont().getStyle(), backBtn.getFont().getSize() + 1));
                 buttonBar.add(backBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
 
             GroupLayout dialogPaneLayout = new GroupLayout(dialogPane);
             dialogPane.setLayout(dialogPaneLayout);
             dialogPaneLayout.setHorizontalGroup(
-                dialogPaneLayout.createParallelGroup()
-                    .addGroup(GroupLayout.Alignment.TRAILING, dialogPaneLayout.createSequentialGroup()
-                        .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                            .addGroup(GroupLayout.Alignment.LEADING, dialogPaneLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(buttonBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(contentPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(10, 10, 10))
+                    dialogPaneLayout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, dialogPaneLayout.createSequentialGroup()
+                                    .addGroup(dialogPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                            .addGroup(GroupLayout.Alignment.LEADING, dialogPaneLayout.createSequentialGroup()
+                                                    .addContainerGap()
+                                                    .addComponent(buttonBar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(contentPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGap(10, 10, 10))
             );
             dialogPaneLayout.setVerticalGroup(
-                dialogPaneLayout.createParallelGroup()
-                    .addGroup(dialogPaneLayout.createSequentialGroup()
-                        .addComponent(contentPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
+                    dialogPaneLayout.createParallelGroup()
+                            .addGroup(dialogPaneLayout.createSequentialGroup()
+                                    .addComponent(contentPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(buttonBar, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
             );
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
@@ -187,4 +173,29 @@ class InitialConfiguration extends JFrame {
             dispose();
         }
     }
+
+    /**
+     * The run method is responsible for spawning the window when called.
+     *
+     * @param sender The parent window that called this window
+     */
+
+    public static void run(JFrame sender) {
+        initialConfiguration = new InitialConfiguration();
+        CenterWindow.centerOnWindow(sender, initialConfiguration);
+        initialConfiguration.setVisible(true);
+    }
+
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel titleLbl;
+    private JLabel modeLbl;
+    private JComboBox modeSelectionBox;
+    private JPanel buttonBar;
+    private JButton backBtn;
+    private JButton okButton;
+    //GEN-END:variables
+
 }

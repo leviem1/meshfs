@@ -22,7 +22,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
+ * The ClientBrowser is a window responsible for letting users manipulate
+ * and mange their files across MeshFS
+ *
  * @author Mark Hedrick
+ * @version 1.0.0
  */
 
 class ClientBrowser extends JFrame {
@@ -156,26 +160,26 @@ class ClientBrowser extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                            .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(uploadBtn, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(newDirBtn, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(downloadAsBtn, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap())
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGroup(contentPanelLayout.createParallelGroup()
+                                                .addComponent(uploadBtn, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(newDirBtn, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(downloadAsBtn, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE))
+                                        .addContainerGap())
                 );
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addComponent(uploadBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(newDirBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(downloadAsBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(212, Short.MAX_VALUE))
-                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addComponent(uploadBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(newDirBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(downloadAsBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(212, Short.MAX_VALUE))
+                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -184,42 +188,42 @@ class ClientBrowser extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 374, 0};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 0, 374, 0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0};
 
                 //---- logoutBtn ----
                 logoutBtn.setText("Logout");
                 logoutBtn.setFont(new Font("Arial", logoutBtn.getFont().getStyle(), logoutBtn.getFont().getSize() + 1));
                 buttonBar.add(logoutBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- optionsBtn ----
                 optionsBtn.setText("Options...");
                 optionsBtn.setFont(new Font("Arial", optionsBtn.getFont().getStyle(), optionsBtn.getFont().getSize() + 1));
                 buttonBar.add(optionsBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- saveFromDriveBtn ----
                 saveFromDriveBtn.setText("Save from Drive...");
                 saveFromDriveBtn.setFont(new Font("Arial", saveFromDriveBtn.getFont().getStyle(), saveFromDriveBtn.getFont().getSize() + 1));
                 buttonBar.add(saveFromDriveBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- statusLbl ----
                 statusLbl.setHorizontalAlignment(SwingConstants.CENTER);
                 buttonBar.add(statusLbl, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- quitBtn ----
                 quitBtn.setText("Quit");
                 quitBtn.setFont(new Font("Arial", quitBtn.getFont().getStyle(), quitBtn.getFont().getSize() + 1));
                 buttonBar.add(quitBtn, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -638,6 +642,21 @@ class ClientBrowser extends JFrame {
 
         );
     }
+
+    /**
+     * The run method is responsible for spawning the window when
+     * called.
+     *
+     * @param serverAddress   The address used to connect to the master
+     *                        server
+     * @param port            The port number used to connect to the
+     *                        master server
+     * @param sender          The parent window that called this window
+     * @param userAccount     The user account of the active user
+     * @param catalogObj      The JSON catalog object of your user files
+     * @param previousRunType This value is used to toggle how the window
+     *                        is displayed
+     */
 
     public static void run(
             String serverAddress,

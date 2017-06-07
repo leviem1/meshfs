@@ -129,7 +129,7 @@ class CliParser {
     /**
      * This method is used to add an admin or guest user on the master.
      *
-     * @param username  name of user to be created (admin/guest)
+     * @param username name of user to be created (admin/guest)
      */
 
     @SuppressWarnings("unchecked")
@@ -160,7 +160,8 @@ class CliParser {
             if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
                 try {
                     accounts = (ArrayList<UserAccount>) new ObjectInputStream(new FileInputStream(new File(MeshFS.properties.getProperty("repository") + ".auth"))).readObject();
-                } catch (IOException | ClassNotFoundException ignored) {}
+                } catch (IOException | ClassNotFoundException ignored) {
+                }
             }
             accounts.add(new UserAccount(username, Crypt.generateEncryptedPass("guest", "guest"), "user", new ArrayList<>(Collections.singletonList(username))));
             Crypt.writeAuthFile(accounts);
