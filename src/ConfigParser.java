@@ -14,7 +14,7 @@ class ConfigParser {
     }
 
     /**
-     * This method is used to load the default values of properties of this program.
+     * This method is used to load the default values of properties of MeshFS.
      *
      * @return the default property values
      */
@@ -37,12 +37,11 @@ class ConfigParser {
     }
 
     /**
-     * This method is used to load the properties save in .config.properties.
+     * This method is used to load the properties saved in .config.properties.
      *
-     * @return the default property values
+     * @return the saved property values
      */
     static Properties loadProperties() {
-
         Properties properties;
 
         try {
@@ -55,10 +54,8 @@ class ConfigParser {
                         properties.setProperty(key, defaultProperties.getProperty(key));
                     }
                 }
-
                 write(properties);
             }
-
         } catch (IOException io) {
             properties = loadDefaultProperties();
             write(properties);
