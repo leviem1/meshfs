@@ -9,7 +9,12 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
+ * The RenameFileWindow is a window
+ * responsible for letting users rename
+ * items
+ *
  * @author Mark Hedrick
+ * @version 1.0.0
  */
 
 class RenameFileWindow extends JFrame {
@@ -284,6 +289,17 @@ class RenameFileWindow extends JFrame {
                     dispose();
                 });
     }
+
+    /**
+     * The run method is responsible for spawning the window when called.
+     *
+     * @param serverAddress The address used to connect to the master server
+     * @param port          The port number used to connect to the master server
+     * @param sender        The parent window that called this window
+     * @param jsonObj       The jsonObj of the file being renamed
+     * @param currentName   The currentName of the item being renamed
+     * @param userAccount   The user account of the active user
+     */
 
     public static void run(
             String serverAddress,

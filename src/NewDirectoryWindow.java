@@ -11,7 +11,12 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 /**
+ * The NewDirectoryWindow is a window
+ * responsible for letting users create
+ * new directories
+ *
  * @author Mark Hedrick
+ * @version 1.0.0
  */
 
 class NewDirectoryWindow extends JFrame {
@@ -20,18 +25,6 @@ class NewDirectoryWindow extends JFrame {
     private final int port;
     private final String userAccount;
     private JSONObject catalogObj;
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel dirNameLbl;
-    private JTextField dirNameTextField;
-    private JLabel label2;
-    private JScrollPane scrollPane1;
-    private JTree tree1;
-    private JPanel buttonBar;
-    private JButton okButton;
-    //GEN-END:variables
 
     private NewDirectoryWindow(
             String serverAddress, int port, String userAccount, JSONObject catalogObj) {
@@ -52,18 +45,6 @@ class NewDirectoryWindow extends JFrame {
 
         okButton.setEnabled(false);
         tree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-    }
-
-    public static void run(
-            String serverAddress,
-            int port,
-            JFrame sender,
-            String userAccount,
-            JSONObject catalogObj) {
-        newDirectoryWindow =
-                new NewDirectoryWindow(serverAddress, port, userAccount, catalogObj);
-        CenterWindow.centerOnWindow(sender, newDirectoryWindow);
-        newDirectoryWindow.setVisible(true);
     }
 
     private void initComponents() {
@@ -250,4 +231,41 @@ class NewDirectoryWindow extends JFrame {
         } catch (NullPointerException ignored) {
         }
     }
+
+    /**
+     * The run method is responsible for spawning the window when called.
+     *
+     * @param serverAddress The address used to connect to the master server
+     * @param port          The port number used to connect to the master server
+     * @param sender        The parent window that called this window
+     * @param userAccount   The user account of the active user
+     * @param catalogObj    The JSON catalog object of your user files
+     */
+
+    public static void run(
+            String serverAddress,
+            int port,
+            JFrame sender,
+            String userAccount,
+            JSONObject catalogObj) {
+        newDirectoryWindow =
+                new NewDirectoryWindow(serverAddress, port, userAccount, catalogObj);
+        CenterWindow.centerOnWindow(sender, newDirectoryWindow);
+        newDirectoryWindow.setVisible(true);
+    }
+
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JLabel dirNameLbl;
+    private JTextField dirNameTextField;
+    private JLabel label2;
+    private JScrollPane scrollPane1;
+    private JTree tree1;
+    private JPanel buttonBar;
+    private JButton okButton;
+    //GEN-END:variables
+
+
 }

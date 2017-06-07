@@ -6,7 +6,12 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 
 /**
+ * The GreetingsWindow is a window responsible for giving
+ * first time users a brief overview of MeshFS and the
+ * functionality it provides
+ *
  * @author Mark Hedrick
+ * @version 1.0.0
  */
 
 class GreetingsWindow extends JFrame {
@@ -154,6 +159,13 @@ class GreetingsWindow extends JFrame {
         InitialConfiguration.run(greetingsWindow);
         dispose();
     }
+
+    /**
+     * The run method is responsible for spawning the window when called.
+     *
+     * @param runType The type of greetings to display
+     * @param sender  The parent window that called this window
+     */
 
     public static void run(boolean runType, JFrame sender) {
         greetingsWindow = new GreetingsWindow(runType);

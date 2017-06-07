@@ -292,13 +292,13 @@ class sendFilesThreading implements Runnable {
     /**
      * This is used to set all of the class variables.
      *
-     * @param sizeOfStripe          the size of each stripe in bytes
-     * @param fileSize              the size of the full file in bytes
-     * @param sourceFileLocation    the file path of the file  on the master computer
-     * @param manifestFile          the JSONObject of the the manifest file
-     * @param stripes               the list of lists of strings that store where the file and stripes should be send
-     * @param stripe                what stripe is to be sent, -1 sends the whole
-     * @param outName               the alphanumeric name of the file
+     * @param sizeOfStripe       the size of each stripe in bytes
+     * @param fileSize           the size of the full file in bytes
+     * @param sourceFileLocation the file path of the file  on the master computer
+     * @param manifestFile       the JSONObject of the the manifest file
+     * @param stripes            the list of lists of strings that store where the file and stripes should be send
+     * @param stripe             what stripe is to be sent, -1 sends the whole
+     * @param outName            the alphanumeric name of the file
      */
 
     sendFilesThreading(
