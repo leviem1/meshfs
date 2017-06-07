@@ -32,12 +32,15 @@ class DownloadFromDrive extends JFrame {
     private JSONObject masterJSON;
     private JSONObject root;
     private String username;
+    private JFrame sender;
 
 
-    public DownloadFromDrive(String serverAddress, int port, String username) {
+
+    public DownloadFromDrive(String serverAddress, int port, String username, JFrame sender) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.username = username;
+        this.sender = sender;
 
         masterJSON = new JSONObject();
         root = new JSONObject();
@@ -207,7 +210,13 @@ class DownloadFromDrive extends JFrame {
                     try {
                         File driveFile = DriveAPI.downloadFile(JSONUtils.getGoogleFileID(masterJSON, jsonPath.toString()), MeshFS.userUUID);
                         FileClient.sendFile(serverAddress, port, driveFile.getAbsolutePath(), username);
+                        JOptionPane.showMessageDialog(
+                                downloadFromDrive,
+                                "File downloaded and distributed successfully!",
+                                "MeshFS - Success",
+                                JOptionPane.INFORMATION_MESSAGE);
                         driveFile.delete();
+                        dispose();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     } catch (MalformedRequestException e1) {
@@ -215,6 +224,12 @@ class DownloadFromDrive extends JFrame {
                     } catch (GeneralSecurityException e1) {
                         e1.printStackTrace();
                     }
+                    JOptionPane.showMessageDialog(
+                            downloadFromDrive,
+                            "File downloaded and distribution failed!!",
+                            "MeshFS - Failure",
+                            JOptionPane.ERROR_MESSAGE);
+                    dispose();
 
                 });
 
@@ -222,7 +237,7 @@ class DownloadFromDrive extends JFrame {
     }
 
     public static void run(String serverAddress, int port, JFrame sender, String username) {
-        downloadFromDrive = new DownloadFromDrive(serverAddress, port, username);
+        downloadFromDrive = new DownloadFromDrive(serverAddress, port, username, sender);
         CenterWindow.centerOnWindow(sender, downloadFromDrive);
         downloadFromDrive.setVisible(true);
     }
