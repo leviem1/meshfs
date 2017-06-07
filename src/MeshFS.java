@@ -79,11 +79,7 @@ class MeshFS {
             if (isMaster) {
                 if (((configure && !cliParser.cmd.hasOption("adduser"))) || !new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
                     System.out.println("Starting Initial Authentication Generator");
-                    try {
-                        cliParser.addUser("admin");
-                    } catch (IOException | ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                    cliParser.addUser("admin");
                 }
 
                 startAsMaster();
