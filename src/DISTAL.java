@@ -7,8 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * The DISTAL class distributes a file across the linked computers with a variable number of whole
- * copies, stripes, and striped copies.
+ * The DISTAL class distributes a file across the linked
+ * computers with a variable number of whole copies,
+ * stripes, and striped copies.
  *
  * @author Aaron Duran
  * @version 1.0.0
@@ -17,12 +18,13 @@ import java.util.List;
 class DISTAL {
 
     /**
-     * This method is used determines which load balance which computers will receive a file and its
-     * stripes. The method also sends the file to the appropriate computers and updates the catalog
-     * file.
+     * This method is used determines which load balance which
+     * computers will receive a file and its stripes. The method
+     * also sends the file to the appropriate computers and
+     * updates the catalog file.
      *
-     * @param uploadFilePath    the file path of the file that is to be distributed
-     * @param filePathInCatalog where the file is to be put in the catalog.
+     * @param uploadFilePath    the file path of the file
+     * @param filePathInCatalog where the file is to be put in the catalog
      */
 
     static void distributor(String uploadFilePath, String filePathInCatalog) throws IOException, MalformedRequestException {
@@ -269,6 +271,14 @@ class DISTAL {
     }
 }
 
+/**
+ * The sendFilesThreading class writes stripes of a file and
+ * sends the whole and the stripes to the specified computers.
+ *
+ * @author Aaron Duran
+ * @version 1.0.0
+ */
+
 class sendFilesThreading implements Runnable {
     private final long sizeOfStripe;
     private final long fileSize;
@@ -278,6 +288,17 @@ class sendFilesThreading implements Runnable {
     private final int stripe;
     private final String outName;
 
+    /**
+     * This is used to set all of the class variables.
+     *
+     * @param sizeOfStripe          the size of each stripe in bytes
+     * @param fileSize              the size of the full file in bytes
+     * @param sourceFileLocation    the file path of the file  on the master computer
+     * @param manifestFile          the JSONObject of the the manifest file
+     * @param stripes               the list of lists of strings that store where the file and stripes should be send
+     * @param stripe                what stripe is to be sent, -1 sends the whole
+     * @param outName               the alphanumeric name of the file
+     */
 
     sendFilesThreading(
             long sizeOfStripe,
@@ -408,6 +429,10 @@ class sendFilesThreading implements Runnable {
         FileUtils.removeFile(
                 MeshFS.properties.getProperty("repository") + outName + "_s" + stripe);
     }
+
+    /**
+     * This is used to start writing and sending the stripes
+     */
 
     public void run() {
         try {
