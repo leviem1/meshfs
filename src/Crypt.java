@@ -10,6 +10,7 @@ import java.util.ArrayList;
 /**
  * @author Mark Hedrick
  */
+
 class Crypt {
     static String generateEncryptedPass(String username, String password) {
         MessageDigest messageDigest = null;

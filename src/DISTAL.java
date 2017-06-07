@@ -13,6 +13,7 @@ import java.util.List;
  * @author Aaron Duran
  * @version 1.0.0
  */
+
 class DISTAL {
 
     /**
@@ -23,6 +24,7 @@ class DISTAL {
      * @param uploadFilePath    the file path of the file that is to be distributed
      * @param filePathInCatalog where the file is to be put in the catalog.
      */
+
     static void distributor(String uploadFilePath, String filePathInCatalog) throws IOException, MalformedRequestException {
 
         filePathInCatalog = JSONUtils.catalogStringFixer(filePathInCatalog);

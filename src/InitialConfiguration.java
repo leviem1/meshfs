@@ -5,6 +5,7 @@ import java.awt.*;
 /**
  * @author Mark Hedrick
  */
+
 class InitialConfiguration extends JFrame {
 
     private static JFrame initialConfiguration;

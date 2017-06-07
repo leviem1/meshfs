@@ -14,6 +14,7 @@ import java.util.Properties;
 /**
  * @author Mark Hedrick
  */
+
 class ServerConfigConfirmation extends JFrame {
     private static JFrame serverConfigConfirmation;
     private final ArrayList accountDetails;

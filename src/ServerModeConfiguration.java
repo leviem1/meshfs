@@ -21,6 +21,7 @@ import static java.lang.Math.toIntExact;
 /**
  * @author Mark Hedrick
  */
+
 @SuppressWarnings("unchecked")
 class ServerModeConfiguration extends JFrame {
 

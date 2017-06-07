@@ -17,8 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Created by Aaron Duran on 5/12/2017.
+ * @author Aaron Duran
  */
+
 class JSONUtils {
 
     private JSONUtils() {

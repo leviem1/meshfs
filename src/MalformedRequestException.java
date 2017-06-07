@@ -8,6 +8,7 @@ import java.util.List;
  * @author Levi Muniz
  * @version 1.0.0
  */
+
 class MalformedRequestException extends Exception {
 
     private List<String> messageParts;

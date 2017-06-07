@@ -15,6 +15,7 @@ import java.util.List;
  * @author Levi Muniz
  * @version 1.0.0
  */
+
 class FileServer {
 
     private final ArrayList<Thread> sockets = new ArrayList<>();

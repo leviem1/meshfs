@@ -13,6 +13,7 @@ import java.io.IOException;
 /**
  * @author Mark Hedrick
  */
+
 class NewDirectoryWindow extends JFrame {
     private static JFrame newDirectoryWindow;
     private final String serverAddress;

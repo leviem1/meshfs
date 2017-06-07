@@ -1,6 +1,7 @@
 /**
- * Created by Levi Muniz on 5/16/17.
+ * @author Levi Muniz
  */
+
 class FileTransferException extends Exception {
 
     FileTransferException() {
