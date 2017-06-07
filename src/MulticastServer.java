@@ -70,8 +70,8 @@ class MulticastServer {
         TimerTask removeReportedDown = new TimerTask() {
             @Override
             public void run() {
-                for (Map.Entry reportedDownEntry : MulticastServerInit.reportedDown.entrySet()) {
-                    if (Instant.now().toEpochMilli() > (long) reportedDownEntry.getValue() + 15000) {
+                for (Map.Entry<InetAddress, Long> reportedDownEntry : MulticastServerInit.reportedDown.entrySet()) {
+                    if (Instant.now().toEpochMilli() > reportedDownEntry.getValue() + 15000) {
                         MulticastServerInit.reportedDown.remove(reportedDownEntry.getKey());
                     }
                 }
