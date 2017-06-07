@@ -267,5 +267,4 @@ class NewDirectoryWindow extends JFrame {
     private JButton okButton;
     //GEN-END:variables
 
-
 }

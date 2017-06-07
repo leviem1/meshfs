@@ -91,8 +91,8 @@ class JSONUtils {
      * @param user          the UserAccount object of the user, if null, the folder is read as if the user was an admin
      * @return              a map of the folder's contents
      */
-
     @SuppressWarnings("unchecked")
+
     static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, UserAccount user) {
         LinkedHashMap<String, String> contents = new LinkedHashMap<>();
         for (Object key : jsonObject.keySet()) {
@@ -120,8 +120,8 @@ class JSONUtils {
      * @param JSONFilePath  the virtual path of the folder in the catalog that the file will be put into
      * @throws IOException  if the catalog file cannot be written
      */
-
     @SuppressWarnings("unchecked")
+
     static void addFileToCatalog(List<List<String>> stripes, String itemDestinationLocation, String fileName, String JSONFilePath, String alphanumericName, long fileSize) throws IOException {
         itemDestinationLocation = catalogStringFixer(itemDestinationLocation);
         JSONObject catalog = getJSONObject(JSONFilePath);
@@ -173,8 +173,8 @@ class JSONUtils {
      * @param fileAdmins    the List of user groups that can edit the file  (not implemented yet)
      * @throws IOException  if the catalog file cannot be written
      */
-
     @SuppressWarnings("unchecked")
+
     static void editPermissions(String itemLocation, List<String> fileUsers, List<String> fileAdmins) throws IOException {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -202,8 +202,8 @@ class JSONUtils {
      * @param userNames     the List of user groups that should be added or removed to the viewing blacklist for the item
      * @param add           if true the users are added to the blacklist, if false they are removed from the blacklist
      */
-
     @SuppressWarnings("unchecked")
+
     static void blacklistUsers(String itemLocation, List<String> userNames, boolean add) {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -295,8 +295,8 @@ class JSONUtils {
      * @param folderName            the name of the new folder
      * @throws IOException          if the catalog file cannot be written
      */
-
     @SuppressWarnings("unchecked")
+
     static void createNewFolder(String parentFolderLocation, String folderName) throws IOException {
         parentFolderLocation = catalogStringFixer(parentFolderLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -321,8 +321,8 @@ class JSONUtils {
      * @param username      the account name that uploaded the file
      * @throws IOException  if the file cannot be written
      */
-
     @SuppressWarnings("unchecked")
+
     static void addTempFile(String itemLocation, String fileName, String username) throws IOException {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject jsonFile = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
@@ -348,8 +348,8 @@ class JSONUtils {
      * @param manifestFile  The JSONObject that contains the information from the manifest file
      * @return              LinkedHashMap of online computers' MACAddress and available storage, ordered by descending available storage
      */
-
     @SuppressWarnings("unchecked")
+
     static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile) {
         LinkedHashMap<String, Long> storageMap = new LinkedHashMap();
         for (Object MACAddress : manifestFile.keySet()) {
@@ -368,8 +368,8 @@ class JSONUtils {
      * @param ascending     if true to map is sorted by ascending valse, if flase the map is sorted by descending value
      * @return              sorted LinkedHashMap
      */
-
     @SuppressWarnings("unchecked")
+
     static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> unsortedMap, boolean ascending) {
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
@@ -417,8 +417,8 @@ class JSONUtils {
      * @throws PullRequestException         if the full file cannot be combined from all the files in the file system
      * @throws FileTransferException        if md5 of sending file did not match received file md5
      */
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
+
     static void pullFile(JSONObject catalog, String itemLocation, String path, String outFile, boolean download) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
         itemLocation = catalogStringFixer(itemLocation);
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
@@ -549,8 +549,8 @@ class JSONUtils {
      * @param user  the UserAccount Object of the user
      * @return      the JSONObject of the User's Catalog
      */
-
     @SuppressWarnings("unchecked")
+
     static JSONObject buildUserCatalog(UserAccount user) {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         JSONObject users = (JSONObject) ((JSONObject) catalog.get("root")).get("Users");
@@ -708,6 +708,7 @@ class JSONUtils {
     }
 
     @SuppressWarnings("unchecked")
+
     private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccount user) {
         LinkedHashMap<String, String> items = getMapOfFolderContents(jsonObject, user);
         JSONObject catalog = new JSONObject();
@@ -729,6 +730,7 @@ class JSONUtils {
     }
 
     @SuppressWarnings("unchecked")
+
     private static JSONObject putItemInFolder(JSONObject catalog, String destinationLocation, String fileName, JSONObject itemContents) {
         String[] folders = destinationLocation.split("/");
         JSONObject folderToRead = catalog;
@@ -830,6 +832,7 @@ class JSONUtils {
     }
 
     @SuppressWarnings("unchecked")
+
     private static JSONObject changePermissions(JSONObject jsonObject, JSONArray newUserArray, JSONArray newAdminArray, boolean removeBlacklist) {
         jsonObject.put("groups", newUserArray);
         jsonObject.put("admins", newAdminArray);

@@ -211,7 +211,6 @@ class UserAccountOptions extends JFrame {
         userAccountOptions.setVisible(true);
     }
 
-
     //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;

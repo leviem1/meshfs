@@ -131,8 +131,8 @@ class CliParser {
      *
      * @param username name of user to be created (admin/guest)
      */
-
     @SuppressWarnings("unchecked")
+
     void addUser(String username) {
         if (username.equals("admin")) {
             System.out.println("Adding administrator account...");
@@ -173,8 +173,8 @@ class CliParser {
      *
      * @param username user to add the group to
      */
-
     @SuppressWarnings("unchecked")
+
     void addGroup(String username) {
         Scanner input = new Scanner(System.in);
         while (true) {
@@ -223,6 +223,7 @@ class CliParser {
     }
 
     @SuppressWarnings("unchecked")
+
     private void addUser(String username, boolean initial) throws IOException, ClassNotFoundException {
         ArrayList<UserAccount> accounts;
         if (new File(MeshFS.properties.getProperty("repository") + ".auth").exists()) {
@@ -290,6 +291,7 @@ class CliParser {
     }
 
     @SuppressWarnings("unchecked")
+
     private void removeUser(String username) throws IOException, ClassNotFoundException {
         if (username.equals("admin")) {
             System.out.println("The user 'admin' cannot be deleted!");
@@ -334,6 +336,7 @@ class CliParser {
     }
 
     @SuppressWarnings("unchecked")
+
     private void removeGroup(String username) {
         Scanner input = new Scanner(System.in);
         while (true) {
@@ -410,6 +413,7 @@ class CliParser {
     }
 
     @SuppressWarnings("unchecked")
+
     private void listUsers() {
         try {
             ArrayList<UserAccount> accounts;
@@ -431,6 +435,7 @@ class CliParser {
     }
 
     @SuppressWarnings("unchecked")
+
     private void listGroups(String username) {
         try {
             ArrayList<UserAccount> accounts;
@@ -455,6 +460,7 @@ class CliParser {
     }
 
     @SuppressWarnings("unchecked")
+
     private void getAccountType(String username) {
         try {
             ArrayList<UserAccount> accounts;
@@ -478,6 +484,7 @@ class CliParser {
     }
 
     @SuppressWarnings("unchecked")
+
     private void changeAccountType(String username) {
         try {
             ArrayList<UserAccount> accounts;
@@ -511,6 +518,7 @@ class CliParser {
     }
 
     @SuppressWarnings("unchecked")
+
     private void resetAuth() {
         System.out.println("Do you still wish to reset all accounts? NOTE: This will remove all users and groups.");
         System.out.println("Proceed? [y/N]");

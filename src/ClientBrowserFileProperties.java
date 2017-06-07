@@ -26,7 +26,6 @@ class ClientBrowserFileProperties extends JFrame {
     private ArrayList<String> groupData;
     private String itemPath;
 
-
     private ClientBrowserFileProperties(JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath, JSONObject userObj) {
         this.serverAddress = serverAddress;
         this.port = port;
@@ -321,7 +320,6 @@ class ClientBrowserFileProperties extends JFrame {
      *                      overall file catalog
      * @param userObj       The JSONObject of the user file catalog
      */
-
 
     public static void run(JFrame sender, JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath, JSONObject userObj) {
         clientBrowserFileProperties = new ClientBrowserFileProperties(itemContents, userAccount, serverAddress, port, itemPath, userObj);

@@ -104,7 +104,6 @@ class FileUtils {
         new File(path).delete();
     }
 
-
     /**
      * This method returns the MD5 hash of a file
      *

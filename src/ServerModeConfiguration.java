@@ -28,6 +28,7 @@ import static java.lang.Math.toIntExact;
  */
 
 @SuppressWarnings("unchecked")
+
 class ServerModeConfiguration extends JFrame {
 
     private static JFrame serverModeConfiguration;
@@ -69,10 +70,6 @@ class ServerModeConfiguration extends JFrame {
         accountTypeBox.addItem("user");
         accountTypeBox.addItem("admin");
 
-    }
-
-    static void writeConfig(Properties properties) {
-        ConfigParser.write(properties);
     }
 
 
@@ -615,6 +612,30 @@ class ServerModeConfiguration extends JFrame {
     }
 
     private void frameListeners() {
+        DocumentListener serverModeConfigRefreshListener = new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+
+            public void changed() {
+                if (!(checkFields(minSpaceField))) {
+                    backupConfigBtn.setEnabled(false);
+                    okButton.setEnabled(false);
+                } else {
+                    backupConfigBtn.setEnabled(true);
+                    okButton.setEnabled(true);
+                }
+            }
+        };
         browseBtn.addActionListener(
                 e -> {
                     final JFileChooser fileChooser = new JFileChooser();
@@ -947,31 +968,6 @@ class ServerModeConfiguration extends JFrame {
 
     }
 
-    DocumentListener serverModeConfigRefreshListener = new DocumentListener() {
-
-        public void changedUpdate(DocumentEvent e) {
-            changed();
-        }
-
-        public void removeUpdate(DocumentEvent e) {
-            changed();
-        }
-
-        public void insertUpdate(DocumentEvent e) {
-            changed();
-        }
-
-        public void changed() {
-            if (!(checkFields(minSpaceField))) {
-                backupConfigBtn.setEnabled(false);
-                okButton.setEnabled(false);
-            } else {
-                backupConfigBtn.setEnabled(true);
-                okButton.setEnabled(true);
-            }
-        }
-    };
-
     private void onOk() {
 
         try {
@@ -1277,7 +1273,6 @@ class ServerModeConfiguration extends JFrame {
         CenterWindow.centerOnWindow(sender, serverModeConfiguration);
         serverModeConfiguration.setVisible(true);
     }
-
 
     //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license

@@ -30,7 +30,7 @@ class DownloadFromDrive extends JFrame {
     private JSONObject masterJSON;
     private String username;
 
-    public DownloadFromDrive(String serverAddress, int port, String username) {
+    private DownloadFromDrive(String serverAddress, int port, String username) {
         this.serverAddress = serverAddress;
         this.port = port;
         this.username = username;

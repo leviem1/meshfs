@@ -209,7 +209,7 @@ class ServerConfigConfirmation extends JFrame {
     private void onOk() throws IOException {
         properties.setProperty("uuid", serverIdentifierField.getText());
         try {
-            ServerModeConfiguration.writeConfig(properties);
+            ConfigParser.write(properties);
             JOptionPane.showMessageDialog(
                     serverConfigConfirmation,
                     "Configuration was saved!",

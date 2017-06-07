@@ -29,6 +29,7 @@ class FileServer {
      * @param timeout    the maximum amount of seconds that a client can be idle for
      * @throws IOException if a socket cannot be initialized
      */
+
     void startServer(int port, int maxThreads, int timeout) throws IOException {
         fileServer = new ServerSocket();
         fileServer.setPerformancePreferences(1, 0, 1);
@@ -48,6 +49,7 @@ class FileServer {
     /**
      * This method is used to halt a server.
      */
+
     void stopServer() {
         if (fileServer.isBound()) {
             for (Thread socket : sockets) {
@@ -81,6 +83,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("deprecation")
+
     private String receiveRequest(Socket client) {
         String requestPart;
         StringBuilder requestFull = new StringBuilder();
@@ -231,6 +234,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private synchronized void receiveReport(Socket client) throws IOException {
         String reportPart;
         StringBuilder reportFull = new StringBuilder();
@@ -412,6 +416,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private void changePassword(String username, String oldPassword, String newPassword, Socket client) throws IOException {
         ArrayList<UserAccount> accounts;
         String accountType;
@@ -455,6 +460,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private void sendAuthInfo(String username, String password, Socket client) throws IOException {
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
         ArrayList<UserAccount> accounts;
@@ -484,6 +490,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private void deleteAccount(String username, Socket client) throws IOException {
         ArrayList<UserAccount> userAccounts;
         ArrayList<UserAccount> toRemove = new ArrayList<>();
@@ -515,6 +522,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private void getUserFiles(String userAccount, Socket client) throws IOException {
         UserAccount user = null;
         ArrayList<UserAccount> accounts;
@@ -541,6 +549,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private void getUserGroups(String userAccount, Socket client) throws IOException {
         ArrayList<UserAccount> accounts;
         ArrayList<String> groups = new ArrayList<>();
@@ -559,6 +568,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private void getGroups(Socket client) throws IOException {
         ArrayList<UserAccount> accounts;
         ArrayList<String> groups = new ArrayList<>();
@@ -576,6 +586,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private void setUserGroup(String userAccount, String userGroups, Socket client) throws IOException {
         String un = null;
         String pw = null;
@@ -606,6 +617,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private void getUserType(String userAccount, Socket client) throws IOException {
         String userType = null;
         ArrayList<UserAccount> accounts;
@@ -662,6 +674,7 @@ class ServerInit implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
+
     private void getUserUUID(String username, String password, Socket client) throws IOException {
         File auth = new File(MeshFS.properties.getProperty("repository") + ".auth");
         ArrayList<UserAccount> accounts;
@@ -690,7 +703,6 @@ class ServerInit implements Runnable {
         } catch (ClassNotFoundException ignored) {
         }
     }
-
 
     private void badRequest(Socket client, String request, String message) {
         try {

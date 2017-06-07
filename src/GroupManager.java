@@ -18,7 +18,7 @@ class GroupManager extends JFrame {
     private final DefaultListModel model;
     private static JComboBox groupBox;
 
-    public GroupManager(JComboBox groupBox) {
+    private GroupManager(JComboBox groupBox) {
         GroupManager.groupBox = groupBox;
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

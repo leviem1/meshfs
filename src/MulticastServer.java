@@ -86,6 +86,7 @@ class MulticastServer {
     /**
      * This method is used to halt a server.
      */
+
     void stopServer() {
         if (socket.isBound()) {
             for (Thread socket : sockets) {
@@ -110,12 +111,14 @@ class MulticastServer {
      *
      * @return current list of known available masters
      */
+
     List<String> getFoundMasters() {
         return MulticastServerInit.foundMasters;
     }
 }
 
 @SuppressWarnings("unchecked")
+
 class MulticastServerInit implements Runnable {
 
     static CopyOnWriteArrayList<String> foundMasters = new CopyOnWriteArrayList<>();

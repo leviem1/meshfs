@@ -143,8 +143,8 @@ class DriveAPI {
      * @param masterJson            the JSONObject of the google drive info
      * @param parentFolderLocation  the virtual filepath of the parent folder in the masterJSONObject
      */
-
     @SuppressWarnings("unchecked")
+
     static void googleJsonBuilder(String user, JSONObject masterJson, String parentFolderLocation) throws IOException, GeneralSecurityException {
         JSONObject itemToRead = masterJson;
         String[] parentFolders = parentFolderLocation.split("/");
@@ -163,6 +163,7 @@ class DriveAPI {
     }
 
     @SuppressWarnings("unchecked")
+
     private static List<String> fileInfoBuilder(List<File> files, List<String> itemTitles, JSONObject itemToRead, boolean folder){
         for (File file : files) {
             StringBuilder itemName = new StringBuilder(file.getTitle());

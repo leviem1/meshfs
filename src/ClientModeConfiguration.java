@@ -212,6 +212,43 @@ class ClientModeConfiguration extends JFrame {
     }
 
     private void frameListeners() {
+        DocumentListener clientConnectionSettingsListener = new DocumentListener() {
+
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+
+            private void changed() {
+                if (serverAddressField.getItemCount() != 0 || !serverAddressField.getEditor().getItem().toString().isEmpty()) {
+                    if (!(serverPortField.getText().isEmpty())) {
+                        if (!(usernameField.getText().isEmpty())) {
+                            if (!(String.valueOf(passwordField.getPassword()).isEmpty())) {
+                                okButton.setEnabled(true);
+                                buttonBar.getRootPane().setDefaultButton(okButton);
+                            } else {
+                                okButton.setEnabled(false);
+                            }
+                        } else {
+
+                            okButton.setEnabled(false);
+                        }
+                    } else {
+                        okButton.setEnabled(false);
+                    }
+                } else {
+                    okButton.setEnabled(false);
+                }
+            }
+
+        };
         okButton.addActionListener(e -> onOk());
         bindAnonymouslyCheckBox.addActionListener(
                 e -> {
@@ -257,44 +294,6 @@ class ClientModeConfiguration extends JFrame {
                     dispose();
                 });
     }
-
-    DocumentListener clientConnectionSettingsListener = new DocumentListener() {
-
-        public void changedUpdate(DocumentEvent e) {
-            changed();
-        }
-
-        public void removeUpdate(DocumentEvent e) {
-            changed();
-        }
-
-        public void insertUpdate(DocumentEvent e) {
-            changed();
-        }
-
-        private void changed() {
-            if (serverAddressField.getItemCount() != 0 || !serverAddressField.getEditor().getItem().toString().isEmpty()) {
-                if (!(serverPortField.getText().isEmpty())) {
-                    if (!(usernameField.getText().isEmpty())) {
-                        if (!(String.valueOf(passwordField.getPassword()).isEmpty())) {
-                            okButton.setEnabled(true);
-                            buttonBar.getRootPane().setDefaultButton(okButton);
-                        } else {
-                            okButton.setEnabled(false);
-                        }
-                    } else {
-
-                        okButton.setEnabled(false);
-                    }
-                } else {
-                    okButton.setEnabled(false);
-                }
-            } else {
-                okButton.setEnabled(false);
-            }
-        }
-
-    };
 
     private void onOk() {
         int pingTime = -1;

@@ -39,8 +39,8 @@ class MeshFS {
      *
      * @param args Command line arguments
      */
-
     @SuppressWarnings("unchecked")
+
     public static void main(String[] args) {
         System.setProperty("java.net.preferIPv4Stack", "true");
         //check if we already have a config file
@@ -256,8 +256,8 @@ class MeshFS {
      * This method starts the required services for the master
      * run mode
      */
-
     @SuppressWarnings("unchecked")
+
     static void startAsMaster() {
         MeshFS.isMaster = true;
         new File(MeshFS.properties.getProperty("repository") + ".manifest.json").delete();
