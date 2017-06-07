@@ -245,7 +245,7 @@ class ClientBrowser extends JFrame {
                 JSONObject contents = JSONUtils.getItemContents(catalogObj, jsonPath.toString());
                 String type = contents.get("type").toString();
 
-                if (type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")) {
+                if (type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared") && !path.getLastPathComponent().toString().equals("Users")) {
                     rightClickMenu = new JPopupMenu();
                     rightClickMenu.add(renameBtn);
                     rightClickMenu.add(moveBtn);
@@ -256,10 +256,9 @@ class ClientBrowser extends JFrame {
                     rightClickMenu.add(sendToDriveBtn);
                     rightClickMenu.add(new JPopupMenu.Separator());
                     rightClickMenu.add(propertiesBtn);
-                    if (path == null) return;
                     tree.setSelectionPath(path);
                     rightClickMenu.show(tree, x, y);
-                } else if (type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")) {
+                } else if (type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared") && !path.getLastPathComponent().toString().equals("Users")) {
                     rightClickMenu = new JPopupMenu();
                     rightClickMenu.add(renameBtn);
                     rightClickMenu.add(moveBtn);
@@ -268,7 +267,6 @@ class ClientBrowser extends JFrame {
                     rightClickMenu.add(removeBtn);
                     rightClickMenu.add(new JPopupMenu.Separator());
                     rightClickMenu.add(propertiesBtn);
-                    if (path == null) return;
                     tree.setSelectionPath(path);
                     rightClickMenu.show(tree, x, y);
                 }
@@ -305,7 +303,7 @@ class ClientBrowser extends JFrame {
                             if (item.getKey().equals(fileChooser.getSelectedFile().getName())) {
                                 JOptionPane.showMessageDialog(
                                         clientBrowser,
-                                        "File already exists on server!",
+                                        "File already exists on this MeshFS server!",
                                         "MeshFS - Error",
                                         JOptionPane.ERROR_MESSAGE);
                                 return;

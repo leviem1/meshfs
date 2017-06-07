@@ -971,10 +971,10 @@ class ServerModeConfiguration extends JFrame {
                             public void changed() {
                                 if (!(String.valueOf(passwordValueField.getPassword())).isEmpty()) {
                                     submitBtn.setEnabled(true);
-                                    userAccounts.getRootPane().setDefaultButton(submitBtn);
+                                    serverModeConfiguration.getRootPane().setDefaultButton(submitBtn);
                                 } else {
                                     submitBtn.setEnabled(false);
-                                    userAccounts.getRootPane().setDefaultButton(submitBtn);
+                                    serverModeConfiguration.getRootPane().setDefaultButton(submitBtn);
                                 }
                             }
                         });
@@ -1298,7 +1298,7 @@ class ServerModeConfiguration extends JFrame {
             browseBtn.setEnabled(true);
             spaceSldr.setEnabled(false);
             minSpaceField.setEnabled(false);
-            serverSettingPane.addTab("User Accounts", userAccounts);
+            serverSettingPane.addTab("User Accounts", userAccount);
 
         } else if (mode.equals("easy")) {
             masterServerField.setEnabled(true);
