@@ -234,16 +234,6 @@ class UserAccountOptions extends JFrame {
                 });
 
         closeBtn.addActionListener(e -> dispose());
-        googleAccountBtn.addActionListener(
-                e -> {
-                    /*try {
-                        DriveAPI.authorize(JacksonFactory.getDefaultInstance(), GoogleNetHttpTransport.newTrustedTransport());
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    } catch (GeneralSecurityException e1) {
-                        e1.printStackTrace();
-                    }*/
-                });
         changeGroupBtn.addActionListener(
                 e -> ChangeUserGroup.run(userAccountOptions, userAccount, serverAddress, port));
     }
