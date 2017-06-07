@@ -17,7 +17,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
+ * The JSONUtils class is responsible for manipulating
+ * JSON-related data used for the storage of data in the
+ * file catalog and computer manifest
+ *
  * @author Aaron Duran
+ * @version 1.0.0
  */
 
 class JSONUtils {
@@ -197,14 +202,12 @@ class JSONUtils {
 
     /**
      * This method adds user groups to a blacklist that prevents them from seeing a folder or file in the catalog.
-     *
-     * @param itemLocation  the virtual path of the item in the catalog that is to be changed
+     *  @param itemLocation  the virtual path of the item in the catalog that is to be changed
      * @param userNames     the List of user groups that should be added or removed to the viewing blacklist for the item
-     * @param add           if true the users are added to the blacklist, if false they are removed from the blacklist
      */
     @SuppressWarnings("unchecked")
 
-    static void blacklistUsers(String itemLocation, List<String> userNames, boolean add) {
+    static void blacklistUsers(String itemLocation, List<String> userNames) {
         itemLocation = catalogStringFixer(itemLocation);
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         String[] folders = itemLocation.split("/");
@@ -214,11 +217,7 @@ class JSONUtils {
         }
 
         JSONArray blacklist = (JSONArray) item.get("blacklist");
-        if (add) {
-            blacklist.addAll(userNames);
-        } else {
-            blacklist.removeAll(userNames);
-        }
+        blacklist.addAll(userNames);
         try {
             writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
         } catch (IOException e) {

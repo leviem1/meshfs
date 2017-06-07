@@ -56,14 +56,13 @@ class DriveAPI {
      * @param filePath                      path of file to be uploaded
      * @param name                          name of the file
      * @param type                          metadata type
-     * @param parentId                      ID of parent folder to upload to
      * @param userId                        UUID of UserAccount to authenticate as
      * @return                              the file that was uploaded
      * @throws IOException                  on error connecting to API servers
      * @throws GeneralSecurityException     if trusted transport cannot be established
      */
 
-    static File uploadFile(java.io.File filePath, String name, String type, String parentId, String userId) throws IOException, GeneralSecurityException {
+    static File uploadFile(java.io.File filePath, String name, String type, String userId) throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
         HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         Credential credential = authorize(JSONFactory, httpTransport, userId);
@@ -72,7 +71,7 @@ class DriveAPI {
         File fileMetadata = new File();
         fileMetadata.setTitle(name);
         fileMetadata.setParents(Collections.singletonList(
-                new ParentReference().setId(parentId)));
+                new ParentReference().setId("root")));
 
         FileContent mediaContent = new FileContent(type, filePath);
 
