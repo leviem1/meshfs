@@ -24,6 +24,7 @@ class FileUtils {
      * @param filePath the path to the file
      * @return the size of a file in bytes
      */
+
     static long getSize(String filePath) {
         return new File(filePath).length();
     }
@@ -37,6 +38,7 @@ class FileUtils {
      * @param len      the total mount of bytes to read
      * @throws IOException on error reading or writing files
      */
+
     static void writeStripe(String filePath, String outFile, long off, long len) throws IOException {
         try (
                 FileInputStream fis = new FileInputStream(filePath);
@@ -74,6 +76,7 @@ class FileUtils {
      * @param outFile the path to the output file
      * @throws IOException on error reading or writing files
      */
+
     static void combineStripes(List<String> stripes, String outFile) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(outFile)) {
             for (String stripe : stripes) {
@@ -96,9 +99,17 @@ class FileUtils {
      *
      * @param path path of the file to delete
      */
+
     static void removeFile(String path) {
         new File(path).delete();
     }
+
+
+    /**
+     * This method returns the MD5 hash of a file
+     *
+     * @param path path of the file to get the hash of
+     */
 
     static String getMD5Hash(String path) throws IOException, NoSuchAlgorithmException {
         try (

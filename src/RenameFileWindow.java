@@ -253,7 +253,7 @@ class RenameFileWindow extends JFrame {
                                     } else {
                                         JSONObject userFiles = null;
                                         try {
-                                            userFiles = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
+                                            userFiles = FileClient.getUserFiles(serverAddress, port, userAccount);
                                         } catch (MalformedRequestException e1) {
                                             e1.printStackTrace();
                                         } catch (IOException e1) {

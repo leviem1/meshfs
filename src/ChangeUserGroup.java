@@ -266,7 +266,7 @@ class ChangeUserGroup extends JFrame {
                     }
                     if (!newGroups.isEmpty()) {
                         try {
-                            FileClient.updateUserGroupMembership(serverAddress, port, userAccount, newGroups.toString().replace("[", "").replace("]", ""), MeshFS.properties.getProperty("uuid"));
+                            FileClient.updateUserGroupMembership(serverAddress, port, userAccount, newGroups.toString().replace("[", "").replace("]", ""));
                             dispose();
                         } catch (IOException | MalformedRequestException e1) {
                             e1.printStackTrace();
@@ -284,8 +284,8 @@ class ChangeUserGroup extends JFrame {
         String myGroups = null;
         String allGroups = null;
         try {
-            myGroups = FileClient.getUserGroups(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
-            allGroups = FileClient.getGroups(serverAddress, port, MeshFS.properties.getProperty("uuid"));
+            myGroups = FileClient.getUserGroups(serverAddress, port, userAccount);
+            allGroups = FileClient.getGroups(serverAddress, port);
 
         } catch (MalformedRequestException e) {
             e.printStackTrace();

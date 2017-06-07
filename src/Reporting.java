@@ -30,6 +30,7 @@ class Reporting {
      *
      * @return the operating system name
      */
+
     static String getSystemOS() {
         return System.getProperty("os.name");
     }
@@ -40,6 +41,7 @@ class Reporting {
      * @return the number of bytes available on the disk minus the space allocated in
      * .config.properties
      */
+
     static long getSystemStorage() {
         String os = System.getProperty("os.name");
         File file;
@@ -58,6 +60,7 @@ class Reporting {
      *
      * @return list of IPv4 addresses
      */
+
     static List<String> getIpAddresses() {
         List<String> ip = new ArrayList<>();
         try {
@@ -87,6 +90,7 @@ class Reporting {
      *
      * @return local date and time
      */
+
     static String getSystemDate() {
         return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
     }
@@ -102,6 +106,12 @@ class Reporting {
     private static String getUserName() {
         return System.getProperty("user.name");
     }
+
+    /**
+     * This method is used to get the MAC address of the host computer
+     *
+     * @return the MAC address
+     */
 
     static String getMacAddress() {
         String macAddress = null;
@@ -124,6 +134,12 @@ class Reporting {
         return macAddress;
     }
 
+    /**
+     * This method is used to get the repository contents of the computer
+     *
+     * @return the repository contents
+     */
+
     static String getRepositoryContents() {
         File[] repoContents = new File(MeshFS.properties.getProperty("repository")).listFiles();
         List<String> contents = new ArrayList<>();
@@ -139,6 +155,7 @@ class Reporting {
      *
      * @return report of system information
      */
+
     static String generate() {
         return getMacAddress()
                 + "|IP:"
@@ -164,6 +181,7 @@ class Reporting {
      * @return JSONArray of report
      */
     @SuppressWarnings("unchecked")
+
     static JSONArray splitter(String report) {
         JSONObject jsonObject = new JSONObject();
         JSONArray mainArray = new JSONArray();

@@ -30,7 +30,8 @@ class FileClient {
      * @param port          the port of the server to connect to
      * @param fileName      the name of the file that is requested and
      *                      name to be used to write in repo
-     * @throws IOException on error connecting or writing file
+     * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
 
     static void receiveFile(
@@ -46,9 +47,9 @@ class FileClient {
      * @param port          the port of the server to connect to
      * @param fileName      the name of the file that is requested
      * @param fileOut       the file name to write the received file as
-     * @throws IOException on error connecting or writing file
+     * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
-
     @SuppressWarnings("deprecation")
     static void receiveFile(
             String serverAddress, int port, String fileName, String fileOut)
@@ -93,6 +94,7 @@ class FileClient {
      * @param port          the port of the server to connect to
      * @param filepath      the location of the file to send
      * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
 
     static void sendFile(String serverAddress, int port, String filepath)
@@ -133,6 +135,7 @@ class FileClient {
      * @param filepath      the location of the file to send
      * @param userAccount   the account to add the file for
      * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
 
     static void sendFile(
@@ -174,6 +177,7 @@ class FileClient {
      * @param currFile      the file that is to be moved
      * @param destFile      the location that the file is to be moved to
      * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
 
     static void moveFile(
@@ -203,6 +207,7 @@ class FileClient {
      * @param port          the port of the server to connect to
      * @param currFile      the file to duplicate
      * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
 
     static void duplicateFile(String serverAddress, int port, String currFile)
@@ -229,9 +234,11 @@ class FileClient {
      * @param port          the port of the server to connect to
      * @param currFile      the file to be deleted
      * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
 
-    static void deleteFile(String serverAddress, int port, String currFile) throws IOException, MalformedRequestException {
+    static void deleteFile(String serverAddress, int port, String currFile)
+            throws IOException, MalformedRequestException {
         deleteFile(serverAddress, port, currFile, false);
     }
 
@@ -243,7 +250,9 @@ class FileClient {
      * @param currFile      the file to be deleted
      * @param physical      if true, delete the physical file. false to delete reference to file
      * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
+    
     static void deleteFile(String serverAddress, int port, String currFile, boolean physical)
             throws IOException, MalformedRequestException {
         String response;
@@ -271,7 +280,9 @@ class FileClient {
      * @param directoryPath the location to add the folder to
      * @param directoryName the name of folder
      * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
+    
     static void addFolder(
             String serverAddress,
             int port,
@@ -301,9 +312,11 @@ class FileClient {
      *
      * @param serverAddress the IP address of the server to connect to
      * @param port          the port of the server to connect to
-     * @throws IOException on error connecting or writing to manifest file
+     * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
     @SuppressWarnings("unchecked")
+    
     static void receiveReport(String serverAddress, int port) throws IOException, MalformedRequestException {
         JSONObject manifest = new JSONObject();
         if (new File(MeshFS.properties.getProperty("repository") + ".manifest.json").exists()) {
@@ -323,9 +336,12 @@ class FileClient {
      *
      * @param serverAddress the IP address of the server to connect to
      * @param port          the port of the server to connect to
-     * @throws IOException on error connecting or writing to manifest file
+     * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
-    static JSONArray receiveReportAsJSON(String serverAddress, int port) throws IOException, MalformedRequestException {
+    
+    static JSONArray receiveReportAsJSON(String serverAddress, int port)
+            throws IOException, MalformedRequestException {
         String response;
         String reportPart;
         StringBuilder reportFull = new StringBuilder();
@@ -361,7 +377,9 @@ class FileClient {
      * @param serverAddress the IP address of the server to connect to
      * @param port          the port of the server to connect to
      * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
+    
     static void sendReport(String serverAddress, int port) throws IOException, MalformedRequestException {
         String response;
 
@@ -389,6 +407,7 @@ class FileClient {
      * @param port          the port of the server to connect to
      * @return latency in milliseconds, -1 if cannot connect
      */
+    
     static int ping(String serverAddress, int port) {
         try (
                 Socket client = new Socket(serverAddress, port);
@@ -419,7 +438,9 @@ class FileClient {
      * @param jsonObj       the JSONObject to rename
      * @param newName       the name to set the JSONObject to
      * @throws IOException on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
      */
+    
     static void renameFile(
             String serverAddress, int port, String jsonObj, String newName)
             throws IOException, MalformedRequestException {
@@ -440,6 +461,18 @@ class FileClient {
         }
     }
 
+    /**
+     * This method is used to request a change of the current user's password
+     *
+     * @param serverAddress                     the IP address of the server to connect to
+     * @param port                              the port of the server to connect to
+     * @param oldPassword                       the old password for the current user
+     * @param newPassword                       the new password for the current user
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     * @throws  IncorrectCredentialException    incorrect current password
+     */
+    
     static void changePassword(
             String serverAddress, int port, String username, String oldPassword, String newPassword)
             throws IOException, MalformedRequestException, IncorrectCredentialException {
@@ -463,7 +496,19 @@ class FileClient {
         }
     }
 
-    static boolean doesFileExist(String serverAddress, int port, String fileName) throws MalformedRequestException, IOException {
+    /**
+     * This method is used to request if a file exists on a server
+     *
+     * @param serverAddress                     the IP address of the server to connect to
+     * @param port                              the port of the server to connect to
+     * @param fileName                          the name of the file to check
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     * @throws  IncorrectCredentialException    incorrect current password
+     */
+    
+    static boolean doesFileExist(String serverAddress, int port, String fileName)
+            throws MalformedRequestException, IOException {
         String response;
         try (
                 Socket client = new Socket(serverAddress, port);
@@ -482,7 +527,20 @@ class FileClient {
         }
     }
 
-    static String loginAsUser(String serverAddress, int port, String username, String password) throws IOException, MalformedRequestException, IncorrectCredentialException {
+    /**
+     * This method is used to request the UUID from the server
+     *
+     * @param serverAddress                     the IP address of the server to connect to
+     * @param port                              the port of the server to connect to
+     * @param username                          the name of the user being logged in
+     * @param password                          the password of the user being logged in
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     * @throws  IncorrectCredentialException    incorrect current password
+     */
+    
+    static String loginAsUser(String serverAddress, int port, String username, String password)
+            throws IOException, MalformedRequestException, IncorrectCredentialException {
         String response;
 
         try (
@@ -503,7 +561,18 @@ class FileClient {
         }
     }
 
-    static void deleteAccount(String serverAddress, int port, String userAccount) throws IOException, MalformedRequestException {
+    /**
+     * This method is used to delete an account on the server
+     *
+     * @param serverAddress                     the IP address of the server to connect to
+     * @param port                              the port of the server to connect to
+     * @param userAccount                       the name of the user being deleted
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static void deleteAccount(String serverAddress, int port, String userAccount)
+            throws IOException, MalformedRequestException {
         String response;
 
         try (
@@ -521,7 +590,18 @@ class FileClient {
         }
     }
 
-    static JSONObject getUserFiles(String serverAddress, int port, String userAccount, String uuid) throws MalformedRequestException, IOException {
+    /**
+     * This method is used to request the files of the user
+     *
+     * @param serverAddress                     the IP address of the server to connect to
+     * @param port                              the port of the server to connect to
+     * @param userAccount                       the name of the user to get the files of 
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static JSONObject getUserFiles(String serverAddress, int port, String userAccount)
+            throws MalformedRequestException, IOException {
         String response;
         JSONObject jsonObject = new JSONObject();
 
@@ -533,7 +613,7 @@ class FileClient {
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-            out.println("115|" + uuid + "|" + userAccount + "\n");
+            out.println("115|" + MeshFS.properties.getProperty("uuid") + "|" + userAccount + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
@@ -548,7 +628,18 @@ class FileClient {
         return jsonObject;
     }
 
-    static String getUserGroups(String serverAddress, int port, String userAccount, String uuid) throws MalformedRequestException, IOException {
+    /**
+     * This method is used to request groups of a particular user
+     *
+     * @param serverAddress                     the IP address of the server to connect to
+     * @param port                              the port of the server to connect to
+     * @param userAccount                       the name of the user to get the files of 
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static String getUserGroups(String serverAddress, int port, String userAccount)
+            throws MalformedRequestException, IOException {
         String response;
 
         try (
@@ -558,7 +649,7 @@ class FileClient {
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-            out.println("116|" + uuid + "|" + userAccount + "\n");
+            out.println("116|" + MeshFS.properties.getProperty("uuid") + "|" + userAccount + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
@@ -570,7 +661,16 @@ class FileClient {
         }
     }
 
-    static String getGroups(String serverAddress, int port, String uuid) throws MalformedRequestException, IOException {
+    /**
+     * This method is used to request all groups on the server
+     *
+     * @param serverAddress                     the IP address of the server
+     * @param port                              the port of the server
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static String getGroups(String serverAddress, int port) throws MalformedRequestException, IOException {
         String response;
 
         try (
@@ -580,7 +680,7 @@ class FileClient {
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-            out.println("117|" + uuid + "\n");
+            out.println("117|" + MeshFS.properties.getProperty("uuid") + "\n");
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
             }
@@ -592,7 +692,19 @@ class FileClient {
 
     }
 
-    static void updateUserGroupMembership(String serverAddress, int port, String userAccount, String newGroups, String uuid) throws MalformedRequestException, IOException {
+    /**
+     * This method is used to request updated group membership for a particular user
+     *
+     * @param serverAddress                     the IP address of the server
+     * @param port                              the port of the server
+     * @param userAccount                       the user account whose group membership will be updated
+     * @param newGroups                         the new groups of the userAccount
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static void updateUserGroupMembership(String serverAddress, int port, String userAccount, String newGroups)
+            throws MalformedRequestException, IOException {
         String response;
 
         try (
@@ -602,7 +714,7 @@ class FileClient {
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-            out.println("118|" + uuid + "|" + userAccount + "|" + newGroups + "\n");
+            out.println("118|" + MeshFS.properties.getProperty("uuid") + "|" + userAccount + "|" + newGroups + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
@@ -610,7 +722,18 @@ class FileClient {
         }
     }
 
-    static String getUserType(String serverAddress, int port, String userAccount, String uuid) throws MalformedRequestException, IOException {
+    /**
+     * This method is used to request the type of a user
+     *
+     * @param serverAddress                     the IP address of the server
+     * @param port                              the port of the server
+     * @param userAccount                       the user account whose group membership will be updated
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static String getUserType(String serverAddress, int port, String userAccount)
+            throws MalformedRequestException, IOException {
         String response;
 
         try (
@@ -621,7 +744,7 @@ class FileClient {
 
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-            out.println("119|" + uuid + "|" + userAccount + "\n");
+            out.println("119|" + MeshFS.properties.getProperty("uuid") + "|" + userAccount + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
@@ -631,7 +754,19 @@ class FileClient {
         }
     }
 
-    static void editPermissions(String serverAddress, int port, String itemLocation, String groups, String uuid) throws MalformedRequestException, IOException {
+    /**
+     * This method is used to request an edit of an item permission
+     *
+     * @param serverAddress                     the IP address of the server
+     * @param port                              the port of the server
+     * @param itemLocation                      the location of the item being edited
+     * @param groups                            the updated groups of the item being edited
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static void editPermissions(String serverAddress, int port, String itemLocation, String groups)
+            throws MalformedRequestException, IOException {
         String response;
 
         try (
@@ -641,7 +776,7 @@ class FileClient {
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-            out.println("120|" + uuid + "|" + itemLocation + "|" + groups + "\n");
+            out.println("120|" + MeshFS.properties.getProperty("uuid") + "|" + itemLocation + "|" + groups + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
@@ -649,7 +784,18 @@ class FileClient {
         }
     }
 
-    static List<String> getNodeIntendedFiles(String serverAddress, int port, String macAddr) throws MalformedRequestException, IOException {
+    /**
+     * This method is used to request the files for a given node
+     *
+     * @param serverAddress                     the IP address of the server
+     * @param port                              the port of the server
+     * @param macAddress                        the macAddress of the server to get the files of
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static List<String> getNodeIntendedFiles(String serverAddress, int port, String macAddress)
+            throws MalformedRequestException, IOException {
         String response;
 
         try (
@@ -659,7 +805,7 @@ class FileClient {
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
-            out.println("121|" + MeshFS.properties.getProperty("uuid") + "|" + macAddr + "\n");
+            out.println("121|" + MeshFS.properties.getProperty("uuid") + "|" + macAddress + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
@@ -670,7 +816,19 @@ class FileClient {
         }
     }
 
-    static void blacklistUser(String serverAddress, int port, String itemLocation, String username, String uuid) throws MalformedRequestException, IOException {
+    /**
+     * This method is used to request a particular user to be removed from a file
+     *
+     * @param serverAddress                     the IP address of the server
+     * @param port                              the port of the server
+     * @param itemLocation                      the location of the item to be blacklisted
+     * @param username                          the username of the user being blacklisted                                         
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static void blacklistUser(String serverAddress, int port, String itemLocation, String username)
+            throws MalformedRequestException, IOException {
         String response;
 
         try (
@@ -679,7 +837,7 @@ class FileClient {
                 PrintWriter out = new PrintWriter(client.getOutputStream(), true)
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-            out.println("122|" + uuid + "|" + itemLocation + "|" + username + "\n");
+            out.println("122|" + MeshFS.properties.getProperty("uuid") + "|" + itemLocation + "|" + username + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {
                 throw new MalformedRequestException(response);
@@ -687,7 +845,18 @@ class FileClient {
         }
     }
 
-    static String getUserUUID(String serverAddress, int port, String username, String passwordHash, String uuid) throws IOException, MalformedRequestException, IncorrectCredentialException {
+    /**
+     * This method is used to request the UUID of a particular user
+     *
+     * @param serverAddress                     the IP address of the server
+     * @param port                              the port of the server
+     * @param username                          the username of the user to request the UUID from                                        
+     * @throws IOException                      on error connecting
+     * @throws MalformedRequestException        incorrectly formed request
+     */
+    
+    static String getUserUUID(String serverAddress, int port, String username, String passwordHash)
+            throws IOException, MalformedRequestException, IncorrectCredentialException {
         String response;
 
         try (
@@ -696,7 +865,7 @@ class FileClient {
                 PrintWriter out = new PrintWriter(client.getOutputStream(), true)
         ) {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
-            out.println("123|" + uuid + "|" + username + "|" + passwordHash + "\n");
+            out.println("123|" + MeshFS.properties.getProperty("uuid") + "|" + username + "|" + passwordHash + "\n");
 
             if ((response = input.readLine().trim()).split(";")[0].equals("203")) {
                 throw new IncorrectCredentialException();

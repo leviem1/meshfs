@@ -296,7 +296,7 @@ class ClientBrowser extends JFrame {
                     if (rVal == JFileChooser.APPROVE_OPTION) {
                         JSONObject userFiles = null;
                         try {
-                            userFiles = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
+                            userFiles = FileClient.getUserFiles(serverAddress, port, userAccount);
                         } catch (MalformedRequestException e1) {
                             e1.printStackTrace();
                         } catch (IOException ignored) {
@@ -552,7 +552,7 @@ class ClientBrowser extends JFrame {
                     jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
 
                     try {
-                        FileClient.blacklistUser(serverAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), JSONUtils.catalogStringFixer(jsonPath.toString()), userAccount, MeshFS.properties.getProperty("uuid"));
+                        FileClient.blacklistUser(serverAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), JSONUtils.catalogStringFixer(jsonPath.toString()), userAccount);
                     } catch (MalformedRequestException e1) {
                         e1.printStackTrace();
                     } catch (IOException e1) {
@@ -606,7 +606,7 @@ class ClientBrowser extends JFrame {
                         String localCatalog = catalogObj.toString();
                         String latestCatalog = null;
                         try {
-                            latestCatalog = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid")).toString();
+                            latestCatalog = FileClient.getUserFiles(serverAddress, port, userAccount).toString();
                         } catch (MalformedRequestException e) {
                             e.printStackTrace();
                         } catch (IOException ioe) {
@@ -628,7 +628,7 @@ class ClientBrowser extends JFrame {
 
                             }
                             try {
-                                catalogObj = FileClient.getUserFiles(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
+                                catalogObj = FileClient.getUserFiles(serverAddress, port, userAccount);
                             } catch (MalformedRequestException e) {
                                 e.printStackTrace();
                             } catch (IOException e) {
