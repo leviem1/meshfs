@@ -11,7 +11,7 @@ class UserAccountOptions extends JFrame {
     private String userAccount;
     private String serverAddress;
     private int port;
-    private static JFrame parentSender;
+    private JFrame parentSender;
     private boolean previousRunType;
 
     //GEN-BEGIN:variables
@@ -31,7 +31,7 @@ class UserAccountOptions extends JFrame {
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
-        UserAccountOptions.parentSender = parentSender;
+        this.parentSender = parentSender;
         this.previousRunType = previousRunType;
 
 

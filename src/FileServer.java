@@ -103,11 +103,6 @@ class ServerInit implements Runnable {
             try {
                 String[] requestParts = request.trim().split("\\|");
 
-                /*for(String x : requestParts){
-                    System.out.println(x);
-                }*/
-
-
                 //format requests in form of #, uuid, parameters
                 if (!(requestParts[0].equals("109") || requestParts[0].equals("113")) && (!requestParts[1].equals(MeshFS.properties.getProperty("uuid")))) {
                     return;

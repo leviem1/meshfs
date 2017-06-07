@@ -54,10 +54,12 @@ class JSONUtils {
     static JSONObject getItemContents(JSONObject jsonObject, String itemLocation) {
         itemLocation = catalogStringFixer(itemLocation);
         String[] folders = itemLocation.split("/");
+
         JSONObject folderToRead = jsonObject;
         for (String folder : folders) {
             folderToRead = (JSONObject) folderToRead.get(folder);
         }
+
         return folderToRead;
     }
 
@@ -652,9 +654,7 @@ class JSONUtils {
 
     @SuppressWarnings("unchecked")
     private static JSONObject catalogBuilder(JSONObject jsonObject, UserAccount user) {
-        System.out.println(jsonObject + " " + user.getUsername());
         LinkedHashMap<String, String> items = getMapOfFolderContents(jsonObject, user);
-        System.out.println(items);
         JSONObject catalog = new JSONObject();
         for (String item : items.keySet()) {
             if (items.get(item).equals("directory")) {

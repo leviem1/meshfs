@@ -45,7 +45,6 @@ class DownloadFromDrive extends JFrame {
 
             masterJSON = DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, "root");
 
-            System.out.println(masterJSON);
             tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
 
         } catch (IOException e) {
@@ -152,32 +151,37 @@ class DownloadFromDrive extends JFrame {
                 if (node.getChildCount() == 1 && node.getChildAt(0).toString().equals("(loading...)")) {
                     java.util.List<Object> treeList = Arrays.asList(event.getPath().getPath());
                     StringBuilder treePath = new StringBuilder();
+
                     for (Object item : treeList) {
                         treePath.append(item.toString()).append("/");
                     }
+
                     treePath = new StringBuilder(treePath.substring(0, treePath.length() - 1));
+
                     try {
                         masterJSON = DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, treePath.toString());
                     } catch (IOException | GeneralSecurityException e1) {
                         e1.printStackTrace();
                     }
+
                     StringBuilder sb = new StringBuilder();
+
                     for (int i = 0; i < tree1.getRowCount(); i++) {
                         if (tree1.isExpanded(i)) {
                             sb.append(i).append(",");
                         }
                     }
+
                     tree1.setSelectionPath(new TreePath(node.getPath()));
                     sb.append(tree1.getLeadSelectionRow());
                     tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
                     String[] indexes = sb.toString().split(",");
+
                     for (String st : indexes) {
                         int row = Integer.parseInt(st);
                         tree1.expandRow(row);
-
                     }
                 }
-
                 tree1.setSelectionPath(new TreePath(node.getPath()));
                 tree1.scrollPathToVisible(new TreePath(node.getPath()));
             }
@@ -193,9 +197,11 @@ class DownloadFromDrive extends JFrame {
                 e -> {
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
                     StringBuilder jsonPath = new StringBuilder();
+
                     for (Object item : treeList) {
                         jsonPath.append(item.toString()).append("/");
                     }
+
                     jsonPath = new StringBuilder(jsonPath.substring(0, jsonPath.length() - 1));
 
                     try {

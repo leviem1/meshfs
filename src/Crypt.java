@@ -31,6 +31,7 @@ class Crypt {
 
         assert messageDigest != null;
         messageDigest.update(password.getBytes(), 0, password.length());
+
         return new BigInteger(1, messageDigest.digest()).toString(256);
     }
 

@@ -15,7 +15,6 @@ import java.util.List;
  */
 class DISTAL {
 
-
     /**
      * This method is used determines which load balance which computers will receive a file and its
      * stripes. The method also sends the file to the appropriate computers and updates the catalog
@@ -99,23 +98,28 @@ class DISTAL {
                     computersForWholes.add(macAddress);
                 }
             }
+
             for (String macAddress : computersForWholes) {
                 sortedCompStorageMap.remove(macAddress);
             }
 
             //remove any computer that cannot store a stripe
             boolean finalComputerCount = true;
+
             if (sizeOfStripe != 0L) {
                 List<String> removedIPs = new ArrayList<>();
+
                 for (String macAddress : sortedCompStorageMap.keySet()) {
                     if (sortedCompStorageMap.get(macAddress) < sizeOfStripe) {
                         removedIPs.add(macAddress);
                         finalComputerCount = false;
                     }
                 }
+
                 for (String IP : removedIPs) {
                     sortedCompStorageMap.remove(IP);
                 }
+
             }
 
             //keep dynamically reassigning computers until all listed computers can hold the files that they will be given.
@@ -131,6 +135,7 @@ class DISTAL {
 
         //define which computers get stripes
         List<String> computersForStripes = new ArrayList<>();
+
         for (String macAddress : sortedCompStorageMap.keySet()) {
             if (computersForStripes.size() == numOfStripedCopies * numOfStripes) {
                 break;
@@ -219,14 +224,10 @@ class DISTAL {
         }
         //rename the original file to what the distributed whole file will be
 
-        System.out.println("Old: " + sourceFileLocationOld);
-
         final String sourceFileLocation =
                 sourceFileLocationOld.substring(0, sourceFileLocationOld.lastIndexOf(File.separator) + 1)
                         + outName
                         + "_w";
-
-        System.out.println("New: " + sourceFileLocation);
 
         new File(sourceFileLocationOld).renameTo(new File(sourceFileLocation));
 
