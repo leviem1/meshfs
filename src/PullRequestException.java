@@ -7,6 +7,11 @@
  */
 
 class PullRequestException extends Exception {
+
+    /**
+     * This creates the PullRequestException
+     */
+
     PullRequestException() {
         super("Cannot reconstruct file");
     }
