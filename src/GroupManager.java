@@ -28,8 +28,6 @@ class GroupManager extends JFrame {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
 
-        initComponents();
-        frameListeners();
 
         model = new DefaultListModel();
 
@@ -39,6 +37,9 @@ class GroupManager extends JFrame {
 
             }
         }
+
+        initComponents();
+        frameListeners();
     }
 
     private void initComponents() {
