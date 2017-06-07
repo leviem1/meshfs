@@ -2,6 +2,7 @@
  * This exception occurs on credential mismatch
  *
  * @author Levi Muniz
+ * @version 1.0.0
  */
 
 class IncorrectCredentialException extends Exception {
