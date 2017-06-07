@@ -47,7 +47,7 @@ class DownloadFromDrive extends JFrame {
             root.put("generated", "false");
             masterJSON.put("root", root);
 
-            masterJSON = DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, "root");
+            DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, "root");
 
             tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
 
@@ -163,7 +163,7 @@ class DownloadFromDrive extends JFrame {
                     treePath = new StringBuilder(treePath.substring(0, treePath.length() - 1));
 
                     try {
-                        masterJSON = DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, treePath.toString());
+                        DriveAPI.googleJsonBuilder(MeshFS.userUUID, masterJSON, treePath.toString());
                     } catch (IOException | GeneralSecurityException e1) {
                         e1.printStackTrace();
                     }
