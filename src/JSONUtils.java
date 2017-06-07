@@ -48,9 +48,9 @@ class JSONUtils {
     /**
      * This method returns the JSONObject associated with the designated item.
      *
-     * @param jsonObject   the JSONObject that is being read
-     * @param itemLocation the virtual path within the JSONObject
-     * @return the JSONObject associated with the designated item
+     * @param jsonObject    the JSONObject that is being read
+     * @param itemLocation  the virtual path within the JSONObject
+     * @return              the JSONObject associated with the designated item
      */
     static JSONObject getItemContents(JSONObject jsonObject, String itemLocation) {
         itemLocation = catalogStringFixer(itemLocation);
@@ -67,9 +67,9 @@ class JSONUtils {
     /**
      * This method returns the ID associated with the designated google file from a JSONObject.
      *
-     * @param masterJSON   the JSONObject of google drive
-     * @param itemLocation the virtual path within the google drive JSONObject
-     * @return the google drive file id
+     * @param masterJSON    the JSONObject of google drive
+     * @param itemLocation  the virtual path within the google drive JSONObject
+     * @return              the google drive file id
      */
     static String getGoogleFileID(JSONObject masterJSON, String itemLocation) {
         String[] folders = itemLocation.split("/");
@@ -84,9 +84,9 @@ class JSONUtils {
      * This method is returns a LinkedHashMap of the contents of a folder. The contents are returned
      * in the format of "itemName", "itemType".
      *
-     * @param jsonObject the JSONObject that is being read
-     * @param user       the UserAccount object of the user, if null, the folder is read as if the user was an admin
-     * @return a map of the folder's contents
+     * @param jsonObject    the JSONObject that is being read
+     * @param user          the UserAccount object of the user, if null, the folder is read as if the user was an admin
+     * @return              a map of the folder's contents
      */
     @SuppressWarnings("unchecked")
     static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, UserAccount user) {
@@ -594,6 +594,20 @@ class JSONUtils {
         return new Pair<>(humanReadableByteCount(properties.getKey()), df.format(new Date(properties.getValue())));
     }
 
+    /**
+     * This method turns a number of bytes into the a format that humans can read, uses base 1024
+     *
+     * @param bytes The number of bytes
+     * @return The string of how humans read file size, rounded to ______ decimal places
+     */
+    static String humanReadableByteCount(long bytes) {
+        int unit = 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = ("KMGTPE").charAt(exp - 1) + ("i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
     private static Pair<Long, Long> folderPropertiesRecursive(JSONObject folder) {
         Long folderSize = 0L;
         Long epochDate = 0L;
@@ -775,19 +789,6 @@ class JSONUtils {
         return removedFiles;
     }
 
-    /**
-     * This method turns a number of bytes into the a format that humans can read, uses base 1024
-     *
-     * @param bytes The number of bytes
-     * @return The string of how humans read file size, rounded to ______ decimal places
-     */
-    static String humanReadableByteCount(long bytes) {
-        int unit = 1024;
-        if (bytes < unit) return bytes + " B";
-        int exp = (int) (Math.log(bytes) / Math.log(unit));
-        String pre = ("KMGTPE").charAt(exp - 1) + ("i");
-        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
-    }
 
     @SuppressWarnings("unchecked")
     private static JSONObject changePermissions(JSONObject jsonObject, JSONArray newUserArray, JSONArray newAdminArray, boolean removeBlacklist) {

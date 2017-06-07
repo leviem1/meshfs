@@ -4,8 +4,14 @@ import java.awt.*;
 import java.io.IOException;
 
 /**
+ * The UserAccountOptions is a window
+ * responsible for modifying their user
+ * accounts
+ *
  * @author Mark Hedrick
+ * @version 1.0.0
  */
+
 class UserAccountOptions extends JFrame {
     private static JFrame userAccountOptions;
     private String userAccount;
@@ -13,17 +19,6 @@ class UserAccountOptions extends JFrame {
     private int port;
     private JFrame parentSender;
     private boolean previousRunType;
-
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JLabel titleLbl2;
-    private JButton closeBtn;
-    private JLabel titleLbl;
-    private JButton changePasswordBtn;
-    private JButton deleteAccount;
-    private JButton changeGroupBtn;
-    //GEN-END:variables
 
     private UserAccountOptions(
             String userAccount, String serverAddress, int port, JFrame parentSender, boolean previousRunType) {
@@ -70,12 +65,6 @@ class UserAccountOptions extends JFrame {
             deleteAccount.setEnabled(false);
             deleteAccount.setToolTipText("Deleting the admin account is not allowed");
         }
-    }
-
-    public static void run(JFrame sender, String userAccount, String serverAddress, int port, boolean previousRunType) {
-        userAccountOptions = new UserAccountOptions(userAccount, serverAddress, port, sender, previousRunType);
-        CenterWindow.centerOnWindow(sender, userAccountOptions);
-        userAccountOptions.setVisible(true);
     }
 
     private void initComponents() {
@@ -202,4 +191,36 @@ class UserAccountOptions extends JFrame {
         changeGroupBtn.addActionListener(
                 e -> ChangeUserGroup.run(userAccountOptions, userAccount, serverAddress, port));
     }
+
+    /**
+     * The run method is responsible for spawning the window when
+     * called.
+     *
+     * @param sender          The parent window that called this window
+     * @param userAccount     The user account of the active user
+     * @param serverAddress   The address used to connect to the master
+     *                        server
+     * @param port            The port number used to connect to the
+     *                        master server
+     * @param previousRunType The type of account options window to display
+     */
+
+    public static void run(JFrame sender, String userAccount, String serverAddress, int port, boolean previousRunType) {
+        userAccountOptions = new UserAccountOptions(userAccount, serverAddress, port, sender, previousRunType);
+        CenterWindow.centerOnWindow(sender, userAccountOptions);
+        userAccountOptions.setVisible(true);
+    }
+
+
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JPanel dialogPane;
+    private JLabel titleLbl2;
+    private JButton closeBtn;
+    private JLabel titleLbl;
+    private JButton changePasswordBtn;
+    private JButton deleteAccount;
+    private JButton changeGroupBtn;
+    //GEN-END:variables
+
 }

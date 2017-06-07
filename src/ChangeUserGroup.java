@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ *
  * The ChangeUserGroup is a window responsible for letting users change their group
  * membership.
  *
@@ -20,7 +21,6 @@ class ChangeUserGroup extends JFrame {
     private int port;
     private final DefaultListModel currentGroupModel;
     private final DefaultListModel newGroupModel;
-
 
     private ChangeUserGroup(String userAccount, String serverAddress, int port) {
         this.userAccount = userAccount;
@@ -151,32 +151,32 @@ class ChangeUserGroup extends JFrame {
                             GroupLayout panel3Layout = new GroupLayout(panel3);
                             panel3.setLayout(panel3Layout);
                             panel3Layout.setHorizontalGroup(
-                                    panel3Layout.createParallelGroup()
+                                panel3Layout.createParallelGroup()
+                                    .addGroup(panel3Layout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addGroup(panel3Layout.createParallelGroup()
                                             .addGroup(panel3Layout.createSequentialGroup()
-                                                    .addContainerGap()
-                                                    .addGroup(panel3Layout.createParallelGroup()
-                                                            .addGroup(panel3Layout.createSequentialGroup()
-                                                                    .addComponent(addGroupLbl, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-                                                                    .addContainerGap(145, Short.MAX_VALUE))
-                                                            .addGroup(panel3Layout.createSequentialGroup()
-                                                                    .addComponent(userGroupBox, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-                                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                                    .addComponent(addGroupBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                                    .addComponent(removeMembershipBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                                    .addGap(3, 3, 3))))
+                                                .addComponent(addGroupLbl, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                                .addContainerGap(145, Short.MAX_VALUE))
+                                            .addGroup(panel3Layout.createSequentialGroup()
+                                                .addComponent(userGroupBox, GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(addGroupBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(removeMembershipBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addGap(3, 3, 3))))
                             );
                             panel3Layout.setVerticalGroup(
-                                    panel3Layout.createParallelGroup()
-                                            .addGroup(panel3Layout.createSequentialGroup()
-                                                    .addContainerGap()
-                                                    .addComponent(addGroupLbl)
-                                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                            .addComponent(userGroupBox, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-                                                            .addComponent(addGroupBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                            .addComponent(removeMembershipBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                panel3Layout.createParallelGroup()
+                                    .addGroup(panel3Layout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(addGroupLbl)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(userGroupBox, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(addGroupBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(removeMembershipBtn, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             );
                         }
                         panel2.add(panel3, BorderLayout.SOUTH);
@@ -187,32 +187,32 @@ class ChangeUserGroup extends JFrame {
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                        contentPanelLayout.createParallelGroup()
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addComponent(changeUserGroupTitle, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addGroup(contentPanelLayout.createParallelGroup()
-                                                .addComponent(changeUserGroupTitle, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                                        .addContainerGap()
-                                                        .addComponent(currentGroupsLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                        .addComponent(newGroupsLbl, GroupLayout.PREFERRED_SIZE, 225, GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(19, 19, 19)))
-                                        .addContainerGap())
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(splitPane1, GroupLayout.PREFERRED_SIZE, 512, GroupLayout.PREFERRED_SIZE)
-                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addContainerGap()
+                                    .addComponent(currentGroupsLbl, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(newGroupsLbl, GroupLayout.PREFERRED_SIZE, 225, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(19, 19, 19)))
+                            .addContainerGap())
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(splitPane1, GroupLayout.PREFERRED_SIZE, 512, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
-                        contentPanelLayout.createParallelGroup()
-                                .addGroup(contentPanelLayout.createSequentialGroup()
-                                        .addComponent(changeUserGroupTitle)
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                .addComponent(currentGroupsLbl)
-                                                .addComponent(newGroupsLbl))
-                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
+                    contentPanelLayout.createParallelGroup()
+                        .addGroup(contentPanelLayout.createSequentialGroup()
+                            .addComponent(changeUserGroupTitle)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(currentGroupsLbl)
+                                .addComponent(newGroupsLbl))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(splitPane1, GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -221,15 +221,15 @@ class ChangeUserGroup extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 80};
-                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{1.0, 0.0};
+                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
+                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
                 okButton.setFont(new Font("Arial", okButton.getFont().getStyle(), okButton.getFont().getSize() + 1));
                 buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                        new Insets(0, 0, 0, 0), 0, 0));
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -327,12 +327,13 @@ class ChangeUserGroup extends JFrame {
     }
 
     /**
+     *
      * The run method is responsible for spawning the window when called.
      *
-     * @param sender        The window that called this one
-     * @param userAccount   The user account that called this window
-     * @param serverAddress The address used to connect to the master server
-     * @param port          The port number used to connect to the master server
+     * @param sender            The window that called this one
+     * @param userAccount       The user account that called this window
+     * @param serverAddress     The address used to connect to the master server
+     * @param port              The port number used to connect to the master server
      */
 
     public static void run(JFrame sender, String userAccount, String serverAddress, int port) {

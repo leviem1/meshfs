@@ -137,18 +137,15 @@ class DriveAPI {
     }
 
     /**
-     * 
+     * This is used to build a JSONObject from google drive one layer at a time
      *
-     * @param user
-     * @param masterJson
-     * @param parentFolderLocation
-     * @return
-     * @throws IOException
-     * @throws GeneralSecurityException
+     * @param user                  the userID for the google account
+     * @param masterJson            the JSONObject of the google drive info
+     * @param parentFolderLocation  the virtual filepath of the parent folder in the masterJSONObject
      */
 
     @SuppressWarnings("unchecked")
-    static JSONObject googleJsonBuilder(String user, JSONObject masterJson, String parentFolderLocation) throws IOException, GeneralSecurityException {
+    static void googleJsonBuilder(String user, JSONObject masterJson, String parentFolderLocation) throws IOException, GeneralSecurityException {
         JSONObject itemToRead = masterJson;
         String[] parentFolders = parentFolderLocation.split("/");
         for (String parentFolder : parentFolders) {
@@ -157,45 +154,37 @@ class DriveAPI {
         if (itemToRead.get("generated").toString().equals("false")) {
             String parentId = itemToRead.get("ID").toString();
             List<String> itemTitles = new ArrayList<>();
-
             List<File> folders = listFolders(parentId, user);
-            for (File folder : folders) {
-                StringBuilder itemName = new StringBuilder(folder.getTitle());
-                if (itemTitles.contains(itemName.toString())) {
-                    int duplicateCount = 1;
-                    while (itemTitles.contains(itemName + " (" + duplicateCount + ")")) {
-                        duplicateCount++;
-                    }
-                    itemName.append(" (").append(duplicateCount).append(")");
-                }
-                itemTitles.add(itemName.toString());
-                JSONObject folderInfo = new JSONObject();
-                folderInfo.put("type", "directory");
-                folderInfo.put("ID", folder.getId());
-                folderInfo.put("generated", "false");
-                itemToRead.put(itemName.toString(), folderInfo);
-            }
-
+            itemTitles = fileInfoBuilder(folders, itemTitles, itemToRead, true);
             List<File> files = listFiles(parentId, user);
-            for (File file : files) {
-                StringBuilder itemName = new StringBuilder(file.getTitle());
-                if (itemTitles.contains(itemName.toString())) {
-                    int duplicateCount = 1;
-                    while (itemTitles.contains(itemName + " (" + duplicateCount + ")")) {
-                        duplicateCount++;
-                    }
-                    itemName.append(" (").append(duplicateCount).append(")");
-                }
-                itemTitles.add(itemName.toString());
-                JSONObject folderInfo = new JSONObject();
-                folderInfo.put("type", "file");
-                folderInfo.put("ID", file.getId());
-                itemToRead.put(itemName.toString(), folderInfo);
-            }
-
+            fileInfoBuilder(files, itemTitles, itemToRead, false);
             itemToRead.replace("generated", "true");
         }
-        return masterJson;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<String> fileInfoBuilder(List<File> files, List<String> itemTitles, JSONObject itemToRead, boolean folder){
+        for (File file : files) {
+            StringBuilder itemName = new StringBuilder(file.getTitle());
+            if (itemTitles.contains(itemName.toString())) {
+                int duplicateCount = 1;
+                while (itemTitles.contains(itemName + " (" + duplicateCount + ")")) {
+                    duplicateCount++;
+                }
+                itemName.append(" (").append(duplicateCount).append(")");
+            }
+            itemTitles.add(itemName.toString());
+            JSONObject folderInfo = new JSONObject();
+
+            folderInfo.put("ID", file.getId());
+            itemToRead.put(itemName.toString(), folderInfo);
+            if (folder){
+                folderInfo.put("type", "directory");
+            } else {
+                folderInfo.put("type", "file");
+            }
+        }
+        return itemTitles;
     }
 }
 

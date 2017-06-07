@@ -6,7 +6,12 @@ import java.util.ArrayList;
 
 
 /**
+ * The SharingSettings is a window
+ * responsible for letting users share
+ * files with other users and groups
+ *
  * @author Mark Hedrick
+ * @version 1.0.0
  */
 
 class SharingSettings extends JFrame {
@@ -17,7 +22,7 @@ class SharingSettings extends JFrame {
     private String itemPath;
     private JFrame sender;
 
-    public SharingSettings(String serverAddress, int port, ArrayList groups, JFrame sender, String itemPath) {
+    private SharingSettings(String serverAddress, int port, ArrayList groups, JFrame sender, String itemPath) {
 
         this.serverAddress = serverAddress;
         this.port = port;
@@ -31,10 +36,8 @@ class SharingSettings extends JFrame {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
 
-        initComponents();
-        frameListeners();
-
         groupsModel = new DefaultListModel();
+
         String[] serverGroups = null;
         try {
             serverGroups = FileClient.getGroups(serverAddress, port, MeshFS.properties.getProperty("uuid")).split(",");
@@ -43,6 +46,7 @@ class SharingSettings extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        initComponents();
         for (Object groupName : groups) {
             groupsModel.addElement(groupName);
         }
@@ -52,6 +56,7 @@ class SharingSettings extends JFrame {
 
             }
         }
+        frameListeners();
     }
 
     private void initComponents() {
@@ -195,6 +200,19 @@ class SharingSettings extends JFrame {
         sender.dispose();
         dispose();
     }
+
+    /**
+     * The run method is responsible for spawning the window when
+     * called.
+     *
+     * @param sender          The parent window that called this window
+     * @param serverAddress   The address used to connect to the master
+     *                        server
+     * @param port            The port number used to connect to the
+     *                        master server
+     * @param groups          The groups that can receive a shared file
+     * @param itemPath        The path to the item being shared
+     */
 
     public static void run(JFrame sender, String serverAddress, int port, ArrayList groups, String itemPath) {
         JFrame sharingSettings = new SharingSettings(serverAddress, port, groups, sender, itemPath);

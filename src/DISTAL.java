@@ -216,6 +216,7 @@ class DISTAL {
         return name;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void sendFiles(
             List<List<String>> stripes, String sourceFileLocationOld, long fileSize, String outName) {
         List<Thread> parentThreads = new ArrayList<>();
@@ -352,42 +353,23 @@ class sendFilesThreading implements Runnable {
 
                 childThreads.add(child);
             }
-        } else if (stripe == stripes.size() - 2) {
-            //send the last stripe, taking into account that he the last stripe to usually smaller than other stripes.
-            FileUtils.writeStripe(
-                    sourceFileLocation,
-                    MeshFS.properties.getProperty("repository") + outName + "_s" + stripe,
-                    (sizeOfStripe * stripe),
-                    sizeOfStripe - ((sizeOfStripe * (stripes.size() - 1)) - fileSize));
-            for (String computerToReceive : stripes.get(stripe + 1)) {
-                Thread child =
-                        new Thread(
-                                () -> {
-                                    try {
-                                        FileClient.sendFile(
-                                                (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")),
-                                                MeshFS.properties.getProperty("repository")
-                                                        + File.separator
-                                                        + outName
-                                                        + "_s"
-                                                        + stripe);
-                                        FileClient.receiveReport(
-                                                (((JSONObject) manifestFile.get(computerToReceive)).get("IP")).toString(),
-                                                Integer.parseInt(MeshFS.properties.getProperty("portNumber")));
-                                    } catch (IOException | MalformedRequestException ioe) {
-                                        ioe.printStackTrace();
-                                    }
-                                });
-                childThreads.add(child);
-            }
         } else {
-            //send all other stripes
-            FileUtils.writeStripe(
-                    sourceFileLocation,
-                    MeshFS.properties.getProperty("repository") + outName + "_s" + stripe,
-                    (sizeOfStripe * stripe),
-                    sizeOfStripe);
+            if (stripe == stripes.size() - 2) {
+                //send the last stripe, taking into account that he the last stripe to usually smaller than other stripes.
+                FileUtils.writeStripe(
+                        sourceFileLocation,
+                        MeshFS.properties.getProperty("repository") + outName + "_s" + stripe,
+                        (sizeOfStripe * stripe),
+                        sizeOfStripe - ((sizeOfStripe * (stripes.size() - 1)) - fileSize));
+
+            } else {
+                //send all other stripes
+                FileUtils.writeStripe(
+                        sourceFileLocation,
+                        MeshFS.properties.getProperty("repository") + outName + "_s" + stripe,
+                        (sizeOfStripe * stripe),
+                        sizeOfStripe);
+            }
             for (String computerToReceive : stripes.get(stripe + 1)) {
                 Thread child =
                         new Thread(
