@@ -43,7 +43,7 @@ class UserAccountOptions extends JFrame {
         setTitle("MeshFS - Account Options");
         String userType = null;
         try {
-            userType = FileClient.getUserType(serverAddress, port, userAccount, MeshFS.properties.getProperty("uuid"));
+            userType = FileClient.getUserType(serverAddress, port, userAccount);
         } catch (MalformedRequestException e) {
             e.printStackTrace();
         } catch (IOException e) {

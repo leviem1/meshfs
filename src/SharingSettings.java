@@ -40,7 +40,7 @@ class SharingSettings extends JFrame {
 
         String[] serverGroups = null;
         try {
-            serverGroups = FileClient.getGroups(serverAddress, port, MeshFS.properties.getProperty("uuid")).split(",");
+            serverGroups = FileClient.getGroups(serverAddress, port).split(",");
         } catch (MalformedRequestException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -193,7 +193,7 @@ class SharingSettings extends JFrame {
             members.add(groupsList.getModel().getElementAt(i).toString());
         }
         try {
-            FileClient.editPermissions(serverAddress, port, itemPath, members.toString(), MeshFS.properties.getProperty("uuid"));
+            FileClient.editPermissions(serverAddress, port, itemPath, members.toString());
         } catch (MalformedRequestException | IOException e) {
             e.printStackTrace();
         }

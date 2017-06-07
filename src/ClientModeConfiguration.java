@@ -314,7 +314,7 @@ class ClientModeConfiguration extends JFrame {
         }
         try {
             String uuid = connectAsUser(usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())));
-            MeshFS.userUUID = FileClient.getUserUUID(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())), uuid);
+            MeshFS.userUUID = FileClient.getUserUUID(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), Crypt.generateEncryptedPass(usernameField.getText(), String.valueOf(passwordField.getPassword())));
 
             if (uuid.equals("-1")) {
                 JOptionPane.showMessageDialog(
@@ -326,7 +326,7 @@ class ClientModeConfiguration extends JFrame {
                 passwordField.setEnabled(true);
             }
             if (!(usernameField.getText().isEmpty())) {
-                JSONObject userFiles = FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText(), uuid);
+                JSONObject userFiles = FileClient.getUserFiles(serverAddressField.getSelectedItem().toString(), Integer.parseInt(serverPortField.getText()), usernameField.getText());
                 ClientBrowser.run(
                         serverAddressField.getSelectedItem().toString(),
                         Integer.parseInt(serverPortField.getText()),
