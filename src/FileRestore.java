@@ -9,7 +9,11 @@ import java.util.List;
 
 
 /**
+ * The FileRestore class is responsible for restoring files
+ * when corrupted when nodes go offline.
+ *
  * @author Aaron Duran
+ * @version 1.0.0
  */
 
 class FileRestore {

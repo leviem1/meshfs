@@ -17,7 +17,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
+ * The JSONUtils class is responsible for manipulating
+ * JSON-related data used for the storage of data in the
+ * file catalog and computer manifest
+ *
  * @author Aaron Duran
+ * @version 1.0.0
  */
 
 class JSONUtils {
