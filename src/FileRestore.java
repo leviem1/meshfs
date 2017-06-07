@@ -120,8 +120,44 @@ class FileRestore {
         List<String> catalogReferences = findFileReferencesInCatalog(catalog, alphanumericFileName.substring(0, alphanumericFileName.lastIndexOf("_")));
         int portNumber = Integer.parseInt(MeshFS.properties.getProperty("portNumber"));
 
+        String wholeFileName = alphanumericFileName.substring(0, alphanumericFileName.indexOf("_")) + "_w";
+        JSONObject fileInfo = JSONUtils.getItemContents(catalog, catalogReferences.get(0));
+        int stripeNum = -1;
+        if (alphanumericFileName.contains("_s")) {
+            stripeNum = Integer.parseInt(alphanumericFileName.substring(alphanumericFileName.indexOf("_") + 2));
+        }
+
+        LinkedHashMap<String, Long> storageMap = JSONUtils.createStorageMap(manifest);
+        for (Object key : fileInfo.keySet()) {
+            if (key.toString().equals("whole") || key.toString().contains("stripe_")) {
+                JSONArray stripeLocations = (JSONArray) fileInfo.get(key);
+                for (Object computer : stripeLocations) {
+                    storageMap.remove(computer.toString());
+                }
+            }
+        }
+
+        String destinationCompIP = null;
+        String destinationCompMAC = null;
+        for (Object macAddress : storageMap.keySet()) {
+            String ipAddress = (((JSONObject) manifest.get(macAddress)).get("IP")).toString();
+            if (FileClient.ping(ipAddress, portNumber) > -1 && storageMap.get(macAddress.toString()) > FileUtils.getSize(MeshFS.properties.getProperty("repository") + alphanumericFileName)) {
+                destinationCompIP = ipAddress;
+                destinationCompMAC = macAddress.toString();
+                break;
+            }
+        }
+
+        if (destinationCompIP == null){
+            try {
+                JSONUtils.pullFile(catalog, catalogReferences.get(0), "test", "test", false);
+            } catch (IOException | MalformedRequestException | PullRequestException | FileTransferException e) {
+                corruptFilesInCatalog(catalogReferences);
+            }
+            return;
+        }
+
         if (manifestString.contains(alphanumericFileName)) {
-            //find and pull the stripe
             pullIP = findComputerWithFile(alphanumericFileName);
             try {
                 FileClient.receiveFile(pullIP, portNumber, alphanumericFileName, MeshFS.properties.getProperty("repository") + alphanumericFileName);
@@ -130,14 +166,6 @@ class FileRestore {
             }
         }
 
-        String wholeFileName = alphanumericFileName.substring(0, alphanumericFileName.indexOf("_")) + "_w";
-        JSONObject fileInfo = JSONUtils.getItemContents(catalog, catalogReferences.get(0));
-        int stripeNum = -1;
-        if (alphanumericFileName.contains("_s")) {
-            stripeNum = Integer.parseInt(alphanumericFileName.substring(alphanumericFileName.indexOf("_") + 2));
-        }
-
-        //reference catalog to find number of stripes
         int numberOfStripes = 0;
         for (Object key : fileInfo.keySet()) {
             if (key.toString().contains("_")) {
@@ -154,7 +182,6 @@ class FileRestore {
 
 
         if (pullIP == null && stripeNum != -1 && manifestString.contains(wholeFileName)) {
-            //find, pull, and split a whole
             pullIP = findComputerWithFile(wholeFileName);
             try {
                 FileClient.receiveFile(pullIP, portNumber, wholeFileName, MeshFS.properties.getProperty("repository") + wholeFileName);
@@ -188,36 +215,9 @@ class FileRestore {
         }
 
         if (pullIP == null) {
-            //change catalog to read "corrupted"
             corruptFilesInCatalog(catalogReferences);
             return;
         }
-
-        //determine where the file needs to be sent
-
-        LinkedHashMap<String, Long> storageMap = JSONUtils.createStorageMap(manifest);
-        for (Object key : fileInfo.keySet()) {
-            if (key.toString().equals("whole") || key.toString().contains("stripe_")) {
-                JSONArray stripeLocations = (JSONArray) fileInfo.get(key);
-                for (Object computer : stripeLocations) {
-                    storageMap.remove(computer.toString());
-                }
-            }
-        }
-
-        String destinationCompIP = null;
-        String destinationCompMAC = null;
-        for (Object macAddress : storageMap.keySet()) {
-            String ipAddress = (((JSONObject) manifest.get(macAddress)).get("IP")).toString();
-            if (FileClient.ping(ipAddress, portNumber) > -1 && storageMap.get(macAddress.toString()) > FileUtils.getSize(MeshFS.properties.getProperty("repository") + alphanumericFileName)) {
-                destinationCompIP = ipAddress;
-                destinationCompMAC = macAddress.toString();
-                break;
-            }
-        }
-
-
-        //send the file
 
         try {
             FileClient.sendFile(
@@ -230,12 +230,9 @@ class FileRestore {
                     destinationCompIP,
                     portNumber);
         } catch (IOException | MalformedRequestException e) {
-            //update to say corrupted
             corruptFilesInCatalog(catalogReferences);
             return;
         }
-
-        //change the catalog
 
         for (String referenceLocation : catalogReferences) {
             String[] folders = referenceLocation.split("/");
