@@ -24,7 +24,7 @@ class Crypt {
         password = passwordBuilder.toString();
 
         try {
-            messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -32,7 +32,7 @@ class Crypt {
         assert messageDigest != null;
         messageDigest.update(password.getBytes(), 0, password.length());
 
-        return new BigInteger(1, messageDigest.digest()).toString(256);
+        return new BigInteger(1, messageDigest.digest()).toString(512);
     }
 
     static void writeAuthFile(ArrayList<UserAccount> accountsArrayList) {
