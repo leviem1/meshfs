@@ -8,6 +8,7 @@ import java.util.UUID;
  * @author Levi Muniz
  * @version 1.0.0
  */
+
 class ConfigParser {
 
     private ConfigParser() {
@@ -18,6 +19,7 @@ class ConfigParser {
      *
      * @return the default property values
      */
+
     static Properties loadDefaultProperties() {
         Properties defaultProperties = new Properties();
         defaultProperties.setProperty("numStripes", "3");
@@ -41,6 +43,7 @@ class ConfigParser {
      *
      * @return the saved property values
      */
+
     static Properties loadProperties() {
         Properties properties;
 
@@ -69,6 +72,7 @@ class ConfigParser {
      *
      * @param props the properties to write out
      */
+
     static void write(Properties props) {
         OutputStream output = null;
 

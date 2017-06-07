@@ -17,6 +17,7 @@ import java.util.List;
  * @author Levi Muniz
  * @version 1.0.0
  */
+
 class FileClient {
 
     private FileClient() {
@@ -31,6 +32,7 @@ class FileClient {
      *                      name to be used to write in repo
      * @throws IOException on error connecting or writing file
      */
+
     static void receiveFile(
             String serverAddress, int port, String fileName)
             throws IOException, MalformedRequestException, FileTransferException {
@@ -46,6 +48,7 @@ class FileClient {
      * @param fileOut       the file name to write the received file as
      * @throws IOException on error connecting or writing file
      */
+
     @SuppressWarnings("deprecation")
     static void receiveFile(
             String serverAddress, int port, String fileName, String fileOut)
@@ -91,6 +94,7 @@ class FileClient {
      * @param filepath      the location of the file to send
      * @throws IOException on error connecting
      */
+
     static void sendFile(String serverAddress, int port, String filepath)
             throws IOException, MalformedRequestException {
         String response;
@@ -130,6 +134,7 @@ class FileClient {
      * @param userAccount   the account to add the file for
      * @throws IOException on error connecting
      */
+
     static void sendFile(
             String serverAddress, int port, String filepath, String userAccount)
             throws IOException, MalformedRequestException {
@@ -170,6 +175,7 @@ class FileClient {
      * @param destFile      the location that the file is to be moved to
      * @throws IOException on error connecting
      */
+
     static void moveFile(
             String serverAddress, int port, String currFile, String destFile)
             throws IOException, MalformedRequestException {
@@ -198,6 +204,7 @@ class FileClient {
      * @param currFile      the file to duplicate
      * @throws IOException on error connecting
      */
+
     static void duplicateFile(String serverAddress, int port, String currFile)
             throws IOException, MalformedRequestException {
         String response;

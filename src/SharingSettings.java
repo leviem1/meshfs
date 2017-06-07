@@ -36,10 +36,8 @@ class SharingSettings extends JFrame {
             setIconImage(new ImageIcon(MeshFS.class.getResource("app_icon.png")).getImage());
         }
 
-        initComponents();
-        frameListeners();
-
         groupsModel = new DefaultListModel();
+
         String[] serverGroups = null;
         try {
             serverGroups = FileClient.getGroups(serverAddress, port, MeshFS.properties.getProperty("uuid")).split(",");
@@ -48,6 +46,7 @@ class SharingSettings extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        initComponents();
         for (Object groupName : groups) {
             groupsModel.addElement(groupName);
         }
@@ -57,6 +56,7 @@ class SharingSettings extends JFrame {
 
             }
         }
+        frameListeners();
     }
 
     private void initComponents() {

@@ -3,54 +3,72 @@
   <ID>JAVA</ID>
   <OriginalElement />
   <nodes>
-    <node x="1205.0" y="2402.0">com</node>
-    <node x="914.0" y="1582.0">ClientBrowserFileProperties</node>
-    <node x="193.0" y="2402.0">netscape</node>
-    <node x="0.0" y="1088.0">ClientModeConfiguration</node>
-    <node x="1023.0" y="2240.0">FileUtils</node>
-    <node x="2000.0" y="2240.0">toolbarButtonGraphics</node>
-    <node x="1519.0" y="2402.0">sun</node>
-    <node x="442.0" y="1944.0">GreetingsWindow</node>
-    <node x="0.0" y="1582.0">RenameFileWindow</node>
-    <node x="1842.0" y="2240.0">onQuit</node>
-    <node x="1855.0" y="1088.0">MoveFileWindow</node>
-    <node x="718.0" y="2402.0">apple</node>
-    <node x="1514.0" y="2240.0">CenterWindow</node>
-    <node x="1363.0" y="2402.0">java</node>
-    <node x="883.0" y="2402.0">javax</node>
-    <node x="1202.0" y="0.0">ClientBrowser</node>
-    <node x="1303.0" y="2240.0">CliParser</node>
-    <node x="550.0" y="2402.0">javafx</node>
-    <node x="1995.0" y="1944.0">FileServer</node>
-    <node x="1046.0" y="2402.0">junit</node>
-    <node x="381.0" y="2402.0">oracle</node>
-    <node x="1217.0" y="1088.0">JSONManipulator</node>
-    <node x="0.0" y="2240.0">DISTAL</node>
-    <node x="657.0" y="1088.0">ServerInit</node>
-    <node x="1674.0" y="2402.0">org</node>
-    <node x="0.0" y="2402.0">resources</node>
-    <node x="656.0" y="2240.0">ConfigParser</node>
+    <node x="0.0" y="4648.0">com</node>
+    <node x="2224.0" y="3999.0">FileUtils</node>
+    <node x="1228.0" y="3999.0">RenameFileWindow</node>
+    <node x="397.0" y="4648.0">java</node>
+    <node x="4497.0" y="3999.0">javax</node>
+    <node x="3214.0" y="0.0">ClientBrowser</node>
+    <node x="4288.0" y="3999.0">javafx</node>
+    <node x="2124.0" y="1450.0">FileServer</node>
+    <node x="4077.0" y="3999.0">oracle</node>
+    <node x="2538.0" y="3999.0">ConfigParser</node>
+    <node x="3599.0" y="3999.0">META-INF</node>
+    <node x="2218.5" y="1900.0">MeshFS</node>
+    <node x="619.0" y="3999.0">InitialConfiguration</node>
+    <node x="2509.0" y="2869.0">ServerConfigConfirmation</node>
+    <node x="0.0" y="2869.0">ClientBrowserFileProperties</node>
+    <node x="3843.0" y="3999.0">netscape</node>
+    <node x="1633.0" y="2869.0">ClientModeConfiguration</node>
+    <node x="592.0" y="4648.0">sun</node>
+    <node x="0.0" y="3999.0">GreetingsWindow</node>
+    <node x="4001.0" y="2869.0">MoveFileWindow</node>
+    <node x="2508.0" y="1506.0">onQuit</node>
+    <node x="2873.0" y="3999.0">CenterWindow</node>
+    <node x="2698.0" y="1246.0">CliParser</node>
+    <node x="199.0" y="4648.0">junit</node>
+    <node x="1881.9999999999998" y="0.0">ServerInit</node>
+    <node x="3184.0" y="3999.0">DISTAL</node>
+    <node x="784.0" y="4648.0">org</node>
     <node x="0.0" y="0.0">ServerModeConfiguration</node>
-    <node x="1803.0" y="1582.0">Reporting</node>
-    <node x="2274.0" y="2240.0">META-INF</node>
-    <node x="1827.0" y="2402.0">jdk</node>
-    <node x="1688.0" y="1944.0">MeshFS</node>
-    <node x="1355.0" y="1582.0">FileClient</node>
-    <node x="1305.0" y="1944.0">sendFilesTreading</node>
-    <node x="0.0" y="1944.0">InitialConfiguration</node>
-    <node x="875.0" y="1944.0">ServerConfigConfirmation</node>
-    <node x="467.0" y="1582.0">NewDirectoryWindow</node>
+    <node x="1771.0" y="3999.0">Reporting</node>
+    <node x="976.0" y="4648.0">jdk</node>
+    <node x="869.0" y="2869.0">FileClient</node>
+    <node x="3272.0" y="2869.0">NewDirectoryWindow</node>
   </nodes>
   <notes />
-  <edges />
-  <settings layout="Hierarchic Group" zoom="0.17951856385148918" x="1211.5" y="1215.5" />
+  <edges>
+    <edge source="MeshFS" target="CliParser">
+      <point x="207.375" y="-320.0" />
+      <point x="2702.375" y="1875.0" />
+      <point x="2933.5" y="1875.0" />
+      <point x="0.0" y="302.0" />
+    </edge>
+    <edge source="FileServer" target="ServerInit">
+      <point x="0.0" y="-98.0" />
+      <point x="0.0" y="598.0" />
+    </edge>
+    <edge source="MeshFS" target="FileServer">
+      <point x="-69.125" y="-320.0" />
+      <point x="2425.875" y="1875.0" />
+      <point x="2397.0" y="1875.0" />
+      <point x="91.0" y="98.0" />
+    </edge>
+    <edge source="MeshFS" target="onQuit">
+      <point x="69.125" y="-320.0" />
+      <point x="2564.125" y="1875.0" />
+      <point x="2593.0" y="1875.0" />
+      <point x="0.0" y="42.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.10281018027571581" x="54.76431150077315" y="1908.4486848891179" />
   <SelectedNodes />
   <Categories>
-    <Category>Constructors</Category>
-    <Category>Methods</Category>
-    <Category>Properties</Category>
-    <Category>Inner Classes</Category>
     <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Constructors</Category>
+    <Category>Properties</Category>
+    <Category>Methods</Category>
   </Categories>
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>

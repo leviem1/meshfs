@@ -56,7 +56,6 @@ class Crypt {
      *                          the authentication file
      */
 
-
     static void writeAuthFile(ArrayList<UserAccount> accountsArrayList) {
         try {
             File repo = new File(MeshFS.properties.getProperty("repository"));

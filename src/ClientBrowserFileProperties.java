@@ -92,7 +92,6 @@ class ClientBrowserFileProperties extends JFrame {
 
 
         initComponents(fileName, fileSize, creationDate);
-        frameListeners();
 
         if (userAccount.equals("guest")) {
             shareBtn.setEnabled(false);
@@ -130,6 +129,9 @@ class ClientBrowserFileProperties extends JFrame {
         model.add(pos, "Stripes: " + stripes);
         model.add(pos, "Wholes: " + wholes);
         this.setTitle("Properties - " + fileName);
+
+        frameListeners();
+
 
     }
 
