@@ -28,9 +28,10 @@ class JSONUtils {
     /**
      * This method returns the JSONObject of a file.
      *
-     * @param filePath is the file path of the file that is to be read
-     * @return JSONObject is from the read from file
+     * @param filePath  is the file path of the file that is to be read
+     * @return          JSONObject is from the read from file
      */
+
     static synchronized JSONObject getJSONObject(String filePath) {
         JSONObject jsonObject = null;
         JSONParser reader = new JSONParser();
@@ -52,6 +53,7 @@ class JSONUtils {
      * @param itemLocation  the virtual path within the JSONObject
      * @return              the JSONObject associated with the designated item
      */
+
     static JSONObject getItemContents(JSONObject jsonObject, String itemLocation) {
         itemLocation = catalogStringFixer(itemLocation);
         String[] folders = itemLocation.split("/");
@@ -71,6 +73,7 @@ class JSONUtils {
      * @param itemLocation  the virtual path within the google drive JSONObject
      * @return              the google drive file id
      */
+
     static String getGoogleFileID(JSONObject masterJSON, String itemLocation) {
         String[] folders = itemLocation.split("/");
         JSONObject folderToRead = masterJSON;
@@ -88,6 +91,7 @@ class JSONUtils {
      * @param user          the UserAccount object of the user, if null, the folder is read as if the user was an admin
      * @return              a map of the folder's contents
      */
+
     @SuppressWarnings("unchecked")
     static LinkedHashMap<String, String> getMapOfFolderContents(JSONObject jsonObject, UserAccount user) {
         LinkedHashMap<String, String> contents = new LinkedHashMap<>();
@@ -111,10 +115,12 @@ class JSONUtils {
     /**
      * This method adds a reference to the catalog when a file is uploaded.
      *
-     * @param stripes      the List of Lists that shows what computer each stripe was sent to
-     * @param fileName     the name the the file will have in the JTree
-     * @param JSONFilePath the virtual path of the folder in the catalog that the file will be put into
+     * @param stripes       the List of Lists that shows what computer each stripe was sent to
+     * @param fileName      the name the the file will have in the JTree
+     * @param JSONFilePath  the virtual path of the folder in the catalog that the file will be put into
+     * @throws IOException  if the catalog file cannot be written
      */
+
     @SuppressWarnings("unchecked")
     static void addFileToCatalog(List<List<String>> stripes, String itemDestinationLocation, String fileName, String JSONFilePath, String alphanumericName, long fileSize) throws IOException {
         itemDestinationLocation = catalogStringFixer(itemDestinationLocation);
@@ -162,9 +168,10 @@ class JSONUtils {
     /**
      * This method changes the permissions of a folder or file in the catalog.
      *
-     * @param itemLocation the virtual path of the item in the catalog that is to be changed
-     * @param fileUsers    the List of user groups that can view the file
-     * @param fileAdmins   the List of user groups that can edit the file  (not implemented yet)
+     * @param itemLocation  the virtual path of the item in the catalog that is to be changed
+     * @param fileUsers     the List of user groups that can view the file
+     * @param fileAdmins    the List of user groups that can edit the file  (not implemented yet)
+     * @throws IOException  if the catalog file cannot be written
      */
 
     @SuppressWarnings("unchecked")
@@ -191,9 +198,9 @@ class JSONUtils {
     /**
      * This method adds user groups to a blacklist that prevents them from seeing a folder or file in the catalog.
      *
-     * @param itemLocation the virtual path of the item in the catalog that is to be changed
-     * @param userNames    the List of user groups that should be added or removed to the viewing blacklist for the item
-     * @param add          if true the users are added to the blacklist, if false they are removed from the blacklist
+     * @param itemLocation  the virtual path of the item in the catalog that is to be changed
+     * @param userNames     the List of user groups that should be added or removed to the viewing blacklist for the item
+     * @param add           if true the users are added to the blacklist, if false they are removed from the blacklist
      */
 
     @SuppressWarnings("unchecked")
@@ -222,8 +229,10 @@ class JSONUtils {
     /**
      * This method creates a new reference of the given item within the catalog.
      *
-     * @param itemLocation the source virtual path of the item within the catalog
+     * @param itemLocation  the source virtual path of the item within the catalog
+     * @throws IOException  if the catalog file cannot be written
      */
+
     static void duplicateItem(String itemLocation) throws IOException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", copyFile(catalog, itemLocation, itemLocation.substring(0, itemLocation.lastIndexOf("/")), null, false));
@@ -232,9 +241,12 @@ class JSONUtils {
     /**
      * This method removes the given item from the catalog the catalog.
      *
-     * @param itemLocation the source virtual path of the item within the catalog
-     * @param smart        if true, if no other references of the file exists, the file is removed from all nodes. If false, other references
+     * @param itemLocation                  the source virtual path of the item within the catalog
+     * @param smart                         if true, if no other references of the file exists, the file is removed from all nodes. If false, other references
+     * @throws IOException                  an error connecting to the nodes, or if the catalog file cannot be written
+     * @throws MalformedRequestException    incorrectly formed request
      */
+
     static void deleteItem(String itemLocation, boolean smart) throws IOException, MalformedRequestException {
         JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
         deleteItem(catalog, itemLocation, smart);
@@ -244,9 +256,9 @@ class JSONUtils {
      * This method copies the given item to the designated path within the JSONObject.
      *
      * @param itemLocation        the source virtual path within the JSONObject
-     * @param destinationLocation the destination virtual path within the JSONObject (should not have
-     *                            the name of the item in this path)
+     * @param destinationLocation the destination virtual path within the JSONObject (should not have the name of the item in this path)
      */
+
     static void moveItem(String itemLocation, String destinationLocation) {
         moveFile(itemLocation, destinationLocation, itemLocation.substring(itemLocation.lastIndexOf("/") + 1), true);
     }
@@ -257,6 +269,7 @@ class JSONUtils {
      * @param itemLocation the source virtual path within the JSONObject
      * @param newName      what the item should be called
      */
+
     static void renameItem(String itemLocation, String newName) {
         moveFile(itemLocation, itemLocation.substring(0, itemLocation.lastIndexOf("/")), newName, false);
     }
@@ -264,15 +277,24 @@ class JSONUtils {
     /**
      * This method writes out a json file from a JSONObject.
      *
-     * @param filePath where the json file is to be written to
-     * @param obj      the JSONObject the is to be written the json file
-     * @throws IOException if the file cannot be written
+     * @param filePath      where the json file is to be written to
+     * @param obj           the JSONObject the is to be written the json file
+     * @throws IOException  if the catalog file cannot be written
      */
+
     static synchronized void writeJSONObject(String filePath, JSONObject obj) throws IOException {
         try (FileWriter file = new FileWriter(filePath)) {
             file.write(obj.toJSONString());
         }
     }
+
+    /**
+     * This method adds a new folder to the catalog.
+     *
+     * @param parentFolderLocation  the virtual path of the the folder in which the new folder is to be created
+     * @param folderName            the name of the new folder
+     * @throws IOException          if the catalog file cannot be written
+     */
 
     @SuppressWarnings("unchecked")
     static void createNewFolder(String parentFolderLocation, String folderName) throws IOException {
@@ -292,12 +314,14 @@ class JSONUtils {
     }
 
     /**
-     * This method adds a new temporary file, to the JSONObject.
+     * This method adds a new temporary file, to the catalog.
      *
-     * @param itemLocation the source virtual path within the JSONObject
-     * @param fileName     the name of the file, the way it appears in the file browser
-     * @param username     the account name that uploaded the file
+     * @param itemLocation  the source virtual path within the JSONObject
+     * @param fileName      the name of the file, the way it appears in the file browser
+     * @param username      the account name that uploaded the file
+     * @throws IOException  if the file cannot be written
      */
+
     @SuppressWarnings("unchecked")
     static void addTempFile(String itemLocation, String fileName, String username) throws IOException {
         itemLocation = catalogStringFixer(itemLocation);
@@ -321,9 +345,10 @@ class JSONUtils {
      * This method produces a LinkedHashMap where each element is comprised of the computers' MAC
      * address and its available storage.
      *
-     * @param manifestFile The JSONObject that contains the information from the manifest file
-     * @return LinkedHashMap of online computers' MACAddress and available storage, ordered by descending available storage
+     * @param manifestFile  The JSONObject that contains the information from the manifest file
+     * @return              LinkedHashMap of online computers' MACAddress and available storage, ordered by descending available storage
      */
+
     @SuppressWarnings("unchecked")
     static LinkedHashMap<String, Long> createStorageMap(JSONObject manifestFile) {
         LinkedHashMap<String, Long> storageMap = new LinkedHashMap();
@@ -335,16 +360,25 @@ class JSONUtils {
         return sortMapByValue(storageMap, false);
     }
 
+    /**
+     * This method produces a LinkedHashMap where each element is comprised of the computers' MAC
+     * address and its available storage.
+     *
+     * @param unsortedMap   the unsorted map
+     * @param ascending     if true to map is sorted by ascending valse, if flase the map is sorted by descending value
+     * @return              sorted LinkedHashMap
+     */
+
     @SuppressWarnings("unchecked")
-    static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> storageMap, boolean ascending) {
+    static LinkedHashMap<String, Long> sortMapByValue(LinkedHashMap<String, Long> unsortedMap, boolean ascending) {
 
         LinkedHashMap<String, Long> sortedMap = new LinkedHashMap();
 
         //put something in the map to compare against
         sortedMap.put("temp", -1L);
 
-        for (String key : storageMap.keySet()) {
-            Long storageAmount = storageMap.get(key);
+        for (String key : unsortedMap.keySet()) {
+            Long storageAmount = unsortedMap.get(key);
             boolean isBroken = false;
 
             for (String sortedKey : sortedMap.keySet()) {
@@ -365,7 +399,7 @@ class JSONUtils {
             }
 
             if (!isBroken) {
-                sortedMap.put(key, storageMap.get(key));
+                sortedMap.put(key, unsortedMap.get(key));
             }
         }
         sortedMap.remove("temp");
@@ -375,14 +409,16 @@ class JSONUtils {
     /**
      * This method pulls a file from the file system.
      *
-     * @param itemLocation the source virtual path within the catalog
-     * @param path         where the download file is to be saved to
-     * @param outFile      the name that the downloaded file is to be saved as
-     * @throws IOException               if client cannot connect to server
-     * @throws MalformedRequestException if file does not exist
-     * @throws PullRequestException      if the full file cannot be combined from all the files in the file system
-     * @throws FileTransferException     if md5 of sending file did not match received file md5
+     * @param itemLocation                  the source virtual path within the catalog
+     * @param path                          where the download file is to be saved to
+     * @param outFile                       the name that the downloaded file is to be saved as
+     * @throws IOException                  if client cannot connect to server
+     * @throws MalformedRequestException    if the request was improperly form
+     * @throws PullRequestException         if the full file cannot be combined from all the files in the file system
+     * @throws FileTransferException        if md5 of sending file did not match received file md5
      */
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     static void pullFile(JSONObject catalog, String itemLocation, String path, String outFile, boolean download) throws IOException, MalformedRequestException, PullRequestException, FileTransferException {
         itemLocation = catalogStringFixer(itemLocation);
         String outFileDir = path.substring(0, path.lastIndexOf(File.separator));
@@ -510,8 +546,8 @@ class JSONUtils {
     /**
      * This method produces a partial catalog that only contains the folders and files that the given user can see.
      *
-     * @param user The UserAccount Object of the user
-     * @return the JSONObject of the User's Catalog
+     * @param user  the UserAccount Object of the user
+     * @return      the JSONObject of the User's Catalog
      */
 
     @SuppressWarnings("unchecked")
@@ -543,10 +579,11 @@ class JSONUtils {
     /**
      * This method creates the Object for the JTree based on the user's catalog
      *
-     * @param userCatalog The UserCatalog for the user
-     * @param adminFormat if true, the JTree will be formatted as "root/Users/username". if false, the JTree will be formatted as "root/username"
-     * @return the TreeNode Object for the JTree
+     * @param userCatalog   The UserCatalog for the user
+     * @param adminFormat   if true, the JTree will be formatted as "root/Users/username". if false, the JTree will be formatted as "root/username"
+     * @return              the TreeNode Object for the JTree
      */
+
     static DefaultMutableTreeNode JTreeBuilder(JSONObject userCatalog, boolean adminFormat) {
         DefaultMutableTreeNode root;
         if (adminFormat) {
@@ -562,9 +599,10 @@ class JSONUtils {
     /**
      * This method fixes a formatting error in a virtual file path that results from creating the filepath from the JTree.
      *
-     * @param itemLocationString the virtual file path string that is to be fixed
-     * @return the fixed virtual file path string
+     * @param itemLocationString    the virtual file path string that is to be fixed
+     * @return                      the fixed virtual file path string
      */
+
     static String catalogStringFixer(String itemLocationString) {
         if ((itemLocationString.contains("/")) && ((StringUtils.countMatches(itemLocationString, "/") == 1) || (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Users") && (!(itemLocationString.substring(0, itemLocationString.indexOf("/", 5))).equals("root/Shared"))))) {
             itemLocationString = itemLocationString.substring(0, itemLocationString.indexOf("/") + 1) + "Users" + itemLocationString.substring(itemLocationString.indexOf("/"));
@@ -576,10 +614,11 @@ class JSONUtils {
     /**
      * This method finds the total size and last modification date of a folder.
      *
-     * @param catalog        the JSONObject of the catalog
-     * @param folderLocation the virtual location of the specified folder
-     * @return a pair where the key is the human readable size of the file, and the value is the last modification time of the folder
+     * @param catalog           the JSONObject of the catalog
+     * @param folderLocation    the virtual location of the specified folder
+     * @return                  a pair where the key is the human readable size of the file, and the value is the last modification time of the folder
      */
+
     static Pair<String, String> folderProperties(JSONObject catalog, String folderLocation) {
         folderLocation = catalogStringFixer(folderLocation);
         String[] folders = folderLocation.split("/");
@@ -598,8 +637,9 @@ class JSONUtils {
      * This method turns a number of bytes into the a format that humans can read, uses base 1024
      *
      * @param bytes The number of bytes
-     * @return The string of how humans read file size, rounded to ______ decimal places
+     * @return      The string of how humans read file size, rounded to one decimal places
      */
+    
     static String humanReadableByteCount(long bytes) {
         int unit = 1024;
         if (bytes < unit) return bytes + " B";
@@ -788,7 +828,6 @@ class JSONUtils {
         }
         return removedFiles;
     }
-
 
     @SuppressWarnings("unchecked")
     private static JSONObject changePermissions(JSONObject jsonObject, JSONArray newUserArray, JSONArray newAdminArray, boolean removeBlacklist) {
