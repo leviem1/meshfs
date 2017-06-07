@@ -18,18 +18,13 @@ import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.ParentReference;
 import org.json.simple.JSONObject;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 /**
- * This class is used to hook into Google Drive
+ * This class is used to implement the Google Drive Client Library
  *
  * @author Levi Muniz
  * @version 1.0.0
@@ -37,14 +32,36 @@ import java.util.List;
 
 class DriveAPI {
 
-    private DriveAPI() {
-    }
+    private DriveAPI() {}
+
+    /**
+     * This method allows a user to authorize and store their Google Drive credentials
+     *
+     * @param JSONFactory   JsonFactory to load client secrets
+     * @param httpTransport trusted transport to connect to the API servers
+     * @param userId        UUID of UserAccount to authenticate as
+     * @return              authorized Credential
+     * @throws IOException  on error connecting to API servers
+     */
 
     private static Credential authorize(JsonFactory JSONFactory, HttpTransport httpTransport, String userId) throws IOException {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSONFactory, new InputStreamReader(MeshFS.class.getResourceAsStream(java.io.File.separator + "client_id.json")));
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSONFactory, clientSecrets, Collections.singleton(DriveScopes.DRIVE)).setDataStoreFactory(new FileDataStoreFactory(new java.io.File(System.getProperty("user.home"), ".store" + java.io.File.separator + "MeshFS"))).build();
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize(userId);
     }
+
+    /**
+     * This method is used to upload a file to the user's drive.
+     *
+     * @param filePath                      path of file to be uploaded
+     * @param name                          name of the file
+     * @param type                          metadata type
+     * @param parentId                      ID of parent folder to upload to
+     * @param userId                        UUID of UserAccount to authenticate as
+     * @return                              the file that was uploaded
+     * @throws IOException                  on error connecting to API servers
+     * @throws GeneralSecurityException     if trusted transport cannot be established
+     */
 
     static File uploadFile(java.io.File filePath, String name, String type, String parentId, String userId) throws IOException, GeneralSecurityException {
         JsonFactory JSONFactory = JacksonFactory.getDefaultInstance();
@@ -64,6 +81,16 @@ class DriveAPI {
         uploader.setDirectUploadEnabled(false);
         return insert.execute();
     }
+
+    /**
+     * This method is used to download a file from a user's Google Drive
+     *
+     * @param fileID                        the file ID to download from Google Drive
+     * @param userId                        UUID of UserAccount to authenticate as
+     * @return                              the downloaded file
+     * @throws IOException                  on error writing file or connecting to API servers
+     * @throws GeneralSecurityException     if trusted transport cannot be established
+     */
 
     static java.io.File downloadFile(String fileID, String userId) throws IOException, GeneralSecurityException {
 
@@ -108,6 +135,17 @@ class DriveAPI {
         files.addAll(drive.files().list().setQ("trashed = false and mimeType = 'application/vnd.google-apps.folder' and '" + parentId + "' in parents").execute().getItems());
         return files;
     }
+
+    /**
+     * 
+     *
+     * @param user
+     * @param masterJson
+     * @param parentFolderLocation
+     * @return
+     * @throws IOException
+     * @throws GeneralSecurityException
+     */
 
     @SuppressWarnings("unchecked")
     static JSONObject googleJsonBuilder(String user, JSONObject masterJson, String parentFolderLocation) throws IOException, GeneralSecurityException {
