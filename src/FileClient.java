@@ -4,7 +4,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -882,7 +881,7 @@ class FileClient {
             if ((response = input.readLine().trim()).split(";")[0].equals("203")) {
                 throw new IncorrectCredentialException();
             } else if (response.equals("202")) {
-                throw new MalformedURLException(response);
+                throw new MalformedRequestException(response);
             }
 
             return input.readLine().trim();

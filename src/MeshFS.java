@@ -25,13 +25,13 @@ class MeshFS {
     static boolean nogui = false;
     static boolean configure = false;
     static MulticastServer multicastServer;
-    static Timer nodePanicTimer = new Timer();
-    static Timer scheduledReportingTimer = new Timer();
+    static final Timer nodePanicTimer = new Timer();
+    static final Timer scheduledReportingTimer = new Timer();
     static boolean isMaster = false;
     static String userUUID = null;
     private static int activeWindows = 0;
-    private static Timer manifestTimer = new Timer();
-    private static Timer discoveryBroadcastTimer = new Timer();
+    private static final Timer manifestTimer = new Timer();
+    private static final Timer discoveryBroadcastTimer = new Timer();
 
     /**
      * This method is responsible for determining the run mode
@@ -256,7 +256,7 @@ class MeshFS {
      * This method starts the required services for the master
      * run mode
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored"})
 
     static void startAsMaster() {
         MeshFS.isMaster = true;

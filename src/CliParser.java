@@ -174,8 +174,7 @@ class CliParser {
      * @param username user to add the group to
      */
     @SuppressWarnings("unchecked")
-
-    void addGroup(String username) {
+    private void addGroup(String username) {
         Scanner input = new Scanner(System.in);
         while (true) {
             System.out.print("Group: ");
@@ -517,7 +516,7 @@ class CliParser {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored"})
 
     private void resetAuth() {
         System.out.println("Do you still wish to reset all accounts? NOTE: This will remove all users and groups.");

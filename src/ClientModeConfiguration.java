@@ -21,6 +21,7 @@ import java.util.Arrays;
  * @version 1.0.0
  */
 
+@SuppressWarnings("unchecked")
 class ClientModeConfiguration extends JFrame {
 
     private static JFrame clientModeConfiguration;
@@ -59,21 +60,21 @@ class ClientModeConfiguration extends JFrame {
         numberFormat.setGroupingUsed(false);
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        serverAddressLbl = new JLabel();
-        serverPortLbl = new JLabel();
-        passwordLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel serverAddressLbl = new JLabel();
+        JLabel serverPortLbl = new JLabel();
+        JLabel passwordLbl = new JLabel();
         serverPortField = new JFormattedTextField(numberFormat);
         passwordField = new JPasswordField();
-        usernameLbl = new JLabel();
+        JLabel usernameLbl = new JLabel();
         usernameField = new JTextField();
         bindAnonymouslyCheckBox = new JCheckBox();
         serverAddressField = new JComboBox();
         buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Client Configuration");
@@ -336,9 +337,7 @@ class ClientModeConfiguration extends JFrame {
                 dispose();
             }
         } catch (IOException ignored) {
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        } catch (IncorrectCredentialException e) {
+        } catch (MalformedRequestException | IncorrectCredentialException e) {
             e.printStackTrace();
         }
     }
@@ -371,10 +370,8 @@ class ClientModeConfiguration extends JFrame {
             MeshFS.properties.setProperty("uuid", uuid);
             //Crypt.generateEncryptedAuth(username, password));
             return uuid;
-        } catch (IOException | MalformedRequestException e) {
+        } catch (IOException | MalformedRequestException | IncorrectCredentialException e) {
             e.printStackTrace();
-        } catch (IncorrectCredentialException ice) {
-            ice.printStackTrace();
         }
         return "-1";
     }
@@ -397,23 +394,14 @@ class ClientModeConfiguration extends JFrame {
         clientModeConfiguration.setVisible(true);
     }
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel serverAddressLbl;
-    private JLabel serverPortLbl;
-    private JLabel passwordLbl;
     private JFormattedTextField serverPortField;
     private JPasswordField passwordField;
-    private JLabel usernameLbl;
     private JTextField usernameField;
     private JCheckBox bindAnonymouslyCheckBox;
     private JComboBox serverAddressField;
     private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
-    private JLabel titleLbl;
     //GEN-END:variables
 
 }

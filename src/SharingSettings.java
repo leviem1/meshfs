@@ -14,13 +14,14 @@ import java.util.ArrayList;
  * @version 1.0.0
  */
 
+@SuppressWarnings("unchecked")
 class SharingSettings extends JFrame {
 
-    private DefaultListModel groupsModel;
-    private String serverAddress;
-    private int port;
-    private String itemPath;
-    private JFrame sender;
+    private final DefaultListModel groupsModel;
+    private final String serverAddress;
+    private final int port;
+    private final String itemPath;
+    private final JFrame sender;
 
     private SharingSettings(String serverAddress, int port, ArrayList groups, JFrame sender, String itemPath) {
 
@@ -41,9 +42,7 @@ class SharingSettings extends JFrame {
         String[] serverGroups = null;
         try {
             serverGroups = FileClient.getGroups(serverAddress, port).split(",");
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MalformedRequestException | IOException e) {
             e.printStackTrace();
         }
         initComponents();
@@ -62,17 +61,17 @@ class SharingSettings extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        fileNameLbl = new JLabel();
-        scrollPane2 = new JScrollPane();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel fileNameLbl = new JLabel();
+        JScrollPane scrollPane2 = new JScrollPane();
         groupsList = new JList(groupsModel);
         addGroupBox = new JComboBox();
         addGroupBtn = new JButton();
         removeGroupBtn = new JButton();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("Sharing");
@@ -220,19 +219,11 @@ class SharingSettings extends JFrame {
         sharingSettings.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel fileNameLbl;
-    private JScrollPane scrollPane2;
     private JList groupsList;
     private JComboBox addGroupBox;
     private JButton addGroupBtn;
     private JButton removeGroupBtn;
-    private JPanel buttonBar;
     private JButton okButton;
-    private JLabel titleLbl;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }

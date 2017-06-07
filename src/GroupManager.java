@@ -12,6 +12,7 @@ import java.awt.*;
  * @version 1.0.0
  */
 
+@SuppressWarnings("unchecked")
 class GroupManager extends JFrame {
 
     private static JFrame groupManager;
@@ -45,17 +46,17 @@ class GroupManager extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        groupTitle = new JLabel();
-        contentPanel = new JPanel();
-        groupNameLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JLabel groupTitle = new JLabel();
+        JPanel contentPanel = new JPanel();
+        JLabel groupNameLbl = new JLabel();
         groupNameField = new JTextField();
-        locationLbl = new JLabel();
+        JLabel locationLbl = new JLabel();
         submitBtn = new JButton();
-        scrollPane1 = new JScrollPane();
+        JScrollPane scrollPane1 = new JScrollPane();
         groupList = new JList(model);
         removeGroup = new JButton();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         okButton = new JButton();
 
         //======== this ========
@@ -223,19 +224,10 @@ class GroupManager extends JFrame {
         groupManager.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JLabel groupTitle;
-    private JPanel contentPanel;
-    private JLabel groupNameLbl;
     private JTextField groupNameField;
-    private JLabel locationLbl;
     private JButton submitBtn;
-    private JScrollPane scrollPane1;
     private JList groupList;
     private JButton removeGroup;
-    private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 

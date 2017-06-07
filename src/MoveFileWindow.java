@@ -17,6 +17,7 @@ import java.util.Enumeration;
  * @version 1.0.0
  */
 
+@SuppressWarnings("unchecked")
 class MoveFileWindow extends JFrame {
 
     private static JFrame moveFileWindow;
@@ -25,7 +26,7 @@ class MoveFileWindow extends JFrame {
     private final int port;
     private final String userAccount;
     private final String fileName;
-    private JSONObject catalogObj;
+    private final JSONObject catalogObj;
 
     private MoveFileWindow(
             String fileName,
@@ -77,13 +78,13 @@ class MoveFileWindow extends JFrame {
             }
         }        //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        scrollPane1 = new JScrollPane();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JScrollPane scrollPane1 = new JScrollPane();
         tree1 = new JTree(tree);
         buttonBar = new JPanel();
         okButton = new JButton();
-        label1 = new JLabel();
+        JLabel label1 = new JLabel();
 
         //======== this ========
         setTitle("filename - Move");
@@ -243,14 +244,9 @@ class MoveFileWindow extends JFrame {
         moveFileWindow.setVisible(true);
     }
 
-    //GEN-BEGIN:variables
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JScrollPane scrollPane1;
     private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;
-    private JLabel label1;
     //GEN-END:variables
 
 }

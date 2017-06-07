@@ -14,11 +14,11 @@ import java.io.IOException;
 
 class UserAccountOptions extends JFrame {
     private static JFrame userAccountOptions;
-    private String userAccount;
-    private String serverAddress;
-    private int port;
-    private JFrame parentSender;
-    private boolean previousRunType;
+    private final String userAccount;
+    private final String serverAddress;
+    private final int port;
+    private final JFrame parentSender;
+    private final boolean previousRunType;
 
     private UserAccountOptions(
             String userAccount, String serverAddress, int port, JFrame parentSender, boolean previousRunType) {
@@ -44,9 +44,7 @@ class UserAccountOptions extends JFrame {
         String userType = null;
         try {
             userType = FileClient.getUserType(serverAddress, port, userAccount);
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MalformedRequestException | IOException e) {
             e.printStackTrace();
         }
         if (userAccount.equals("guest")) {
@@ -57,7 +55,7 @@ class UserAccountOptions extends JFrame {
             deleteAccount.setEnabled(false);
             deleteAccount.setToolTipText("Deleting the guest account is not allowed");
 
-        } else if (!userType.equals("admin")) {
+        } else if (userType != null && !userType.equals("admin")) {
             changeGroupBtn.setEnabled(false);
             changeGroupBtn.setToolTipText("Changing guest groups is not allowed");
         }
@@ -70,8 +68,8 @@ class UserAccountOptions extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        titleLbl2 = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JLabel titleLbl2 = new JLabel();
         closeBtn = new JButton();
         titleLbl = new JLabel();
         changePasswordBtn = new JButton();
@@ -177,10 +175,8 @@ class UserAccountOptions extends JFrame {
                             ClientModeConfiguration.run(userAccountOptions, serverAddress, previousRunType);
                             parentSender.dispose();
                             dispose();
-                        } catch (IOException ioe) {
+                        } catch (IOException | MalformedRequestException ioe) {
                             ioe.printStackTrace();
-                        } catch (MalformedRequestException e1) {
-                            e1.printStackTrace();
                         }
                     } else {
                         dispose();
@@ -211,10 +207,6 @@ class UserAccountOptions extends JFrame {
         userAccountOptions.setVisible(true);
     }
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JLabel titleLbl2;
     private JButton closeBtn;
     private JLabel titleLbl;
     private JButton changePasswordBtn;

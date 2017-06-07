@@ -13,12 +13,13 @@ import java.util.*;
  * @version 1.0.0
  */
 
+@SuppressWarnings("unchecked")
 class ChangeUserGroup extends JFrame {
 
     private static JFrame changeUserGroup;
-    private String userAccount;
-    private String serverAddress;
-    private int port;
+    private final String userAccount;
+    private final String serverAddress;
+    private final int port;
     private final DefaultListModel currentGroupModel;
     private final DefaultListModel newGroupModel;
 
@@ -42,24 +43,24 @@ class ChangeUserGroup extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        changeUserGroupTitle = new JLabel();
-        newGroupsLbl = new JLabel();
-        currentGroupsLbl = new JLabel();
-        splitPane1 = new JSplitPane();
-        panel1 = new JPanel();
-        scrollPane1 = new JScrollPane();
-        currentGroupsList = new JList(currentGroupModel);
-        panel2 = new JPanel();
-        scrollPane2 = new JScrollPane();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel changeUserGroupTitle = new JLabel();
+        JLabel newGroupsLbl = new JLabel();
+        JLabel currentGroupsLbl = new JLabel();
+        JSplitPane splitPane1 = new JSplitPane();
+        JPanel panel1 = new JPanel();
+        JScrollPane scrollPane1 = new JScrollPane();
+        JList currentGroupsList = new JList(currentGroupModel);
+        JPanel panel2 = new JPanel();
+        JScrollPane scrollPane2 = new JScrollPane();
         newGroupsList = new JList(newGroupModel);
-        panel3 = new JPanel();
-        addGroupLbl = new JLabel();
+        JPanel panel3 = new JPanel();
+        JLabel addGroupLbl = new JLabel();
         userGroupBox = new JComboBox();
         addGroupBtn = new JButton();
         removeMembershipBtn = new JButton();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         okButton = new JButton();
 
         //======== this ========
@@ -221,8 +222,8 @@ class ChangeUserGroup extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[] {0, 80};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
 
                 //---- okButton ----
                 okButton.setText("OK");
@@ -287,9 +288,7 @@ class ChangeUserGroup extends JFrame {
             myGroups = FileClient.getUserGroups(serverAddress, port, userAccount);
             allGroups = FileClient.getGroups(serverAddress, port);
 
-        } catch (MalformedRequestException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (MalformedRequestException | IOException e) {
             e.printStackTrace();
         }
 
@@ -342,26 +341,10 @@ class ChangeUserGroup extends JFrame {
         changeUserGroup.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel changeUserGroupTitle;
-    private JLabel newGroupsLbl;
-    private JLabel currentGroupsLbl;
-    private JSplitPane splitPane1;
-    private JPanel panel1;
-    private JScrollPane scrollPane1;
-    private JList currentGroupsList;
-    private JPanel panel2;
-    private JScrollPane scrollPane2;
     private JList newGroupsList;
-    private JPanel panel3;
-    private JLabel addGroupLbl;
     private JComboBox userGroupBox;
     private JButton addGroupBtn;
     private JButton removeMembershipBtn;
-    private JPanel buttonBar;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 

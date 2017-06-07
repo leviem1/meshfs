@@ -16,16 +16,18 @@ import java.util.ArrayList;
  * @version 1.0.0
  */
 
+@SuppressWarnings("unchecked")
 class ClientBrowserFileProperties extends JFrame {
 
     private final DefaultListModel model;
     private final DefaultListModel permModel;
     private static JFrame clientBrowserFileProperties;
-    private String serverAddress;
-    private int port;
-    private ArrayList<String> groupData;
-    private String itemPath;
+    private final String serverAddress;
+    private final int port;
+    private final ArrayList<String> groupData;
+    private final String itemPath;
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private ClientBrowserFileProperties(JSONObject itemContents, String userAccount, String serverAddress, int port, String itemPath, JSONObject userObj) {
         this.serverAddress = serverAddress;
         this.port = port;
@@ -138,23 +140,23 @@ class ClientBrowserFileProperties extends JFrame {
 
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        fileNameLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel fileNameLbl = new JLabel();
         fileNameValue = new JLabel(fileName);
         fileSizeValue = new JLabel(fileSize);
-        creationDateLbl = new JLabel();
+        JLabel creationDateLbl = new JLabel();
         creationDateValue = new JLabel(creationDate);
-        locationLbl = new JLabel();
-        scrollPane1 = new JScrollPane();
+        JLabel locationLbl = new JLabel();
+        JScrollPane scrollPane1 = new JScrollPane();
         locationList = new JList(model);
-        permissionsLbl = new JLabel();
-        scrollPane2 = new JScrollPane();
-        permissionList = new JList(permModel);
-        buttonBar = new JPanel();
+        JLabel permissionsLbl = new JLabel();
+        JScrollPane scrollPane2 = new JScrollPane();
+        JList permissionList = new JList(permModel);
+        JPanel buttonBar = new JPanel();
         shareBtn = new JButton();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("filename - Properties");
@@ -327,25 +329,12 @@ class ClientBrowserFileProperties extends JFrame {
         clientBrowserFileProperties.setVisible(true);
     }
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel fileNameLbl;
     private JLabel fileNameValue;
     private JLabel fileSizeValue;
-    private JLabel creationDateLbl;
     private JLabel creationDateValue;
-    private JLabel locationLbl;
-    private JScrollPane scrollPane1;
     private JList locationList;
-    private JLabel permissionsLbl;
-    private JScrollPane scrollPane2;
-    private JList permissionList;
-    private JPanel buttonBar;
     private JButton shareBtn;
     private JButton okButton;
-    private JLabel titleLbl;
     //GEN-END:variables
 
 }

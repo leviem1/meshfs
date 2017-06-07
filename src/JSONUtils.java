@@ -364,7 +364,7 @@ class JSONUtils {
      * address and its available storage.
      *
      * @param unsortedMap   the unsorted map
-     * @param ascending     if true to map is sorted by ascending valse, if flase the map is sorted by descending value
+     * @param ascending     if true to map is sorted by ascending value, if false the map is sorted by descending value
      * @return              sorted LinkedHashMap
      */
     @SuppressWarnings("unchecked")

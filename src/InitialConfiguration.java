@@ -12,6 +12,7 @@ import java.awt.*;
  * @version 1.0.0
  */
 
+@SuppressWarnings("unchecked")
 class InitialConfiguration extends JFrame {
 
     private static JFrame initialConfiguration;
@@ -38,12 +39,12 @@ class InitialConfiguration extends JFrame {
     private void initComponents() {
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
+        JPanel dialogPane = new JPanel();
         contentPanel = new JPanel();
-        titleLbl = new JLabel();
-        modeLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
+        JLabel modeLbl = new JLabel();
         modeSelectionBox = new JComboBox();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
 
@@ -186,14 +187,8 @@ class InitialConfiguration extends JFrame {
         initialConfiguration.setVisible(true);
     }
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
     private JPanel contentPanel;
-    private JLabel titleLbl;
-    private JLabel modeLbl;
     private JComboBox modeSelectionBox;
-    private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
     //GEN-END:variables

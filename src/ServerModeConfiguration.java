@@ -83,61 +83,61 @@ class ServerModeConfiguration extends JFrame {
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         DefaultComponentFactory compFactory = DefaultComponentFactory.getInstance();
-        dialogPane = new JPanel();
+        JPanel dialogPane = new JPanel();
         serverSettingPane = new JTabbedPane();
-        networkTab = new JPanel();
-        serverNetworkInterfaceLbl = new JLabel();
+        JPanel networkTab = new JPanel();
+        JLabel serverNetworkInterfaceLbl = new JLabel();
         masterServerField = new JTextField();
-        serverPortLbl = new JLabel();
+        JLabel serverPortLbl = new JLabel();
         serverPortField = new JFormattedTextField(numberFormat);
         isMasterBox = new JCheckBox();
-        serverThreadsLbl = new JLabel();
+        JLabel serverThreadsLbl = new JLabel();
         serverThreadsField = new JFormattedTextField(numberFormat);
-        serverTimeoutLbl = new JLabel();
+        JLabel serverTimeoutLbl = new JLabel();
         serverTimeoutField = new JFormattedTextField(numberFormat);
-        timeUnitLbl = new JLabel();
+        JLabel timeUnitLbl = new JLabel();
         numStripesField = new JFormattedTextField(numberFormat);
-        stripesLbl = new JLabel();
+        JLabel stripesLbl = new JLabel();
         numStripeCopiesField = new JFormattedTextField(numberFormat);
-        stripedCopiesLbl = new JLabel();
+        JLabel stripedCopiesLbl = new JLabel();
         numWholeField = new JFormattedTextField(numberFormat);
-        wholeCopiesLbl = new JLabel();
+        JLabel wholeCopiesLbl = new JLabel();
         importConfigBtn = new JButton();
         backupConfigBtn = new JButton();
-        importDescriptionLbl = new JLabel();
-        exportDescriptionLbl = new JLabel();
-        configurationToolsLblSep = compFactory.createSeparator("Configuration Tools");
+        JLabel importDescriptionLbl = new JLabel();
+        JLabel exportDescriptionLbl = new JLabel();
+        JComponent configurationToolsLblSep = compFactory.createSeparator("Configuration Tools");
         helpIcon = new JLabel();
-        storageTab = new JPanel();
-        repositoryLbl = new JLabel();
+        JPanel storageTab = new JPanel();
+        JLabel repositoryLbl = new JLabel();
         repoPathField = new JTextField(System.getProperty("user.dir") + File.separator + "repo");
-        minFreeSpaceLbl = new JLabel();
+        JLabel minFreeSpaceLbl = new JLabel();
         minSpaceField = new JFormattedTextField(numberFormat);
-        label1 = new JLabel();
+        JLabel label1 = new JLabel();
         spaceSldr = new JSlider();
         freeSpaceLbl = new JLabel();
         browseBtn = new JButton();
         userAccount = new JPanel();
-        textArea1 = new JTextArea();
-        usernameLbl = new JLabel();
+        JTextArea textArea1 = new JTextArea();
+        JLabel usernameLbl = new JLabel();
         usernameValueField = new JTextField();
-        passwordLbl = new JLabel();
+        JLabel passwordLbl = new JLabel();
         passwordValueField = new JPasswordField();
-        groupLbl = new JLabel();
+        JLabel groupLbl = new JLabel();
         groupBox = new JComboBox();
         groupManagerBtn = new JButton();
         accountTypeBox = new JComboBox();
-        accountTypeLbl = new JLabel();
+        JLabel accountTypeLbl = new JLabel();
         allowGuestBox = new JCheckBox();
         removeUserBtn = new JButton();
         submitBtn = new JButton();
-        scrollPane2 = new JScrollPane();
+        JScrollPane scrollPane2 = new JScrollPane();
         userAccountDataList = new JList(model);
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         backBtn = new JButton();
         resetConfigBtn = new JButton();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Server Configuration");
@@ -968,6 +968,7 @@ class ServerModeConfiguration extends JFrame {
 
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void onOk() {
 
         try {
@@ -1151,7 +1152,7 @@ class ServerModeConfiguration extends JFrame {
     }
 
     private void generateAuthObj() {
-        out = "";
+        StringBuilder outAppend = new StringBuilder();
         for (int i = 0; i < userAccountDataList.getModel().getSize(); i++) {
             String user =
                     userAccountDataList
@@ -1190,8 +1191,8 @@ class ServerModeConfiguration extends JFrame {
                                             + 6,
                                     userAccountDataList.getModel().getElementAt(i).toString().indexOf("</html>"));
 
-            out += "Username: <i>" + user + "</i>, Password: <i>" + passOrig + "</i>, Group: <i>" + group.toLowerCase() + "</i>, Type: <i>" + type + "<br>";
-
+            outAppend.append("Username: <i>").append(user).append("</i>, Password: <i>").append(passOrig).append("</i>, Group: <i>").append(group.toLowerCase()).append("</i>, Type: <i>").append(type).append("<br>");
+            out = outAppend.toString();
 
             String primaryGroup = group.substring(0, group.lastIndexOf("<br>"));
 
@@ -1274,63 +1275,36 @@ class ServerModeConfiguration extends JFrame {
         serverModeConfiguration.setVisible(true);
     }
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
     private JTabbedPane serverSettingPane;
-    private JPanel networkTab;
-    private JLabel serverNetworkInterfaceLbl;
     private JTextField masterServerField;
-    private JLabel serverPortLbl;
     private JFormattedTextField serverPortField;
     private JCheckBox isMasterBox;
-    private JLabel serverThreadsLbl;
     private JFormattedTextField serverThreadsField;
-    private JLabel serverTimeoutLbl;
     private JFormattedTextField serverTimeoutField;
-    private JLabel timeUnitLbl;
     private JFormattedTextField numStripesField;
-    private JLabel stripesLbl;
     private JFormattedTextField numStripeCopiesField;
-    private JLabel stripedCopiesLbl;
     private JFormattedTextField numWholeField;
-    private JLabel wholeCopiesLbl;
     private JButton importConfigBtn;
     private JButton backupConfigBtn;
-    private JLabel importDescriptionLbl;
-    private JLabel exportDescriptionLbl;
-    private JComponent configurationToolsLblSep;
     private JLabel helpIcon;
-    private JPanel storageTab;
-    private JLabel repositoryLbl;
     private JTextField repoPathField;
-    private JLabel minFreeSpaceLbl;
     private JFormattedTextField minSpaceField;
-    private JLabel label1;
     private JSlider spaceSldr;
     private JLabel freeSpaceLbl;
     private JButton browseBtn;
     private JPanel userAccount;
-    private JTextArea textArea1;
-    private JLabel usernameLbl;
     private JTextField usernameValueField;
-    private JLabel passwordLbl;
     private JPasswordField passwordValueField;
-    private JLabel groupLbl;
     private JComboBox groupBox;
     private JButton groupManagerBtn;
     private JComboBox accountTypeBox;
-    private JLabel accountTypeLbl;
     private JCheckBox allowGuestBox;
     private JButton removeUserBtn;
     private JButton submitBtn;
-    private JScrollPane scrollPane2;
     private JList userAccountDataList;
-    private JPanel buttonBar;
     private JButton backBtn;
     private JButton resetConfigBtn;
     private JButton okButton;
-    private JLabel titleLbl;
     //GEN-END:variables
 
 }

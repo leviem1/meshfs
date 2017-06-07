@@ -56,6 +56,7 @@ class Crypt {
      *                          the authentication file
      */
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     static void writeAuthFile(ArrayList<UserAccount> accountsArrayList) {
         try {
             File repo = new File(MeshFS.properties.getProperty("repository"));

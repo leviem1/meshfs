@@ -201,7 +201,7 @@ class DISTAL {
                 char lastChar = name.charAt(name.length() - incrementReverseIndex);
                 toAdd.append(alphabet.charAt(alphabet.indexOf(lastChar) + 1));
                 break;
-            } catch (IndexOutOfBoundsException iobe) {
+            } catch (IndexOutOfBoundsException ioobe) {
                 //if have reached the end of the alphabet, loop back to the beginning and use the next character
                 toAdd.append(alphabet.charAt(0));
                 incrementReverseIndex++;

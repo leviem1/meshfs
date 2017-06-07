@@ -48,7 +48,7 @@ class MulticastServer {
         }
 
         TimerTask checkMasters = new TimerTask() {
-            ArrayList<String> mastersToRemove = new ArrayList<>();
+            final ArrayList<String> mastersToRemove = new ArrayList<>();
 
             @Override
             public void run() {
@@ -121,12 +121,12 @@ class MulticastServer {
 
 class MulticastServerInit implements Runnable {
 
-    static CopyOnWriteArrayList<String> foundMasters = new CopyOnWriteArrayList<>();
-    static ConcurrentHashMap<InetAddress, Long> reportedDown = new ConcurrentHashMap<>();
+    static final CopyOnWriteArrayList<String> foundMasters = new CopyOnWriteArrayList<>();
+    static final ConcurrentHashMap<InetAddress, Long> reportedDown = new ConcurrentHashMap<>();
     private static volatile boolean masterDown = false;
     private static volatile boolean recordVotes = false;
-    private static Timer voteCastScheduler = new Timer();
-    private static ConcurrentHashMap<String, String> newMasterVotes = new ConcurrentHashMap<>();
+    private static final Timer voteCastScheduler = new Timer();
+    private static final ConcurrentHashMap<String, String> newMasterVotes = new ConcurrentHashMap<>();
     private final DatagramSocket socket;
 
     MulticastServerInit(DatagramSocket socket) {
@@ -143,6 +143,7 @@ class MulticastServerInit implements Runnable {
         }
     }
 
+    @SuppressWarnings("InfiniteLoopStatement")
     private void masterDownRecord(InetAddress address) {
         reportedDown.put(address, Instant.now().toEpochMilli());
         if (!MeshFS.isMaster && !masterDown && MeshFS.numFailedConn[0] > 3 && (reportedDown.size() > JSONUtils.getJSONObject(MeshFS.properties.getProperty("repository") + ".manifest.json").size() / 2)) {

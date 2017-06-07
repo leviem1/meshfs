@@ -25,7 +25,7 @@ import java.util.Properties;
 class ServerConfigConfirmation extends JFrame {
     private static JFrame serverConfigConfirmation;
     private final ArrayList accountDetails;
-    private Properties properties;
+    private final Properties properties;
 
     private ServerConfigConfirmation(
             String content, ArrayList accountDetails, Properties properties, boolean isMaster) {
@@ -56,17 +56,17 @@ class ServerConfigConfirmation extends JFrame {
     private void initComponents() {
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        label1 = new JLabel();
-        configValuesPane = new JScrollPane();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel label1 = new JLabel();
+        JScrollPane configValuesPane = new JScrollPane();
         configValues = new JTextPane();
         serverIdentifierLbl = new JLabel();
         serverIdentifierField = new JTextField();
         buttonBar = new JPanel();
         backBtn = new JButton();
         okButton = new JButton();
-        titleLbl = new JLabel();
+        JLabel titleLbl = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Server Confirmation");
@@ -278,19 +278,12 @@ class ServerConfigConfirmation extends JFrame {
         serverConfigConfirmation.setVisible(true);
     }
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel label1;
-    private JScrollPane configValuesPane;
     private JTextPane configValues;
     private JLabel serverIdentifierLbl;
     private JTextField serverIdentifierField;
     private JPanel buttonBar;
     private JButton backBtn;
     private JButton okButton;
-    private JLabel titleLbl;
     //GEN-END:variables
 
 

@@ -39,16 +39,16 @@ class ClientBrowser extends JFrame {
     private JSONObject catalogObj;
     private boolean isLoaded = false;
     private int failureCount;
-    private boolean previousRunType;
+    private final boolean previousRunType;
     private boolean userType;
     private JPopupMenu rightClickMenu;
-    private JMenuItem duplicateBtn;
-    private JMenuItem moveBtn;
-    private JMenuItem renameBtn;
-    private JMenuItem removeBtn;
-    private JMenuItem propertiesBtn;
-    private JMenuItem sendToDriveBtn;
-    private JMenuItem blacklistUserBtn;
+    private final JMenuItem duplicateBtn;
+    private final JMenuItem moveBtn;
+    private final JMenuItem renameBtn;
+    private final JMenuItem removeBtn;
+    private final JMenuItem propertiesBtn;
+    private final JMenuItem sendToDriveBtn;
+    private final JMenuItem blacklistUserBtn;
 
     private ClientBrowser(
             String serverAddress, int port, String userAccount, JSONObject catalogObj, boolean previousRunType) {
@@ -111,13 +111,13 @@ class ClientBrowser extends JFrame {
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        scrollPane1 = new JScrollPane();
+        JPanel contentPanel = new JPanel();
+        JScrollPane scrollPane1 = new JScrollPane();
         tree1 = new JTree(new DefaultTreeModel(root));
         uploadBtn = new JButton();
         newDirBtn = new JButton();
         downloadAsBtn = new JButton();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         logoutBtn = new JButton();
         optionsBtn = new JButton();
         saveFromDriveBtn = new JButton();
@@ -241,7 +241,7 @@ class ClientBrowser extends JFrame {
                 int y = e.getY();
                 JTree tree = (JTree) e.getSource();
                 TreePath path = tree.getPathForLocation(x, y);
-                java.util.List<Object> treeList = Arrays.asList(path.getPath());
+                java.util.List<Object> treeList = Arrays.asList(path != null ? path.getPath() : new Object[0]);
                 StringBuilder jsonPath = new StringBuilder();
                 for (Object item : treeList) {
                     jsonPath.append(item.toString()).append("/");
@@ -249,30 +249,32 @@ class ClientBrowser extends JFrame {
                 JSONObject contents = JSONUtils.getItemContents(catalogObj, jsonPath.toString());
                 String type = contents.get("type").toString();
 
-                if (type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared") && !path.getLastPathComponent().toString().equals("Users")) {
-                    rightClickMenu = new JPopupMenu();
-                    rightClickMenu.add(renameBtn);
-                    rightClickMenu.add(moveBtn);
-                    rightClickMenu.add(duplicateBtn);
-                    rightClickMenu.add(new JPopupMenu.Separator());
-                    rightClickMenu.add(removeBtn);
-                    rightClickMenu.add(blacklistUserBtn);
-                    rightClickMenu.add(sendToDriveBtn);
-                    rightClickMenu.add(new JPopupMenu.Separator());
-                    rightClickMenu.add(propertiesBtn);
-                    tree.setSelectionPath(path);
-                    rightClickMenu.show(tree, x, y);
-                } else if (type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared") && !path.getLastPathComponent().toString().equals("Users") && !path.getLastPathComponent().toString().equals(" (uploading)") && !path.getLastPathComponent().toString().equals(" (corrupted)") && !path.getLastPathComponent().toString().equals(" (distributing)")) {
-                    rightClickMenu = new JPopupMenu();
-                    rightClickMenu.add(renameBtn);
-                    rightClickMenu.add(moveBtn);
-                    rightClickMenu.add(duplicateBtn);
-                    rightClickMenu.add(new JPopupMenu.Separator());
-                    rightClickMenu.add(removeBtn);
-                    rightClickMenu.add(new JPopupMenu.Separator());
-                    rightClickMenu.add(propertiesBtn);
-                    tree.setSelectionPath(path);
-                    rightClickMenu.show(tree, x, y);
+                if (path != null) {
+                    if (type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared") && !path.getLastPathComponent().toString().equals("Users")) {
+                        rightClickMenu = new JPopupMenu();
+                        rightClickMenu.add(renameBtn);
+                        rightClickMenu.add(moveBtn);
+                        rightClickMenu.add(duplicateBtn);
+                        rightClickMenu.add(new JPopupMenu.Separator());
+                        rightClickMenu.add(removeBtn);
+                        rightClickMenu.add(blacklistUserBtn);
+                        rightClickMenu.add(sendToDriveBtn);
+                        rightClickMenu.add(new JPopupMenu.Separator());
+                        rightClickMenu.add(propertiesBtn);
+                        tree.setSelectionPath(path);
+                        rightClickMenu.show(tree, x, y);
+                    } else if (type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared") && !path.getLastPathComponent().toString().equals("Users") && !path.getLastPathComponent().toString().equals(" (uploading)") && !path.getLastPathComponent().toString().equals(" (corrupted)") && !path.getLastPathComponent().toString().equals(" (distributing)")) {
+                        rightClickMenu = new JPopupMenu();
+                        rightClickMenu.add(renameBtn);
+                        rightClickMenu.add(moveBtn);
+                        rightClickMenu.add(duplicateBtn);
+                        rightClickMenu.add(new JPopupMenu.Separator());
+                        rightClickMenu.add(removeBtn);
+                        rightClickMenu.add(new JPopupMenu.Separator());
+                        rightClickMenu.add(propertiesBtn);
+                        tree.setSelectionPath(path);
+                        rightClickMenu.show(tree, x, y);
+                    }
                 }
             }
 
@@ -524,26 +526,22 @@ class ClientBrowser extends JFrame {
                         e1.printStackTrace();
                     }
                     try {
-                        JSONUtils.pullFile(
-                                catalogObj,
-                                jsonPath.toString(),
-                                tempFile.getAbsolutePath(),
-                                tempFile.getAbsolutePath().substring(tempFile.getAbsolutePath().lastIndexOf(File.separator)),
-                                true);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    } catch (MalformedRequestException e1) {
-                        e1.printStackTrace();
-                    } catch (PullRequestException e1) {
-                        e1.printStackTrace();
-                    } catch (FileTransferException e1) {
+                        if (tempFile != null) {
+                            JSONUtils.pullFile(
+                                    catalogObj,
+                                    jsonPath.toString(),
+                                    tempFile.getAbsolutePath(),
+                                    tempFile.getAbsolutePath().substring(tempFile.getAbsolutePath().lastIndexOf(File.separator)),
+                                    true);
+                        }
+                    } catch (IOException | FileTransferException | PullRequestException | MalformedRequestException e1) {
                         e1.printStackTrace();
                     }
                     try {
-                        DriveAPI.uploadFile(tempFile, node.toString(), Files.probeContentType(Paths.get(tempFile.getAbsolutePath())), MeshFS.userUUID);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    } catch (GeneralSecurityException e1) {
+                        if (tempFile != null) {
+                            DriveAPI.uploadFile(tempFile, node.toString(), Files.probeContentType(Paths.get(tempFile.getAbsolutePath())), MeshFS.userUUID);
+                        }
+                    } catch (IOException | GeneralSecurityException e1) {
                         e1.printStackTrace();
                     }
                 });
@@ -558,9 +556,7 @@ class ClientBrowser extends JFrame {
 
                     try {
                         FileClient.blacklistUser(serverAddress, Integer.parseInt(MeshFS.properties.getProperty("portNumber")), JSONUtils.catalogStringFixer(jsonPath.toString()), userAccount);
-                    } catch (MalformedRequestException e1) {
-                        e1.printStackTrace();
-                    } catch (IOException e1) {
+                    } catch (MalformedRequestException | IOException e1) {
                         e1.printStackTrace();
                     }
 
@@ -634,9 +630,7 @@ class ClientBrowser extends JFrame {
                             }
                             try {
                                 catalogObj = FileClient.getUserFiles(serverAddress, port, userAccount);
-                            } catch (MalformedRequestException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
+                            } catch (MalformedRequestException | IOException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -679,13 +673,10 @@ class ClientBrowser extends JFrame {
     //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JScrollPane scrollPane1;
     private JTree tree1;
     private JButton uploadBtn;
     private JButton newDirBtn;
     private JButton downloadAsBtn;
-    private JPanel buttonBar;
     private JButton logoutBtn;
     private JButton optionsBtn;
     private JButton saveFromDriveBtn;

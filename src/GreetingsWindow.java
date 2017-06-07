@@ -50,11 +50,11 @@ class GreetingsWindow extends JFrame {
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        titleLbl = new JLabel();
-        scrollPane1 = new JScrollPane();
+        JPanel contentPanel = new JPanel();
+        JLabel titleLbl = new JLabel();
+        JScrollPane scrollPane1 = new JScrollPane();
         greetingsPane = new JTextPane();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         quitButton = new JButton();
         configBtn = new JButton();
 
@@ -180,11 +180,7 @@ class GreetingsWindow extends JFrame {
     //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel titleLbl;
-    private JScrollPane scrollPane1;
     private JTextPane greetingsPane;
-    private JPanel buttonBar;
     private JButton quitButton;
     private JButton configBtn;
     //GEN-END:variables

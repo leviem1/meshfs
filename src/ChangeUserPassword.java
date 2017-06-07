@@ -18,11 +18,11 @@ import java.util.ArrayList;
 class ChangeUserPassword extends JFrame {
 
     private static JFrame changeUserPassword;
-    private JFrame sender;
-    private String userAccount;
-    private String serverAddress;
-    private int port;
-    private boolean previousRunType;
+    private final JFrame sender;
+    private final String userAccount;
+    private final String serverAddress;
+    private final int port;
+    private final boolean previousRunType;
 
     private ChangeUserPassword(String userAccount, String serverAddress, int port, JFrame sender, boolean previousRunType) {
         this.userAccount = userAccount;
@@ -47,20 +47,20 @@ class ChangeUserPassword extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        usernameLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel usernameLbl = new JLabel();
         usernameField = new JTextField();
-        newPasswordLbl = new JLabel();
+        JLabel newPasswordLbl = new JLabel();
         newPasswordField = new JPasswordField();
-        currPasswordLbl = new JLabel();
+        JLabel currPasswordLbl = new JLabel();
         currPasswordField = new JPasswordField();
-        newPasswordConfirmLbl = new JLabel();
+        JLabel newPasswordConfirmLbl = new JLabel();
         newPasswordFieldConfirm = new JPasswordField();
         validPasswordLbl = new JLabel();
         buttonBar = new JPanel();
         okButton = new JButton();
-        titleLbl2 = new JLabel();
+        JLabel titleLbl2 = new JLabel();
 
         //======== this ========
         setTitle("MeshFS - Change User Password");
@@ -359,22 +359,13 @@ class ChangeUserPassword extends JFrame {
         changeUserPassword.setVisible(true);
     }
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel usernameLbl;
     private JTextField usernameField;
-    private JLabel newPasswordLbl;
     private JPasswordField newPasswordField;
-    private JLabel currPasswordLbl;
     private JPasswordField currPasswordField;
-    private JLabel newPasswordConfirmLbl;
     private JPasswordField newPasswordFieldConfirm;
     private JLabel validPasswordLbl;
     private JPanel buttonBar;
     private JButton okButton;
-    private JLabel titleLbl2;
     //GEN-END:variables
 
 }

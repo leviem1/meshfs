@@ -254,9 +254,7 @@ class RenameFileWindow extends JFrame {
                                         JSONObject userFiles = null;
                                         try {
                                             userFiles = FileClient.getUserFiles(serverAddress, port, userAccount);
-                                        } catch (MalformedRequestException e1) {
-                                            e1.printStackTrace();
-                                        } catch (IOException e1) {
+                                        } catch (MalformedRequestException | IOException e1) {
                                             e1.printStackTrace();
                                         }
                                         Map<String, String> folderMap = JSONUtils.getMapOfFolderContents(userFiles, null);
@@ -281,9 +279,7 @@ class RenameFileWindow extends JFrame {
                 e -> {
                     try {
                         FileClient.renameFile(serverAddress, port, jsonObj, newNameValueField.getText());
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    } catch (MalformedRequestException e1) {
+                    } catch (IOException | MalformedRequestException e1) {
                         e1.printStackTrace();
                     }
                     dispose();

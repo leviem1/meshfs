@@ -100,6 +100,7 @@ class FileUtils {
      * @param path path of the file to delete
      */
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     static void removeFile(String path) {
         new File(path).delete();
     }

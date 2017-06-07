@@ -11,11 +11,11 @@ import java.util.ArrayList;
  */
 
 class UserAccount implements Serializable {
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
     private String accountType;
-    private String UUID;
-    private ArrayList<String> groups;
+    private final String UUID;
+    private final ArrayList<String> groups;
 
     /**
      * Creates a UserAccount to be written in the authentication file
@@ -95,14 +95,12 @@ class UserAccount implements Serializable {
      *
      *
      * @param groupName The name of the Group to Remove from the current groups
-     * @return Returns the updated list of groups
      */
 
-    ArrayList<String> removeGroup(String groupName) {
+    void removeGroup(String groupName) {
         if (groups.contains(groupName)) {
             groups.remove(groupName);
         }
-        return groups;
     }
 
     /**

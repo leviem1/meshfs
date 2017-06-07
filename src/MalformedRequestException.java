@@ -10,7 +10,7 @@ import java.util.List;
 
 class MalformedRequestException extends Exception {
 
-    private List<String> messageParts;
+    private final List<String> messageParts;
 
     /**
      * Creates the MalformedRequestException.
@@ -30,6 +30,7 @@ class MalformedRequestException extends Exception {
      *         and the cause (index 1)
      */
 
+    @SuppressWarnings("unused")
     List<String> getReason() {
         return messageParts;
     }

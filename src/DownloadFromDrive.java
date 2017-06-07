@@ -22,13 +22,14 @@ import java.util.Arrays;
  * @version 1.0.0
  */
 
+@SuppressWarnings("unchecked")
 class DownloadFromDrive extends JFrame {
 
     private static JFrame downloadFromDrive;
     private final String serverAddress;
     private final int port;
-    private JSONObject masterJSON;
-    private String username;
+    private final JSONObject masterJSON;
+    private final String username;
 
     private DownloadFromDrive(String serverAddress, int port, String username) {
         this.serverAddress = serverAddress;
@@ -51,9 +52,7 @@ class DownloadFromDrive extends JFrame {
 
             tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder(masterJSON, true)));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (GeneralSecurityException e) {
+        } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         }
 
@@ -62,12 +61,12 @@ class DownloadFromDrive extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        titleLbl = new JLabel();
-        scrollPane1 = new JScrollPane();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel titleLbl = new JLabel();
+        JScrollPane scrollPane1 = new JScrollPane();
         tree1 = new JTree();
-        buttonBar = new JPanel();
+        JPanel buttonBar = new JPanel();
         downloadBtn = new JButton();
         okButton = new JButton();
 
@@ -146,6 +145,7 @@ class DownloadFromDrive extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void frameListeners() {
         TreeWillExpandListener treeWillExpandListener = new TreeWillExpandListener() {
             @Override
@@ -218,11 +218,7 @@ class DownloadFromDrive extends JFrame {
                                 JOptionPane.INFORMATION_MESSAGE);
                         driveFile.delete();
                         dispose();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    } catch (MalformedRequestException e1) {
-                        e1.printStackTrace();
-                    } catch (GeneralSecurityException e1) {
+                    } catch (IOException | GeneralSecurityException | MalformedRequestException e1) {
                         e1.printStackTrace();
                     }
                     JOptionPane.showMessageDialog(
@@ -254,14 +250,7 @@ class DownloadFromDrive extends JFrame {
         downloadFromDrive.setVisible(true);
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel titleLbl;
-    private JScrollPane scrollPane1;
     private JTree tree1;
-    private JPanel buttonBar;
     private JButton downloadBtn;
     private JButton okButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

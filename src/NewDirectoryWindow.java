@@ -24,7 +24,7 @@ class NewDirectoryWindow extends JFrame {
     private final String serverAddress;
     private final int port;
     private final String userAccount;
-    private JSONObject catalogObj;
+    private final JSONObject catalogObj;
 
     private NewDirectoryWindow(
             String serverAddress, int port, String userAccount, JSONObject catalogObj) {
@@ -53,12 +53,12 @@ class NewDirectoryWindow extends JFrame {
         DefaultMutableTreeNode tree = JSONUtils.JTreeBuilder(catalogObj, userType);
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        dirNameLbl = new JLabel();
+        JPanel dialogPane = new JPanel();
+        JPanel contentPanel = new JPanel();
+        JLabel dirNameLbl = new JLabel();
         dirNameTextField = new JTextField();
-        label2 = new JLabel();
-        scrollPane1 = new JScrollPane();
+        JLabel label2 = new JLabel();
+        JScrollPane scrollPane1 = new JScrollPane();
         tree1 = new JTree(tree);
         buttonBar = new JPanel();
         okButton = new JButton();
@@ -254,14 +254,7 @@ class NewDirectoryWindow extends JFrame {
         newDirectoryWindow.setVisible(true);
     }
 
-    //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel dirNameLbl;
     private JTextField dirNameTextField;
-    private JLabel label2;
-    private JScrollPane scrollPane1;
     private JTree tree1;
     private JPanel buttonBar;
     private JButton okButton;
