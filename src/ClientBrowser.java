@@ -262,7 +262,7 @@ class ClientBrowser extends JFrame {
                     rightClickMenu.add(propertiesBtn);
                     tree.setSelectionPath(path);
                     rightClickMenu.show(tree, x, y);
-                } else if (type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared") && !path.getLastPathComponent().toString().equals("Users")) {
+                } else if (type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared") && !path.getLastPathComponent().toString().equals("Users") && !path.getLastPathComponent().toString().equals(" (uploading)") && !path.getLastPathComponent().toString().equals(" (corrupted)") && !path.getLastPathComponent().toString().equals(" (distributing)")) {
                     rightClickMenu = new JPopupMenu();
                     rightClickMenu.add(renameBtn);
                     rightClickMenu.add(moveBtn);
@@ -337,9 +337,14 @@ class ClientBrowser extends JFrame {
                         return;
                     }
 
-                    if (node.toString().equals(userAccount) || node.toString().equals("Shared") || node.toString().equals("root")) {
+                    if (node.toString().equals(userAccount) || node.toString().equals("Shared") || node.toString().equals("root") || node.toString().contains(" (corrupted)") || node.toString().equals(" (uploading)") || node.toString().equals(" (distributing)") || node.toString().equals(" (no files)") ) {
                         tree1.setSelectionPath(null);
+                        newDirBtn.setEnabled(false);
+                        downloadAsBtn.setEnabled(false);
                         return;
+                    }else{
+                        newDirBtn.setEnabled(true);
+                        downloadAsBtn.setEnabled(true);
                     }
 
                     java.util.List<Object> treeList = Arrays.asList(tree1.getSelectionPath().getPath());
