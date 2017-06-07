@@ -67,7 +67,7 @@ class NewDirectoryWindow extends JFrame {
 
     private void initComponents() {
         boolean userType = false;
-        if(userAccount.equals("admin")) userType = true;
+        if (userAccount.equals("admin")) userType = true;
         DefaultMutableTreeNode tree = JSONUtils.JTreeBuilder(catalogObj, userType);
         //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license

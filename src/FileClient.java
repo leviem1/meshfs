@@ -19,7 +19,8 @@ import java.util.List;
  */
 class FileClient {
 
-    private FileClient() {}
+    private FileClient() {
+    }
 
     /**
      * This method is used to request to download a file from the server.
@@ -43,7 +44,7 @@ class FileClient {
      * @param port          the port of the server to connect to
      * @param fileName      the name of the file that is requested
      * @param fileOut       the file name to write the received file as
-     * @throws IOException  on error connecting or writing file
+     * @throws IOException on error connecting or writing file
      */
     @SuppressWarnings("deprecation")
     static void receiveFile(
@@ -77,7 +78,8 @@ class FileClient {
                 if (!responseParts[1].equals(FileUtils.getMD5Hash(fileOut))) {
                     throw new FileTransferException();
                 }
-            } catch (NoSuchAlgorithmException ignored) {}
+            } catch (NoSuchAlgorithmException ignored) {
+            }
         }
     }
 
@@ -115,7 +117,8 @@ class FileClient {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (NoSuchAlgorithmException ignored) {}
+        } catch (NoSuchAlgorithmException ignored) {
+        }
     }
 
     /**
@@ -154,7 +157,8 @@ class FileClient {
                 dos.write(data, 0, br);
                 dos.flush();
             }
-        } catch (NoSuchAlgorithmException ignored) {}
+        } catch (NoSuchAlgorithmException ignored) {
+        }
     }
 
     /**
@@ -442,7 +446,6 @@ class FileClient {
             client.setSoTimeout(Integer.parseInt(MeshFS.properties.getProperty("timeout")) * 1000);
 
             out.println("111|" + MeshFS.properties.getProperty("uuid") + "|" + username + "|" + oldPassword + "|" + newPassword + "\n");
-
 
 
             if ((response = input.readLine().trim()).split(";")[0].equals("202")) {

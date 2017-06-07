@@ -1,4 +1,3 @@
-import com.google.api.services.drive.model.User;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -944,7 +943,7 @@ class ServerModeConfiguration extends JFrame {
         removeUserBtn.addActionListener(
                 e -> {
                     int index = userAccountDataList.getSelectedIndex();
-                    if(userAccountDataList.getSelectedValue().toString().contains("admin")){
+                    if (userAccountDataList.getSelectedValue().toString().contains("admin")) {
                         return;
                     }
                     if (index > -1) {
@@ -1257,18 +1256,15 @@ class ServerModeConfiguration extends JFrame {
 
             String primaryGroup = group.substring(0, group.lastIndexOf("<br>"));
 
-            if(!primaryGroup.equals("none")){
+            if (!primaryGroup.equals("none")) {
                 accountsEnc.add(new UserAccount(user, Crypt.generateEncryptedPass(user, passOrig), type, new ArrayList<>(Arrays.asList(user, primaryGroup))));
                 accountsPlain.add(new UserAccount(user, passOrig, type, new ArrayList<>(Arrays.asList(user, primaryGroup))));
 
-            }else{
-                accountsEnc.add(new UserAccount(user, Crypt.generateEncryptedPass(user, passOrig), type, new ArrayList<>(Arrays.asList(user))));
-                accountsPlain.add(new UserAccount(user, passOrig, type, new ArrayList<>(Arrays.asList(user))));
+            } else {
+                accountsEnc.add(new UserAccount(user, Crypt.generateEncryptedPass(user, passOrig), type, new ArrayList<>(Collections.singletonList(user))));
+                accountsPlain.add(new UserAccount(user, passOrig, type, new ArrayList<>(Collections.singletonList(user))));
 
             }
-
-
-
 
 
         }

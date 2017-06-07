@@ -32,7 +32,7 @@ class UserAccountOptions extends JFrame {
         this.userAccount = userAccount;
         this.serverAddress = serverAddress;
         this.port = port;
-        this.parentSender = parentSender;
+        UserAccountOptions.parentSender = parentSender;
         this.previousRunType = previousRunType;
 
 
@@ -64,11 +64,11 @@ class UserAccountOptions extends JFrame {
             deleteAccount.setEnabled(false);
             deleteAccount.setToolTipText("Deleting the guest account is not allowed");
 
-        }else if (!userType.equals("admin")) {
+        } else if (!userType.equals("admin")) {
             changeGroupBtn.setEnabled(false);
             changeGroupBtn.setToolTipText("Changing guest groups is not allowed");
         }
-        if(userAccount.equals("admin")){
+        if (userAccount.equals("admin")) {
             deleteAccount.setEnabled(false);
             deleteAccount.setToolTipText("Deleting the admin account is not allowed");
         }
@@ -233,9 +233,9 @@ class UserAccountOptions extends JFrame {
                             ClientModeConfiguration.run(userAccountOptions, serverAddress, previousRunType);
                             parentSender.dispose();
                             dispose();
-                        } catch (IOException ioe){
+                        } catch (IOException ioe) {
                             ioe.printStackTrace();
-                        }catch (MalformedRequestException e1) {
+                        } catch (MalformedRequestException e1) {
                             e1.printStackTrace();
                         }
                     } else {

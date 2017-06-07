@@ -288,14 +288,14 @@ class ChangeUserPassword extends JFrame {
                         userAccount,
                         String.valueOf(currPasswordField.getPassword()),
                         String.valueOf(newPasswordFieldConfirm.getPassword()));
-                    JOptionPane.showMessageDialog(
-                            changeUserPassword,
-                            "Password Updated Successfully!",
-                            "MeshFS - Success",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    ClientModeConfiguration.run(changeUserPassword, serverAddress, previousRunType);
-                    dispose();
-                    sender.dispose();
+                JOptionPane.showMessageDialog(
+                        changeUserPassword,
+                        "Password Updated Successfully!",
+                        "MeshFS - Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                ClientModeConfiguration.run(changeUserPassword, serverAddress, previousRunType);
+                dispose();
+                sender.dispose();
             } catch (IncorrectCredentialException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(

@@ -18,6 +18,7 @@ import java.util.Timer;
  */
 
 class MeshFS {
+    final static int[] numFailedConn = {-1};
     static Properties properties;
     static FileServer fileServer;
     static String masterMAC;
@@ -27,11 +28,10 @@ class MeshFS {
     static Timer nodePanicTimer = new Timer();
     static Timer scheduledReportingTimer = new Timer();
     static boolean isMaster = false;
-    final static int[] numFailedConn = {-1};
+    static String userUUID = null;
     private static int activeWindows = 0;
     private static Timer manifestTimer = new Timer();
     private static Timer discoveryBroadcastTimer = new Timer();
-    static String userUUID = null;
 
     /**
      * This method is responsible for determining the run mode
@@ -112,7 +112,7 @@ class MeshFS {
                                     } catch (IOException | MalformedRequestException | FileTransferException ioe) {
                                         ioe.printStackTrace();
                                     }
-                                    if (numFailedConn[0] < 0 || numFailedConn[0] > 1){
+                                    if (numFailedConn[0] < 0 || numFailedConn[0] > 1) {
                                         List<String> filesToRestore = new ArrayList<>();
                                         numFailedConn[0] = 0;
 
@@ -127,19 +127,19 @@ class MeshFS {
                                         System.out.println(filesToRemove.toString());
 
                                         System.out.println("test");
-                                        for (String fileName : filesToRestore){
-                                            if (filesToRemove.contains(fileName)){
+                                        for (String fileName : filesToRestore) {
+                                            if (filesToRemove.contains(fileName)) {
                                                 filesToRemove.remove(fileName);
                                             }
                                         }
                                         System.out.println(filesToRemove);
-                                        for (String file : filesToRemove){
-                                            if(!file.equals(".catalog.json") && !file.equals(".auth") && !file.equals(".manifest.json")){
-                                                System.out.println("removing: '" + file +"'");
+                                        for (String file : filesToRemove) {
+                                            if (!file.equals(".catalog.json") && !file.equals(".auth") && !file.equals(".manifest.json")) {
+                                                System.out.println("removing: '" + file + "'");
                                                 FileUtils.removeFile(MeshFS.properties.getProperty("repository") + file);
                                             }
                                         }
-                                        if(!filesToRestore.get(0).equals("")){
+                                        if (!filesToRestore.get(0).equals("")) {
                                             for (String fileName : filesToRestore) {
                                                 if (new File(MeshFS.properties.getProperty("repository") + fileName).exists()) {
                                                     try {
@@ -238,19 +238,18 @@ class MeshFS {
             }
 
 
-
             TimerTask windowCheck =
                     new TimerTask() {
                         @Override
                         public void run() {
                             activeWindows = Window.getWindows().length;
-                            for(Window w: Window.getWindows()){
-                                if(!w.isShowing()){
+                            for (Window w : Window.getWindows()) {
+                                if (!w.isShowing()) {
                                     activeWindows -= 1;
                                 }
 
                             }
-                            if(activeWindows < 1){
+                            if (activeWindows < 1) {
                                 System.exit(0);
                             }
                         }

@@ -9,8 +9,6 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -20,8 +18,8 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.*;
 import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @author Mark Hedrick
@@ -47,7 +45,6 @@ ClientBrowser extends JFrame {
     private JMenuItem propertiesBtn;
     private JMenuItem sendToDriveBtn;
     private JMenuItem blacklistUserBtn;
-
 
 
     //GEN-BEGIN:variables
@@ -113,7 +110,6 @@ ClientBrowser extends JFrame {
         propertiesBtn = new JMenuItem("Properties");
         sendToDriveBtn = new JMenuItem("Send to My Drive");
         blacklistUserBtn = new JMenuItem("Hide this File");
-
 
 
         frameListeners();
@@ -196,45 +192,45 @@ ClientBrowser extends JFrame {
                     GroupLayout panel1Layout = new GroupLayout(panel1);
                     panel1.setLayout(panel1Layout);
                     panel1Layout.setHorizontalGroup(
-                        panel1Layout.createParallelGroup()
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(newDirBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(downloadAsBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(uploadBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap(9, Short.MAX_VALUE))
+                            panel1Layout.createParallelGroup()
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                            .addContainerGap()
+                                            .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(newDirBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(downloadAsBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                    .addComponent(uploadBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addContainerGap(9, Short.MAX_VALUE))
                     );
                     panel1Layout.setVerticalGroup(
-                        panel1Layout.createParallelGroup()
-                            .addGroup(panel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(uploadBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(newDirBtn)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(downloadAsBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(336, Short.MAX_VALUE))
+                            panel1Layout.createParallelGroup()
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                            .addContainerGap()
+                                            .addComponent(uploadBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(newDirBtn)
+                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(downloadAsBtn, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                            .addContainerGap(336, Short.MAX_VALUE))
                     );
                 }
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
                 contentPanelLayout.setHorizontalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 408, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
+                                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 408, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
                 contentPanelLayout.setVerticalGroup(
-                    contentPanelLayout.createParallelGroup()
-                        .addGroup(contentPanelLayout.createSequentialGroup()
-                            .addGroup(contentPanelLayout.createParallelGroup()
-                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
-                                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addContainerGap())
+                        contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                        .addGroup(contentPanelLayout.createParallelGroup()
+                                                .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                                                .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addContainerGap())
                 );
             }
             dialogPane.add(contentPanel, BorderLayout.CENTER);
@@ -243,42 +239,42 @@ ClientBrowser extends JFrame {
             {
                 buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
                 buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 0, 0, 374, 0};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[]{0, 0, 0, 374, 0};
+                ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0};
 
                 //---- logoutBtn ----
                 logoutBtn.setText("Logout");
                 logoutBtn.setFont(new Font("Arial", logoutBtn.getFont().getStyle(), logoutBtn.getFont().getSize() + 1));
                 buttonBar.add(logoutBtn, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- optionsBtn ----
                 optionsBtn.setText("Options...");
                 optionsBtn.setFont(new Font("Arial", optionsBtn.getFont().getStyle(), optionsBtn.getFont().getSize() + 1));
                 buttonBar.add(optionsBtn, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- saveFromDriveBtn ----
                 saveFromDriveBtn.setText("Save from Drive...");
                 saveFromDriveBtn.setFont(new Font("Arial", saveFromDriveBtn.getFont().getStyle(), saveFromDriveBtn.getFont().getSize() + 1));
                 buttonBar.add(saveFromDriveBtn, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- statusLbl ----
                 statusLbl.setHorizontalAlignment(SwingConstants.CENTER);
                 buttonBar.add(statusLbl, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
 
                 //---- quitBtn ----
                 quitBtn.setText("Quit");
                 quitBtn.setFont(new Font("Arial", quitBtn.getFont().getStyle(), quitBtn.getFont().getSize() + 1));
                 buttonBar.add(quitBtn, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
             }
             dialogPane.add(buttonBar, BorderLayout.SOUTH);
         }
@@ -359,7 +355,7 @@ ClientBrowser extends JFrame {
                     try {
                         if (node.toString().equals("(no files)")) {
                             tree1.setSelectionPath(null);
-                        }  else if (type.toString().equals("tempFile")) {
+                        } else if (type.toString().equals("tempFile")) {
                             tree1.setSelectionPath(null);
                         } else if (type.toString().equals("directory")) {
                             propertiesBtn.setEnabled(true);
@@ -570,16 +566,14 @@ ClientBrowser extends JFrame {
 
                 });
         saveFromDriveBtn.addActionListener(
-                e -> {
-                    DownloadFromDrive.run(serverAddress, port, clientBrowser, userAccount);
-                });
+                e -> DownloadFromDrive.run(serverAddress, port, clientBrowser, userAccount));
     }
 
     MouseAdapter ma = new MouseAdapter() {
         private void myPopupEvent(MouseEvent e) {
             int x = e.getX();
             int y = e.getY();
-            JTree tree = (JTree)e.getSource();
+            JTree tree = (JTree) e.getSource();
             TreePath path = tree.getPathForLocation(x, y);
             java.util.List<Object> treeList = Arrays.asList(path.getPath());
             StringBuilder jsonPath = new StringBuilder();
@@ -589,7 +583,7 @@ ClientBrowser extends JFrame {
             JSONObject contents = JSONUtils.getItemContents(catalogObj, jsonPath.toString());
             String type = contents.get("type").toString();
 
-            if(type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
+            if (type.equals("file") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")) {
                 rightClickMenu = new JPopupMenu();
                 rightClickMenu.add(renameBtn);
                 rightClickMenu.add(moveBtn);
@@ -603,7 +597,7 @@ ClientBrowser extends JFrame {
                 if (path == null) return;
                 tree.setSelectionPath(path);
                 rightClickMenu.show(tree, x, y);
-            } else if(type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")){
+            } else if (type.equals("directory") && !path.getLastPathComponent().toString().equals(userAccount) && !path.getLastPathComponent().toString().equals("root") && !path.getLastPathComponent().toString().equals("Shared")) {
                 rightClickMenu = new JPopupMenu();
                 rightClickMenu.add(renameBtn);
                 rightClickMenu.add(moveBtn);
@@ -617,9 +611,11 @@ ClientBrowser extends JFrame {
                 rightClickMenu.show(tree, x, y);
             }
         }
+
         public void mousePressed(MouseEvent e) {
             if (e.isPopupTrigger()) myPopupEvent(e);
         }
+
         public void mouseReleased(MouseEvent e) {
             if (e.isPopupTrigger()) myPopupEvent(e);
         }
@@ -650,7 +646,7 @@ ClientBrowser extends JFrame {
         } catch (PullRequestException e) {
             try {
                 java.util.List<String> locationsToCorrupt = FileRestore.findFileReferencesInCatalog(catalogObj, JSONUtils.getItemContents(catalogObj, jsonPath.toString()).get("alphanumericName").toString());
-                for (String location: locationsToCorrupt){
+                for (String location : locationsToCorrupt) {
                     FileClient.renameFile(serverAddress, port, location, location.substring(location.lastIndexOf("/")) + " (corrupted)");
                 }
             } catch (IOException | MalformedRequestException e1) {
@@ -663,7 +659,7 @@ ClientBrowser extends JFrame {
         SwingUtilities.invokeLater(
                 () -> {
                     try {
-                        if(!clientBrowser.isVisible()) return;
+                        if (!clientBrowser.isVisible()) return;
                         String localCatalog = catalogObj.toString();
                         String latestCatalog = null;
                         try {
@@ -676,14 +672,14 @@ ClientBrowser extends JFrame {
 
                         if (!localCatalog.equals(latestCatalog) && latestCatalog != null) {
                             StringBuilder sb = new StringBuilder();
-                            for (int i = 0; i < tree1.getRowCount(); i++){
-                                if (tree1.isExpanded(i)){
+                            for (int i = 0; i < tree1.getRowCount(); i++) {
+                                if (tree1.isExpanded(i)) {
                                     sb.append(i).append(",");
                                 }
                             }
                             tree1.setModel(new DefaultTreeModel(JSONUtils.JTreeBuilder((JSONObject) new JSONParser().parse(latestCatalog), userType)));
                             String[] indexes = sb.toString().split(",");
-                            for ( String st : indexes ){
+                            for (String st : indexes) {
                                 int row = Integer.parseInt(st);
                                 tree1.expandRow(row);
 

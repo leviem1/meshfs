@@ -124,7 +124,7 @@ class DISTAL {
             }
         }
 
-        if (numOfStripedCopies == 0 && numOfWholeCopies == 0){
+        if (numOfStripedCopies == 0 && numOfWholeCopies == 0) {
             JSONUtils.renameItem(filePathInCatalog + "/" + uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distributing)", uploadFilePath.substring(uploadFilePath.lastIndexOf(File.separator) + 1) + " (distribution failed)");
             return;
         }
@@ -275,7 +275,7 @@ class sendFilesThreading implements Runnable {
     private final int stripe;
     private final String outName;
 
-    
+
     sendFilesThreading(
             long sizeOfStripe,
             long fileSize,
