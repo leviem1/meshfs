@@ -115,7 +115,7 @@ class FileUtils {
         try (
                 FileInputStream fis = new FileInputStream(path)
         ) {
-            MessageDigest md = MessageDigest.getInstance("SHA1");
+            MessageDigest md = MessageDigest.getInstance("MD5");
 
             int br;
             byte[] data = new byte[1024];
