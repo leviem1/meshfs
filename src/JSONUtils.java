@@ -238,7 +238,7 @@ class JSONUtils {
     }
 
     /**
-     * This method removes the given item from the catalog the catalog.
+     * This method removes the given item from the catalog.
      *
      * @param itemLocation                  the source virtual path of the item within the catalog
      * @param smart                         if true, if no other references of the file exists, the file is removed from all nodes. If false, other references
@@ -410,7 +410,7 @@ class JSONUtils {
      * @param path                          where the download file is to be saved to
      * @param outFile                       the name that the downloaded file is to be saved as
      * @throws IOException                  if client cannot connect to server
-     * @throws MalformedRequestException    if the request was improperly form
+     * @throws MalformedRequestException    if the request was improperly formed
      * @throws PullRequestException         if the full file cannot be combined from all the files in the file system
      * @throws FileTransferException        if md5 of sending file did not match received file md5
      */
@@ -645,6 +645,28 @@ class JSONUtils {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
+    /**
+     * This method removes the given users from the catalog.
+     *
+     * @param userNames                     the List of user names that are to be removed
+     * @throws IOException                  an error connecting to the nodes, or if the catalog file cannot be written
+     * @throws MalformedRequestException    incorrectly formed request
+     */
+    @SuppressWarnings("unchecked")
+
+    static void deleteUsers(List<String> userNames) throws IOException, MalformedRequestException{
+        for (String user : userNames){
+            deleteItem("root/Users/" + user, true);
+        }
+        JSONObject catalog = getJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json");
+        Pair<List<String>, JSONObject> removedPermissions = removeUserPermissions(((JSONObject) ((JSONObject) catalog.get("root")).get("Shared")), userNames, "root/Shared");
+        ((JSONObject) catalog.get("root")).replace("Shared", removedPermissions.getValue());
+        writeJSONObject(MeshFS.properties.getProperty("repository") + ".catalog.json", catalog);
+        for (String itemLocation : removedPermissions.getKey()){
+            deleteItem(itemLocation, true);
+        }
+    }
+
     private static Pair<Long, Long> folderPropertiesRecursive(JSONObject folder) {
         Long folderSize = 0L;
         Long epochDate = 0L;
@@ -841,6 +863,38 @@ class JSONUtils {
             jsonObject.replace(child, changePermissions((JSONObject) jsonObject.get(child), newUserArray, newAdminArray, removeBlacklist));
         }
         return jsonObject;
+    }
+
+    @SuppressWarnings("unchecked")
+
+    private static Pair<List<String>, JSONObject> removeUserPermissions(JSONObject jsonObject, List<String> removedUsers, String currentLocation) {
+        List<String> itemsToRemove = new ArrayList<>();
+        JSONArray groups = (JSONArray) (jsonObject.get("groups"));
+        JSONArray admins = (JSONArray) (jsonObject.get("admins"));
+        for (String user : removedUsers){
+            if (groups.contains(user)){
+                groups.remove(user);
+            }
+            if (admins.contains(user)){
+                admins.remove(user);
+            }
+        }
+        jsonObject.replace("groups", groups);
+        jsonObject.replace("admins", admins);
+
+        if (groups.isEmpty()){
+            itemsToRemove.add(currentLocation);
+        }
+        else if (jsonObject.get("type").toString().equals("directory")){
+            LinkedHashMap<String, String> children = getMapOfFolderContents(jsonObject, null);
+            for (String child : children.keySet()) {
+                Pair<List<String>, JSONObject> childRemovedPermissions = removeUserPermissions((JSONObject) jsonObject.get(child), removedUsers, currentLocation +"/" + child);
+                itemsToRemove.addAll(childRemovedPermissions.getKey());
+                jsonObject.replace(child, childRemovedPermissions.getValue());
+            }
+        }
+
+        return new Pair<>(itemsToRemove, jsonObject);
     }
 
     private static List<String> numberSorter(List<String> unsorted) {

@@ -495,7 +495,7 @@ class ServerInit implements Runnable {
 
     @SuppressWarnings("unchecked")
 
-    private void deleteAccount(String username, Socket client) throws IOException {
+    private void deleteAccount(String username, Socket client) throws IOException, MalformedRequestException {
         ArrayList<UserAccount> userAccounts;
         ArrayList<UserAccount> toRemove = new ArrayList<>();
 
@@ -509,12 +509,13 @@ class ServerInit implements Runnable {
         ) {
             userAccounts = (ArrayList) ois.readObject();
 
-            for (UserAccount userAccount : userAccounts) {
-                if (!(username.equals("guest") || username.equals("admin"))) {
+            if (!(username.equals("guest") || username.equals("admin"))) {
+                for (UserAccount userAccount : userAccounts) {
                     if (userAccount.getUsername().equals(username)) {
                         toRemove.add(userAccount);
                     }
                 }
+                JSONUtils.deleteUsers(Collections.singletonList(username));
             }
 
             userAccounts.removeAll(toRemove);
