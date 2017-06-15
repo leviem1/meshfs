@@ -88,8 +88,9 @@ class ClientBrowserFileProperties extends JFrame {
 
         permModel.add(permModel.getSize(), "Groups: " + groupData.toString());
         permModel.add(permModel.getSize(), "Admins: " + adminData.toString());
-        assert blacklist != null;
-        permModel.add(permModel.getSize(), "Blacklisted Users: " + blacklist.toString());
+        if (blacklist != null) {
+            permModel.add(permModel.getSize(), "Blacklisted Users: " + blacklist.toString());
+        }
 
 
         initComponents(fileName, fileSize, creationDate);

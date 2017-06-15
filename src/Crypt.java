@@ -43,10 +43,12 @@ class Crypt {
             e.printStackTrace();
         }
 
-        assert messageDigest != null;
-        messageDigest.update(password.getBytes(), 0, password.length());
-
-        return new BigInteger(1, messageDigest.digest()).toString(512);
+        if (messageDigest != null) {
+            messageDigest.update(password.getBytes(), 0, password.length());
+            return new BigInteger(1, messageDigest.digest()).toString(512);
+        } else {
+            return null;
+        }
     }
 
     /**

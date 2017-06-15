@@ -143,9 +143,10 @@ class Reporting {
     static String getRepositoryContents() {
         File[] repoContents = new File(MeshFS.properties.getProperty("repository")).listFiles();
         List<String> contents = new ArrayList<>();
-        assert repoContents != null;
-        for (File file : repoContents) {
-            contents.add(file.getName());
+        if (repoContents != null) {
+            for (File file : repoContents) {
+                contents.add(file.getName());
+            }
         }
         return contents.toString();
     }

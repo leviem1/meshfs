@@ -1042,19 +1042,20 @@ class ServerModeConfiguration extends JFrame {
                 e.printStackTrace();
             }
 
-            assert properties != null;
-            masterServerField.setText(properties.getProperty("masterIP"));
-            serverPortField.setText(properties.getProperty("portNumber"));
-            numStripesField.setText(properties.getProperty("numStripes"));
-            numStripeCopiesField.setText(properties.getProperty("numStripeCopy"));
-            numWholeField.setText(properties.getProperty("numWholeCopy"));
-            minSpaceField.setText(properties.getProperty("minSpace"));
-            repoPathField.setText(properties.getProperty("repository"));
-            serverThreadsField.setText(properties.getProperty("serverThreads"));
-            serverTimeoutField.setText(properties.getProperty("timeout"));
-            userAccountDataList.removeAll();
-            model.removeAllElements();
-            allowGuestBox.setSelected(false);
+            if (properties != null) {
+                masterServerField.setText(properties.getProperty("masterIP"));
+                serverPortField.setText(properties.getProperty("portNumber"));
+                numStripesField.setText(properties.getProperty("numStripes"));
+                numStripeCopiesField.setText(properties.getProperty("numStripeCopy"));
+                numWholeField.setText(properties.getProperty("numWholeCopy"));
+                minSpaceField.setText(properties.getProperty("minSpace"));
+                repoPathField.setText(properties.getProperty("repository"));
+                serverThreadsField.setText(properties.getProperty("serverThreads"));
+                serverTimeoutField.setText(properties.getProperty("timeout"));
+                userAccountDataList.removeAll();
+                model.removeAllElements();
+                allowGuestBox.setSelected(false);
+            }
 
             for (UserAccount userAccount : accountsImported) {
                 String username = userAccount.getUsername();

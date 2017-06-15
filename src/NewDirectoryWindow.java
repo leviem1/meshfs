@@ -221,14 +221,10 @@ class NewDirectoryWindow extends JFrame {
             }
         }
         buttonBar.getRootPane().setDefaultButton(okButton);
-        try {
-            assert node != null;
-            if (node.getChildCount() == 0) {
-                if (!(node.toString().equals(userAccount))) {
-                    tree1.setSelectionPath(null);
-                }
+        if (node != null && node.getChildCount() == 0) {
+            if (!(node.toString().equals(userAccount))) {
+                tree1.setSelectionPath(null);
             }
-        } catch (NullPointerException ignored) {
         }
     }
 
