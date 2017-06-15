@@ -2,9 +2,7 @@ import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * The DISTAL class distributes a file across the linked
@@ -16,6 +14,8 @@ import java.util.List;
  */
 
 class DISTAL {
+
+    private DISTAL() {}
 
     /**
      * This method is used determines which load balance which

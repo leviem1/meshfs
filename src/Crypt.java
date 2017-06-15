@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +13,8 @@ import java.util.ArrayList;
  */
 
 class Crypt {
+
+    private Crypt() {}
 
     /**
      * The generateEncryptedPass method is the algorithm used to generate the

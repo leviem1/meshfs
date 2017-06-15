@@ -4,10 +4,7 @@ import org.json.simple.JSONObject;
 import java.io.*;
 import java.net.*;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * The FileServer class starts a file server with a variable port, amount of sockets, and timeout.

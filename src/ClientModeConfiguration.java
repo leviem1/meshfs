@@ -2,10 +2,7 @@ import org.json.simple.JSONObject;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
+import javax.swing.event.*;
 import java.awt.*;
 import java.io.IOException;
 import java.text.NumberFormat;

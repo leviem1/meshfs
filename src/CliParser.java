@@ -1,14 +1,8 @@
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 /**
  * The CliParser class allows for the reading of command line arguments. Only calling on the class

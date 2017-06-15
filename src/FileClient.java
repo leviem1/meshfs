@@ -19,8 +19,7 @@ import java.util.List;
 
 class FileClient {
 
-    private FileClient() {
-    }
+    private FileClient() {}
 
     /**
      * This method is used to request to download a file from the server.
