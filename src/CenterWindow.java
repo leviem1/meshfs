@@ -32,15 +32,17 @@ final class CenterWindow {
                 break;
             }
         }
-        assert activeScreen != null;
 
         final int width = window.getWidth();
         final int height = window.getHeight();
-        final int screenWidth = activeScreen.getDisplayMode().getWidth();
-        final int screenHeight = activeScreen.getDisplayMode().getHeight();
-        int x = (screenWidth / 2) - (width / 2);
-        int y = (screenHeight / 2) - (height / 2);
-        window.setLocation(x, y);
+        final int screenWidth;
+        if (activeScreen != null) {
+            screenWidth = activeScreen.getDisplayMode().getWidth();
+            final int screenHeight = activeScreen.getDisplayMode().getHeight();
+            int x = (screenWidth / 2) - (width / 2);
+            int y = (screenHeight / 2) - (height / 2);
+            window.setLocation(x, y);
+        }
     }
 
     /**
